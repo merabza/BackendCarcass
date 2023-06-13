@@ -1,0 +1,47 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using CarcassDb;
+using CarcassMasterDataDom;
+using CarcassMasterDataDom.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace CarcassRepositories;
+
+public class DataTypesRepository : IDataTypesRepository
+{
+    private readonly CarcassDbContext _context;
+    //private readonly IDataTypeKeys _dataTypeKeys;
+
+    public DataTypesRepository(CarcassDbContext context)
+    {
+        _context = context;
+        //_dataTypeKeys = dataTypeKeys;
+    }
+
+    public async Task<IEnumerable<DataTypeToCrudTypeDomModel>> LoadDataTypesToCrudTypes()
+    {
+        return await (from mmj in _context.ManyToManyJoins
+            join pt in _context.DataTypes on mmj.PtId equals pt.DtId
+            join ct in _context.DataTypes on mmj.CtId equals ct.DtId
+            join p in _context.DataTypes on mmj.PKey equals p.DtKey
+            join c in _context.CrudRightTypes on mmj.CKey equals c.CrtKey
+            where pt.DtKey == ECarcassDataTypeKeys.DataType.ToDtKey() &&
+                  ct.DtKey == ECarcassDataTypeKeys.CrudRightType.ToDtKey()
+            select new DataTypeToCrudTypeDomModel(mmj.MmjId, mmj.PKey + "." + mmj.CKey, p.DtName + "." + c.CrtName,
+                p.DtId)).ToListAsync();
+    }
+
+    public async Task<IEnumerable<DataTypeToDataTypeDomModel>> LoadDataTypesToDataTypes()
+    {
+        var dataTypeKey = ECarcassDataTypeKeys.DataType.ToDtKey();
+        return await (from mmj in _context.ManyToManyJoins
+            join pt in _context.DataTypes on mmj.PtId equals pt.DtId
+            join ct in _context.DataTypes on mmj.CtId equals ct.DtId
+            join p in _context.DataTypes on mmj.PKey equals p.DtKey
+            join c in _context.DataTypes on mmj.CKey equals c.DtKey
+            where pt.DtKey == dataTypeKey && ct.DtKey == dataTypeKey
+            select new DataTypeToDataTypeDomModel(mmj.MmjId, mmj.PKey + "." + mmj.CKey, p.DtName + "." + c.DtName,
+                mmj.PKey)).ToListAsync();
+    }
+}

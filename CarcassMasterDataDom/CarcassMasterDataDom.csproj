@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Remove="Installers\**" />
+        <EmbeddedResource Remove="Installers\**" />
+        <None Remove="Installers\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="7.0.5" />
+        <PackageReference Include="OneOf" Version="3.0.243" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.30.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
+        <ProjectReference Include="..\CarcassContracts\CarcassContracts.csproj" />
+        <ProjectReference Include="..\LibCrud\LibCrud.csproj" />
+    </ItemGroup>
+
+</Project>

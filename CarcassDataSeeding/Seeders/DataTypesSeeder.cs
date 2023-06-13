@@ -1,0 +1,346 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using SystemToolsShared;
+using CarcassDataSeeding.Models;
+using CarcassDb.Models;
+using CarcassDb.QueryModels;
+using CarcassMasterDataDom;
+using CarcassMasterDataDom.CellModels;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
+namespace CarcassDataSeeding.Seeders;
+
+public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
+{
+    public DataTypesSeeder(string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo)
+    {
+    }
+
+    protected override bool CreateByJsonFile()
+    {
+        var seedData = LoadFromJsonFile<DataTypeSeederModel>();
+        var dataList = CreateListBySeedData(seedData);
+        if (!Repo.CreateEntities(dataList))
+        {
+            return false;
+        }
+
+        DataSeederTempData.Instance.SaveIntIdKeys<DataType>(dataList.ToDictionary(k => k.Key, v => v.Id));
+        return SetParents(seedData, dataList);
+    }
+
+    protected override bool AdditionalCheck()
+    {
+        return base.AdditionalCheck() && SetParentDataTypes() && RemoveRedundantDataTypes();
+    }
+
+    private static List<DataType> CreateListBySeedData(IEnumerable<DataTypeSeederModel> dataTypesSeedData)
+    {
+        return dataTypesSeedData.Select(s => new DataType
+        {
+            DtGridRulesJson = s.DtGridRulesJson,
+            DtIdFieldName = s.DtIdFieldName,
+            DtKey = s.DtKey,
+            DtKeyFieldName = s.DtKeyFieldName,
+            DtName = s.DtName,
+            DtNameFieldName = s.DtNameFieldName,
+            DtNameGenitive = s.DtNameGenitive,
+            DtNameNominative = s.DtNameNominative,
+            DtTable = s.DtTable
+        }).ToList();
+    }
+
+    private bool SetParents(IEnumerable<DataTypeSeederModel> dataTypesSeedData,
+        IReadOnlyCollection<DataType> dataTypesList)
+    {
+        var tempData = DataSeederTempData.Instance;
+        var forUpdate = new List<DataType>();
+        foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtParentDataTypeIdDtKey != null))
+        {
+            var oneRec = dataTypesList.SingleOrDefault(s => s.DtKey == dataTypeSeederModel.DtKey);
+            if (oneRec == null)
+            {
+                continue;
+            }
+
+            oneRec.DtParentDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtParentDataTypeIdDtKey);
+            forUpdate.Add(oneRec);
+        }
+
+        return Repo.SetUpdates(forUpdate);
+    }
+
+    protected virtual bool RemoveRedundantDataTypes()
+    {
+        string[] toRemoveTableNames = { "dataRights", "dataRightTypes", "forms" };
+        return Repo.RemoveRedundantDataTypesByTableNames(toRemoveTableNames);
+    }
+
+    private bool SetParentDataTypes()
+    {
+        var tempData = DataSeederTempData.Instance;
+
+        Tuple<int, int>[] dtdt =
+        {
+            new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuItm.ToDtKey()),
+                tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuGroup.ToDtKey())),
+            new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey()),
+                tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataType.ToDtKey())),
+        };
+        return Repo.SetDtParentDataTypes(dtdt);
+    }
+
+
+    protected override List<DataType> CreateMustList()
+    {
+        var appClaimDKey = ECarcassDataTypeKeys.AppClaim.ToDtKey();
+        var crudRightTypeDKey = ECarcassDataTypeKeys.CrudRightType.ToDtKey();
+        var serializerSettings = new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+        DataType[] newDataTypes =
+        {
+            //carcass used
+            //AppClaim
+            new()
+            {
+                DtKey = appClaimDKey, DtName = "სპეციალური უფლებები", DtNameNominative = "სპეციალური უფლება",
+                DtNameGenitive = "სპეციალური უფლების", DtTable = Repo.GetTableName<AppClaim>(),
+                DtIdFieldName = nameof(AppClaim.AclId).UnCapitalize(),
+                DtKeyFieldName = nameof(AppClaim.AclKey).UnCapitalize(),
+                DtNameFieldName = nameof(AppClaim.AclName).UnCapitalize(),
+                DtGridRulesJson = JsonConvert.SerializeObject(GetKeyNameGridModel(appClaimDKey), serializerSettings)
+            },
+            //DataType
+            new()
+            {
+                DtKey = ECarcassDataTypeKeys.DataType.ToDtKey(), DtName = "მონაცემთა ტიპები",
+                DtNameNominative = "მონაცემთა ტიპი",
+                DtNameGenitive = "მონაცემთა ტიპის", DtTable = Repo.GetTableName<DataType>(),
+                DtIdFieldName = nameof(DataType.DtId).UnCapitalize(),
+                DtKeyFieldName = nameof(DataType.DtKey).UnCapitalize(),
+                DtNameFieldName = nameof(DataType.DtName).UnCapitalize(),
+                DtGridRulesJson = JsonConvert.SerializeObject(CreateDataTypesGridModel(), serializerSettings)
+            },
+            //dataTypeToCrudTypeModel
+            new()
+            {
+                DtKey = ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey(),
+                DtName = "მონაცემების ცვლილებაზე უფლებები",
+                DtNameNominative = "მონაცემების ცვლილებაზე უფლება",
+                DtNameGenitive = "მონაცემების ცვლილებაზე უფლების", DtTable = "dataTypesToCrudTypes",
+                DtIdFieldName = nameof(DataTypeToCrudTypeModel.DtctId).UnCapitalize(),
+                DtKeyFieldName = nameof(DataTypeToCrudTypeModel.DtctKey).UnCapitalize(),
+                DtNameFieldName = nameof(DataTypeToCrudTypeModel.DtctName).UnCapitalize()
+            },
+            //CrudRightType
+            new()
+            {
+                DtKey = crudRightTypeDKey, DtName = "მონაცემების ცვლილებაზე უფლებების ტიპები",
+                DtNameNominative = "მონაცემების ცვლილებაზე უფლების ტიპი",
+                DtNameGenitive = "მონაცემების ცვლილებაზე უფლების ტიპის",
+                DtTable = Repo.GetTableName<CrudRightType>(),
+                DtIdFieldName = nameof(CrudRightType.CrtId).UnCapitalize(),
+                DtNameFieldName = nameof(CrudRightType.CrtKey).UnCapitalize(),
+                DtGridRulesJson = JsonConvert.SerializeObject(GetKeyNameGridModel(crudRightTypeDKey), serializerSettings)
+            },
+            //DataTypeToDataTypeModel
+            new()
+            {
+                DtKey = ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(), DtName = "უფლებები",
+                DtNameNominative = "უფლება",
+                DtNameGenitive = "უფლების",
+                DtTable = "dataTypesToDataTypes",
+                DtIdFieldName = nameof(DataTypeToDataTypeModel.DtdtId).UnCapitalize(),
+                DtKeyFieldName = nameof(DataTypeToDataTypeModel.DtdtKey).UnCapitalize(),
+                DtNameFieldName = nameof(DataTypeToDataTypeModel.DtdtName).UnCapitalize()
+            },
+            //MenuGroup
+            new()
+            {
+                DtKey = ECarcassDataTypeKeys.MenuGroup.ToDtKey(), DtName = "მენიუს ჯგუფები",
+                DtNameNominative = "მენიუს ჯგუფი",
+                DtNameGenitive = "მენიუს ჯგუფის", DtTable = Repo.GetTableName<MenuGroup>(),
+                DtIdFieldName = nameof(MenuGroup.MengId).UnCapitalize(),
+                DtKeyFieldName = nameof(MenuGroup.MengKey).UnCapitalize(),
+                DtNameFieldName = nameof(MenuGroup.MengName).UnCapitalize(),
+                DtGridRulesJson = JsonConvert.SerializeObject(CreateMenuGroupsGridModel(), serializerSettings)
+            },
+            //MenuItm
+            new()
+            {
+                DtKey = ECarcassDataTypeKeys.MenuItm.ToDtKey(), DtName = "მენიუ",
+                DtNameNominative = "მენიუ", DtNameGenitive = "მენიუს",
+                DtTable = Repo.GetTableName<MenuItm>(), DtIdFieldName = nameof(MenuItm.MenId).UnCapitalize(),
+                DtKeyFieldName = nameof(MenuItm.MenKey).UnCapitalize(),
+                DtNameFieldName = nameof(MenuItm.MenName).UnCapitalize(),
+                DtGridRulesJson = JsonConvert.SerializeObject(CreateMenuGridModel(), serializerSettings)
+            },
+            //Role
+            new()
+            {
+                DtKey = ECarcassDataTypeKeys.Role.ToDtKey(), DtName = "როლები", DtNameNominative = "როლი",
+                DtNameGenitive = "როლის",
+                DtTable = Repo.GetTableName<Role>(), DtIdFieldName = nameof(Role.RolId).UnCapitalize(),
+                DtKeyFieldName = nameof(Role.RolKey).UnCapitalize(),
+                DtNameFieldName = nameof(Role.RolName).UnCapitalize(),
+                DtGridRulesJson = JsonConvert.SerializeObject(CreateRolesGridModel(), serializerSettings)
+            },
+            //User
+            new()
+            {
+                DtKey = ECarcassDataTypeKeys.User.ToDtKey(), DtName = "მომხმარებლები",
+                DtNameNominative = "მომხმარებელი",
+                DtNameGenitive = "მომხმარებლის", DtTable = Repo.GetTableName<User>(),
+                DtIdFieldName = nameof(User.UsrId).UnCapitalize(),
+                DtKeyFieldName = nameof(User.NormalizedUserName).UnCapitalize(),
+                DtNameFieldName = nameof(User.FullName).UnCapitalize(),
+                DtGridRulesJson = JsonConvert.SerializeObject(CreateUsersGridModel(), serializerSettings)
+            }
+        };
+
+        return newDataTypes.ToList();
+    }
+
+    private static GridModel CreateDataTypesGridModel()
+    {
+        var gridModel = GetKeyNameGridModel(ECarcassDataTypeKeys.DataType.ToDtKey());
+        Cell[] cells =
+        {
+            GetTextBoxCell(nameof(DataType.DtNameNominative).UnCapitalize(), "სახელობითი"),
+            GetTextBoxCell(nameof(DataType.DtNameGenitive).UnCapitalize(), "მიცემითი"),
+            GetTextBoxCell(nameof(DataType.DtTable).UnCapitalize(), "ცხრილი"),
+            GetTextBoxCell(nameof(DataType.DtIdFieldName).UnCapitalize(), "იდენტიფიკატორი ველის სახელი"),
+            GetTextBoxCell(nameof(DataType.DtKeyFieldName).UnCapitalize(), "კოდი ველის სახელი"),
+            GetTextBoxCell(nameof(DataType.DtNameFieldName).UnCapitalize(), "სახელი ველის სახელი"),
+            GetComboCell(nameof(DataType.DtParentDataTypeId).UnCapitalize(), "უფლებების მშობელი", "dataTypes", "DtId",
+                "DtTable")
+        };
+        gridModel.Cells.AddRange(cells);
+        return gridModel;
+    }
+
+    private GridModel CreateMenuGridModel()
+    {
+        var gridModel = GetKeyNameSortIdGridModel(ECarcassDataTypeKeys.MenuItm.ToDtKey());
+        Cell[] cells =
+        {
+            GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
+            GetComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი", "menuGroups", "mengId", "mengKey"),
+            GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
+            GetTextBoxCell(nameof(MenuItm.MenIconName).UnCapitalize(), "ხატულა"),
+        };
+        gridModel.Cells.AddRange(cells);
+        return gridModel;
+    }
+
+    private GridModel CreateMenuGroupsGridModel()
+    {
+        var gridModel = GetKeyNameSortIdGridModel(ECarcassDataTypeKeys.MenuGroup.ToDtKey());
+        gridModel.Cells.Add(GetTextBoxCell(nameof(MenuGroup.MengIconName).UnCapitalize(), "ხატულა"));
+        return gridModel;
+    }
+
+    private GridModel CreateRolesGridModel()
+    {
+        var gridModel = GetKeyNameGridModel(ECarcassDataTypeKeys.Role.ToDtKey());
+        gridModel.Cells.Add(GetIntegerCell(nameof(Role.RolLevel).UnCapitalize(), "დონე"));
+        return gridModel;
+    }
+
+    private static GridModel CreateUsersGridModel()
+    {
+        var gridModel = new GridModel();
+        Cell[] cells =
+        {
+            GetAutoNumberColumn("usrId"),
+            GetTextBoxCell(nameof(User.UserName).UnCapitalize(), "მომხმარებლის სახელი"),
+            GetTextBoxCell(nameof(User.Email).UnCapitalize(), "ელექტრონული ფოსტის მისამართი"),
+            GetTextBoxCell(nameof(User.FirstName).UnCapitalize(), "სახელი"),
+            GetTextBoxCell(nameof(User.LastName).UnCapitalize(), "გვარი")
+        };
+        gridModel.Cells = cells.ToList();
+        return gridModel;
+    }
+
+
+    protected GridModel GetKeyNameSortIdGridModel(string pref)
+    {
+        var gridModel = GetKeyNameGridModel(pref);
+        gridModel.Cells.Add(GetSortIdCell());
+        return gridModel;
+    }
+
+    protected static GridModel GetKeyNameGridModel(string pref)
+    {
+        var gridModel = new GridModel();
+        Cell[] cells =
+        {
+            GetAutoNumberColumn($"{pref}Id"),
+            GetKeyColumn($"{pref}Key"),
+            GetNameColumn($"{pref}Name")
+        };
+        gridModel.Cells = cells.ToList();
+        return gridModel;
+    }
+
+    protected static Cell GetAutoNumberColumn(string fieldName)
+    {
+        return Cell.Integer(fieldName, null, "", "", false).Default();
+    }
+
+    protected static Cell GetKeyColumn(string fieldName)
+    {
+        return GetTextBoxCell(fieldName, "კოდი");
+    }
+
+    protected static Cell GetNameColumn(string fieldName)
+    {
+        return GetTextBoxCell(fieldName, "სახელი");
+    }
+
+    protected static Cell GetTextBoxCell(string fieldName, string caption, bool allowNull = false)
+    {
+        return allowNull
+            ? Cell.String(fieldName, caption).Nullable().Default()
+            : Cell.String(fieldName, caption).Required($"{caption} შევსებული უნდა იყოს").Default();
+    }
+
+    //GetNumberColumn(3,"mrPosition","პოზიცია")
+    protected static Cell GetIntegerCell(string fieldName, string caption, bool allowNull = false, bool isShort = false)
+    {
+        var res = allowNull
+            ? Cell.Integer(fieldName, caption).Nullable().Min(0)
+            : Cell.Integer(fieldName, caption).Required($"{caption} შევსებული უნდა იყოს").Default();
+        return isShort ? res.Short() : res;
+    }
+
+    protected static Cell GetSortIdCell()
+    {
+        return Cell.Integer("sortId", "რიგითი ნომერი").Required("რიგითი ნომერი შევსებული უნდა იყოს").Default();
+    }
+
+    protected static Cell GetComboCell(string fieldName, string caption, string dataMember,
+        string valueMember, string displayMember, bool allowNull = false)
+    {
+        var cell = Cell.Lookup(fieldName, caption, dataMember, valueMember, displayMember, null).Default();
+        return allowNull
+            ? cell.Nullable()
+            : cell.Positive($"{caption} არჩეული უნდა იყოს").Required($"{caption} არჩეული უნდა იყოს");
+    }
+
+    protected static Cell GetComboCellWithRowSource(string fieldName, string caption, string rowSource,
+        bool isShort = false)
+    {
+        var res = Cell.Lookup(fieldName, caption, rowSource).Default();
+        return isShort ? res.Short() : res;
+    }
+
+    protected static Cell GetCheckBoxCell(string fieldName, string caption)
+    {
+        return Cell.Boolean(fieldName, caption);
+    }
+}

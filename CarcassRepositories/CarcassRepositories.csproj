@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="LanguageExt.Core" Version="4.4.3" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+        <PackageReference Include="OneOf" Version="3.0.243" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\WebSystemTools\WebInstallers\WebInstallers.csproj" />
+        <ProjectReference Include="..\CarcassContracts\CarcassContracts.csproj" />
+        <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
+        <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
+        <ProjectReference Include="..\CarcassMasterDataDom\CarcassMasterDataDom.csproj" />
+        <ProjectReference Include="..\CarcassRightsDom\CarcassRightsDom.csproj" />
+        <ProjectReference Include="..\LibCrud\LibCrud.csproj" />
+    </ItemGroup>
+
+</Project>

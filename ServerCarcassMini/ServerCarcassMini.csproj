@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\SystemTools\MessagingAbstractions\MessagingAbstractions.csproj" />
+        <ProjectReference Include="..\..\WebSystemTools\CorsTools\CorsTools.csproj" />
+        <ProjectReference Include="..\..\WebSystemTools\WebInstallers\WebInstallers.csproj" />
+        <ProjectReference Include="..\CarcassContracts\CarcassContracts.csproj" />
+        <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
+        <ProjectReference Include="..\CarcassRepositories\CarcassRepositories.csproj" />
+        <ProjectReference Include="..\CarcassRights\CarcassRights.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="11.5.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="CommandResponses\" />
+    </ItemGroup>
+
+</Project>
