@@ -7,6 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="CommandResponses\**" />
+      <EmbeddedResource Remove="CommandResponses\**" />
+      <None Remove="CommandResponses\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\..\SystemTools\MessagingAbstractions\MessagingAbstractions.csproj" />
         <ProjectReference Include="..\..\WebSystemTools\CorsTools\CorsTools.csproj" />
         <ProjectReference Include="..\..\WebSystemTools\WebInstallers\WebInstallers.csproj" />
@@ -18,10 +24,6 @@
 
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="11.5.2" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="CommandResponses\" />
     </ItemGroup>
 
 </Project>

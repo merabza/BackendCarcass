@@ -1,0 +1,29 @@
+﻿using BackendCarcassApi.CommandRequests.UserRights;
+using CarcassContracts.ErrorModels;
+using FluentValidation;
+
+namespace BackendCarcassApi.Validators;
+
+// ReSharper disable once UnusedType.Global
+public sealed class ChangeProfileCommandValidator : AbstractValidator<ChangeProfileCommandRequest>
+{
+    public ChangeProfileCommandValidator()
+    {
+        RuleFor(x => x.UserName).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
+            .WithMessage(AuthenticationApiErrors.IsEmptyUserNameErrMessage).MaximumLength(255)
+            .WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
+            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr.ErrorCode);
+        RuleFor(x => x.Email).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
+            .WithMessage(AuthenticationApiErrors.IsEmptyEmailErrMessage).EmailAddress()
+            .WithErrorCode(AuthenticationApiErrors.InvalidEmailAddressErrCode)
+            .WithMessage(AuthenticationApiErrors.InvalidEmailAddressErrMessage);
+        RuleFor(x => x.FirstName).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
+            .WithMessage(AuthenticationApiErrors.IsEmptyFirstNameErrMessage).MaximumLength(50)
+            .WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
+            .WithMessage(AuthenticationApiErrors.NameIsLongerThenErrMessage);
+        RuleFor(x => x.LastName).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
+            .WithMessage(AuthenticationApiErrors.IsEmptyLastNameErrMessage)
+            .MaximumLength(100).WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
+            .WithMessage(AuthenticationApiErrors.LastNameIsLongerThenErrMessage);
+    }
+}
