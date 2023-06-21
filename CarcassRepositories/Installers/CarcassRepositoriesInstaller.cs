@@ -1,6 +1,7 @@
 //Created by CarcassRepositoriesInstallerClassCreator at 8/1/2022 9:35:56 PM
 
 using CarcassIdentity;
+using CarcassMasterDataDom;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using WebInstallers;
@@ -21,6 +22,7 @@ public sealed class CarcassRepositoriesInstaller : IInstaller
         builder.Services.AddScoped<IIdentityRepository, IdentityRepository>();
         //builder.Services.AddSingleton<IDataObserversManager, DataObserversManager>();
         builder.Services.AddScoped<IMenuRightsRepository, MenuRightsRepository>();
+        builder.Services.AddScoped<IDataTypesRepository, DataTypesRepository>();
 
         //builder.Services.AddScoped<IMasterDataRepository, RtMasterDataRepository>();
         //builder.Services.AddSingleton<RtMasterDataRepoManager>();
