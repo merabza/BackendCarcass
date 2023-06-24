@@ -20,17 +20,17 @@ public class MasterDataLoaderCrudCreator : IMasterDataLoaderCrudCreator
         Services = services;
     }
 
-    public virtual IMasterDataLoader CreateMasterDataLoader(string tableName)
+    public virtual IMasterDataLoader CreateMasterDataLoader(string queryName)
     {
         var scope = Services.CreateScope();
 
-        return tableName switch
+        return queryName switch
         {
             "dataTypesToDataTypes" => new DataTypesToDataTypesMdLoader(scope.ServiceProvider
                 .GetRequiredService<IDataTypesRepository>()),
             "dataTypesToCrudTypes" => new DataTypesToCrudTypesMdLoader(scope.ServiceProvider
                 .GetRequiredService<IDataTypesRepository>()),
-            _ => new MasterDataCrud(tableName, _logger,
+            _ => new MasterDataCrud(queryName, _logger,
                 scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>())
         };
     }

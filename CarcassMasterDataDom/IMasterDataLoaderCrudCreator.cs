@@ -4,6 +4,6 @@ namespace CarcassMasterDataDom;
 
 public interface IMasterDataLoaderCrudCreator
 {
-    IMasterDataLoader CreateMasterDataLoader(string tableName);
+    IMasterDataLoader CreateMasterDataLoader(string queryName);
     CrudBase CreateMasterDataCrud(string tableName);
 }
