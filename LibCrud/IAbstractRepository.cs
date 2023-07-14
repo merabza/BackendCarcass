@@ -7,4 +7,5 @@ public interface IAbstractRepository
 {
     IDbContextTransaction GetTransaction();
     Task SaveChangesAsync();
+    string? GetTableName<T>();
 }

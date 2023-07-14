@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using LibCrud;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -22,5 +23,11 @@ public /*open*/ class AbstractRepository : IAbstractRepository
     public async Task SaveChangesAsync()
     {
         await _ctx.SaveChangesAsync();
+    }
+
+    public string? GetTableName<T>()
+    {
+        var entType = _ctx.Model.GetEntityTypes().SingleOrDefault(s => s.ClrType == typeof(T));
+        return entType?.GetTableName();
     }
 }
