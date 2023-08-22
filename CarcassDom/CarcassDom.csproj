@@ -12,13 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OneOf" Version="3.0.255" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
     <ProjectReference Include="..\..\WebSystemTools\WebInstallers\WebInstallers.csproj" />
-    <ProjectReference Include="..\CarcassContracts\CarcassContracts.csproj" />
   </ItemGroup>
 
 </Project>
