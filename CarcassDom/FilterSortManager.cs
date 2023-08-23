@@ -11,11 +11,11 @@ public class FilterSortManager
 
     private static int GetSerialNumber(IEnumerable<Claim> claims)
     {
-        Claim? serialNumberClaim = claims.SingleOrDefault(so => so.Type == ClaimTypes.SerialNumber);
+        var serialNumberClaim = claims.SingleOrDefault(so => so.Type == ClaimTypes.SerialNumber);
         if (serialNumberClaim == null)
             return 0;
-        string strSerialNumber = serialNumberClaim.Value;
-        return int.TryParse(strSerialNumber, out int serialNumber) ? serialNumber : 0;
+        var strSerialNumber = serialNumberClaim.Value;
+        return int.TryParse(strSerialNumber, out var serialNumber) ? serialNumber : 0;
     }
 
 
