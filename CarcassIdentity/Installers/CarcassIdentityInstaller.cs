@@ -44,13 +44,9 @@ public sealed class CarcassIdentityInstaller : IInstaller
         builder.Services.Configure<IdentitySettings>(appSettingsSection);
 
         // configure jwt authentication
-        var identitySettings = appSettingsSection.Get<IdentitySettings>();
-        if (identitySettings is null)
-            throw new Exception("IdentitySettings is null");
-        var jwtSecret = identitySettings.JwtSecret;
-        if (jwtSecret is null)
-            throw new Exception("jwtSecret is null");
-
+        var identitySettings = appSettingsSection.Get<IdentitySettings>() ??
+                               throw new Exception("IdentitySettings is null");
+        var jwtSecret = identitySettings.JwtSecret ?? throw new Exception("jwtSecret is null");
         var key = Encoding.ASCII.GetBytes(jwtSecret);
         builder.Services.AddAuthentication(x =>
         {
