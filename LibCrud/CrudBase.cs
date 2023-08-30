@@ -30,13 +30,15 @@ public abstract class CrudBase // : ICrud
         }
         catch (Exception e)
         {
-            Logger.LogError(e, $"Error occurred executing {nameof(GetOne)}.");
+            var methodName = nameof(GetOne);
+            Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
             throw;
         }
     }
 
     public async Task<OneOf<ICrudData, Err[]>> Create(ICrudData crudDataForCreate)
     {
+        var methodName = nameof(GetOne);
         try
         {
             await using var transaction = _absRepo.GetTransaction();
@@ -52,13 +54,13 @@ public abstract class CrudBase // : ICrud
             catch (Exception e)
             {
                 await transaction.RollbackAsync();
-                Logger.LogError(e, $"Error occurred executing {nameof(Create)}.");
+                Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
                 return new[] { Errors.UnexpectedApiException(e) };
             }
         }
         catch (Exception e)
         {
-            Logger.LogError(e, $"Error occurred executing {nameof(Create)}.");
+            Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
             return new[] { Errors.UnexpectedApiException(e) };
         }
 
