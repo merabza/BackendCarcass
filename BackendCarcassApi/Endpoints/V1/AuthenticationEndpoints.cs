@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.Handlers.Authentication;
 using BackendCarcassApi.Mappers;
@@ -37,19 +38,20 @@ public sealed class AuthenticationEndpoints : IInstaller
     //შესასვლელი წერტილი (endpoint)
     //დანიშნულება -> დაარეგისტრიროს ახალი მომხმარებელი ბაზაში
     //შემავალი ინფორმაცია -> RegistrationModel კლასის ობიექტი, რომელიც მოდის ვებიდან
-    //მოქმედება -> სხვადასხვა შემოწმებების შემდეგ ცდილობს ახალი მომხმარებლის დარეგსიტრირებას
+    //მოქმედება -> სხვადასხვა შემოწმებების შემდეგ ცდილობს ახალი მომხმარებლის დარეგისტრირებას
     //   და თუ რეგისტრაცია წარმატებით დასრულდა ავტომატურად ალოგინებს ახალ მომხმარებელს.
     //   გამოდის რომ ახალ მომხმარებელს ეგრევე შეუძლია მუშაობის დაწყება.
     //   მაგრამ სამწუხაროდ უფლებების არქონის გამო პრაქტიკულად შეეძლება მხოლოდ თავისი ინფორმაციის ცვლილება
     //   ან თავისივე რეგისტრაციის წაშლა
     // POST api/v1/authentication/registration
-    private static async Task<IResult> Registration([FromBody] RegistrationRequest? request, IMediator mediator)
+    private static async Task<IResult> Registration([FromBody] RegistrationRequest? request, IMediator mediator,
+        CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(RegistrationCommandHandler)} from {nameof(Registration)}");
         if (request is null)
             return Results.BadRequest(CarcassApiErrors.RequestIsEmpty);
         var command = request.AdaptTo();
-        var result = await mediator.Send(command);
+        var result = await mediator.Send(command, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
@@ -60,13 +62,14 @@ public sealed class AuthenticationEndpoints : IInstaller
     //მოქმედება -> სხვადასხვა შემოწმებების შემდეგ ცდილობს მომხმარებლის ავტორიზებას
     //   წარმატებული ავტორიზების შემთხვევაში იქმნება JwT, რომელიც მომხმარებლის ინფორმაციასთან ერთად გადაეწოდება გამომძახებელს
     // POST api/authentication/login
-    private static async Task<IResult> Login([FromBody] LoginRequest? request, IMediator mediator)
+    private static async Task<IResult> Login([FromBody] LoginRequest? request, IMediator mediator,
+        CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(LoginCommandHandler)} from {nameof(Login)}");
         if (request is null)
             return Results.BadRequest(CarcassApiErrors.RequestIsEmpty);
         var command = request.AdaptTo();
-        var result = await mediator.Send(command);
+        var result = await mediator.Send(command, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.Rights;
 using BackendCarcassApi.Filters;
@@ -54,11 +55,12 @@ public sealed class RightsEndpoints : IInstaller
     //   თუ აქვს ხდება მხოლოდ იმ ინფორმაციის ჩატვირთვა და დაბრუნება, რაზეც უფლება აქვს მიმდინარე მომხმარებელს
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("getparentstreedata/{viewStyle}")]
-    private static async Task<IResult> ParentsTreeData(int viewStyle, HttpRequest request, IMediator mediator)
+    private static async Task<IResult> ParentsTreeData(int viewStyle, HttpRequest request, IMediator mediator,
+        CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(ParentsTreeDataQueryHandler)} from {nameof(ParentsTreeData)}");
         var query = new ParentsTreeDataQueryRequest(request, (ERightsEditorViewStyle)viewStyle);
-        var result = await mediator.Send(query);
+        var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
@@ -70,11 +72,11 @@ public sealed class RightsEndpoints : IInstaller
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("getchildrentreedata/{dataTypeKey}/{viewStyle}")]
     private static async Task<IResult> ChildrenTreeData(string dataTypeKey, int viewStyle, HttpRequest request,
-        IMediator mediator)
+        IMediator mediator, CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(ChildrenTreeDataQueryHandler)} from {nameof(ChildrenTreeData)}");
         var query = new ChildrenTreeDataCommandRequest(request, dataTypeKey, (ERightsEditorViewStyle)viewStyle);
-        var result = await mediator.Send(query);
+        var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
@@ -88,11 +90,11 @@ public sealed class RightsEndpoints : IInstaller
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("halfchecks/{dataTypeId}/{dataKey}/{viewStyle}")]
     private static async Task<IResult> HalfChecks(int dataTypeId, string dataKey, int viewStyle, HttpRequest request,
-        IMediator mediator)
+        IMediator mediator, CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(HalfChecksQueryHandler)} from {nameof(HalfChecks)}");
         var query = new HalfChecksCommandRequest(request, dataTypeId, dataKey, (ERightsEditorViewStyle)viewStyle);
-        var result = await mediator.Send(query);
+        var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
@@ -106,13 +108,13 @@ public sealed class RightsEndpoints : IInstaller
     //   საბოლოოდ ამ უფლებების შემოწმება ხდება რეპოზიტორიის მხარეს.
     //[HttpPost("savedata")]
     private static async Task<IResult> SaveData([FromBody] List<RightsChangeModel>? changesForSave, HttpRequest request,
-        IMediator mediator)
+        IMediator mediator, CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(SaveDataCommandHandler)} from {nameof(SaveData)}");
         if (changesForSave is null)
             return Results.BadRequest(CarcassApiErrors.RequestIsEmpty);
         var commandRequest = new SaveDataCommandRequest(request, changesForSave);
-        var result = await mediator.Send(commandRequest);
+        var result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
@@ -125,7 +127,8 @@ public sealed class RightsEndpoints : IInstaller
     //   აქ დამატებით მომხმარებლის მონაცემებზე უფლებების შემოწმება არ ხდება,
     //   რადგან შეცდომები, რასაც ეს პროცედურა ასწორებს, ნებისმიერ შემთხვევაში გასასწორებელია
     //[HttpPost("optimize")]
-    private static IResult Optimize(HttpRequest request, ILogger<RightsEndpoints> logger)
+    private static IResult Optimize(HttpRequest request, ILogger<RightsEndpoints> logger,
+        CancellationToken cancellationToken)
     {
         //Debug.WriteLine($"Call {nameof(OptimizeCommandHandler)} from {nameof(Optimize)}");
         //if (!HasUserRightRole(mdRepo, request))

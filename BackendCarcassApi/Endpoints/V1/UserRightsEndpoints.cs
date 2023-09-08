@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.UserRights;
 using BackendCarcassApi.Filters;
@@ -86,13 +87,13 @@ public sealed class UserRightsEndpoints : IInstaller
     // GET: api/<controller>/changeprofile
     //[HttpPut("changeprofile")]
     private static async Task<IResult> ChangeProfile([FromBody] ChangeProfileRequest? request, HttpRequest httpRequest,
-        IMediator mediator)
+        IMediator mediator, CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(ChangeProfileCommandHandler)} from {nameof(ChangeProfile)}");
         if (request is null)
             return Results.BadRequest(CarcassApiErrors.RequestIsEmpty);
         var command = request.AdaptTo(httpRequest);
-        var result = await mediator.Send(command);
+        var result = await mediator.Send(command, cancellationToken);
         return result.Match(_ => Results.Ok(), Results.BadRequest);
     }
 
@@ -103,13 +104,13 @@ public sealed class UserRightsEndpoints : IInstaller
     //მოქმედება -> მოწმდება მიღებული ინფორმაციის ვალიდურობა და ხდება პაროლის ცვლილებების დაფიქსირება
     //[HttpPut("changepassword")]
     private static async Task<IResult> ChangePassword([FromBody] ChangePasswordRequest? request,
-        HttpRequest httpRequest, IMediator mediator)
+        HttpRequest httpRequest, IMediator mediator, CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(ChangePasswordCommandHandler)} from {nameof(ChangePassword)}");
         if (request is null)
             return Results.BadRequest(CarcassApiErrors.RequestIsEmpty);
         var command = request.AdaptTo(httpRequest);
-        var result = await mediator.Send(command);
+        var result = await mediator.Send(command, cancellationToken);
         return result.Match(_ => Results.Ok(), Results.BadRequest);
     }
 
@@ -124,11 +125,12 @@ public sealed class UserRightsEndpoints : IInstaller
     //  თუ მაინც გახდა საჭირო მომავალში მომხმარებლის წაშლა, უნდა აეწყოს მომხმარებლის ჩანაწერების გადაბარების მექანიზმი
     //  რის მერეც შესაძლებელი გახდება მომხმარებლის იდენტიფიკატორის გათავისუფლება კავშირებისაგან და წაშლაც მოხერხდება
     //[HttpDelete("deletecurrentuser/{userName}")]
-    private static async Task<IResult> DeleteCurrentUser(string userName, HttpRequest httpRequest, IMediator mediator)
+    private static async Task<IResult> DeleteCurrentUser(string userName, HttpRequest httpRequest, IMediator mediator,
+        CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(DeleteCurrentUserCommandHandler)} from {nameof(DeleteCurrentUser)}");
         var command = new DeleteCurrentUserCommandRequest(httpRequest) { UserName = userName };
-        var result = await mediator.Send(command);
+        var result = await mediator.Send(command, cancellationToken);
         return result.Match(_ => Results.Ok(), Results.BadRequest);
     }
 
@@ -139,11 +141,12 @@ public sealed class UserRightsEndpoints : IInstaller
     //მოქმედება -> რეპოზიტორიას გადაეწოდება მიმდინარე მომხმარებლის სახელი და
     //  მისი უფლებების მიხედვით ჩატვირთული მენიუს შესახებ ინფორმაციას უბრუნებს გამომძახებელს
     //[HttpGet("getmainmenu")]
-    private static async Task<IResult> MainMenu(HttpRequest httpRequest, IMediator mediator)
+    private static async Task<IResult> MainMenu(HttpRequest httpRequest, IMediator mediator,
+        CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(MainMenuQueryHandler)} from {nameof(MainMenu)}");
         var query = new MainMenuQueryRequest(httpRequest);
-        var result = await mediator.Send(query);
+        var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 }

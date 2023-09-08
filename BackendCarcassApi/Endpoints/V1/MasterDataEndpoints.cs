@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.MasterData;
 using BackendCarcassApi.Filters;
@@ -49,11 +50,12 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ ეს უფლება აქვს მიმდინარე მომხმარებელს, მოხდება tableName ცხრილის ჩატვირთვა და გამომძახებლისთვის დაბრუნება
     // GET: api/<controller>/<tableName>
     //[HttpGet("{tableName}")]
-    private static async Task<IResult> AllRecords(HttpRequest request, string tableName, IMediator mediator)
+    private static async Task<IResult> AllRecords(HttpRequest request, string tableName, IMediator mediator,
+        CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(AllRecordsQueryHandler)} from {nameof(AllRecords)}");
         var query = new MdGetTableAllRecordsQueryRequest(tableName, request);
-        var result = await mediator.Send(query);
+        var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
@@ -66,11 +68,12 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ ეს ყველა ცხრილზე ნახვის უფლება აქვს მიმდინარე მომხმარებელს, მოხდება ყველა ცხრილის ჩატვირთვა და გამომძახებლისთვის დაბრუნება
     //query like this: localhost:3000/api/masterdata/gettables?tables=tableName1&tables=tableName2&tables=tableName3
     //[HttpGet("gettables")]
-    private static async Task<IResult> TablesData(HttpRequest request, IMediator mediator)
+    private static async Task<IResult> TablesData(HttpRequest request, IMediator mediator,
+        CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(TablesDataQueryHandler)} from {nameof(TablesData)}");
         var query = new MdTablesDataQueryRequest(request);
-        var result = await mediator.Send(query);
+        var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
@@ -86,11 +89,12 @@ public sealed class MasterDataEndpoints : IInstaller
     //   მოხდება id იდენტიფიკატორით ჩანაწერის ამოღება ბაზიდან და გამომძახებლისთვის დაბრუნება
     // GET api/<controller>/<tableName>/5
     //[HttpGet("{tableName}/{id}")]
-    private static async Task<IResult> MdGetOneRecord(HttpRequest request, string tableName, int id, IMediator mediator)
+    private static async Task<IResult> MdGetOneRecord(HttpRequest request, string tableName, int id, IMediator mediator,
+        CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(MdGetOneRecordQueryHandler)} from {nameof(MdGetOneRecord)}");
         var query = new MdGetOneRecordQueryRequest(tableName, id, request);
-        var result = await mediator.Send(query);
+        var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
@@ -105,11 +109,12 @@ public sealed class MasterDataEndpoints : IInstaller
     // POST api/<controller>/<tableName>
     //[HttpPost("{tableName}")]
     //[FromBody] 
-    private static async Task<IResult> MdCreateOneRecord(string tableName, HttpRequest request, IMediator mediator)
+    private static async Task<IResult> MdCreateOneRecord(string tableName, HttpRequest request, IMediator mediator,
+        CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(MdCreateOneRecordCommandHandler)} from {nameof(MdCreateOneRecord)}");
         var commandRequest = new MdCreateOneRecordCommandRequest(tableName, request);
-        var result = await mediator.Send(commandRequest);
+        var result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
@@ -125,11 +130,11 @@ public sealed class MasterDataEndpoints : IInstaller
     // PUT api/<controller>/<tableName>/5
     //[HttpPut("{tableName}/{id}")]
     private static async Task<IResult> MdUpdateOneRecord(string tableName, int id, HttpRequest request,
-        IMediator mediator)
+        IMediator mediator, CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(MdUpdateOneRecordCommandHandler)} from {nameof(MdUpdateOneRecord)}");
         var commandRequest = new MdUpdateOneRecordCommandRequest(tableName, request, id);
-        var result = await mediator.Send(commandRequest);
+        var result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match(_ => Results.NoContent(), Results.BadRequest);
     }
 
@@ -144,11 +149,11 @@ public sealed class MasterDataEndpoints : IInstaller
     // DELETE api/<controller>/<tableName>/5
     //[HttpDelete("{tableName}/{id}")]
     private static async Task<IResult> MdDeleteOneRecord(string tableName, int id, HttpRequest request,
-        IMediator mediator)
+        IMediator mediator, CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(MdDeleteOneRecordCommandHandler)} from {nameof(MdDeleteOneRecord)}");
         var commandRequest = new MdDeleteOneRecordCommandRequest(tableName, request, id);
-        var result = await mediator.Send(commandRequest);
+        var result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match(_ => Results.NoContent(), Results.BadRequest);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.Handlers.DataTypes;
 using BackendCarcassApi.QueryRequests.DataTypes;
@@ -10,7 +11,7 @@ using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;
 
-//კონტროლერი -> გამოიყენება DataTypes ცხრილის ინფორმაციის ჩასატვირთად
+//შესასვლელი წერტილი -> გამოიყენება DataTypes ცხრილის ინფორმაციის ჩასატვირთად
 //ცალკე ხდება ცხრილების მოდელების მიღება, რომელიც ასევე DataTypes ცხრილში ინახება
 //[ApiController]
 //[Route("api/[controller]")]
@@ -46,27 +47,29 @@ public sealed class DataTypesEndpoints : IInstaller
     //მოქმედება -> ხდება DataType ცხრილის ყველა ჩანაწერის ჩატვირთვა, ოღონდ ველი სადაც ინახება ცხრილების მოდელები
     //   არ ჩაიტვირთება. ასე კეთდება სისწრაფისათვის. ცხრილების მოდელების ჩატვირთვა ხდება ცალკე
     //[HttpGet("getdatatypes")]
-    private static async Task<IResult> DataTypesList(HttpRequest request, IMediator mediator)
+    private static async Task<IResult> DataTypesList(HttpRequest request, IMediator mediator,
+        CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(DataTypesListQueryHandler)} from {nameof(DataTypesList)}");
         var query = new DataTypesQueryRequest(request);
-        var result = await mediator.Send(query);
+        var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
     //შესასვლელი წერტილი (endpoint)
     //დანიშნულება -> DataType ცხრილში არსებული ცხრილის მოდელის ჩატვირთვა და დაბრუნება
-    //შემავალი ინფორმაცია -> tableName იმ ცხრილის სახელი, რომლიც შესაბამისი ცხრილის მოდელიც უნდა ჩაიტვირთოს
+    //შემავალი ინფორმაცია -> tableName იმ ცხრილის სახელი, რომელიც შესაბამისი ცხრილის მოდელიც უნდა ჩაიტვირთოს
     //უფლება -> tableName ცხრილის ნახვის უფლება
     //მოქმედება -> მოწმდება აქვს თუ არა მომხმარებელს tableName ცხრილის ნახვის უფლება. თუ არა ბრუნდება უარი.
     //   თუ აქვს ხდება DataType ცხრილის შესაბამისი ჩანაწერის მოძებნა და იქიდან ჩაიტვირთება ცხრილის მოდელი
     //   ჩატვირთული ინფორმაცია უბრუნდება გამომძახებელს
     //[HttpGet("getgridmodel/{tableName}")]
-    private static async Task<IResult> GridModel(string gridName, IMediator mediator)
+    private static async Task<IResult> GridModel(string gridName, IMediator mediator,
+        CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(GridModelQueryHandler)} from {nameof(GridModel)}");
         var query = new GridModelQueryRequest(gridName);
-        var result = await mediator.Send(query);
+        var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
@@ -87,11 +90,12 @@ public sealed class DataTypesEndpoints : IInstaller
     //შესაბამისად ეს ინფორმაცია კი ინახება ცხრილების მოდელებში, რისი ჩატვირთვაც აქ ხდება.
     //query like this: example.com/api/forms/getmultiplegridrules?grids=gridName1&grids=gridName2&grids=gridName3
     //[HttpGet("getmultiplegridrules")]
-    private static async Task<IResult> MultipleGridModels(HttpRequest request, IMediator mediator)
+    private static async Task<IResult> MultipleGridModels(HttpRequest request, IMediator mediator,
+        CancellationToken cancellationToken)
     {
         Debug.WriteLine($"Call {nameof(MultipleGridModelsQueryHandler)} from {nameof(MultipleGridModels)}");
         var query = new MultipleGridModelsQueryRequest(request);
-        var result = await mediator.Send(query);
+        var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
 }
