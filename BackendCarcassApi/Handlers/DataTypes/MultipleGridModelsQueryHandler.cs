@@ -11,7 +11,7 @@ using SystemToolsShared;
 
 namespace BackendCarcassApi.Handlers.DataTypes;
 
-// ReSharper disable once UnusedType.Global
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class
     MultipleGridModelsQueryHandler : IQueryHandler<MultipleGridModelsQueryRequest, Dictionary<string, string>>
 {
@@ -39,7 +39,7 @@ public sealed class
         //ხოლო მეორე გავლისას ხდება უშუალოდ საჭირო ინფორმაციის ჩატვირთვა
         foreach (var tableName in tableNames.Where(tableName => tableName is not null))
         {
-            var res = await _repository.GridModel(tableName!);
+            var res = await _repository.GridModel(tableName!, cancellationToken);
             if (res == null)
                 return new[] { DataTypesApiErrors.GridNotFound(tableName!) };
             resultList.Add(tableName!, res);

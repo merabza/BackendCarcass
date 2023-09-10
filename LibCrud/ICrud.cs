@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using LanguageExt;
 using OneOf;
 using SystemToolsShared;
@@ -7,8 +8,8 @@ namespace LibCrud;
 
 public interface ICrud
 {
-    Task<OneOf<ICrudData, Err[]>> GetOne(int id);
-    Task<OneOf<ICrudData, Err[]>> Create(ICrudData crudDataForCreate);
-    Task<Option<Err[]>> Update(int id, ICrudData crudDataNewVersion);
-    Task<Option<Err[]>> Delete(int id);
+    Task<OneOf<ICrudData, Err[]>> GetOne(int id, CancellationToken cancellationToken);
+    Task<OneOf<ICrudData, Err[]>> Create(ICrudData crudDataForCreate, CancellationToken cancellationToken);
+    Task<Option<Err[]>> Update(int id, ICrudData crudDataNewVersion, CancellationToken cancellationToken);
+    Task<Option<Err[]>> Delete(int id, CancellationToken cancellationToken);
 }

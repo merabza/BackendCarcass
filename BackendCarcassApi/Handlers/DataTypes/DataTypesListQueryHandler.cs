@@ -15,7 +15,7 @@ using SystemToolsShared;
 
 namespace BackendCarcassApi.Handlers.DataTypes;
 
-// ReSharper disable once UnusedType.Global
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class DataTypesListQueryHandler : LoginCommandBase,
     IQueryHandler<DataTypesQueryRequest, DataTypesResponse[]>
 {
@@ -32,7 +32,7 @@ public sealed class DataTypesListQueryHandler : LoginCommandBase,
         var currentUserName = CurrentUserName(request.HttpRequest);
         if (currentUserName is null)
             return new[] { CarcassApiErrors.InvalidUser };
-        var res = await _repository.DataTypes(currentUserName);
+        var res = await _repository.DataTypes(currentUserName, cancellationToken);
         return res;
     }
 

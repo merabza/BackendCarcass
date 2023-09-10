@@ -26,6 +26,6 @@ public sealed class SaveDataCommandHandler : ICommandHandler<SaveDataCommandRequ
         //!!!გასაკეთებელია ის, რომ შენახვისას უნდა შემოწმდეს, ჰქონდა თუ არა უფლება მიმდინარე მომხმარებელს
         //შესაბამისი ინფორმაცია შეენახა
         return await _repository.SaveRightsChanges(request.HttpRequest.HttpContext.User.Identity!.Name!,
-            request.ChangesForSave);
+            request.ChangesForSave, cancellationToken);
     }
 }

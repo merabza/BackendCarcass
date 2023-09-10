@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CarcassDb;
 using CarcassMasterDataDom;
@@ -19,7 +20,8 @@ public class DataTypesRepository : IDataTypesRepository
         //_dataTypeKeys = dataTypeKeys;
     }
 
-    public async Task<IEnumerable<DataTypeToCrudTypeDomModel>> LoadDataTypesToCrudTypes()
+    public async Task<IEnumerable<DataTypeToCrudTypeDomModel>> LoadDataTypesToCrudTypes(
+        CancellationToken cancellationToken)
     {
         return await (from mmj in _context.ManyToManyJoins
             join pt in _context.DataTypes on mmj.PtId equals pt.DtId
@@ -29,10 +31,11 @@ public class DataTypesRepository : IDataTypesRepository
             where pt.DtKey == ECarcassDataTypeKeys.DataType.ToDtKey() &&
                   ct.DtKey == ECarcassDataTypeKeys.CrudRightType.ToDtKey()
             select new DataTypeToCrudTypeDomModel(mmj.MmjId, mmj.PKey + "." + mmj.CKey, p.DtName + "." + c.CrtName,
-                p.DtId)).ToListAsync();
+                p.DtId)).ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<DataTypeToDataTypeDomModel>> LoadDataTypesToDataTypes()
+    public async Task<IEnumerable<DataTypeToDataTypeDomModel>> LoadDataTypesToDataTypes(
+        CancellationToken cancellationToken)
     {
         var dataTypeKey = ECarcassDataTypeKeys.DataType.ToDtKey();
         return await (from mmj in _context.ManyToManyJoins
@@ -42,6 +45,6 @@ public class DataTypesRepository : IDataTypesRepository
             join c in _context.DataTypes on mmj.CKey equals c.DtKey
             where pt.DtKey == dataTypeKey && ct.DtKey == dataTypeKey
             select new DataTypeToDataTypeDomModel(mmj.MmjId, mmj.PKey + "." + mmj.CKey, p.DtName + "." + c.DtName,
-                mmj.PKey)).ToListAsync();
+                mmj.PKey)).ToListAsync(cancellationToken);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using CarcassDb;
 using CarcassMasterDataDom;
@@ -61,16 +62,17 @@ public class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDat
     }
 
 
-    public async Task<Option<Err[]>> Create(IDataType newItem)
+    public async Task<Option<Err[]>> Create(IDataType newItem, CancellationToken cancellationToken)
     {
-        await _context.AddAsync(newItem);
+        await _context.AddAsync(newItem, cancellationToken);
         //await _context.SaveChangesAsync();
         return null;
     }
 
-    public string? GetDataTypeGridRulesByTableName(string tableName)
+    public async Task<string?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken)
     {
-        return _context.DataTypes.SingleOrDefault(s => s.DtTable == tableName)?.DtGridRulesJson;
+        var dataType = await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
+        return dataType?.DtGridRulesJson;
     }
 
     public void Update(IDataType newItem)

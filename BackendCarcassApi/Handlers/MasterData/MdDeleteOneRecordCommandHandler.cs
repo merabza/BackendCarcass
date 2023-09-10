@@ -26,7 +26,7 @@ public sealed class MdDeleteOneRecordCommandHandler : ICommandHandler<MdDeleteOn
         CancellationToken cancellationToken)
     {
         var masterDataCruder = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
-        var result = await masterDataCruder.Delete(request.Id);
+        var result = await masterDataCruder.Delete(request.Id, cancellationToken);
         return result.Match<OneOf<Unit, IEnumerable<Err>>>(
             y =>
             {

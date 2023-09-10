@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LibCrud;
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +16,14 @@ public /*open*/ class AbstractRepository : IAbstractRepository
         _ctx = ctx;
     }
 
-    public IDbContextTransaction GetTransaction()
+    public async Task<IDbContextTransaction> GetTransaction(CancellationToken cancellationToken)
     {
-        return _ctx.Database.BeginTransaction();
+        return await _ctx.Database.BeginTransactionAsync(cancellationToken);
     }
 
-    public async Task SaveChangesAsync()
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
-        await _ctx.SaveChangesAsync();
+        await _ctx.SaveChangesAsync(cancellationToken);
     }
 
     public string? GetTableName<T>()

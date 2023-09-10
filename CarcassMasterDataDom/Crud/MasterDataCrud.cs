@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CarcassContracts.ErrorModels;
 using CarcassMasterDataDom.Models;
@@ -25,32 +26,32 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         _cmdRepo = cmdRepo;
     }
 
-    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords()
+    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
     {
         var queryResult = Query();
         if (queryResult.IsT1)
             return queryResult.AsT1;
 
-        var res = await queryResult.AsT0.ToListAsync();
+        var res = await queryResult.AsT0.ToListAsync(cancellationToken);
         return res; // OneOf<IEnumerable<IDataType>, Err[]>.FromT0(res);
     }
 
-    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id)
+    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)
     {
-        var result = await GetOneRecord(id);
+        var result = await GetOneRecord(id, cancellationToken);
         return result.Match<OneOf<ICrudData, Err[]>>(t0 => new MasterDataCrudLoadedData(t0.EditFields()),
             t1 => t1);
     }
 
 
-    private async Task<OneOf<IDataType, Err[]>> GetOneRecord(int id)
+    private async Task<OneOf<IDataType, Err[]>> GetOneRecord(int id, CancellationToken cancellationToken)
     {
         var errors = new List<Err>();
         var entResult = Query();
         if (entResult.IsT1)
             errors.AddRange(entResult.AsT1);
         var res = entResult.AsT0;
-        var idt = await res.SingleOrDefaultAsync(w => w.Id == id);
+        var idt = await res.SingleOrDefaultAsync(w => w.Id == id, cancellationToken);
         if (idt is not null)
             return OneOf<IDataType, Err[]>.FromT0(idt);
         errors.Add(MasterDataApiErrors.EntryNotFound);
@@ -81,7 +82,8 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
             : OneOf<IQueryable<IDataType>, Err[]>.FromT0((IQueryable<IDataType>)result);
     }
 
-    protected override async Task<Option<Err[]>> CreateData(ICrudData crudDataForCreate)
+    protected override async Task<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
+        CancellationToken cancellationToken)
     {
         var masterDataCrudDataForCreate = (MasterDataCrudData)crudDataForCreate;
         var entityType = _cmdRepo.GetEntityTypeByTableName(_tableName);
@@ -96,17 +98,18 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
             }; //დესერიალიზაციისას არ მივიღეთ იმ ტიპის ობიექტი, რაც საჭირო იყო
         newItem.Id = 0;
 
-        var validateResult = Validate(newItem);
+        var validateResult = await Validate(newItem, cancellationToken);
         if (validateResult.IsSome)
             return (Err[])validateResult;
 
-        await _cmdRepo.Create(newItem);
+        await _cmdRepo.Create(newItem, cancellationToken);
         JustCreatedId = newItem.Id;
         return null;
         //return createResult.Match(x => x, () => OneOf<IDataType, Err[]>.FromT0(newItem));
     }
 
-    protected override async Task<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion)
+    protected override async Task<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+        CancellationToken cancellationToken)
     {
         var masterDataCrudDataForUpdate = (MasterDataCrudData)crudDataNewVersion;
         var entityType = _cmdRepo.GetEntityTypeByTableName(_tableName);
@@ -127,17 +130,17 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
                     MasterDataApiErrors.WrongId(_tableName)
                 }; //მოწოდებული ინფორმაცია არასწორია, რადგან იდენტიფიკატორი არ ემთხვევა მოწოდებული ობიექტის იდენტიფიკატორს
 
-        var validateResult = Validate(newItem);
+        var validateResult = await Validate(newItem, cancellationToken);
         if (validateResult.IsSome)
             return validateResult;
 
         //_cmdRepo.Update(newItem);
 
         //var crudMdRepo = MdRepoCreator.CreateMdCruderRepo(_context, _tableName, _roleManager, _userManager);
-        return await Update(id, newItem);
+        return await Update(id, newItem, cancellationToken);
     }
 
-    private async Task<Option<Err[]>> Update(int id, IDataType newItem)
+    private async Task<Option<Err[]>> Update(int id, IDataType newItem, CancellationToken cancellationToken)
     {
         //var q = _cmdRepo.RunGenericMethodForQueryRecords(entityType);
         //var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); //
@@ -148,7 +151,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //    }; //ბაზაში ვერ ვიპოვეთ მოწოდებული იდენტიფიკატორის შესაბამისი ჩანაწერი. RecordNotFound
 
 
-        var result = await GetOneRecord(id);
+        var result = await GetOneRecord(id, cancellationToken);
         return result.Match<Option<Err[]>>(r =>
         {
             r.UpdateTo(newItem);
@@ -157,9 +160,9 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         }, e => e);
     }
 
-    protected override async Task<Option<Err[]>> DeleteData(int id)
+    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken)
     {
-        var result = await GetOneRecord(id);
+        var result = await GetOneRecord(id, cancellationToken);
         return result.Match<Option<Err[]>>(r =>
         {
             _cmdRepo.Delete(r);
@@ -167,10 +170,10 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         }, e => e);
     }
 
-    private Option<Err[]> Validate(IDataType newItem)
+    private async Task<Option<Err[]>> Validate(IDataType newItem, CancellationToken cancellationToken)
     {
         //var dt = _context.DataTypes.SingleOrDefault(s => s.DtTable == tableName);
-        var dtGridRulesJson = _cmdRepo.GetDataTypeGridRulesByTableName(_tableName);
+        var dtGridRulesJson = await _cmdRepo.GetDataTypeGridRulesByTableName(_tableName, cancellationToken);
 
         //if (dt == null)
         //    return new[] { MasterDataApiErrors.MasterDataTableNotFound(_tableName) };

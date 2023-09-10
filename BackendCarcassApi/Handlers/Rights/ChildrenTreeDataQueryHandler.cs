@@ -24,7 +24,7 @@ public sealed class ChildrenTreeDataQueryHandler : ICommandHandler<ChildrenTreeD
         ChildrenTreeDataCommandRequest request, CancellationToken cancellationToken)
     {
         var dataTypeModels = await _mdRepo.ChildrenTreeData(request.HttpRequest.HttpContext.User.Identity!.Name!,
-            request.dataTypeKey, request.ViewStyle);
+            request.dataTypeKey, request.ViewStyle, cancellationToken);
         return dataTypeModels;
     }
 }

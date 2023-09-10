@@ -10,7 +10,7 @@ using SystemToolsShared;
 
 namespace BackendCarcassApi.Handlers.DataTypes;
 
-// ReSharper disable once UnusedType.Global
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class GridModelQueryHandler : IQueryHandler<GridModelQueryRequest, string>
 {
     private readonly IMenuRightsRepository _repository;
@@ -23,7 +23,7 @@ public sealed class GridModelQueryHandler : IQueryHandler<GridModelQueryRequest,
     public async Task<OneOf<string, IEnumerable<Err>>> Handle(GridModelQueryRequest request,
         CancellationToken cancellationToken)
     {
-        var res = await _repository.GridModel(request.GridName);
+        var res = await _repository.GridModel(request.GridName, cancellationToken);
         if (res == null)
             return new[] { DataTypesApiErrors.GridNotFound(request.GridName) };
         return res;

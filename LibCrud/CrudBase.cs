@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
 using Microsoft.Extensions.Logging;
@@ -7,13 +8,11 @@ using SystemToolsShared;
 
 namespace LibCrud;
 
-public abstract class CrudBase // : ICrud
+public abstract class CrudBase
 {
     private readonly IAbstractRepository _absRepo;
     protected readonly ILogger Logger;
     protected int JustCreatedId;
-
-    //public string? LastMessage { get; protected set; }
 
     protected CrudBase(ILogger logger, IAbstractRepository absRepo)
     {
@@ -21,39 +20,38 @@ public abstract class CrudBase // : ICrud
         _absRepo = absRepo;
     }
 
-
-    public async Task<OneOf<ICrudData, Err[]>> GetOne(int id)
+    public async Task<OneOf<ICrudData, Err[]>> GetOne(int id, CancellationToken cancellationToken)
     {
         try
         {
-            return await GetOneData(id);
+            return await GetOneData(id, cancellationToken);
         }
         catch (Exception e)
         {
-            var methodName = nameof(GetOne);
+            const string methodName = nameof(GetOne);
             Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
             throw;
         }
     }
 
-    public async Task<OneOf<ICrudData, Err[]>> Create(ICrudData crudDataForCreate)
+    public async Task<OneOf<ICrudData, Err[]>> Create(ICrudData crudDataForCreate, CancellationToken cancellationToken)
     {
-        var methodName = nameof(GetOne);
+        const string methodName = nameof(GetOne);
         try
         {
-            await using var transaction = _absRepo.GetTransaction();
+            await using var transaction = await _absRepo.GetTransaction(cancellationToken);
             try
             {
-                if (await CreateData(crudDataForCreate))
+                if (await CreateData(crudDataForCreate, cancellationToken))
                 {
-                    await _absRepo.SaveChangesAsync();
-                    await transaction.CommitAsync();
-                    return await GetOne(JustCreatedId);
+                    await _absRepo.SaveChangesAsync(cancellationToken);
+                    await transaction.CommitAsync(cancellationToken);
+                    return await GetOne(JustCreatedId, cancellationToken);
                 }
             }
             catch (Exception e)
             {
-                await transaction.RollbackAsync();
+                await transaction.RollbackAsync(cancellationToken);
                 Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
                 return new[] { Errors.UnexpectedApiException(e) };
             }
@@ -67,23 +65,23 @@ public abstract class CrudBase // : ICrud
         return new[] { Errors.UnexpectedError };
     }
 
-    public async Task<Option<Err[]>> Update(int id, ICrudData crudDataNewVersion)
+    public async Task<Option<Err[]>> Update(int id, ICrudData crudDataNewVersion, CancellationToken cancellationToken)
     {
         try
         {
-            await using var transaction = _absRepo.GetTransaction();
+            await using var transaction = await _absRepo.GetTransaction(cancellationToken);
             try
             {
-                var result = await UpdateData(id, crudDataNewVersion);
+                var result = await UpdateData(id, crudDataNewVersion, cancellationToken);
                 if (result.IsSome)
                     return result;
-                await _absRepo.SaveChangesAsync();
-                await transaction.CommitAsync();
+                await _absRepo.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
                 return null;
             }
             catch (Exception e)
             {
-                await transaction.RollbackAsync();
+                await transaction.RollbackAsync(cancellationToken);
                 return new[] { Errors.UnexpectedApiException(e) };
             }
         }
@@ -93,23 +91,23 @@ public abstract class CrudBase // : ICrud
         }
     }
 
-    public async Task<Option<Err[]>> Delete(int id)
+    public async Task<Option<Err[]>> Delete(int id, CancellationToken cancellationToken)
     {
         try
         {
-            await using var transaction = _absRepo.GetTransaction();
+            await using var transaction = await _absRepo.GetTransaction(cancellationToken);
             try
             {
-                var result = await DeleteData(id);
+                var result = await DeleteData(id, cancellationToken);
                 if (result.IsSome)
                     return result;
-                await _absRepo.SaveChangesAsync();
-                await transaction.CommitAsync();
+                await _absRepo.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
                 return null;
             }
             catch (Exception e)
             {
-                await transaction.RollbackAsync();
+                await transaction.RollbackAsync(cancellationToken);
                 return new[] { Errors.UnexpectedApiException(e) };
             }
         }
@@ -119,15 +117,12 @@ public abstract class CrudBase // : ICrud
         }
     }
 
+    protected abstract Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken);
 
-    protected abstract Task<OneOf<ICrudData, Err[]>> GetOneData(int id);
-    //{
-    //    return await Task.FromResult(new[] { CrudApiErrors.VirtualMethodDoesNotImplemented });
-    //}
+    protected abstract Task<Option<Err[]>> CreateData(ICrudData crudDataForCreate, CancellationToken cancellationToken);
 
-    protected abstract Task<Option<Err[]>> CreateData(ICrudData crudDataForCreate);
+    protected abstract Task<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+        CancellationToken cancellationToken);
 
-    protected abstract Task<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion);
-
-    protected abstract Task<Option<Err[]>> DeleteData(int id);
+    protected abstract Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken);
 }

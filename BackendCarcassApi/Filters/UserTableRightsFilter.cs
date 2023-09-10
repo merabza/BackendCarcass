@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using CarcassRights;
 using CarcassRightsDom;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +29,7 @@ public class UserTableRightsFilter : IEndpointFilter
         RightsDeterminer rightsDeterminer = new(_repo, _logger);
         var result = await rightsDeterminer.CheckTableRights(context.HttpContext.User.Identity?.Name,
             context.HttpContext.Request.Method, new TableKeyName { TableName = strTableName },
-            context.HttpContext.User.Claims);
+            context.HttpContext.User.Claims, CancellationToken.None);
 
 
         //var result = await tableChecker.CheckTableRights();

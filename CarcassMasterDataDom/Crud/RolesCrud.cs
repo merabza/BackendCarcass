@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CarcassContracts.ErrorModels;
 using CarcassMasterDataDom.Models;
@@ -23,14 +24,14 @@ public class RolesCrud : CrudBase, IMasterDataLoader
         _roleManager = roleManager;
     }
 
-    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords()
+    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
     {
-        var roles = await _roleManager.Roles.ToListAsync();
+        var roles = await _roleManager.Roles.ToListAsync(cancellationToken);
         return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(roles.Select(x =>
             new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level)));
     }
 
-    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id)
+    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)
     {
         var appRole = await _roleManager.FindByIdAsync(id.ToString());
         if (appRole?.Name != null)
@@ -38,7 +39,8 @@ public class RolesCrud : CrudBase, IMasterDataLoader
         return new[] { MasterDataApiErrors.CannotFindRole };
     }
 
-    protected override async Task<Option<Err[]>> CreateData(ICrudData crudDataForCreate)
+    protected override async Task<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
+        CancellationToken cancellationToken)
     {
         var role = (RoleCrudData)crudDataForCreate;
         AppRole appRole = new(role.RolKey, role.RolName, role.RolLevel);
@@ -50,7 +52,8 @@ public class RolesCrud : CrudBase, IMasterDataLoader
         return null;
     }
 
-    protected override async Task<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion)
+    protected override async Task<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+        CancellationToken cancellationToken)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
         if (oldRole == null)
@@ -71,7 +74,7 @@ public class RolesCrud : CrudBase, IMasterDataLoader
         return ConvertError(setRoleResult);
     }
 
-    protected override async Task<Option<Err[]>> DeleteData(int id)
+    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
         if (oldRole == null)

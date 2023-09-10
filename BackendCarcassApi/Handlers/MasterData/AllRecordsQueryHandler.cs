@@ -26,7 +26,7 @@ public sealed class
         MdGetTableAllRecordsQueryRequest request, CancellationToken cancellationToken)
     {
         var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(request.TableName);
-        var entResult = await loader.GetAllRecords();
+        var entResult = await loader.GetAllRecords(cancellationToken);
         return entResult.Match<OneOf<MdGetTableAllRecordsQueryResponse, IEnumerable<Err>>>(
             r => new MdGetTableAllRecordsQueryResponse(r), e => e);
     }

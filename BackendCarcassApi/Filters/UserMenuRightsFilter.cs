@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using CarcassContracts.ErrorModels;
 using CarcassRights;
@@ -30,7 +31,9 @@ public class UserMenuRightsFilter : IEndpointFilter
 
         //შემოწმდეს აქვს თუ არა მიმდინარე მომხმარებელს _claimName-ის შესაბამისი სპეციალური უფლება
         RightsDeterminer rightsDeterminer = new(_repo, _logger);
-        var result = await rightsDeterminer.HasUserRightRole(_menuNames, context.HttpContext.User.Claims);
+        var result =
+            await rightsDeterminer.HasUserRightRole(_menuNames, context.HttpContext.User.Claims,
+                CancellationToken.None);
         if (result.IsT1)
             return Results.BadRequest(result.AsT1);
         if (!result.AsT0)

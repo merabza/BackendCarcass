@@ -24,7 +24,7 @@ public sealed class HalfChecksQueryHandler : ICommandHandler<HalfChecksCommandRe
         HalfChecksCommandRequest request, CancellationToken cancellationToken)
     {
         var typeDataModels = await _repository.HalfChecks(request.HttpRequest.HttpContext.User.Identity!.Name!,
-            request.DataTypeId, request.DataKey, request.ViewStyle);
+            request.DataTypeId, request.DataKey, request.ViewStyle, cancellationToken);
         return typeDataModels;
     }
 }

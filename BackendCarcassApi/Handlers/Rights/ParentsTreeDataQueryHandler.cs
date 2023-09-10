@@ -23,8 +23,8 @@ internal sealed class ParentsTreeDataQueryHandler : IQueryHandler<ParentsTreeDat
     public async Task<OneOf<List<DataTypeModel>, IEnumerable<Err>>> Handle(
         ParentsTreeDataQueryRequest request, CancellationToken cancellationToken)
     {
-        var dataTypeModels =
-            await _mdRepo.ParentsTreeData(request.HttpRequest.HttpContext.User.Identity!.Name!, request.ViewStyle);
+        var dataTypeModels = await _mdRepo.ParentsTreeData(request.HttpRequest.HttpContext.User.Identity!.Name!,
+            request.ViewStyle, cancellationToken);
         return dataTypeModels;
     }
 }

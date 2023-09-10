@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
 using LibCrud;
@@ -18,9 +19,9 @@ public interface ICarcassMasterDataRepository : IAbstractRepository
     MethodInfo? MethodInfo();
 
     IEntityType? GetEntityTypeByTableName(string tableName);
-    Task<Option<Err[]>> Create(IDataType newItem);
+    Task<Option<Err[]>> Create(IDataType newItem, CancellationToken cancellationToken);
 
-    string? GetDataTypeGridRulesByTableName(string tableName);
+    Task<string?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken);
     void Update(IDataType newItem);
     void Delete(IDataType dataType);
 }

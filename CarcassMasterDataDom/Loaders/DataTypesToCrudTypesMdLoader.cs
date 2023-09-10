@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using OneOf;
 using SystemToolsShared;
@@ -14,9 +15,9 @@ public sealed class DataTypesToCrudTypesMdLoader : IMasterDataLoader
         _dataTypesRepository = dataTypesRepository;
     }
 
-    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords()
+    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
     {
-        var result = await _dataTypesRepository.LoadDataTypesToCrudTypes();
+        var result = await _dataTypesRepository.LoadDataTypesToCrudTypes(cancellationToken);
         return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(result);
     }
 }

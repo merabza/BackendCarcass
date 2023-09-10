@@ -34,7 +34,7 @@ public sealed class
 
         var masterDataCruder = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         var crudData = new MasterDataCrudData(body);
-        var result = await masterDataCruder.Create(crudData);
+        var result = await masterDataCruder.Create(crudData, cancellationToken);
         return result.Match<OneOf<MasterDataCrudLoadedData, IEnumerable<Err>>>(rcd => (MasterDataCrudLoadedData)rcd,
             y =>
             {

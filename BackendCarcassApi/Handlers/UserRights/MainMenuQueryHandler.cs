@@ -25,7 +25,7 @@ public sealed class MainMenuQueryHandler : IQueryHandler<MainMenuQueryRequest, M
     {
         var currentUserName = request.HttpRequest.HttpContext.User.Identity!.Name!;
 
-        var mainMenuModel = await _mdRepo.MainMenu(currentUserName);
+        var mainMenuModel = await _mdRepo.MainMenu(currentUserName, cancellationToken);
 
         return mainMenuModel;
     }

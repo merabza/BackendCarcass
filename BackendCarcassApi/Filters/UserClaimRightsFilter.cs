@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using CarcassContracts.ErrorModels;
 using CarcassRights;
 using CarcassRightsDom;
@@ -28,7 +29,9 @@ public class UserClaimRightsFilter : IEndpointFilter
 
         //შემოწმდეს აქვს თუ არა მიმდინარე მომხმარებელს _claimName-ის შესაბამისი სპეციალური უფლება
         RightsDeterminer rightsDeterminer = new(_repo, _logger);
-        var result = await rightsDeterminer.CheckUserRightToClaim(context.HttpContext.User.Claims, _claimName);
+        var result =
+            await rightsDeterminer.CheckUserRightToClaim(context.HttpContext.User.Claims, _claimName,
+                CancellationToken.None);
         if (result.IsT1)
             return Results.BadRequest(result.AsT1);
         if (!result.AsT0)

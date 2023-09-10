@@ -33,7 +33,7 @@ public sealed class TablesDataQueryHandler : IQueryHandler<MdTablesDataQueryRequ
         foreach (var tableName in tableNames.Where(tableName => tableName is not null))
         {
             var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(tableName!);
-            var tableResult = await loader.GetAllRecords();
+            var tableResult = await loader.GetAllRecords(cancellationToken);
             if (tableResult.IsT1)
             {
                 errors.AddRange(tableResult.AsT1);

@@ -70,7 +70,7 @@ public sealed class LoginCommandHandler : LoginCommandBase, ICommandHandler<Logi
 
         LoginResponse appUserModel = new(user.Id, LastSequentialNumber, user.UserName, user.Email, token,
             roles.Aggregate("", (cur, next) => cur + (cur == "" ? "" : ", ") + next), user.FirstName, user.LastName,
-            await _mdRepo.UserAppClaims(user.UserName));
+            await _mdRepo.UserAppClaims(user.UserName, cancellationToken));
         return appUserModel;
     }
 }
