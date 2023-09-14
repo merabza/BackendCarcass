@@ -30,6 +30,11 @@ public static class ConfigurationHelper
         return $"{ForeignKeyPrefix}{tableName}_{relatedTableName.Pluralize()}";
     }
 
+    public static string CreateConstraintName(this string tableName, string relatedTableName, string relatedFieldName)
+    {
+        return $"{ForeignKeyPrefix}{tableName}_{relatedTableName.Pluralize()}_{relatedFieldName}";
+    }
+
     public static string CreateSelfRelatedConstraintName(this string tableName, int number)
     {
         return $"{ForeignKeyPrefix}{tableName}_{tableName}{number}";
