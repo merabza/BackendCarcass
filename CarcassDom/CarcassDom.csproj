@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
     <ProjectReference Include="..\..\WebSystemTools\WebInstallers\WebInstallers.csproj" />
   </ItemGroup>
 
