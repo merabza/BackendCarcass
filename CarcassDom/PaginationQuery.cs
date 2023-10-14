@@ -20,7 +20,7 @@ public static class PaginationQuery
 
     public static IQueryable<T> CustomSort<T>(this IQueryable<T> query, SortField[]? sortByFields) where T : class
     {
-        if (sortByFields != null)
+        if (sortByFields is not null && sortByFields.Any())
             query = sortByFields.Aggregate(query,
                 (current, sortByField) =>
                     current.OrderBy(sortByField.FieldName.CapitalizeCamel(), sortByField.Ascending));
