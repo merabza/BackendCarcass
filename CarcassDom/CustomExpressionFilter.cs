@@ -17,7 +17,7 @@ public static class CustomExpressionFilter<T> where T : class
         try
         {
             var expressionFilters = columnFilters
-                .Select(item => new ExpressionFilter { ColumnName = item.id, Value = item.value }).ToList();
+                .Select(item => new ExpressionFilter { ColumnName = item.fieldName, Value = item.value }).ToList();
             // Create the parameter expression for the input data
             var parameter = Expression.Parameter(typeof(T), className);
 

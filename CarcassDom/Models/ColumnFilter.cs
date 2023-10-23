@@ -2,6 +2,6 @@
 
 public class ColumnFilter
 {
-    public string id { get; set; }
+    public string fieldName { get; set; }
     public string value { get; set; }
 }
