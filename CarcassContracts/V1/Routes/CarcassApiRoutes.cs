@@ -41,6 +41,9 @@ public static class CarcassApiRoutes
         // GET api/v1/masterdata/gettables
         public const string Tables = "/gettables";
 
+        // GET api/v1/masterdata/gettablerowsdata/{tableName}
+        public const string getTableRowsData = "/gettablerowsdata/{tableName}";
+
         // GET api/v1/masterdata/{tableName}/{id}
         public const string Get = "/{tableName}/{id}";
 

@@ -28,13 +28,32 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
     public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
     {
-        var queryResult = Query();
-        if (queryResult.IsT1)
-            return queryResult.AsT1;
+        //var queryResult = Query();
+        //if (queryResult.IsT1)
+        //    return queryResult.AsT1;
 
-        var res = await queryResult.AsT0.ToListAsync(cancellationToken);
-        return res; // OneOf<IEnumerable<IDataType>, Err[]>.FromT0(res);
+        //var res = await queryResult.AsT0.ToListAsync(cancellationToken);
+        //return res; // OneOf<IEnumerable<IDataType>, Err[]>.FromT0(res);
+
+        return await Query().Match<Task<OneOf<IEnumerable<IDataType>, Err[]>>>(
+            async x => await x.ToListAsync(cancellationToken),
+            e => Task.FromResult<OneOf<IEnumerable<IDataType>, Err[]>>(e));
+
     }
+
+    public async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+        CancellationToken cancellationToken)
+    {
+        return await Query().Match<Task<OneOf<TableRowsData, Err[]>>>(
+            async x =>
+            {
+                var (realOffset, count, rows) =
+                    await x.UseCustomSortFilterPagination(filterSortRequest, s => s.EditFields(), cancellationToken);
+                return new TableRowsData(count, realOffset, rows);
+            },
+            e => Task.FromResult<OneOf<TableRowsData, Err[]>>(e));
+    }
+
 
     protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)
     {

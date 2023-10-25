@@ -1,4 +1,4 @@
-﻿namespace CarcassDom.Models;
+﻿namespace CarcassMasterDataDom.Models;
 
 public class ExpressionFilter
 {

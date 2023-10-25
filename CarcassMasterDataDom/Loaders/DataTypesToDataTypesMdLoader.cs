@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using CarcassMasterDataDom.Models;
 using OneOf;
 using SystemToolsShared;
 
@@ -20,5 +21,10 @@ public sealed class DataTypesToDataTypesMdLoader : IMasterDataLoader
     {
         var result = await _dataTypesRepository.LoadDataTypesToDataTypes(cancellationToken);
         return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(result);
+    }
+
+    public Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest, CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
     }
 }

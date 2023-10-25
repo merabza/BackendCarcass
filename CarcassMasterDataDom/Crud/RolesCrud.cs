@@ -31,6 +31,11 @@ public class RolesCrud : CrudBase, IMasterDataLoader
             new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level)));
     }
 
+    public Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest, CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
+    }
+
     protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)
     {
         var appRole = await _roleManager.FindByIdAsync(id.ToString());

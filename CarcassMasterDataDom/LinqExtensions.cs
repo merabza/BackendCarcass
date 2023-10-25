@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace CarcassDom;
+namespace CarcassMasterDataDom;
 
 public static class LinqExtensions
 {

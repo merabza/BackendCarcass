@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using CarcassDom.Models;
+using CarcassMasterDataDom.Models;
 
-namespace CarcassDom;
+namespace CarcassMasterDataDom;
 
 public static class CustomExpressionFilter<T> where T : class
 {
@@ -17,7 +17,7 @@ public static class CustomExpressionFilter<T> where T : class
         try
         {
             var expressionFilters = columnFilters
-                .Select(item => new ExpressionFilter { ColumnName = item.fieldName, Value = item.value }).ToList();
+                .Select(item => new ExpressionFilter { ColumnName = item.FieldName, Value = item.Value }).ToList();
             // Create the parameter expression for the input data
             var parameter = Expression.Parameter(typeof(T), className);
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CarcassMasterDataDom.Models;
 
 namespace CarcassDom.Models;
 

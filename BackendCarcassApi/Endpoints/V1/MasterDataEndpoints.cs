@@ -9,6 +9,7 @@ using CarcassContracts.V1.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;
@@ -33,6 +34,8 @@ public sealed class MasterDataEndpoints : IInstaller
 
         group.MapGet(CarcassApiRoutes.MasterData.All, AllRecords).AddEndpointFilter<UserTableRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.Tables, TablesData).AddEndpointFilter<UserSomeTablesRightsFilter>();
+        group.MapGet(CarcassApiRoutes.MasterData.getTableRowsData, GetTableRowsData)
+            .AddEndpointFilter<UserTableRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.Get, MdGetOneRecord).AddEndpointFilter<UserTableRightsFilter>();
         group.MapPost(CarcassApiRoutes.MasterData.Post, MdCreateOneRecord).AddEndpointFilter<UserTableRightsFilter>();
         group.MapPut(CarcassApiRoutes.MasterData.Put, MdUpdateOneRecord).AddEndpointFilter<UserTableRightsFilter>();
@@ -77,8 +80,18 @@ public sealed class MasterDataEndpoints : IInstaller
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
+    // GET api/v1/masterdata/gettablerowsdata/{tableName}
+    private static async Task<IResult> GetTableRowsData(IMediator mediator, HttpContext httpContext,
+        [FromRoute] string tableName, [FromQuery] string filterSortRequest,
+        CancellationToken cancellationToken)
+    {
+        Debug.WriteLine($"Call {nameof(GetTableRowsDataHandler)} from {nameof(GetTableRowsData)}");
+        var queryNotes = new GetTableRowsDataQueryRequest(tableName, filterSortRequest);
+        var resultNotes = await mediator.Send(queryNotes, cancellationToken);
+        return resultNotes.Match(Results.Ok, Results.BadRequest);
+    }
 
-    //შესასვლელი წერტილი (endpoint)
+//შესასვლელი წერტილი (endpoint)
     //დანიშნულება -> კონკრეტული ცხრილის კონკრეტული ჩანაწერის ჩატვირთვა და გამომძახებლისთვის დაბრუნება
     //შემავალი ინფორმაცია -> 1) tableName ცხრილის სახელი, საიდანაც უნდა ჩაიტვირთოს ერთი ჩანაწერი
     //   2) id ჩანაწერის უნიკალური იდენტიფიკატორი.

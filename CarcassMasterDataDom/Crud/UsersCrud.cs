@@ -32,6 +32,11 @@ public class UsersCrud : CrudBase, IMasterDataLoader
             .Select(x => new UserCrudData(x.UserName!, x.FirstName, x.LastName, x.Email!)));
     }
 
+    public Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest, CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
+    }
+
     protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)
     {
         var appUser = await _userManager.FindByIdAsync(id.ToString());
