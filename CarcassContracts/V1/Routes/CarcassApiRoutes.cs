@@ -42,18 +42,18 @@ public static class CarcassApiRoutes
         public const string Tables = "/gettables";
 
         // GET api/v1/masterdata/gettablerowsdata/{tableName}
-        public const string getTableRowsData = "/gettablerowsdata/{tableName}";
+        public const string GetTableRowsData = "/gettablerowsdata/{tableName}";
 
         // GET api/v1/masterdata/{tableName}/{id}
         public const string Get = "/{tableName}/{id}";
 
-        // GET api/v1/masterdata/{tableName}
+        // POST api/v1/masterdata/{tableName}
         public const string Post = "/{tableName}";
 
-        // GET api/v1/masterdata/{tableName}/{id}
+        // PUT api/v1/masterdata/{tableName}/{id}
         public const string Put = "/{tableName}/{id}";
 
-        // GET api/v1/masterdata/{tableName}/{id}
+        // DELETE api/v1/masterdata/{tableName}/{id}
         public const string Delete = "/{tableName}/{id}";
     }
 

@@ -10,8 +10,6 @@ namespace CarcassDb.Models;
 //  ეს უკვე ნიშნავს, რომ ნახვის უფლება არსებობს
 public sealed class CrudRightType : IDataType, IMyEquatable
 {
-    //[NotMapped] public const string DKey = "crt";
-
     public CrudRightType(string crtKey, string crtName)
     {
         CrtKey = crtKey;

@@ -34,7 +34,7 @@ public sealed class MasterDataEndpoints : IInstaller
 
         group.MapGet(CarcassApiRoutes.MasterData.All, AllRecords).AddEndpointFilter<UserTableRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.Tables, TablesData).AddEndpointFilter<UserSomeTablesRightsFilter>();
-        group.MapGet(CarcassApiRoutes.MasterData.getTableRowsData, GetTableRowsData)
+        group.MapGet(CarcassApiRoutes.MasterData.GetTableRowsData, GetTableRowsData)
             .AddEndpointFilter<UserTableRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.Get, MdGetOneRecord).AddEndpointFilter<UserTableRightsFilter>();
         group.MapPost(CarcassApiRoutes.MasterData.Post, MdCreateOneRecord).AddEndpointFilter<UserTableRightsFilter>();
@@ -119,9 +119,7 @@ public sealed class MasterDataEndpoints : IInstaller
     //მოქმედება -> მოწმდება tableName ცხრილში ჩანაწერის დამატების უფლება.
     //  თუ ეს არ აქვს მიმდინარე მომხმარებელს, ბრუნდება შეცდომა
     //  თუ აქვს, მოხდება მოთხოვნის ტანის გაანალიზება და მიღებული ახალი ჩანაწერის ბაზაში დამატება
-    // POST api/<controller>/<tableName>
-    //[HttpPost("{tableName}")]
-    //[FromBody] 
+    // POST api/v1/masterdata/{tableName}
     private static async Task<IResult> MdCreateOneRecord(string tableName, HttpRequest request, IMediator mediator,
         CancellationToken cancellationToken)
     {

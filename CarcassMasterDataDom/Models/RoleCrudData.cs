@@ -17,8 +17,9 @@ public class RoleCrudData : ICrudData, IDataType
     public int RolLevel { get; init; }
 
     public int Id { get; set; }
-    public string? Key => RolKey;
-    public string? Name => RolName;
+
+    public string Key => RolKey;
+    public string Name => RolName;
     public int? ParentId => null;
 
     public bool UpdateTo(IDataType data)
@@ -30,4 +31,5 @@ public class RoleCrudData : ICrudData, IDataType
     {
         return new { RolKey, RolName, RolLevel };
     }
+
 }

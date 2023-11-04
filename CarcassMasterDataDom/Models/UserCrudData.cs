@@ -19,8 +19,9 @@ public class UserCrudData : ICrudData, IDataType
     public string Email { get; init; }
 
     public int Id { get; set; }
-    public string? Key => UserName;
-    public string? Name => UserName;
+
+    public string Key => UserName;
+    public string Name => UserName;
     public int? ParentId => null;
 
     public bool UpdateTo(IDataType data)

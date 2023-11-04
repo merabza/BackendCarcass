@@ -1,14 +1,10 @@
-﻿//using System;
-
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
 
 namespace CarcassDb.Models;
 
 public sealed class AppClaim : IDataType, IMyEquatable
 {
-    //[NotMapped] public const string DKey = "acl";
-
     public int AclId { get; set; } //იდენტიფიკატორი
     public string AclKey { get; set; } = null!; //კოდი
     public string AclName { get; set; } = null!; //სახელი

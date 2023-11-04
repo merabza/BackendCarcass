@@ -6,8 +6,6 @@ namespace CarcassDb.Models;
 //მომხმარებელი
 public sealed class User : IDataType
 {
-    //[NotMapped] public const string DKey = "usr";
-
     public int UsrId { get; set; }
     public string UserName { get; set; } = null!;
     public string NormalizedUserName { get; set; } = null!;

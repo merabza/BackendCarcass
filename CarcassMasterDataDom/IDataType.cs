@@ -38,4 +38,5 @@ public interface IDataType
     ///     მიმდინარე ჩანაწერის რედაქტირებადი ველების მიღება
     /// </summary>
     dynamic EditFields();
+
 }

@@ -23,8 +23,8 @@ public class DataTypeToCrudTypeDomModel : IDataType
         set => DtctId = value;
     }
 
-    public string? Key => DtctKey;
-    public string? Name => DtctName;
+    public string Key => DtctKey;
+    public string Name => DtctName;
     public int? ParentId => null;
 
     public bool UpdateTo(IDataType data)

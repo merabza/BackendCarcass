@@ -4,9 +4,7 @@ namespace CarcassDb.Models;
 
 public sealed class ManyToManyJoin
 {
-    //[NotMapped] public const string DKey = "mmj";
     private DataType? _childDataTypeNavigation;
-
     private DataType? _parentDataTypeNavigation;
 
     public int MmjId { get; set; }

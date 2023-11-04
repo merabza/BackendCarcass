@@ -5,7 +5,6 @@ namespace CarcassDb.QueryModels;
 
 public sealed class DataTypeToCrudTypeModel : IDataType
 {
-    //[NotMapped] public const string DKey = "dtct";
 
     public DataTypeToCrudTypeModel(int dtctId, string dtctKey, string dtctName, int dataTypeId)
     {

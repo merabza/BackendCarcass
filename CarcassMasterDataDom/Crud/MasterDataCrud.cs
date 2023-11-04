@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading;
 using System.Threading.Tasks;
 using CarcassContracts.ErrorModels;
@@ -18,6 +19,8 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 {
     private readonly ICarcassMasterDataRepository _cmdRepo;
     private readonly string _tableName;
+    private IDataType? _justCreated;
+    protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
     public MasterDataCrud(string tableName, ILogger logger, ICarcassMasterDataRepository cmdRepo) : base(logger,
         cmdRepo)
@@ -70,11 +73,35 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         if (entResult.IsT1)
             errors.AddRange(entResult.AsT1);
         var res = entResult.AsT0;
-        var idt = await res.SingleOrDefaultAsync(w => w.Id == id, cancellationToken);
+
+        var keyResult = GetSingleKeyName();
+        if (keyResult.IsT1)
+            errors.AddRange(keyResult.AsT1);
+        var keyRes = keyResult.AsT0;
+
+        //var enm = await res.ToListAsync(cancellationToken);
+        //var idt = enm.SingleOrDefault( w => w.Id == id);
+        var idt = await res.Where($"{keyRes} = {id}").SingleOrDefaultAsync(cancellationToken);
         if (idt is not null)
             return OneOf<IDataType, Err[]>.FromT0(idt);
         errors.Add(MasterDataApiErrors.EntryNotFound);
         return errors.ToArray();
+    }
+
+    private OneOf<string, Err[]> GetSingleKeyName()
+    {
+        var entityType = _cmdRepo.GetEntityTypeByTableName(_tableName);
+        if (entityType == null)
+            return new[] { MasterDataApiErrors.TableNotFound(_tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
+
+        var singleKey = entityType.GetKeys().SingleOrDefault();
+        if (singleKey == null)
+            return new[] { MasterDataApiErrors.TableHaveNotSingleKey(_tableName) }; //ვერ ვიპოვეთ ერთადერთი გასაღები
+
+        if ( singleKey.Properties.Count != 1 )
+            return new[] { MasterDataApiErrors.TableSingleKeyMustHaveOneProperty(_tableName) }; //ვერ ვიპოვეთ ერთადერთი გასაღები
+
+        return singleKey.Properties[0].Name;
     }
 
     private OneOf<IQueryable<IDataType>, Err[]> Query()
@@ -122,7 +149,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
             return (Err[])validateResult;
 
         await _cmdRepo.Create(newItem, cancellationToken);
-        JustCreatedId = newItem.Id;
+        _justCreated = newItem;
         return null;
         //return createResult.Match(x => x, () => OneOf<IDataType, Err[]>.FromT0(newItem));
     }

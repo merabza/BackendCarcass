@@ -23,8 +23,8 @@ public class DataTypeToDataTypeDomModel : IDataType
         set => DtdtId = value;
     }
 
-    public string? Key => DtdtKey;
-    public string? Name => DtdtName;
+    public string Key => DtdtKey;
+    public string Name => DtdtName;
     public int? ParentId => null;
 
     public bool UpdateTo(IDataType data)

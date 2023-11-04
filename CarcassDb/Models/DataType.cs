@@ -7,8 +7,6 @@ namespace CarcassDb.Models;
 //მონაცემთა ტიპი
 public sealed class DataType : IDataType, IMyEquatable
 {
-    //[NotMapped] public const string DKey = "dt";
-
     public int DtId { get; set; }
     public string DtKey { get; set; } = null!;
     public string DtName { get; set; } = null!;

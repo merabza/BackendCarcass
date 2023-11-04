@@ -7,8 +7,6 @@ namespace CarcassDb.Models;
 //მენიუს ჯგუფი
 public sealed class MenuGroup : IDataType, IMyEquatable
 {
-    //[NotMapped] public const string DKey = "meng";
-
     public int MengId { get; set; }
     public string MengKey { get; set; } = null!;
     public string MengName { get; set; } = null!;

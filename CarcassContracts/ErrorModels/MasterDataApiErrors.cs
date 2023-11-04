@@ -44,6 +44,26 @@ public static class MasterDataApiErrors
         return err;
     }
 
+    public static Err TableHaveNotSingleKey(string tableName)
+    {
+        var err = new Err
+        {
+            ErrorCode = $"{tableName}{nameof(TableHaveNotSingleKey)}",
+            ErrorMessage = $"ცხრილს სახელით {tableName} არ აქვს ერთადერთი გასაღები"
+        };
+        return err;
+    }
+
+    public static Err TableSingleKeyMustHaveOneProperty(string tableName)
+    {
+        var err = new Err
+        {
+            ErrorCode = $"{tableName}{nameof(TableSingleKeyMustHaveOneProperty)}",
+            ErrorMessage = $"ცხრილს სახელით {tableName} ერთადერთ გასაღებში არ აქვს ზუსტად ერთი ველი"
+        };
+        return err;
+    }
+
     public static Err SetMethodNotFoundForTable(string tableName)
     {
         return new Err

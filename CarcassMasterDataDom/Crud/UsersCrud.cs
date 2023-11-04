@@ -17,6 +17,8 @@ namespace CarcassMasterDataDom.Crud;
 public class UsersCrud : CrudBase, IMasterDataLoader
 {
     private readonly UserManager<AppUser> _userManager;
+    private AppUser? _justCreated;
+    protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
     public UsersCrud(ILogger logger, UserManager<AppUser> userManager, IAbstractRepository absRepo) : base(logger,
         absRepo)
@@ -58,7 +60,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
         var result = await _userManager.CreateAsync(appUser);
         if (!result.Succeeded)
             return result.Errors.Select(x => new Err { ErrorCode = x.Code, ErrorMessage = x.Description }).ToArray();
-        JustCreatedId = appUser.Id;
+        _justCreated = appUser;
         return null;
     }
 

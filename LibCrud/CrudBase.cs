@@ -12,7 +12,11 @@ public abstract class CrudBase
 {
     private readonly IAbstractRepository _absRepo;
     protected readonly ILogger Logger;
-    protected int JustCreatedId;
+
+    //ასეთი მიდგომა სწორია და არ უნდა შეიცვალოს, რადგან ახალი ჩანაწერის შექმნისას იდენტიფიკატორი მანამ არის 0, სანამ არ მოხდება ბაზაში შენახვა.
+    //შესაბამისად შექმნის პროცედურას შეუძლია დააბრუნოს შესანახ ობიექტზე რეფერენსი და როცა უკვე შენახვა მოხდება, ამ რეფერენსიდან შესაძლებელი იქნება იდენტიფიკატორის ამოღება
+    protected virtual int JustCreatedId => 0;
+
 
     protected CrudBase(ILogger logger, IAbstractRepository absRepo)
     {
@@ -42,12 +46,12 @@ public abstract class CrudBase
             await using var transaction = await _absRepo.GetTransaction(cancellationToken);
             try
             {
-                if (await CreateData(crudDataForCreate, cancellationToken))
-                {
-                    await _absRepo.SaveChangesAsync(cancellationToken);
-                    await transaction.CommitAsync(cancellationToken);
-                    return await GetOne(JustCreatedId, cancellationToken);
-                }
+                var result = await CreateData(crudDataForCreate, cancellationToken);
+                if (result.IsSome)
+                    return (Err[])result;
+                await _absRepo.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+                return await GetOne(JustCreatedId, cancellationToken);
             }
             catch (Exception e)
             {
@@ -62,7 +66,6 @@ public abstract class CrudBase
             return new[] { Errors.UnexpectedApiException(e) };
         }
 
-        return new[] { Errors.UnexpectedError };
     }
 
     public async Task<Option<Err[]>> Update(int id, ICrudData crudDataNewVersion, CancellationToken cancellationToken)

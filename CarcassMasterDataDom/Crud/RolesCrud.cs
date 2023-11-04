@@ -17,6 +17,8 @@ namespace CarcassMasterDataDom.Crud;
 public class RolesCrud : CrudBase, IMasterDataLoader
 {
     private readonly RoleManager<AppRole> _roleManager;
+    private AppRole? _justCreated;
+    protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
     public RolesCrud(ILogger logger, RoleManager<AppRole> roleManager, IAbstractRepository absRepo) : base(logger,
         absRepo)
@@ -53,7 +55,7 @@ public class RolesCrud : CrudBase, IMasterDataLoader
         var result = await _roleManager.CreateAsync(appRole);
         if (!result.Succeeded)
             return result.Errors.Select(x => new Err { ErrorCode = x.Code, ErrorMessage = x.Description }).ToArray();
-        JustCreatedId = appRole.Id;
+        _justCreated = appRole;
         return null;
     }
 

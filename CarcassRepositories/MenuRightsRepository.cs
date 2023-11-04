@@ -195,7 +195,7 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
         }
         catch (Exception e)
         {
-            _logger.Log(LogLevel.Error, e.Message);
+            _logger.LogError(e.Message);
             return false;
         }
     }

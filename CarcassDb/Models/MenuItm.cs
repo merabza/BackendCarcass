@@ -7,7 +7,6 @@ namespace CarcassDb.Models;
 //მენიუს ელემენტი
 public sealed class MenuItm : IDataType, IMyEquatable
 {
-    //[NotMapped] public const string DKey = "men";
     private MenuGroup? _menGroupNavigation;
 
     public int MenId { get; set; }

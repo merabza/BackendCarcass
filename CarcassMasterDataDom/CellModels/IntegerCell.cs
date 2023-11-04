@@ -76,7 +76,7 @@ public /*open*/ class IntegerCell : NumberCell
         int testIntValue;
         if (IsShort)
         {
-            errors = ValidateByType<string>(errors, value, "მოკლე მთელი");
+            errors = ValidateByType<short>(errors, value, "მოკლე მთელი");
 
             if (value is not short shortValue)
                 return errors;
@@ -85,7 +85,7 @@ public /*open*/ class IntegerCell : NumberCell
         }
         else
         {
-            errors = ValidateByType<string>(errors, value, "მთელი");
+            errors = ValidateByType<int>(errors, value, "მთელი");
 
             if (value is not int intValue)
                 return errors;
