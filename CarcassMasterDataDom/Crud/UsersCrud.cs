@@ -6,6 +6,7 @@ using CarcassContracts.ErrorModels;
 using CarcassMasterDataDom.Models;
 using LanguageExt;
 using LibCrud;
+using LibCrud.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -34,7 +35,8 @@ public class UsersCrud : CrudBase, IMasterDataLoader
             .Select(x => new UserCrudData(x.UserName!, x.FirstName, x.LastName, x.Email!)));
     }
 
-    public Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest, CancellationToken cancellationToken)
+    public override Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+        CancellationToken cancellationToken)
     {
         throw new System.NotImplementedException();
     }

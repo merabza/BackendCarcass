@@ -20,6 +20,20 @@ public class DataTypesRepository : IDataTypesRepository
         //_dataTypeKeys = dataTypeKeys;
     }
 
+    public async Task<IEnumerable<MenuToCrudTypeDomModel>> LoadMenuToCrudTypes(
+        CancellationToken cancellationToken)
+    {
+        return await (from mmj in _context.ManyToManyJoins
+                join pt in _context.DataTypes on mmj.PtId equals pt.DtId
+                join ct in _context.DataTypes on mmj.CtId equals ct.DtId
+                join p in _context.Menu on mmj.PKey equals p.MenKey
+                join c in _context.CrudRightTypes on mmj.CKey equals c.CrtKey
+                where pt.DtKey == ECarcassDataTypeKeys.MenuItm.ToDtKey() &&
+                      ct.DtKey == ECarcassDataTypeKeys.CrudRightType.ToDtKey()
+                select new MenuToCrudTypeDomModel(mmj.MmjId, mmj.PKey + "." + mmj.CKey, p.MenName + "." + c.CrtName))
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IEnumerable<DataTypeToCrudTypeDomModel>> LoadDataTypesToCrudTypes(
         CancellationToken cancellationToken)
     {

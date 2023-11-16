@@ -36,7 +36,7 @@ public static class CarcassApiRoutes
         public const string MasterDataBase = Base + "/masterdata";
 
         // GET api/v1/masterdata/{tableName}
-        public const string All = "/{tableName}";
+        //public const string All = "/{tableName}";
 
         // GET api/v1/masterdata/gettables
         public const string Tables = "/gettables";

@@ -5,7 +5,7 @@ using BackendCarcassApi.QueryRequests.MasterData;
 using CarcassContracts.ErrorModels;
 using CarcassDom.Models;
 using CarcassMasterDataDom;
-using CarcassMasterDataDom.Models;
+using LibCrud.Models;
 using MessagingAbstractions;
 using OneOf;
 using SystemToolsShared;
@@ -30,13 +30,13 @@ public sealed class GetTableRowsDataHandler : IQueryHandler<GetTableRowsDataQuer
         if (filterSortRequestObject == null)
             return new[] { CommonErrors.IncorrectData };
 
-        var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(request.tableName);
-        var result = await loader.GetTableRowsData(filterSortRequestObject, cancellationToken);
-        return result.Match<OneOf<TableRowsData, IEnumerable<Err>>>(
-            r => r, e => e);
+        //var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(request.tableName);
+        //var result = await loader.GetTableRowsData(filterSortRequestObject, cancellationToken);
+        //return result.Match<OneOf<TableRowsData, IEnumerable<Err>>>(
+        //    r => r, e => e);
 
-
-
+        var masterDataCruder = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+        var result = await masterDataCruder.GetTableRowsData(filterSortRequestObject, cancellationToken);
+        return result.Match<OneOf<TableRowsData, IEnumerable<Err>>>(r => r, e => e);
     }
-
 }

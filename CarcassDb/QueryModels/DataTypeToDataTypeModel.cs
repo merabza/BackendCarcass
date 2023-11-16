@@ -45,6 +45,6 @@ public sealed class DataTypeToDataTypeModel : IDataType
 
     public dynamic EditFields()
     {
-        return new { MmjId = DtdtId, MmjKey = DtdtKey, MmjName = DtdtName, PKey };
+        return new { DtdtId, DtdtKey, DtdtName, PKey };
     }
 }

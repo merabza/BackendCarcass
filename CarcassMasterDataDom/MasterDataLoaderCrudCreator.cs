@@ -26,6 +26,8 @@ public class MasterDataLoaderCrudCreator : IMasterDataLoaderCrudCreator
 
         return queryName switch
         {
+            "menuToCrudTypes" => new MenuToCrudTypesMdLoader(scope.ServiceProvider
+                .GetRequiredService<IDataTypesRepository>()),
             "dataTypesToDataTypes" => new DataTypesToDataTypesMdLoader(scope.ServiceProvider
                 .GetRequiredService<IDataTypesRepository>()),
             "dataTypesToCrudTypes" => new DataTypesToCrudTypesMdLoader(scope.ServiceProvider

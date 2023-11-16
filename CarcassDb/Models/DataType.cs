@@ -17,12 +17,18 @@ public sealed class DataType : IDataType, IMyEquatable
     public string? DtKeyFieldName { get; set; }
     public string? DtNameFieldName { get; set; }
     public int? DtParentDataTypeId { get; set; }
+    public int? DtManyToManyJoinParentDataTypeId { get; set; }
+    public int? DtManyToManyJoinChildDataTypeId { get; set; }
     public string? DtGridRulesJson { get; set; }
 
     public DataType? DtParentDataTypeNavigation { get; set; }
+    public DataType? DtManyToManyJoinParentDataTypeNavigation { get; set; }
+    public DataType? DtManyToManyJoinChildDataTypeNavigation { get; set; }
     public ICollection<ManyToManyJoin> ManyToManyJoinParentTypes { get; set; } = new HashSet<ManyToManyJoin>();
     public ICollection<ManyToManyJoin> ManyToManyJoinChildTypes { get; set; } = new HashSet<ManyToManyJoin>();
     public ICollection<DataType> ChildrenDataTypes { get; set; } = new HashSet<DataType>();
+    public ICollection<DataType> ManyJoinParentDataTypes { get; set; } = new HashSet<DataType>();
+    public ICollection<DataType> ManyToManyJoinChildrenDataTypes { get; set; } = new HashSet<DataType>();
 
     [NotMapped]
     public int Id

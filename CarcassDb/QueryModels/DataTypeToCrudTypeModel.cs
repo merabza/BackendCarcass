@@ -43,6 +43,6 @@ public sealed class DataTypeToCrudTypeModel : IDataType
 
     public dynamic EditFields()
     {
-        return new { DcrId = DtctId, DcrKey = DtctKey, DcrName = DtctName };
+        return new { DtctId, DtctKey, DtctName };
     }
 }

@@ -16,7 +16,7 @@ public class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDat
 {
     private readonly CarcassDbContext _context;
 
-    public CarcassMasterDataRepository(CarcassDbContext carcassContext) : base(carcassContext)
+    protected CarcassMasterDataRepository(CarcassDbContext carcassContext) : base(carcassContext)
     {
         _context = carcassContext;
     }

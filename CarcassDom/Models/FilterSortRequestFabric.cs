@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Text.Json;
-using CarcassMasterDataDom.Models;
+using LibCrud.Models;
 
 namespace CarcassDom.Models;
 

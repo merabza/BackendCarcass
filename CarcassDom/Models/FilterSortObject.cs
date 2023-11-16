@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CarcassMasterDataDom.Models;
+using LibCrud.Models;
 
 namespace CarcassDom.Models;
 

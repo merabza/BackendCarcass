@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
+using LibCrud.Models;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using SystemToolsShared;
@@ -40,7 +42,7 @@ public abstract class CrudBase
 
     public async Task<OneOf<ICrudData, Err[]>> Create(ICrudData crudDataForCreate, CancellationToken cancellationToken)
     {
-        const string methodName = nameof(GetOne);
+        const string methodName = nameof(Create);
         try
         {
             await using var transaction = await _absRepo.GetTransaction(cancellationToken);
@@ -56,6 +58,13 @@ public abstract class CrudBase
             catch (Exception e)
             {
                 await transaction.RollbackAsync(cancellationToken);
+                if (e.InnerException is not null)
+                {
+                    Logger.LogError(e.InnerException, "Error occurred executing {methodName}.", methodName);
+                    if (e.InnerException.Message.StartsWith("Cannot insert duplicate key row in object"))
+                        return new[] { Errors.SuchARecordAlreadyExists };
+                }
+
                 Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
                 return new[] { Errors.UnexpectedApiException(e) };
             }
@@ -96,6 +105,7 @@ public abstract class CrudBase
 
     public async Task<Option<Err[]>> Delete(int id, CancellationToken cancellationToken)
     {
+        const string methodName = nameof(Delete);
         try
         {
             await using var transaction = await _absRepo.GetTransaction(cancellationToken);
@@ -111,6 +121,14 @@ public abstract class CrudBase
             catch (Exception e)
             {
                 await transaction.RollbackAsync(cancellationToken);
+                if (e.InnerException is not null)
+                {
+                    Logger.LogError(e.InnerException, "Error occurred executing {methodName}.", methodName);
+                    if (e.InnerException.Message.StartsWith("The DELETE statement conflicted with the REFERENCE constraint"))
+                        return new[] { Errors.TheEntryHasBeenUsedAndCannotBeDeleted };
+                }
+
+                Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
                 return new[] { Errors.UnexpectedApiException(e) };
             }
         }
@@ -128,4 +146,9 @@ public abstract class CrudBase
         CancellationToken cancellationToken);
 
     protected abstract Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken);
+
+    public abstract Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+        CancellationToken cancellationToken);
+
+
 }

@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
+﻿//using System.Collections.Generic;
 
-namespace BackendCarcassApi.QueryResponses;
+//namespace BackendCarcassApi.QueryResponses;
 
-public sealed class MdGetTableAllRecordsQueryResponse
-{
-    public MdGetTableAllRecordsQueryResponse(IEnumerable<dynamic> entities)
-    {
-        Entities = entities;
-    }
+//public sealed class MdGetTableAllRecordsQueryResponse
+//{
+//    public MdGetTableAllRecordsQueryResponse(IEnumerable<dynamic> entities)
+//    {
+//        Entities = entities;
+//    }
 
-    public IEnumerable<dynamic> Entities { get; set; }
-}
+//    public IEnumerable<dynamic> Entities { get; set; }
+//}

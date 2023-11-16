@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
 
-namespace CarcassMasterDataDom.Models;
+namespace LibCrud.Models;
 
 public record TableRowsData(int AllRowsCount, int Offset, List<dynamic> Rows);

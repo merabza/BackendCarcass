@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using CarcassMasterDataDom.Models;
+using LibCrud.Models;
 
 namespace CarcassMasterDataDom;
 
@@ -68,5 +69,4 @@ public static class CustomExpressionFilter<T> where T : class
 
         return filters;
     }
-
 }

@@ -32,7 +32,7 @@ public sealed class MasterDataEndpoints : IInstaller
         //Console.WriteLine("MasterDataEndpoints.UseServices Started");
         var group = app.MapGroup(CarcassApiRoutes.MasterData.MasterDataBase).RequireAuthorization();
 
-        group.MapGet(CarcassApiRoutes.MasterData.All, AllRecords).AddEndpointFilter<UserTableRightsFilter>();
+        //group.MapGet(CarcassApiRoutes.MasterData.All, AllRecords).AddEndpointFilter<UserTableRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.Tables, TablesData).AddEndpointFilter<UserSomeTablesRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.GetTableRowsData, GetTableRowsData)
             .AddEndpointFilter<UserTableRightsFilter>();
@@ -51,16 +51,15 @@ public sealed class MasterDataEndpoints : IInstaller
     //მოქმედება -> მოწმდება tableName ცხრილის ნახვის უფლება.
     //  თუ ეს უფლება არ აქვს მიმდინარე მომხმარებელს, ბრუნდება შეცდომა
     //  თუ ეს უფლება აქვს მიმდინარე მომხმარებელს, მოხდება tableName ცხრილის ჩატვირთვა და გამომძახებლისთვის დაბრუნება
-    // GET: api/<controller>/<tableName>
-    //[HttpGet("{tableName}")]
-    private static async Task<IResult> AllRecords(HttpRequest request, string tableName, IMediator mediator,
-        CancellationToken cancellationToken)
-    {
-        Debug.WriteLine($"Call {nameof(AllRecordsQueryHandler)} from {nameof(AllRecords)}");
-        var query = new MdGetTableAllRecordsQueryRequest(tableName, request);
-        var result = await mediator.Send(query, cancellationToken);
-        return result.Match(Results.Ok, Results.BadRequest);
-    }
+    // GET api/v1/masterdata/{tableName}
+    //private static async Task<IResult> AllRecords(HttpRequest request, string tableName, IMediator mediator,
+    //    CancellationToken cancellationToken)
+    //{
+    //    Debug.WriteLine($"Call {nameof(AllRecordsQueryHandler)} from {nameof(AllRecords)}");
+    //    var query = new MdGetTableAllRecordsQueryRequest(tableName, request);
+    //    var result = await mediator.Send(query, cancellationToken);
+    //    return result.Match(Results.Ok, Results.BadRequest);
+    //}
 
     //შესასვლელი წერტილი (endpoint)
     //დანიშნულება -> მოწოდებული ცხრილების სახელების მიხედვით ამ ცხრილების შიგთავსების ჩატვირთვა და დაბრუნება გამომძახებელს

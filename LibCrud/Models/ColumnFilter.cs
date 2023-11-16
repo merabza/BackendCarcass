@@ -1,4 +1,4 @@
-﻿namespace CarcassMasterDataDom.Models;
+﻿namespace LibCrud.Models;
 
 public class ColumnFilter
 {

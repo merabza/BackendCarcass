@@ -7,6 +7,7 @@ using CarcassContracts.ErrorModels;
 using CarcassMasterDataDom.Models;
 using LanguageExt;
 using LibCrud;
+using LibCrud.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -44,7 +45,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
     }
 
-    public async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+    public override async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken)
     {
         return await Query().Match<Task<OneOf<TableRowsData, Err[]>>>(
@@ -98,8 +99,9 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         if (singleKey == null)
             return new[] { MasterDataApiErrors.TableHaveNotSingleKey(_tableName) }; //ვერ ვიპოვეთ ერთადერთი გასაღები
 
-        if ( singleKey.Properties.Count != 1 )
-            return new[] { MasterDataApiErrors.TableSingleKeyMustHaveOneProperty(_tableName) }; //ვერ ვიპოვეთ ერთადერთი გასაღები
+        if (singleKey.Properties.Count != 1)
+            return new[]
+                { MasterDataApiErrors.TableSingleKeyMustHaveOneProperty(_tableName) }; //ვერ ვიპოვეთ ერთადერთი გასაღები
 
         return singleKey.Properties[0].Name;
     }
