@@ -39,7 +39,10 @@ public static class CarcassApiRoutes
         //public const string All = "/{tableName}";
 
         // GET api/v1/masterdata/gettables
-        public const string Tables = "/gettables";
+        public const string GetTables = "/gettables";
+
+        // GET api/v1/masterdata/getlookuptables
+        public const string GetLookupTables = "/getlookuptables";
 
         // GET api/v1/masterdata/gettablerowsdata/{tableName}
         public const string GetTableRowsData = "/gettablerowsdata/{tableName}";

@@ -2,9 +2,9 @@
 
 namespace BackendCarcassApi.QueryResponses;
 
-public sealed class MdTablesDataQueryResponse
+public sealed class MdGetTablesQueryResponse
 {
-    public MdTablesDataQueryResponse(Dictionary<string, IEnumerable<dynamic>> entities)
+    public MdGetTablesQueryResponse(Dictionary<string, IEnumerable<dynamic>> entities)
     {
         Entities = entities;
     }

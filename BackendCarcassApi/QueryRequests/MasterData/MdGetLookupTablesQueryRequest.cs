@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace BackendCarcassApi.QueryRequests.MasterData;
 
-public sealed class MdTablesDataQueryRequest : IQuery<MdTablesDataQueryResponse>
+public sealed class MdGetLookupTablesQueryRequest : IQuery<MdGetLookupTablesQueryResponse>
 {
-    public MdTablesDataQueryRequest(HttpRequest httpRequest)
+    public MdGetLookupTablesQueryRequest(HttpRequest httpRequest)
     {
         HttpRequest = httpRequest;
     }
