@@ -12,19 +12,14 @@ using SystemToolsShared;
 namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class TablesDataQueryHandler : IQueryHandler<MdTablesDataQueryRequest, MdTablesDataQueryResponse>
+public sealed class GetTablesQueryHandler
+    (IMasterDataLoaderCrudCreator masterDataLoaderCrudCreator) : IQueryHandler<MdGetTablesQueryRequest,
+        MdGetTablesQueryResponse>
 {
-    private readonly IMasterDataLoaderCrudCreator _masterDataLoaderCrudCreator;
-
-    public TablesDataQueryHandler(IMasterDataLoaderCrudCreator masterDataLoaderCrudCreator)
-    {
-        _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
-    }
-
-    public async Task<OneOf<MdTablesDataQueryResponse, IEnumerable<Err>>> Handle(MdTablesDataQueryRequest request,
+    public async Task<OneOf<MdGetTablesQueryResponse, IEnumerable<Err>>> Handle(MdGetTablesQueryRequest request,
         CancellationToken cancellationToken)
     {
-        Dictionary<string, IEnumerable<dynamic>> resultList = new();
+        var resultList = new Dictionary<string, IEnumerable<dynamic>>();
         var reqQuery = request.HttpRequest.Query["tables"];
         var tableNames = reqQuery.Distinct().ToList();
 
@@ -32,7 +27,7 @@ public sealed class TablesDataQueryHandler : IQueryHandler<MdTablesDataQueryRequ
         //ჩაიტვირთოს ყველა ცხრილი სათითაოდ
         foreach (var tableName in tableNames.Where(tableName => tableName is not null))
         {
-            var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(tableName!);
+            var loader = masterDataLoaderCrudCreator.CreateMasterDataLoader(tableName!);
             var tableResult = await loader.GetAllRecords(cancellationToken);
             if (tableResult.IsT1)
             {
@@ -47,6 +42,6 @@ public sealed class TablesDataQueryHandler : IQueryHandler<MdTablesDataQueryRequ
 
         if (errors.Count > 0)
             return errors;
-        return new MdTablesDataQueryResponse(resultList);
+        return new MdGetTablesQueryResponse(resultList);
     }
 }

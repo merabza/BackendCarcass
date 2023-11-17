@@ -33,7 +33,8 @@ public sealed class MasterDataEndpoints : IInstaller
         var group = app.MapGroup(CarcassApiRoutes.MasterData.MasterDataBase).RequireAuthorization();
 
         //group.MapGet(CarcassApiRoutes.MasterData.All, AllRecords).AddEndpointFilter<UserTableRightsFilter>();
-        group.MapGet(CarcassApiRoutes.MasterData.Tables, TablesData).AddEndpointFilter<UserSomeTablesRightsFilter>();
+        group.MapGet(CarcassApiRoutes.MasterData.GetTables, GetTables).AddEndpointFilter<UserSomeTablesRightsFilter>();
+        group.MapGet(CarcassApiRoutes.MasterData.GetLookupTables, GetLookupTables).AddEndpointFilter<UserSomeTablesRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.GetTableRowsData, GetTableRowsData)
             .AddEndpointFilter<UserTableRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.Get, MdGetOneRecord).AddEndpointFilter<UserTableRightsFilter>();
@@ -69,15 +70,26 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ რომელიმე ცხრილის ნახვის უფლება არ აქვს მიმდინარე მომხმარებელს, ბრუნდება შეცდომა
     //  თუ ეს ყველა ცხრილზე ნახვის უფლება აქვს მიმდინარე მომხმარებელს, მოხდება ყველა ცხრილის ჩატვირთვა და გამომძახებლისთვის დაბრუნება
     //query like this: localhost:3000/api/masterdata/gettables?tables=tableName1&tables=tableName2&tables=tableName3
-    //[HttpGet("gettables")]
-    private static async Task<IResult> TablesData(HttpRequest request, IMediator mediator,
+    private static async Task<IResult> GetTables(HttpRequest request, IMediator mediator,
         CancellationToken cancellationToken)
     {
-        Debug.WriteLine($"Call {nameof(TablesDataQueryHandler)} from {nameof(TablesData)}");
-        var query = new MdTablesDataQueryRequest(request);
+        Debug.WriteLine($"Call {nameof(GetTablesQueryHandler)} from {nameof(GetTables)}");
+        var query = new MdGetTablesQueryRequest(request);
         var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
+
+    // GET api/v1/masterdata/getlookuptables?tables=tableName1&tables=tableName2&tables=tableName3
+    private static async Task<IResult> GetLookupTables(HttpRequest request, IMediator mediator,
+        CancellationToken cancellationToken)
+    {
+        Debug.WriteLine($"Call {nameof(GetLookupTablesQueryHandler)} from {nameof(GetTables)}");
+        var query = new MdGetLookupTablesQueryRequest(request);
+        var result = await mediator.Send(query, cancellationToken);
+        return result.Match(Results.Ok, Results.BadRequest);
+    }
+
+    
 
     // GET api/v1/masterdata/gettablerowsdata/{tableName}
     private static async Task<IResult> GetTableRowsData(IMediator mediator, HttpContext httpContext,
