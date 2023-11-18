@@ -3,26 +3,31 @@ using System.Linq;
 using CarcassDataSeeding.Models;
 using CarcassDb.Models;
 using CarcassRightsDom;
+using LanguageExt;
+using SystemToolsShared;
 
 namespace CarcassDataSeeding.Seeders;
 
-public /*open*/ class CrudRightTypesSeeder : AdvancedDataSeeder<CrudRightType>
+public /*open*/
+    class CrudRightTypesSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<CrudRightType>(
+        dataSeedFolder, repo)
 {
-    public CrudRightTypesSeeder(string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo)
-    {
-    }
-
-    protected override bool CreateByJsonFile()
+    protected override Option<Err[]> CreateByJsonFile()
     {
         var seedData = LoadFromJsonFile<CrudRightTypeSeederModel>();
         var dataList = CreateListBySeedData(seedData);
         if (!Repo.CreateEntities(dataList))
-        {
-            return false;
-        }
+            return new Err[]
+            {
+                new()
+                {
+                    ErrorCode = "CrudRightTypeSEntitiesCannotBeCreated",
+                    ErrorMessage = "CrudRightTypeS entities cannot be created"
+                }
+            };
 
         DataSeederTempData.Instance.SaveIntIdKeys<CrudRightType>(dataList.ToDictionary(k => k.Key, v => v.Id));
-        return true;
+        return null;
     }
 
     private static List<CrudRightType> CreateListBySeedData(

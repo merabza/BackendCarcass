@@ -70,21 +70,21 @@ namespace CarcassDataSeeding
 
         public int GetIntIdByKey<T>(int key1, int key2, int key3, int key4)
         {
-            Tuple<int, int, int, int> key = new Tuple<int, int, int, int>(key1, key2, key3, key4);
+            var key = new Tuple<int, int, int, int>(key1, key2, key3, key4);
             if (!_keyInt4IdIntDictionary.ContainsKey(typeof(T)))
                 throw new Exception($"Cannot get Keys for key {typeof(T)}");
-            if (_keyInt4IdIntDictionary[typeof(T)].ContainsKey(key))
-                return _keyInt4IdIntDictionary[typeof(T)][key];
+            if (_keyInt4IdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+                return value;
             throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
         }
 
         public int GetIntIdByKey<T>(int key1, int key2, int key3, int key4, int key5)
         {
-            Tuple<int, int, int, int, int> key = new Tuple<int, int, int, int, int>(key1, key2, key3, key4, key5);
+            var key = new Tuple<int, int, int, int, int>(key1, key2, key3, key4, key5);
             if (!_keyInt5IdIntDictionary.ContainsKey(typeof(T)))
                 throw new Exception($"Cannot get Keys for key {typeof(T)}");
-            if (_keyInt5IdIntDictionary[typeof(T)].ContainsKey(key))
-                return _keyInt5IdIntDictionary[typeof(T)][key];
+            if (_keyInt5IdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+                return value;
             throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
         }
 
@@ -108,21 +108,21 @@ namespace CarcassDataSeeding
 
         public int GetIntIdByKey<T>(int key1, int key2, int key3)
         {
-            Tuple<int, int, int> key = new Tuple<int, int, int>(key1, key2, key3);
+            var key = new Tuple<int, int, int>(key1, key2, key3);
             if (!_keyInt3IdIntDictionary.ContainsKey(typeof(T)))
                 throw new Exception($"Cannot get Keys for key {typeof(T)}");
-            if (_keyInt3IdIntDictionary[typeof(T)].ContainsKey(key))
-                return _keyInt3IdIntDictionary[typeof(T)][key];
+            if (_keyInt3IdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+                return value;
             throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
         }
 
         public int GetIntIdByKey<T>(int key1, int key2, short key3)
         {
-            Tuple<int, int, short> key = new Tuple<int, int, short>(key1, key2, key3);
+            var key = new Tuple<int, int, short>(key1, key2, key3);
             if (!_keyInt2ShortIdIntDictionary.ContainsKey(typeof(T)))
                 throw new Exception($"Cannot get Keys for key {typeof(T)}");
-            if (_keyInt2ShortIdIntDictionary[typeof(T)].ContainsKey(key))
-                return _keyInt2ShortIdIntDictionary[typeof(T)][key];
+            if (_keyInt2ShortIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+                return value;
             throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
         }
 
@@ -135,13 +135,13 @@ namespace CarcassDataSeeding
                 _keyStringShortIdIntDictionary.Add(typeof(T), dict);
         }
 
-        public int GetIntIdByKey<T>(string key1, short key2)
+        private int GetIntIdByKey<T>(string key1, short key2)
         {
-            Tuple<string, short> key = new Tuple<string, short>(key1, key2);
+            var key = new Tuple<string, short>(key1, key2);
             if (!_keyStringShortIdIntDictionary.ContainsKey(typeof(T)))
                 throw new Exception($"Cannot get Keys for key {typeof(T)}");
-            if (_keyStringShortIdIntDictionary[typeof(T)].ContainsKey(key))
-                return _keyStringShortIdIntDictionary[typeof(T)][key];
+            if (_keyStringShortIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+                return value;
             throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
         }
 
@@ -155,13 +155,13 @@ namespace CarcassDataSeeding
         }
 
 
-        public int GetIntIdByKey<T>(string key1, int key2)
+        private int GetIntIdByKey<T>(string key1, int key2)
         {
-            Tuple<string, int> key = new Tuple<string, int>(key1, key2);
+            var key = new Tuple<string, int>(key1, key2);
             if (!_keyStringIntIdIntDictionary.ContainsKey(typeof(T)))
                 throw new Exception($"Cannot get Keys for key {typeof(T)}");
-            if (_keyStringIntIdIntDictionary[typeof(T)].ContainsKey(key))
-                return _keyStringIntIdIntDictionary[typeof(T)][key];
+            if (_keyStringIntIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+                return value;
             throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
         }
 
@@ -177,11 +177,11 @@ namespace CarcassDataSeeding
 
         public int GetIntIdByKey<T>(int key1, string key2)
         {
-            Tuple<int, string> key = new Tuple<int, string>(key1, key2);
+            var key = new Tuple<int, string>(key1, key2);
             if (!_keyIntStringIdIntDictionary.ContainsKey(typeof(T)))
                 throw new Exception($"Cannot get Keys for key {typeof(T)}");
-            if (_keyIntStringIdIntDictionary[typeof(T)].ContainsKey(key))
-                return _keyIntStringIdIntDictionary[typeof(T)][key];
+            if (_keyIntStringIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+                return value;
             throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
         }
 
@@ -197,11 +197,11 @@ namespace CarcassDataSeeding
 
         public int GetIntIdByKey<T>(int key1, int key2)
         {
-            Tuple<int, int> key = new Tuple<int, int>(key1, key2);
+            var key = new Tuple<int, int>(key1, key2);
             if (!_keyIntIntIdIntDictionary.ContainsKey(typeof(T)))
                 throw new Exception($"Cannot get Keys for key {typeof(T)}");
-            if (_keyIntIntIdIntDictionary[typeof(T)].ContainsKey(key))
-                return _keyIntIntIdIntDictionary[typeof(T)][key];
+            if (_keyIntIntIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+                return value;
             throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
         }
 
@@ -248,8 +248,8 @@ namespace CarcassDataSeeding
         {
             if (!_keyIntIdIntDictionary.ContainsKey(typeof(T)))
                 throw new Exception($"Cannot get Keys for key {typeof(T)}");
-            if (_keyIntIdIntDictionary[typeof(T)].ContainsKey(key))
-                return _keyIntIdIntDictionary[typeof(T)][key];
+            if (_keyIntIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+                return value;
             throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
         }
 
@@ -265,8 +265,8 @@ namespace CarcassDataSeeding
         {
             if (!_keyIdIntDictionary.ContainsKey(typeof(T)))
                 throw new Exception($"Cannot get Keys for key {typeof(T)}");
-            if (_keyIdIntDictionary[typeof(T)].ContainsKey(key))
-                return _keyIdIntDictionary[typeof(T)][key];
+            if (_keyIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+                return value;
             throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
         }
 
@@ -282,8 +282,8 @@ namespace CarcassDataSeeding
         {
             if (!_oldIntIdsDictToIntIds.ContainsKey(typeof(T)))
                 throw new Exception($"Cannot get Keys for key {typeof(T)}");
-            if (_oldIntIdsDictToIntIds[typeof(T)].ContainsKey(oldId))
-                return _oldIntIdsDictToIntIds[typeof(T)][oldId];
+            if (_oldIntIdsDictToIntIds[typeof(T)].TryGetValue(oldId, out var value))
+                return value;
             throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {oldId}");
         }
 

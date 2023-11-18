@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using LanguageExt;
+using SystemToolsShared;
 
 namespace CarcassDataSeeding;
 
 public interface IDataSeeder
 {
-    (bool success, List<string> messages) Create(bool checkOnly);
+    Option<Err[]> Create(bool checkOnly);
 }

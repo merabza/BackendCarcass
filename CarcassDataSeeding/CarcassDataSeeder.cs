@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using LanguageExt;
 using Microsoft.Extensions.Logging;
+using SystemToolsShared;
 
 namespace CarcassDataSeeding;
 
@@ -9,8 +10,6 @@ public /*open*/ class CarcassDataSeeder
     protected readonly DataSeedersFabric DataSeedersFabric;
     private readonly bool _checkOnly;
 
-    public List<string> Messages { get; } = new();
-
     protected CarcassDataSeeder(ILogger<CarcassDataSeeder> logger, DataSeedersFabric dataSeedersFabric,
         bool checkOnly)
     {
@@ -19,71 +18,81 @@ public /*open*/ class CarcassDataSeeder
         _checkOnly = checkOnly;
     }
 
-    protected bool Use(IDataSeeder dataSeeder)
+    protected Option<Err[]> Use(IDataSeeder dataSeeder)
     {
-        (bool success, List<string> messages) result = dataSeeder.Create(_checkOnly);
-        Messages.AddRange(result.messages);
-        return result.success;
+        return dataSeeder.Create(_checkOnly);
     }
 
 
-    public bool SeedData()
+    public Option<Err[]> SeedData()
     {
-        return SeedCarcassData() && SeedProjectSpecificData(); // && SeedFinalCarcassData();
+        var result = SeedCarcassData();
+        if (result.IsSome)
+            return (Err[])result;
+
+        return SeedProjectSpecificData();
     }
 
 
-    protected virtual bool SeedProjectSpecificData()
+    protected virtual Option<Err[]> SeedProjectSpecificData()
     {
-        return true;
+        return null;
     }
 
-    private bool SeedCarcassData()
+    private Option<Err[]> SeedCarcassData()
     {
         Logger.LogInformation("Seed Carcass Data Started");
 
         Logger.LogInformation("Seeding DataTypes");
 
-        if (!Use(DataSeedersFabric.CreateDataTypesSeeder()))
-            return false;
+        var result = Use(DataSeedersFabric.CreateDataTypesSeeder());
+        if (result.IsSome)
+            return (Err[])result;
 
         Logger.LogInformation("Seeding Users");
 
-        if (!Use(DataSeedersFabric.CreateUsersSeeder()))
-            return false;
+        result = Use(DataSeedersFabric.CreateUsersSeeder());
+        if (result.IsSome)
+            return (Err[])result;
 
         Logger.LogInformation("Seeding Roles");
 
-        if (!Use(DataSeedersFabric.CreateRolesSeeder()))
-            return false;
+        result = Use(DataSeedersFabric.CreateRolesSeeder());
+        if (result.IsSome)
+            return (Err[])result;
 
         Logger.LogInformation("Seeding MenuGroups");
 
-        if (!Use(DataSeedersFabric.CreateMenuGroupsSeeder()))
-            return false;
+        result = Use(DataSeedersFabric.CreateMenuGroupsSeeder());
+        if (result.IsSome)
+            return (Err[])result;
 
         Logger.LogInformation("Seeding Menu");
 
-        if (!Use(DataSeedersFabric.CreateMenuSeeder()))
-            return false;
+        result = Use(DataSeedersFabric.CreateMenuSeeder());
+        if (result.IsSome)
+            return (Err[])result;
 
         Logger.LogInformation("Seeding CrudRightTypes");
 
-        if (!Use(DataSeedersFabric.CreateCrudRightTypesSeeder()))
-            return false;
+        result = Use(DataSeedersFabric.CreateCrudRightTypesSeeder());
+        if (result.IsSome)
+            return (Err[])result;
 
         Logger.LogInformation("Seeding AppClaims");
 
-        if (!Use(DataSeedersFabric.CreateAppClaimsSeeder()))
-            return false;
+        result = Use(DataSeedersFabric.CreateAppClaimsSeeder());
+        if (result.IsSome)
+            return (Err[])result;
 
         Logger.LogInformation("Seeding ManyToManyJoin");
 
-        if (!Use(DataSeedersFabric.CreateManyToManyJoinsSeeder()))
-            return false;
+        result = Use(DataSeedersFabric.CreateManyToManyJoinsSeeder());
+        if (result.IsSome)
+            return (Err[])result;
 
         Logger.LogInformation("Seed Carcass Data Finished successful");
 
-        return true;
+        return null;
     }
 }

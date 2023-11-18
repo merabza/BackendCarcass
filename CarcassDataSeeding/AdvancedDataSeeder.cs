@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using CarcassDb;
 using CarcassMasterDataDom;
+using LanguageExt;
+using SystemToolsShared;
 
 namespace CarcassDataSeeding;
 
@@ -14,34 +16,65 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
 
     public void CreateTempData()
     {
-        List<TDst> dataList = Repo.GetAll<TDst>();
+        var dataList = Repo.GetAll<TDst>();
         DataSeederTempData.Instance.SaveIntIdKeys<TDst>(dataList.ToDictionary(k => k.Key, v => v.Id));
     }
 
-    protected override bool AdditionalCheck()
+    protected override Option<Err[]> AdditionalCheck()
     {
-        (List<TDst> forAdd, List<TDst> forUpdate) = CompareLists(Repo.GetAll<TDst>(), CreateMustList());
+        var (forAdd, forUpdate) = CompareLists(Repo.GetAll<TDst>(), CreateMustList());
 
+        if (!Repo.CreateEntities(forAdd))
+            return new Err[]
+            {
+                new() { ErrorCode = "CanNotCreateEntitiesInAdditionalCheck", ErrorMessage = "Can Not Create Entities In Additional Check" }
+            };
 
-        if (!Repo.CreateEntities(forAdd) || !Repo.SetUpdates(forUpdate))
-            return false;
+        if (!Repo.SetUpdates(forUpdate))
+            return new Err[]
+            {
+                new() { ErrorCode = "CanNotUpdateEntitiesInAdditionalCheck", ErrorMessage = "Can Not Update Entities In Additional Check" }
+            };
+
         DataSeederTempData.Instance.SaveIntIdKeys<TDst>(Repo.GetAll<TDst>().ToDictionary(k => k.Key, v => v.Id));
-        return true;
+        return null;
     }
 
-    private (List<TDst>, List<TDst>) CompareLists(List<TDst> existing, List<TDst> mustBe)
+    private static (List<TDst>, List<TDst>) CompareLists(IReadOnlyCollection<TDst> existing,
+        IReadOnlyCollection<TDst> mustBe)
     {
         if (mustBe == null)
             return (null, null);
 
-        List<TDst> forAdd = new List<TDst>();
-        List<TDst> forUpdate = new List<TDst>();
-        List<string> allKeys = existing.Select(s => s.Key).Union(mustBe.Select(s => s.Key))
-            .Distinct().ToList();
-        List<Tuple<TDst, TDst>> couples = allKeys.Select(s =>
-            new Tuple<TDst, TDst>(existing.SingleOrDefault(sod => sod.Key == s),
-                mustBe.SingleOrDefault(sod => sod.Key == s))).ToList();
-        foreach (Tuple<TDst, TDst> couple in couples)
+        var duplicateExistingKeys = existing.GroupBy(x => x.Key)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key).ToList();
+
+        if (duplicateExistingKeys.Count != 0)
+        {
+            var strKeyList = string.Join(", ", duplicateExistingKeys);
+            Console.WriteLine("existing contains duplicate keys {0}", strKeyList);
+            throw new Exception("existing contains duplicate keys");
+        }
+
+
+        var duplicateMustBeKeys = mustBe.GroupBy(x => x.Key)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key).ToList();
+
+        if (duplicateMustBeKeys.Count != 0)
+        {
+            var strKeyList = string.Join(", ", duplicateMustBeKeys);
+            Console.WriteLine("mustBe contains duplicate keys {0}", strKeyList);
+            throw new Exception("mustBe contains duplicate keys");
+        }
+
+        var forAdd = new List<TDst>();
+        var forUpdate = new List<TDst>();
+        var allKeys = existing.Select(s => s.Key).Union(mustBe.Select(s => s.Key)).Distinct().ToList();
+        var couples = allKeys.Select(s => new Tuple<TDst, TDst>(existing.SingleOrDefault(sod => sod.Key == s),
+            mustBe.SingleOrDefault(sod => sod.Key == s))).ToList();
+        foreach (var couple in couples)
         {
             if (couple.Item1 == null)
             {

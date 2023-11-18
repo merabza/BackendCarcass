@@ -3,45 +3,54 @@ using System.Linq;
 using CarcassDataSeeding.Models;
 using CarcassDb.Models;
 using CarcassMasterDataDom.Models;
+using LanguageExt;
 using Microsoft.AspNetCore.Identity;
+using SystemToolsShared;
 
 namespace CarcassDataSeeding.Seeders;
 
-public /*open*/ class RolesSeeder : AdvancedDataSeeder<Role>
+public /*open*/
+    class RolesSeeder(RoleManager<AppRole> roleManager, string secretDataFolder, string dataSeedFolder,
+        IDataSeederRepository repo) : AdvancedDataSeeder<Role>(dataSeedFolder, repo)
 {
-    private readonly RoleManager<AppRole> _roleManager;
-    private readonly string _secretDataFolder;
-
-    public RolesSeeder(RoleManager<AppRole> roleManager, string secretDataFolder, string dataSeedFolder,
-        IDataSeederRepository repo) : base(dataSeedFolder, repo)
-    {
-        _secretDataFolder = secretDataFolder;
-        _roleManager = roleManager;
-    }
-
-    protected override bool CreateByJsonFile()
+    protected override Option<Err[]> CreateByJsonFile()
     {
         if (!Repo.CreateEntities(CreateListBySeedData(LoadFromJsonFile<RoleSeederModel>())))
-            return false;
+            return new Err[]
+            {
+                new() { ErrorCode = "RoleEntitiesCannotBeCreated", ErrorMessage = "Role entities cannot be created" }
+            };
         DataSeederTempData.Instance.SaveIntIdKeys<Role>(Repo.GetAll<Role>().ToDictionary(k => k.RolKey, v => v.RolId));
-        return true;
+        return null;
     }
 
-    protected override bool AdditionalCheck()
+    protected override Option<Err[]> AdditionalCheck()
     {
-        List<Role> existingRoles = Repo.GetAll<Role>();
+        var existingRoles = Repo.GetAll<Role>();
 
-        if (!GetRoleModels()
-                .Select(roleModel => new
-                    { roleModel, existingRole = existingRoles.SingleOrDefault(sd => sd.RolKey == roleModel.RoleKey) })
-                .Where(w => w.existingRole is null && w.roleModel is not null).Select(s => s!.roleModel)
-                .All(CreateRole))
-            return false;
+        var rolesToCreate = GetRoleModels()
+            .Select(roleModel => new
+                { roleModel, existingRole = existingRoles.SingleOrDefault(sd => sd.RolKey == roleModel.RoleKey) })
+            .Where(w => w.existingRole is null && w.roleModel is not null).Select(s => s!.roleModel);
+
+        var roleCreateErrors = new List<Err>();
+        foreach (var roleModel in rolesToCreate)
+        {
+            var result = CreateRole(roleModel);
+            if (result.IsSome)
+            {
+                roleCreateErrors.AddRange((Err[])result);
+            }
+        }
+
+        if (roleCreateErrors.Count > 0)
+            return roleCreateErrors.ToArray();
+
         DataSeederTempData.Instance.SaveIntIdKeys<Role>(Repo.GetAll<Role>().ToDictionary(k => k.Key, v => v.Id));
-        return true;
+        return null;
     }
 
-    private List<Role> CreateListBySeedData(List<RoleSeederModel> rolesSeedData)
+    private static List<Role> CreateListBySeedData(List<RoleSeederModel> rolesSeedData)
     {
         return rolesSeedData.Select(s => new Role
             {
@@ -50,21 +59,25 @@ public /*open*/ class RolesSeeder : AdvancedDataSeeder<Role>
             .ToList();
     }
 
-    private bool CreateRole(RoleModel roleModel)
+    private Option<Err[]> CreateRole(RoleModel roleModel)
     {
         //შევქმნათ როლი
-        IdentityResult result = _roleManager
+        var result = roleManager
             .CreateAsync(new AppRole(roleModel.RoleKey, roleModel.RoleName, roleModel.Level)).Result;
         if (result.Succeeded)
-            return true;
+            return null;
         //თუ ახალი როლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
-        Messages.AddRange(result.Errors.Select(s => s.Description));
-        Messages.Add($"Role {roleModel.RoleName} can not created.");
-        return false;
+        var errors = result.Errors.Select(s => new Err { ErrorCode = s.Code, ErrorMessage = s.Description }).ToList();
+        errors.Add(new Err
+        {
+            ErrorCode = "RoleCanNotBeCreated",
+            ErrorMessage = $"Role {roleModel.RoleName} can not be created."
+        });
+        return errors.ToArray();
     }
 
     private List<RoleModel> GetRoleModels()
     {
-        return LoadFromJsonFile<RoleModel>(_secretDataFolder, "Roles.json").ToList();
+        return LoadFromJsonFile<RoleModel>(secretDataFolder, "Roles.json").ToList();
     }
 }

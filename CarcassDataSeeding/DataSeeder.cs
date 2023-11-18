@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using LanguageExt;
+using System.Collections.Generic;
 using System.IO;
 using SystemToolsShared;
 
@@ -7,7 +8,7 @@ namespace CarcassDataSeeding;
 public /*open*/ class DataSeeder<TDst> : IDataSeeder where TDst : class
 {
     protected readonly IDataSeederRepository Repo;
-    protected readonly List<string> Messages = new();
+    //protected readonly List<string> Messages = new();
 
     private readonly string _dataSeedFolder;
     private readonly string _tableName;
@@ -22,10 +23,10 @@ public /*open*/ class DataSeeder<TDst> : IDataSeeder where TDst : class
 
     protected List<T> LoadFromJsonFile<T>(string folderName = null, string fileName = null)
     {
-        string folName = folderName ?? _dataSeedFolder;
+        var folName = folderName ?? _dataSeedFolder;
         if (folName == null)
             return new List<T>();
-        string jsonFullFileName = Path.Combine(folName, fileName ?? $"{_tableName}.json");
+        var jsonFullFileName = Path.Combine(folName, fileName ?? $"{_tableName}.json");
         return File.Exists(jsonFullFileName)
             ? FileLoader.LoadDeserializeResolve<List<T>>(jsonFullFileName, true)
             : new List<T>();
@@ -39,47 +40,51 @@ public /*open*/ class DataSeeder<TDst> : IDataSeeder where TDst : class
     }
 
 
-    public (bool success, List<string> messages) Create(bool checkOnly)
+    public Option<Err[]> Create(bool checkOnly)
     {
-        bool success;
+        if (checkOnly) 
+            return AdditionalCheck();
 
-        if (!checkOnly)
+        //ეს ის ვარიანტია, როცა არც არსებულ ჩანაწერებს ვამოწმებთ და არც Json-დან შემოგვაქვს
+        if (CheckRecordsExists())
         {
-            //ეს ის ვარიანტია, როცა არც არსებულ ჩანაწერებს ვამოწმებთ და არც Json-დან შემოგვაქვს
-            if (CheckRecordsExists())
+            //Messages.Add($"Records in {_tableName} is already exists");
+            //return (false, Messages);
+            return new Err[]
             {
-                Messages.Add($"Records in {_tableName} is already exists");
-                return (false, Messages);
-            }
-
-            //ლოგიკა ასეთია: ჯერ მოისინჯება Json ფაილის გამოყენება
-            success = CreateByJsonFile();
-            //თუ რამე შეცდომა მოხდა ამ დროს, აქედანაც დაბრუნდება შეცდომა
-            if (!success)
-                return (false, Messages);
+                new()
+                {
+                    ErrorCode = "RecordsIsAlreadyExists",
+                    ErrorMessage = $"Records in {_tableName} is already exists"
+                }
+            };
         }
+
+        //ლოგიკა ასეთია: ჯერ მოისინჯება Json ფაილის გამოყენება
+        var result = CreateByJsonFile();
+        //თუ რამე შეცდომა მოხდა ამ დროს, აქედანაც დაბრუნდება შეცდომა
+        if (result.IsSome)
+            return (Err[])result;
 
         //აქ დამატებით ვუშვებ მონაცემების შემოწმებას და თუ რომელიმე აუცილებელი ჩანაწერი აკლია, რაც ლოგიკით განისაზღვრება,
         //მაშინ ისინიც ჩაემატება. ან თუ არასწორად არის რომელიმე ჩანაწერი, შეიცვლება. ან თუ ზედმეტია წაიშლება
-        success = AdditionalCheck();
-        return (success, Messages);
+        return AdditionalCheck();
     }
 
-    protected virtual bool CreateByJsonFile()
+    protected virtual Option<Err[]> CreateByJsonFile()
     {
-        return true;
+        return null;
     }
 
-    protected virtual bool AdditionalCheck()
+    protected virtual Option<Err[]> AdditionalCheck()
     {
-        return true;
+        return null;
     }
 
     protected virtual List<TDst> CreateMustList()
     {
         return null;
     }
-
 
     protected virtual bool RemoveNeedlessRecords(List<TDst> needLessList)
     {

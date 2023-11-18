@@ -2,29 +2,33 @@
 using System.Linq;
 using CarcassDataSeeding.Models;
 using CarcassDb.Models;
+using LanguageExt;
+using SystemToolsShared;
 
 namespace CarcassDataSeeding.Seeders;
 
-public /*open*/ class AppClaimsSeeder : AdvancedDataSeeder<AppClaim>
+public /*open*/
+    class AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<AppClaim>(
+        dataSeedFolder, repo)
 {
-    public AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo)
+    protected override Option<Err[]> CreateByJsonFile()
     {
-    }
-
-    protected override bool CreateByJsonFile()
-    {
-        List<AppClaimSeederModel> seedData = LoadFromJsonFile<AppClaimSeederModel>();
-        List<AppClaim> dataList = CreateListBySeedData(seedData);
+        var seedData = LoadFromJsonFile<AppClaimSeederModel>();
+        var dataList = CreateListBySeedData(seedData);
         if (!Repo.CreateEntities(dataList))
-        {
-            return false;
-        }
+            return new Err[]
+            {
+                new()
+                {
+                    ErrorCode = "AppClaimEntitiesCannotBeCreated", ErrorMessage = "AppClaim entities cannot be created"
+                }
+            };
 
         DataSeederTempData.Instance.SaveIntIdKeys<AppClaim>(dataList.ToDictionary(k => k.Key, v => v.Id));
-        return true;
+        return null;
     }
 
-    private List<AppClaim> CreateListBySeedData(List<AppClaimSeederModel> appClaimsSeedData)
+    private static List<AppClaim> CreateListBySeedData(List<AppClaimSeederModel> appClaimsSeedData)
     {
         return appClaimsSeedData.Select(s => new AppClaim { AclKey = s.AclKey, AclName = s.AclName }).ToList();
     }

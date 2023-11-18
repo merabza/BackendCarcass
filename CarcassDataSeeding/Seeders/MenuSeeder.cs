@@ -2,31 +2,29 @@
 using System.Linq;
 using CarcassDataSeeding.Models;
 using CarcassDb.Models;
+using LanguageExt;
+using SystemToolsShared;
 
 namespace CarcassDataSeeding.Seeders;
 
-public /*open*/ class MenuSeeder : AdvancedDataSeeder<MenuItm>
+public /*open*/ class MenuSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<MenuItm>(dataSeedFolder, repo)
 {
-    public MenuSeeder(string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo)
+    protected override Option<Err[]> CreateByJsonFile()
     {
-    }
-
-    protected override bool CreateByJsonFile()
-    {
-        List<MenuItmSeederModel> seedData = LoadFromJsonFile<MenuItmSeederModel>();
-        List<MenuItm> dataList = CreateListBySeedData(seedData);
+        var seedData = LoadFromJsonFile<MenuItmSeederModel>();
+        var dataList = CreateListBySeedData(seedData);
         if (!Repo.CreateEntities(dataList))
-        {
-            return false;
-        }
-
+            return new Err[]
+            {
+                new() { ErrorCode = "MenuEntitiesCannotBeCreated", ErrorMessage = "Menu entities cannot be created" }
+            };
         DataSeederTempData.Instance.SaveIntIdKeys<MenuItm>(dataList.ToDictionary(k => k.Key, v => v.Id));
-        return true;
+        return null;
     }
 
-    private List<MenuItm> CreateListBySeedData(List<MenuItmSeederModel> menuSeedData)
+    private static List<MenuItm> CreateListBySeedData(List<MenuItmSeederModel> menuSeedData)
     {
-        DataSeederTempData tempData = DataSeederTempData.Instance;
+        var tempData = DataSeederTempData.Instance;
         return menuSeedData.Select(s => new MenuItm
         {
             MenGroupId = tempData.GetIntIdByKey<MenuGroup>(s.MenGroupIdMengKey),
@@ -41,10 +39,9 @@ public /*open*/ class MenuSeeder : AdvancedDataSeeder<MenuItm>
 
     protected override List<MenuItm> CreateMustList()
     {
-        DataSeederTempData tempData = DataSeederTempData.Instance;
+        var tempData = DataSeederTempData.Instance;
 
-        MenuItm[] menuItems =
-        {
+        var menuItems = new MenuItm[] {
             //carcass master data
             new()
             {

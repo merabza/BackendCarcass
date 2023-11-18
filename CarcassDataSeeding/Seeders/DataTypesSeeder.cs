@@ -9,31 +9,56 @@ using CarcassMasterDataDom;
 using CarcassMasterDataDom.CellModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using LanguageExt;
 
 namespace CarcassDataSeeding.Seeders;
 
-public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
+public /*open*/
+    class DataTypesSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<DataType>(
+        dataSeedFolder, repo)
 {
-    public DataTypesSeeder(string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo)
-    {
-    }
-
-    protected override bool CreateByJsonFile()
+    protected override Option<Err[]> CreateByJsonFile()
     {
         var seedData = LoadFromJsonFile<DataTypeSeederModel>();
         var dataList = CreateListBySeedData(seedData);
         if (!Repo.CreateEntities(dataList))
-        {
-            return false;
-        }
+            return new Err[]
+            {
+                new()
+                {
+                    ErrorCode = "DataTypeEntitiesCannotBeCreated", ErrorMessage = "DataType entities cannot be created"
+                }
+            };
 
         DataSeederTempData.Instance.SaveIntIdKeys<DataType>(dataList.ToDictionary(k => k.Key, v => v.Id));
-        return SetParents(seedData, dataList);
+        if (!SetParents(seedData, dataList))
+            return new Err[]
+            {
+                new() { ErrorCode = "DataTypeCannotSetParents", ErrorMessage = "Cannot Set Parents For DataType" }
+            };
+        return null;
     }
 
-    protected override bool AdditionalCheck()
+    protected override Option<Err[]> AdditionalCheck()
     {
-        return base.AdditionalCheck() && SetParentDataTypes() && RemoveRedundantDataTypes();
+        var baseAdditionalCheckResult = base.AdditionalCheck();
+        if (baseAdditionalCheckResult.IsSome)
+            return (Err[])baseAdditionalCheckResult;
+
+        if (!SetParentDataTypes())
+            return new Err[]
+            {
+                new() { ErrorCode = "DataTypeCannotSetParents", ErrorMessage = "Cannot Set Parents For DataType" }
+            };
+        if (!RemoveRedundantDataTypes())
+            return new Err[]
+            {
+                new()
+                {
+                    ErrorCode = "CannotRemoveRedundantDataTypes", ErrorMessage = "Cannot Remove Redundant DataTypes"
+                }
+            };
+        return null;
     }
 
     private static List<DataType> CreateListBySeedData(IEnumerable<DataTypeSeederModel> dataTypesSeedData)
@@ -57,7 +82,7 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
     {
         var tempData = DataSeederTempData.Instance;
         var forUpdate = new List<DataType>();
-        
+
         //DtParentDataTypeIdDtKey => DtParentDataTypeId
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtParentDataTypeIdDtKey != null))
         {
@@ -70,7 +95,7 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
             oneRec.DtParentDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtParentDataTypeIdDtKey);
             forUpdate.Add(oneRec);
         }
-        
+
         //DtManyToManyJoinParentDataTypeKey => DtManyToManyJoinParentDataTypeId
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtManyToManyJoinParentDataTypeKey != null))
         {
@@ -80,10 +105,11 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
                 continue;
             }
 
-            oneRec.DtManyToManyJoinParentDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinParentDataTypeKey);
+            oneRec.DtManyToManyJoinParentDataTypeId =
+                tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinParentDataTypeKey);
             forUpdate.Add(oneRec);
         }
-        
+
         //DtManyToManyJoinChildDataTypeKey => DtManyToManyJoinChildDataTypeId
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtManyToManyJoinChildDataTypeKey != null))
         {
@@ -93,7 +119,8 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
                 continue;
             }
 
-            oneRec.DtManyToManyJoinChildDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinChildDataTypeKey);
+            oneRec.DtManyToManyJoinChildDataTypeId =
+                tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinChildDataTypeKey);
             forUpdate.Add(oneRec);
         }
 
@@ -112,7 +139,8 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
 
         var dataTypeId = tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataType.ToDtKey());
 
-        var dtdt = new Tuple<int, int>[] {
+        var dtdt = new Tuple<int, int>[]
+        {
             new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuItm.ToDtKey()),
                 tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuGroup.ToDtKey())),
         };
@@ -137,7 +165,8 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
-        var newDataTypes = new DataType[] {
+        var newDataTypes = new DataType[]
+        {
             //carcass used
             //AppClaim
             new()
@@ -180,7 +209,8 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
                 DtTable = Repo.GetTableName<CrudRightType>(),
                 DtIdFieldName = nameof(CrudRightType.CrtId).UnCapitalize(),
                 DtNameFieldName = nameof(CrudRightType.CrtKey).UnCapitalize(),
-                DtGridRulesJson = JsonConvert.SerializeObject(GetKeyNameGridModel(crudRightTypeDKey), serializerSettings)
+                DtGridRulesJson =
+                    JsonConvert.SerializeObject(GetKeyNameGridModel(crudRightTypeDKey), serializerSettings)
             },
             //DataTypeToDataTypeModel
             new()
@@ -243,7 +273,8 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
     private static GridModel CreateDataTypesGridModel()
     {
         var gridModel = GetKeyNameGridModel(ECarcassDataTypeKeys.DataType.ToDtKey());
-        var cells = new[] {
+        var cells = new[]
+        {
             GetTextBoxCell(nameof(DataType.DtNameNominative).UnCapitalize(), "სახელობითი"),
             GetTextBoxCell(nameof(DataType.DtNameGenitive).UnCapitalize(), "მიცემითი"),
             GetTextBoxCell(nameof(DataType.DtTable).UnCapitalize(), "ცხრილი"),
@@ -260,7 +291,8 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
     private GridModel CreateMenuGridModel()
     {
         var gridModel = GetKeyNameSortIdGridModel(ECarcassDataTypeKeys.MenuItm.ToDtKey());
-        var cells = new[] {
+        var cells = new[]
+        {
             GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
             GetComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი", "menuGroups", "mengId", "mengKey"),
             GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
@@ -287,7 +319,8 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
     private static GridModel CreateUsersGridModel()
     {
         var gridModel = new GridModel();
-        var cells = new[] {
+        var cells = new[]
+        {
             GetAutoNumberColumn("usrId"),
             GetTextBoxCell(nameof(User.UserName).UnCapitalize(), "მომხმარებლის სახელი"),
             GetTextBoxCell(nameof(User.Email).UnCapitalize(), "ელექტრონული ფოსტის მისამართი"),
@@ -309,7 +342,8 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
     protected static GridModel GetKeyNameGridModel(string pref)
     {
         var gridModel = new GridModel();
-        var cells = new[] {
+        var cells = new[]
+        {
             GetAutoNumberColumn($"{pref}Id"),
             GetKeyColumn($"{pref}Key"),
             GetNameColumn($"{pref}Name")
