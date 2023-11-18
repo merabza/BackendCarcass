@@ -7,18 +7,21 @@ public /*open*/ class CarcassDataSeeder
 {
     protected readonly ILogger<CarcassDataSeeder> Logger;
     protected readonly DataSeedersFabric DataSeedersFabric;
+    private readonly bool _checkOnly;
 
     public List<string> Messages { get; } = new();
 
-    protected CarcassDataSeeder(ILogger<CarcassDataSeeder> logger, DataSeedersFabric dataSeedersFabric)
+    protected CarcassDataSeeder(ILogger<CarcassDataSeeder> logger, DataSeedersFabric dataSeedersFabric,
+        bool checkOnly)
     {
         Logger = logger;
         DataSeedersFabric = dataSeedersFabric;
+        _checkOnly = checkOnly;
     }
 
     protected bool Use(IDataSeeder dataSeeder)
     {
-        (bool success, List<string> messages) result = dataSeeder.Create();
+        (bool success, List<string> messages) result = dataSeeder.Create(_checkOnly);
         Messages.AddRange(result.messages);
         return result.success;
     }

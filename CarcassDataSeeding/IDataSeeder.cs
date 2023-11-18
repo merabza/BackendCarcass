@@ -4,5 +4,5 @@ namespace CarcassDataSeeding;
 
 public interface IDataSeeder
 {
-    (bool success, List<string> messages) Create(bool checkRecordsExists = true);
+    (bool success, List<string> messages) Create(bool checkOnly);
 }

@@ -52,11 +52,13 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
         }).ToList();
     }
 
-    private bool SetParents(IEnumerable<DataTypeSeederModel> dataTypesSeedData,
+    private bool SetParents(IReadOnlyCollection<DataTypeSeederModel> dataTypesSeedData,
         IReadOnlyCollection<DataType> dataTypesList)
     {
         var tempData = DataSeederTempData.Instance;
         var forUpdate = new List<DataType>();
+        
+        //DtParentDataTypeIdDtKey => DtParentDataTypeId
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtParentDataTypeIdDtKey != null))
         {
             var oneRec = dataTypesList.SingleOrDefault(s => s.DtKey == dataTypeSeederModel.DtKey);
@@ -68,28 +70,62 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
             oneRec.DtParentDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtParentDataTypeIdDtKey);
             forUpdate.Add(oneRec);
         }
+        
+        //DtManyToManyJoinParentDataTypeKey => DtManyToManyJoinParentDataTypeId
+        foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtManyToManyJoinParentDataTypeKey != null))
+        {
+            var oneRec = dataTypesList.SingleOrDefault(s => s.DtKey == dataTypeSeederModel.DtKey);
+            if (oneRec == null)
+            {
+                continue;
+            }
+
+            oneRec.DtManyToManyJoinParentDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinParentDataTypeKey);
+            forUpdate.Add(oneRec);
+        }
+        
+        //DtManyToManyJoinChildDataTypeKey => DtManyToManyJoinChildDataTypeId
+        foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtManyToManyJoinChildDataTypeKey != null))
+        {
+            var oneRec = dataTypesList.SingleOrDefault(s => s.DtKey == dataTypeSeederModel.DtKey);
+            if (oneRec == null)
+            {
+                continue;
+            }
+
+            oneRec.DtManyToManyJoinChildDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinChildDataTypeKey);
+            forUpdate.Add(oneRec);
+        }
 
         return Repo.SetUpdates(forUpdate);
     }
 
     protected virtual bool RemoveRedundantDataTypes()
     {
-        string[] toRemoveTableNames = { "dataRights", "dataRightTypes", "forms" };
+        var toRemoveTableNames = new[] { "dataRights", "dataRightTypes", "forms" };
         return Repo.RemoveRedundantDataTypesByTableNames(toRemoveTableNames);
     }
 
-    private bool SetParentDataTypes()
+    protected virtual bool SetParentDataTypes()
     {
         var tempData = DataSeederTempData.Instance;
 
-        Tuple<int, int>[] dtdt =
-        {
+        var dataTypeId = tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataType.ToDtKey());
+
+        var dtdt = new Tuple<int, int>[] {
             new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuItm.ToDtKey()),
                 tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuGroup.ToDtKey())),
-            new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey()),
-                tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataType.ToDtKey())),
         };
-        return Repo.SetDtParentDataTypes(dtdt);
+
+        var dtdtdt = new Tuple<int, int, int>[]
+        {
+            new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey()), dataTypeId,
+                dataTypeId),
+            new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey()), dataTypeId,
+                tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.CrudRightType.ToDtKey())),
+        };
+
+        return Repo.SetDtParentDataTypes(dtdt) && Repo.SetManyToManyJoinParentChildDataTypes(dtdtdt);
     }
 
 
@@ -101,8 +137,7 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
-        DataType[] newDataTypes =
-        {
+        var newDataTypes = new DataType[] {
             //carcass used
             //AppClaim
             new()
@@ -208,8 +243,7 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
     private static GridModel CreateDataTypesGridModel()
     {
         var gridModel = GetKeyNameGridModel(ECarcassDataTypeKeys.DataType.ToDtKey());
-        Cell[] cells =
-        {
+        var cells = new[] {
             GetTextBoxCell(nameof(DataType.DtNameNominative).UnCapitalize(), "სახელობითი"),
             GetTextBoxCell(nameof(DataType.DtNameGenitive).UnCapitalize(), "მიცემითი"),
             GetTextBoxCell(nameof(DataType.DtTable).UnCapitalize(), "ცხრილი"),
@@ -226,8 +260,7 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
     private GridModel CreateMenuGridModel()
     {
         var gridModel = GetKeyNameSortIdGridModel(ECarcassDataTypeKeys.MenuItm.ToDtKey());
-        Cell[] cells =
-        {
+        var cells = new[] {
             GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
             GetComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი", "menuGroups", "mengId", "mengKey"),
             GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
@@ -254,8 +287,7 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
     private static GridModel CreateUsersGridModel()
     {
         var gridModel = new GridModel();
-        Cell[] cells =
-        {
+        var cells = new[] {
             GetAutoNumberColumn("usrId"),
             GetTextBoxCell(nameof(User.UserName).UnCapitalize(), "მომხმარებლის სახელი"),
             GetTextBoxCell(nameof(User.Email).UnCapitalize(), "ელექტრონული ფოსტის მისამართი"),
@@ -267,7 +299,7 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
     }
 
 
-    protected GridModel GetKeyNameSortIdGridModel(string pref)
+    protected static GridModel GetKeyNameSortIdGridModel(string pref)
     {
         var gridModel = GetKeyNameGridModel(pref);
         gridModel.Cells.Add(GetSortIdCell());
@@ -277,8 +309,7 @@ public /*open*/ class DataTypesSeeder : AdvancedDataSeeder<DataType>
     protected static GridModel GetKeyNameGridModel(string pref)
     {
         var gridModel = new GridModel();
-        Cell[] cells =
-        {
+        var cells = new[] {
             GetAutoNumberColumn($"{pref}Id"),
             GetKeyColumn($"{pref}Key"),
             GetNameColumn($"{pref}Name")

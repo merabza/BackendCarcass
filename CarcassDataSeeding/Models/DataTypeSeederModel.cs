@@ -3,6 +3,8 @@ namespace CarcassDataSeeding.Models;
 public sealed class DataTypeSeederModel
 {
     public string DtParentDataTypeIdDtKey { get; set; }
+    public string DtManyToManyJoinParentDataTypeKey { get; set; }
+    public string DtManyToManyJoinChildDataTypeKey { get; set; }
     public string DtGridRulesJson { get; set; }
     public string DtIdFieldName { get; set; }
     public string DtKey { get; set; }

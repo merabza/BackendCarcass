@@ -12,6 +12,7 @@ public interface IDataSeederRepository
     List<ManyToManyJoin> GetManyToManyJoins(int parentDataTypeId, int childDataTypeId);
     string GetTableName<T>();
     bool SetDtParentDataTypes(Tuple<int, int>[] dtdt);
+    bool SetManyToManyJoinParentChildDataTypes(Tuple<int, int, int>[] dtdtdt);
     bool SetUpdates<T>(List<T> forUpdate);
     bool RemoveRedundantDataTypesByTableNames(string[] toRemoveTableNames);
     bool RemoveNeedlessRecords<TDst>(List<TDst> needLessList) where TDst : class;

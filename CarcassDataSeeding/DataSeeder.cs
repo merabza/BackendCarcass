@@ -39,11 +39,11 @@ public /*open*/ class DataSeeder<TDst> : IDataSeeder where TDst : class
     }
 
 
-    public (bool success, List<string> messages) Create(bool checkRecordsExists = true)
+    public (bool success, List<string> messages) Create(bool checkOnly)
     {
         bool success;
 
-        if (checkRecordsExists)
+        if (!checkOnly)
         {
             //ეს ის ვარიანტია, როცა არც არსებულ ჩანაწერებს ვამოწმებთ და არც Json-დან შემოგვაქვს
             if (CheckRecordsExists())

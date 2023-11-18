@@ -87,11 +87,34 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
     {
         try
         {
-            foreach (Tuple<int, int> tdt in dtdt)
+            foreach (var tdt in dtdt)
             {
                 var dt = _context.DataTypes.SingleOrDefault(s => s.DtId == tdt.Item1);
                 if (dt != null)
                     dt.DtParentDataTypeId = tdt.Item2;
+            }
+
+            return SaveChanges();
+        }
+        catch (Exception e)
+        {
+            StShared.WriteException(e, "Error when SetDtParentDataTypes", true, _logger, false);
+            return false;
+        }
+    }
+
+    public bool SetManyToManyJoinParentChildDataTypes(Tuple<int, int, int>[] dtdtdt)
+    {
+        try
+        {
+            foreach (var tdt in dtdtdt)
+            {
+                var dt = _context.DataTypes.SingleOrDefault(s => s.DtId == tdt.Item1);
+                if (dt == null) 
+                    continue;
+
+                dt.DtManyToManyJoinParentDataTypeId = tdt.Item2;
+                dt.DtManyToManyJoinChildDataTypeId = tdt.Item3;
             }
 
             return SaveChanges();
