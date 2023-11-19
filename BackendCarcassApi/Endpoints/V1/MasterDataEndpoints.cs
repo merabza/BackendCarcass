@@ -34,7 +34,8 @@ public sealed class MasterDataEndpoints : IInstaller
 
         //group.MapGet(CarcassApiRoutes.MasterData.All, AllRecords).AddEndpointFilter<UserTableRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.GetTables, GetTables).AddEndpointFilter<UserSomeTablesRightsFilter>();
-        group.MapGet(CarcassApiRoutes.MasterData.GetLookupTables, GetLookupTables).AddEndpointFilter<UserSomeTablesRightsFilter>();
+        group.MapGet(CarcassApiRoutes.MasterData.GetLookupTables, GetLookupTables)
+            .AddEndpointFilter<UserSomeTablesRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.GetTableRowsData, GetTableRowsData)
             .AddEndpointFilter<UserTableRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.Get, MdGetOneRecord).AddEndpointFilter<UserTableRightsFilter>();
@@ -89,7 +90,6 @@ public sealed class MasterDataEndpoints : IInstaller
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
-    
 
     // GET api/v1/masterdata/gettablerowsdata/{tableName}
     private static async Task<IResult> GetTableRowsData(IMediator mediator, HttpContext httpContext,

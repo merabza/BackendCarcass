@@ -31,5 +31,4 @@ public class RoleCrudData : ICrudData, IDataType
     {
         return new { RolKey, RolName, RolLevel };
     }
-
 }

@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="CommandResponses\**" />
-      <EmbeddedResource Remove="CommandResponses\**" />
-      <None Remove="CommandResponses\**" />
+        <Compile Remove="CommandResponses\**" />
+        <EmbeddedResource Remove="CommandResponses\**" />
+        <None Remove="CommandResponses\**" />
     </ItemGroup>
 
     <ItemGroup>

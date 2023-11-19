@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Installers\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Installers\" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
-    <ProjectReference Include="..\..\WebSystemTools\WebInstallers\WebInstallers.csproj" />
-    <ProjectReference Include="..\CarcassMasterDataDom\CarcassMasterDataDom.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
+        <ProjectReference Include="..\..\WebSystemTools\WebInstallers\WebInstallers.csproj" />
+        <ProjectReference Include="..\CarcassMasterDataDom\CarcassMasterDataDom.csproj" />
+    </ItemGroup>
 
 </Project>

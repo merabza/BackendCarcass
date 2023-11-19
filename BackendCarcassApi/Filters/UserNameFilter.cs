@@ -6,7 +6,6 @@ namespace BackendCarcassApi.Filters;
 
 public class UserNameFilter : IEndpointFilter
 {
-
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         var userName = context.HttpContext.User.Identity?.Name;

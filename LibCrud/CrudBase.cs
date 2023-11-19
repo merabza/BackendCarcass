@@ -74,7 +74,6 @@ public abstract class CrudBase
             Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
             return new[] { Errors.UnexpectedApiException(e) };
         }
-
     }
 
     public async Task<Option<Err[]>> Update(int id, ICrudData crudDataNewVersion, CancellationToken cancellationToken)
@@ -124,7 +123,8 @@ public abstract class CrudBase
                 if (e.InnerException is not null)
                 {
                     Logger.LogError(e.InnerException, "Error occurred executing {methodName}.", methodName);
-                    if (e.InnerException.Message.StartsWith("The DELETE statement conflicted with the REFERENCE constraint"))
+                    if (e.InnerException.Message.StartsWith(
+                            "The DELETE statement conflicted with the REFERENCE constraint"))
                         return new[] { Errors.TheEntryHasBeenUsedAndCannotBeDeleted };
                 }
 
@@ -149,6 +149,4 @@ public abstract class CrudBase
 
     public abstract Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken);
-
-
 }

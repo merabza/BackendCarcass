@@ -7,7 +7,9 @@ using SystemToolsShared;
 
 namespace CarcassDataSeeding.Seeders;
 
-public /*open*/ class MenuGroupsSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<MenuGroup>(dataSeedFolder, repo)
+public /*open*/
+    class MenuGroupsSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<MenuGroup>(
+        dataSeedFolder, repo)
 {
     protected override Option<Err[]> CreateByJsonFile()
     {
@@ -16,7 +18,11 @@ public /*open*/ class MenuGroupsSeeder(string dataSeedFolder, IDataSeederReposit
         if (!Repo.CreateEntities(dataList))
             return new Err[]
             {
-                new() { ErrorCode = "MenuGroupEntitiesCannotBeCreated", ErrorMessage = "MenuGroup entities cannot be created" }
+                new()
+                {
+                    ErrorCode = "MenuGroupEntitiesCannotBeCreated",
+                    ErrorMessage = "MenuGroup entities cannot be created"
+                }
             };
 
         DataSeederTempData.Instance.SaveIntIdKeys<MenuGroup>(dataList.ToDictionary(k => k.Key, v => v.Id));
@@ -31,7 +37,8 @@ public /*open*/ class MenuGroupsSeeder(string dataSeedFolder, IDataSeederReposit
 
     protected override List<MenuGroup> CreateMustList()
     {
-        var menuGroups = new MenuGroup[] {
+        var menuGroups = new MenuGroup[]
+        {
             //carcass
             new() { MengKey = "Main", MengName = "მთავარი", SortId = 0, Hidden = true },
             new() { MengKey = "MasterData", MengName = "ძირითადი ინფორმაცია", SortId = 200, Hidden = false },

@@ -27,13 +27,21 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
         if (!Repo.CreateEntities(forAdd))
             return new Err[]
             {
-                new() { ErrorCode = "CanNotCreateEntitiesInAdditionalCheck", ErrorMessage = "Can Not Create Entities In Additional Check" }
+                new()
+                {
+                    ErrorCode = "CanNotCreateEntitiesInAdditionalCheck",
+                    ErrorMessage = "Can Not Create Entities In Additional Check"
+                }
             };
 
         if (!Repo.SetUpdates(forUpdate))
             return new Err[]
             {
-                new() { ErrorCode = "CanNotUpdateEntitiesInAdditionalCheck", ErrorMessage = "Can Not Update Entities In Additional Check" }
+                new()
+                {
+                    ErrorCode = "CanNotUpdateEntitiesInAdditionalCheck",
+                    ErrorMessage = "Can Not Update Entities In Additional Check"
+                }
             };
 
         DataSeederTempData.Instance.SaveIntIdKeys<TDst>(Repo.GetAll<TDst>().ToDictionary(k => k.Key, v => v.Id));

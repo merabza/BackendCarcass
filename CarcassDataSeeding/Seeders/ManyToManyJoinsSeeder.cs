@@ -19,7 +19,11 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
         if (!Repo.CreateEntities(CreateManyToManyJoinsList(LoadFromJsonFile<ManyToManyJoinSeederModel>())))
             return new Err[]
             {
-                new() { ErrorCode = "ManyToManyJoinEntitiesCannotBeCreated", ErrorMessage = "ManyToManyJoin entities cannot be created" }
+                new()
+                {
+                    ErrorCode = "ManyToManyJoinEntitiesCannotBeCreated",
+                    ErrorMessage = "ManyToManyJoin entities cannot be created"
+                }
             };
         return null;
     }
@@ -42,7 +46,11 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
             && Repo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess()))
             return new Err[]
             {
-                new() { ErrorCode = "ManyToManyJoinEntitiesCannotBeChecked", ErrorMessage = "ManyToManyJoin entities cannot be Checked" }
+                new()
+                {
+                    ErrorCode = "ManyToManyJoinEntitiesCannotBeChecked",
+                    ErrorMessage = "ManyToManyJoin entities cannot be Checked"
+                }
             };
         return null;
     }

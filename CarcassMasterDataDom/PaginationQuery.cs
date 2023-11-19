@@ -12,7 +12,6 @@ namespace CarcassMasterDataDom;
 
 public static class PaginationQuery
 {
-
     public static async Task<(int, int, List<TResult>)> UseCustomSortFilterPagination<TSource, TResult>(
         this IQueryable<TSource> query, FilterSortRequest filterSortRequest,
         Expression<Func<TSource, TResult>> selector, CancellationToken cancellationToken) where TSource : class

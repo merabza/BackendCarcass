@@ -7,7 +7,9 @@ using SystemToolsShared;
 
 namespace CarcassDataSeeding.Seeders;
 
-public /*open*/ class MenuSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<MenuItm>(dataSeedFolder, repo)
+public /*open*/
+    class MenuSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<MenuItm>(dataSeedFolder,
+        repo)
 {
     protected override Option<Err[]> CreateByJsonFile()
     {
@@ -41,7 +43,8 @@ public /*open*/ class MenuSeeder(string dataSeedFolder, IDataSeederRepository re
     {
         var tempData = DataSeederTempData.Instance;
 
-        var menuItems = new MenuItm[] {
+        var menuItems = new MenuItm[]
+        {
             //carcass master data
             new()
             {

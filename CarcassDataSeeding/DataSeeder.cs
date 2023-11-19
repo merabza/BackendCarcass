@@ -42,7 +42,7 @@ public /*open*/ class DataSeeder<TDst> : IDataSeeder where TDst : class
 
     public Option<Err[]> Create(bool checkOnly)
     {
-        if (checkOnly) 
+        if (checkOnly)
             return AdditionalCheck();
 
         //ეს ის ვარიანტია, როცა არც არსებულ ჩანაწერებს ვამოწმებთ და არც Json-დან შემოგვაქვს

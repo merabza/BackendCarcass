@@ -10,7 +10,6 @@ public static class CustomExpressionFilter<T> where T : class
 {
     public static Expression<Func<T, bool>>? CustomFilter(ColumnFilter[]? columnFilters, string className)
     {
-
         if (columnFilters is null || !columnFilters.Any())
             return null;
 

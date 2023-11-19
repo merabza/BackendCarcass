@@ -110,7 +110,7 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
             foreach (var tdt in dtdtdt)
             {
                 var dt = _context.DataTypes.SingleOrDefault(s => s.DtId == tdt.Item1);
-                if (dt == null) 
+                if (dt == null)
                     continue;
 
                 dt.DtManyToManyJoinParentDataTypeId = tdt.Item2;

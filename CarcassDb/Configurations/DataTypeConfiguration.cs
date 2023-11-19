@@ -35,8 +35,10 @@ public class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
         builder.Property(e => e.DtNameFieldName).HasColumnName(nameof(DataType.DtNameFieldName).UnCapitalize())
             .HasMaxLength(50);
         builder.Property(e => e.DtParentDataTypeId).HasColumnName(nameof(DataType.DtParentDataTypeId).UnCapitalize());
-        builder.Property(e => e.DtManyToManyJoinParentDataTypeId).HasColumnName(nameof(DataType.DtManyToManyJoinParentDataTypeId).UnCapitalize());
-        builder.Property(e => e.DtManyToManyJoinChildDataTypeId).HasColumnName(nameof(DataType.DtManyToManyJoinChildDataTypeId).UnCapitalize());
+        builder.Property(e => e.DtManyToManyJoinParentDataTypeId)
+            .HasColumnName(nameof(DataType.DtManyToManyJoinParentDataTypeId).UnCapitalize());
+        builder.Property(e => e.DtManyToManyJoinChildDataTypeId)
+            .HasColumnName(nameof(DataType.DtManyToManyJoinChildDataTypeId).UnCapitalize());
         builder.Property(e => e.DtGridRulesJson).HasColumnName(nameof(DataType.DtGridRulesJson).UnCapitalize())
             .HasColumnType(ConfigurationHelper.ColumnTypeNText);
 
@@ -50,6 +52,5 @@ public class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
         builder.HasOne(d => d.DtManyToManyJoinChildDataTypeNavigation).WithMany(p => p.ManyToManyJoinChildrenDataTypes)
             .HasForeignKey(d => d.DtManyToManyJoinChildDataTypeId)
             .HasConstraintName(tableName.CreateSelfRelatedConstraintName(3));
-
     }
 }

@@ -42,7 +42,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         return await Query().Match<Task<OneOf<IEnumerable<IDataType>, Err[]>>>(
             async x => await x.ToListAsync(cancellationToken),
             e => Task.FromResult<OneOf<IEnumerable<IDataType>, Err[]>>(e));
-
     }
 
     public override async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,

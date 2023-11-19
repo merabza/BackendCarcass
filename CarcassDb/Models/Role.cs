@@ -48,5 +48,4 @@ public sealed class Role : IDataType, IMyEquatable
         return RolKey == other.RolKey && RolName == other.RolName && RolLevel == other.RolLevel &&
                RolNormalizedKey == other.RolNormalizedKey;
     }
-
 }

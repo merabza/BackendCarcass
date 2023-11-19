@@ -6,7 +6,6 @@ namespace CarcassDb.QueryModels;
 //უფლების მოდელი
 public sealed class DataTypeToDataTypeModel : IDataType
 {
-
     public DataTypeToDataTypeModel(int dtdtId, string dtdtKey, string dtdtName, string pKey)
     {
         DtdtId = dtdtId;
