@@ -8,6 +8,7 @@ using CarcassDb;
 using CarcassDb.Models;
 using CarcassDb.QueryModels;
 using CarcassMasterDataDom;
+using CarcassMasterDataDom.Models;
 using CarcassRepositories.Models;
 using CarcassRightsDom;
 using LanguageExt;
@@ -15,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using SystemToolsShared;
+using DataTypeModel = CarcassDb.QueryModels.DataTypeModel;
 
 namespace CarcassRepositories;
 
@@ -62,7 +64,7 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
             .GroupBy(g => g.DtId)
             .Select(s => s.First());
 
-        List<DataTypeModel> dataTypeModels = new();
+        var dataTypeModels = new List<DataTypeModel>();
 
         foreach (var dataType in dataTypes)
         {
@@ -289,13 +291,12 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
                 select usr).Cast<IDataType>().ToList();
         }
 
-        if (dataType.DtKey == ECarcassDataTypeKeys.Role.ToDtKey())
-        {
-            var minLevel = await UserMinLevel(userName, cancellationToken);
-            return _carcassContext.Roles.Where(w => w.RolLevel >= minLevel).Cast<IDataType>().ToList();
-        }
+        if (dataType.DtKey != ECarcassDataTypeKeys.Role.ToDtKey())
+            return await EntitiesByTableName(dataType.DtTable, cancellationToken);
 
-        return await EntitiesByTableName(dataType.DtTable, cancellationToken);
+        var minLevel = await UserMinLevel(userName, cancellationToken);
+        return _carcassContext.Roles.Where(w => w.RolLevel >= minLevel).Cast<IDataType>().ToList();
+
     }
 
 

@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using CarcassMasterDataDom.Models;
 using LanguageExt;
 using LibCrud;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -24,4 +27,6 @@ public interface ICarcassMasterDataRepository : IAbstractRepository
     Task<string?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken);
     void Update(IDataType newItem);
     void Delete(IDataType dataType);
+
+
 }

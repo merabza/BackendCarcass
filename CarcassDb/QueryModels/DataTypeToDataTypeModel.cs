@@ -1,49 +1,41 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using CarcassMasterDataDom;
+﻿//using System.ComponentModel.DataAnnotations.Schema;
+//using CarcassMasterDataDom;
 
-namespace CarcassDb.QueryModels;
+//namespace CarcassDb.QueryModels;
 
-//უფლების მოდელი
-public sealed class DataTypeToDataTypeModel : IDataType
-{
-    public DataTypeToDataTypeModel(int dtdtId, string dtdtKey, string dtdtName, string pKey)
-    {
-        DtdtId = dtdtId;
-        DtdtKey = dtdtKey;
-        DtdtName = dtdtName;
-        PKey = pKey;
-    }
+////უფლების მოდელი
+//public sealed class DataTypeToDataTypeModel(int dtdtId, string dtdtKey, string dtdtName, string pKey) : IDataType
+//{
+//    public int DtdtId { get; set; } = dtdtId;
+//    public string DtdtKey { get; set; } = dtdtKey;
+//    public string DtdtName { get; set; } = dtdtName;
+//    public string PKey { get; set; } = pKey;
 
-    public int DtdtId { get; set; }
-    public string DtdtKey { get; set; }
-    public string DtdtName { get; set; }
-    public string PKey { get; set; }
+//    [NotMapped]
+//    public int Id
+//    {
+//        get => DtdtId;
+//        set => DtdtId = value;
+//    }
 
-    [NotMapped]
-    public int Id
-    {
-        get => DtdtId;
-        set => DtdtId = value;
-    }
+//    [NotMapped] public string Key => DtdtKey;
 
-    [NotMapped] public string Key => DtdtKey;
+//    [NotMapped] public string Name => DtdtName;
 
-    [NotMapped] public string Name => DtdtName;
+//    [NotMapped] public int? ParentId => null;
 
-    [NotMapped] public int? ParentId => null;
+//    public bool UpdateTo(IDataType data)
+//    {
+//        if (data is not DataTypeToDataTypeModel newData)
+//            return false;
+//        DtdtKey = newData.DtdtKey;
+//        DtdtName = newData.DtdtName;
+//        PKey = newData.PKey;
+//        return true;
+//    }
 
-    public bool UpdateTo(IDataType data)
-    {
-        if (data is not DataTypeToDataTypeModel newData)
-            return false;
-        DtdtKey = newData.DtdtKey;
-        DtdtName = newData.DtdtName;
-        PKey = newData.PKey;
-        return true;
-    }
-
-    public dynamic EditFields()
-    {
-        return new { DtdtId, DtdtKey, DtdtName, PKey };
-    }
-}
+//    public dynamic EditFields()
+//    {
+//        return new { DtdtId, DtdtKey, DtdtName, PKey };
+//    }
+//}

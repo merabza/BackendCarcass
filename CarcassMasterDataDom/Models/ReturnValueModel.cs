@@ -1,4 +1,4 @@
-﻿namespace CarcassDb.QueryModels;
+﻿namespace CarcassMasterDataDom.Models;
 
 public sealed class ReturnValueModel
 {

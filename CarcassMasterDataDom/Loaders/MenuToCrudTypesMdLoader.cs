@@ -6,18 +6,11 @@ using SystemToolsShared;
 
 namespace CarcassMasterDataDom.Loaders;
 
-public sealed class MenuToCrudTypesMdLoader : IMasterDataLoader
+public sealed class MenuToCrudTypesMdLoader(IDataTypesRepository dataTypesRepository) : IMasterDataLoader
 {
-    private readonly IDataTypesRepository _dataTypesRepository;
-
-    public MenuToCrudTypesMdLoader(IDataTypesRepository dataTypesRepository)
-    {
-        _dataTypesRepository = dataTypesRepository;
-    }
-
     public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
     {
-        var result = await _dataTypesRepository.LoadMenuToCrudTypes(cancellationToken);
+        var result = await dataTypesRepository.LoadMenuToCrudTypes(cancellationToken);
         return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(result);
     }
 }

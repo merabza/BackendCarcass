@@ -18,15 +18,10 @@ public sealed class CarcassRepositoriesInstaller : IInstaller
     {
         //Console.WriteLine("CarcassRepositoriesInstaller.InstallServices Started");
 
-        //builder.Services.AddScoped<IMasterDataRepository, CarcassMasterDataRepository>();
         builder.Services.AddScoped<IIdentityRepository, IdentityRepository>();
-        //builder.Services.AddSingleton<IDataObserversManager, DataObserversManager>();
         builder.Services.AddScoped<IMenuRightsRepository, MenuRightsRepository>();
         builder.Services.AddScoped<IDataTypesRepository, DataTypesRepository>();
-
-        //builder.Services.AddScoped<IMasterDataRepository, RtMasterDataRepository>();
-        //builder.Services.AddSingleton<RtMasterDataRepoManager>();
-        //builder.Services.AddSingleton<IGmDbRepositoryCreatorFabric, GmDbRepositoryCreatorFabric>()
+        builder.Services.AddScoped<IReturnValuesRepository, SqlReturnValuesRepository>();
 
         //Console.WriteLine("CarcassRepositoriesInstaller.InstallServices Finished");
     }

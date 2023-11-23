@@ -1,13 +1,9 @@
 ﻿using System.Collections.Generic;
+using CarcassMasterDataDom.Models;
 
 namespace BackendCarcassApi.QueryResponses;
 
-public sealed class MdGetLookupTablesQueryResponse
+public sealed class MdGetLookupTablesQueryResponse(Dictionary<string, IEnumerable<ReturnValueModel>> returnValues)
 {
-    public MdGetLookupTablesQueryResponse(Dictionary<string, IEnumerable<dynamic>> entities)
-    {
-        Entities = entities;
-    }
-
-    public Dictionary<string, IEnumerable<dynamic>> Entities { get; set; }
+    public Dictionary<string, IEnumerable<ReturnValueModel>> ReturnValues { get; set; } = returnValues;
 }
