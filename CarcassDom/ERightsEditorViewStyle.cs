@@ -1,4 +1,4 @@
-﻿namespace CarcassRepositories;
+﻿namespace CarcassDom;
 
 public enum ERightsEditorViewStyle
 {

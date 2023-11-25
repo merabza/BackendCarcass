@@ -22,7 +22,7 @@ public sealed class GetLookupTablesQueryHandler
         var reqQuery = request.HttpRequest.Query["tables"];
         List<string> tableNames = reqQuery.Where(tableName => tableName is not null).Distinct().ToList()!;
         var mdLoader = new MasterDataReturnValuesLoader(tableNames, rvRepo);
-        var loaderResult = await mdLoader.Run();
+        var loaderResult = await mdLoader.Run(cancellationToken);
         return loaderResult.Match<OneOf<MdGetLookupTablesQueryResponse, IEnumerable<Err>>>(
             r => new MdGetLookupTablesQueryResponse(r), e => (Err[])e);
 

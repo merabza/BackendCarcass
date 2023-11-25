@@ -8,6 +8,7 @@ using BackendCarcassApi.Handlers.Rights;
 using BackendCarcassApi.QueryRequests.Rights;
 using CarcassContracts.ErrorModels;
 using CarcassContracts.V1.Routes;
+using CarcassDom;
 using CarcassRepositories;
 using CarcassRepositories.Models;
 using MediatR;

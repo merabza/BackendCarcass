@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CarcassDb;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.Models;
-using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -12,35 +12,34 @@ namespace CarcassRepositories;
 
 public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValuesRepository
 {
-    
-    public async Task<List<DataTypeModel>> GetDataTypesByTableNames(List<string> tableNames)
+
+    public async Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string> tableNames, CancellationToken cancellationToken)
     {
-        return await ctx.DataTypes.Where(x => tableNames.Contains(x.DtTable)).Select(x => new DataTypeModel(x.DtId, x.DtKey,
-            x.DtName, x.DtNameNominative, x.DtNameGenitive, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName,
-            x.DtNameFieldName, x.DtParentDataTypeId, x.DtManyToManyJoinParentDataTypeId,
-            x.DtManyToManyJoinChildDataTypeId)).ToListAsync();
+        return await ctx.DataTypes.Where(x => tableNames.Contains(x.DtTable)).Select(x =>
+            new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName,
+                x.DtNameFieldName, x.DtParentDataTypeId, x.DtManyToManyJoinParentDataTypeId,
+                x.DtManyToManyJoinChildDataTypeId)).ToListAsync(cancellationToken: cancellationToken);
     }
 
-    
-    public async Task<DataTypeModel?> GetDataType(int dtId)
+    protected async Task<DataTypeModelForRvs?> GetDataType(int dtId, CancellationToken cancellationToken)
     {
-        return await ctx.DataTypes.Where(x => x.DtId == dtId).Select(x => new DataTypeModel(x.DtId, x.DtKey,
-            x.DtName, x.DtNameNominative, x.DtNameGenitive, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName,
-            x.DtNameFieldName, x.DtParentDataTypeId, x.DtManyToManyJoinParentDataTypeId,
-            x.DtManyToManyJoinChildDataTypeId)).SingleOrDefaultAsync();
+        return await ctx.DataTypes.Where(x => x.DtId == dtId).Select(x => new DataTypeModelForRvs(x.DtId, x.DtKey,
+                x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName, x.DtNameFieldName, x.DtParentDataTypeId,
+                x.DtManyToManyJoinParentDataTypeId, x.DtManyToManyJoinChildDataTypeId))
+            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
     }
-    
-    public IEntityType? GetEntityTypeByTableName(string tableName)
+
+    private IEntityType? GetEntityTypeByTableName(string tableName)
     {
         return ctx.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
     }
 
-    protected async Task<string?> FindParentFieldName(DataTypeModel dt)
+    protected async Task<string?> FindParentFieldName(DataTypeModelForRvs dt, CancellationToken cancellationToken)
     {
         if (dt.DtParentDataTypeId is null)
             return null;
 
-        var parentDataType = await GetDataType(dt.DtParentDataTypeId.Value);
+        var parentDataType = await GetDataType(dt.DtParentDataTypeId.Value, cancellationToken);
         if (parentDataType is null)
             return null;
 
@@ -71,6 +70,6 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
 
 
 
-    public abstract Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModel dt);
+    public abstract Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt, CancellationToken cancellationToken);
 
 }

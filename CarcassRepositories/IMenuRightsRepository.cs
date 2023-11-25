@@ -2,22 +2,21 @@
 using System.Threading;
 using System.Threading.Tasks;
 using CarcassContracts.V1.Responses;
-using CarcassDb.QueryModels;
+using CarcassDom;
+using CarcassDom.Models;
 using CarcassRepositories.Models;
-using LanguageExt;
-using SystemToolsShared;
 
 namespace CarcassRepositories;
 
 public interface IMenuRightsRepository
 {
-    Task<List<DataTypeModel>> ParentsTreeData(string userName, ERightsEditorViewStyle viewStyle,
-        CancellationToken cancellationToken);
+    //Task<List<DataTypeModel>> ParentsTreeData(string userName, ERightsEditorViewStyle viewStyle,
+    //    CancellationToken cancellationToken);
 
     Task<List<DataTypeModel>> ChildrenTreeData(string userName, string dataTypeKey, ERightsEditorViewStyle viewStyle,
         CancellationToken cancellationToken);
 
-    Task<Option<Err[]>> OptimizeRights(CancellationToken cancellationToken);
+    //Task<Option<Err[]>> OptimizeRights(CancellationToken cancellationToken);
     Task<MainMenuModel> MainMenu(string userName, CancellationToken cancellationToken);
     Task<List<string>> UserAppClaims(string userName, CancellationToken cancellationToken);
     Task<DataTypesResponse[]> DataTypes(string userName, CancellationToken cancellationToken);

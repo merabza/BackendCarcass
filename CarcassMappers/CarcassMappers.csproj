@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
+    <ProjectReference Include="..\CarcassDom\CarcassDom.csproj" />
+  </ItemGroup>
+
+</Project>

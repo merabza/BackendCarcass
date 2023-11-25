@@ -1,4 +1,4 @@
-﻿namespace CarcassRightsDom;
+﻿namespace CarcassDom;
 
 public enum ECrudOperationType
 {

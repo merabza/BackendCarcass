@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom.Models;
-using SystemToolsShared;
 
-namespace CarcassDb.QueryModels;
+namespace CarcassDom.Models;
 
 public sealed class DataTypeModel(int dtId, string dtKey, string dtName, string dtTable, int? dtParentDataTypeId)
 {
@@ -12,6 +10,6 @@ public sealed class DataTypeModel(int dtId, string dtKey, string dtName, string 
     public string DtName { get; set; } = dtName;
     public string DtTable { get; set; } = dtTable;
     public int? DtParentDataTypeId { get; set; } = dtParentDataTypeId;
-    [NotMapped] public List<Err> Errors { get; set; } = new();
-    [NotMapped] public List<ReturnValueModel> ReturnValues { get; set; } = new();
+    //[NotMapped] public List<Err> Errors { get; set; } = new();
+    public List<ReturnValueModel> ReturnValues { get; set; } = new();
 }

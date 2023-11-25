@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using CarcassDb.QueryModels;
-using CarcassRepositories;
+using CarcassDom;
+using CarcassDom.Models;
 using MessagingAbstractions;
 using Microsoft.AspNetCore.Http;
 

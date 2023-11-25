@@ -3,7 +3,12 @@ using CarcassMasterDataDom.Models;
 
 namespace BackendCarcassApi.QueryResponses;
 
-public sealed class MdGetLookupTablesQueryResponse(Dictionary<string, IEnumerable<ReturnValueModel>> returnValues)
+public sealed class MdGetLookupTablesQueryResponse
 {
-    public Dictionary<string, IEnumerable<ReturnValueModel>> ReturnValues { get; set; } = returnValues;
+    public MdGetLookupTablesQueryResponse(Dictionary<string, IEnumerable<ReturnValueModel>> returnValues)
+    {
+        ReturnValues = returnValues;
+    }
+
+    public Dictionary<string, IEnumerable<ReturnValueModel>> ReturnValues { get; set; }
 }

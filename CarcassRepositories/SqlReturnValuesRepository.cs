@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CarcassDb;
 using CarcassMasterDataDom.Models;
@@ -16,14 +17,14 @@ public class SqlReturnValuesRepository : ReturnValuesRepository
         _ctx = ctx;
     }
 
-    public override async Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModel dt)
+    public override async Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt, CancellationToken cancellationToken)
     {
         string? strSql = null;
         if (dt.DtManyToManyJoinParentDataTypeId is not null && dt.DtManyToManyJoinChildDataTypeId is not null)
         {
             //ეს ის ვარიანტია, როცა მონაცემთა ტიპების წყვილისგან უნდა შედგეს დასაბრუნებელი ინფორმაცია
-            var parentDataType = await GetDataType(dt.DtManyToManyJoinParentDataTypeId.Value);
-            var childDataType = await GetDataType(dt.DtManyToManyJoinChildDataTypeId.Value);
+            var parentDataType = await GetDataType(dt.DtManyToManyJoinParentDataTypeId.Value, cancellationToken);
+            var childDataType = await GetDataType(dt.DtManyToManyJoinChildDataTypeId.Value, cancellationToken);
 
             if (parentDataType is not null && childDataType is not null &&
                 IsIdentifier(parentDataType.DtKeyFieldName) && IsIdentifier(childDataType.DtKeyFieldName) &&
@@ -44,14 +45,14 @@ public class SqlReturnValuesRepository : ReturnValuesRepository
         else if (IsIdentifier(dt.DtIdFieldName) && IsIdentifier(dt.DtKeyFieldName) && IsIdentifier(dt.DtNameFieldName))
         {
             //ინფორმაციის დაბრუნება უნდა მოხდეს ერთი ცხრილიდან
-            var parentFieldName = await FindParentFieldName(dt);
+            var parentFieldName = await FindParentFieldName(dt, cancellationToken);
 
             strSql =
                 $"SELECT {dt.DtIdFieldName} AS value, {dt.DtKeyFieldName} AS [key], {dt.DtNameFieldName} AS [name], {parentFieldName ?? "NULL"} AS parentId FROM {dt.DtTable}";
         }
 
         if (strSql != null)
-            return await _ctx.Set<ReturnValueModel>().FromSqlRaw(strSql).ToListAsync();
+            return await _ctx.Set<ReturnValueModel>().FromSqlRaw(strSql).ToListAsync(cancellationToken);
         return new List<ReturnValueModel>();
     }
 

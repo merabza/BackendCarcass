@@ -5,7 +5,7 @@ using CarcassMasterDataDom;
 using OneOf;
 using SystemToolsShared;
 
-namespace CarcassRightsDom;
+namespace CarcassDom;
 
 public interface IUserRightsRepository
 {

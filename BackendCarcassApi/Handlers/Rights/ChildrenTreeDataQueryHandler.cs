@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.Rights;
 using CarcassDb.QueryModels;
+using CarcassDom.Models;
 using CarcassRepositories;
 using MessagingAbstractions;
 using OneOf;

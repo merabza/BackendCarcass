@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using CarcassDom;
 using CarcassRights;
-using CarcassRightsDom;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 

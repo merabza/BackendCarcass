@@ -7,16 +7,15 @@ using CarcassContracts.V1.Responses;
 using CarcassDb;
 using CarcassDb.Models;
 using CarcassDb.QueryModels;
+using CarcassDom;
+using CarcassDom.Models;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.Models;
 using CarcassRepositories.Models;
-using CarcassRightsDom;
-using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using SystemToolsShared;
-using DataTypeModel = CarcassDb.QueryModels.DataTypeModel;
 
 namespace CarcassRepositories;
 
@@ -54,31 +53,31 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
         return mainMenuModel;
     }
 
-    public async Task<List<DataTypeModel>> ParentsTreeData(string userName, ERightsEditorViewStyle viewStyle,
-        CancellationToken cancellationToken)
-    {
-        var dataTypes =
-            (viewStyle == ERightsEditorViewStyle.NormalView
-                ? await ParentsDataTypesNormalView(userName, cancellationToken)
-                : await ParentsDataTypesReverseView(userName, cancellationToken)).OrderBy(o => o.DtName)
-            .GroupBy(g => g.DtId)
-            .Select(s => s.First());
+    //public async Task<List<DataTypeModel>> ParentsTreeData(string userName, ERightsEditorViewStyle viewStyle,
+    //    CancellationToken cancellationToken)
+    //{
+    //    var dataTypes =
+    //        (viewStyle == ERightsEditorViewStyle.NormalView
+    //            ? await ParentsDataTypesNormalView(userName, cancellationToken)
+    //            : await ParentsDataTypesReverseView(userName, cancellationToken)).OrderBy(o => o.DtName)
+    //        .GroupBy(g => g.DtId)
+    //        .Select(s => s.First());
 
-        var dataTypeModels = new List<DataTypeModel>();
+    //    var dataTypeModels = new List<DataTypeModel>();
+    //    var errors = new List<Err>();
+    //    foreach (var dataType in dataTypes)
+    //    {
+    //        var entResult = await EntityForRetValues(dataType, userName, cancellationToken);
 
-        foreach (var dataType in dataTypes)
-        {
-            var entResult = await EntityForRetValues(dataType, userName, cancellationToken);
+    //        if (entResult.IsT1)
+    //            errors.AddRange(entResult.AsT1);
+    //        else
+    //            dataType.ReturnValues = ReturnValues(entResult.AsT0);
+    //        dataTypeModels.Add(dataType);
+    //    }
 
-            if (entResult.IsT1)
-                dataType.Errors.AddRange(entResult.AsT1);
-            else
-                dataType.ReturnValues = ReturnValues(entResult.AsT0);
-            dataTypeModels.Add(dataType);
-        }
-
-        return dataTypeModels;
-    }
+    //    return dataTypeModels;
+    //}
 
     public async Task<List<DataTypeModel>> ChildrenTreeData(string userName, string dataTypeKey,
         ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken)
@@ -90,14 +89,14 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
             .GroupBy(g => g.DtId)
             .Select(s => s.First()).ToList();
 
-        List<DataTypeModel> dataTypeModels = new();
-
+        var dataTypeModels = new List<DataTypeModel>();
+        var errors = new List<Err>();
         foreach (var dataType in dataTypes)
         {
             var entResult = await EntityForRetValues(dataType, userName, cancellationToken);
 
             if (entResult.IsT1)
-                dataType.Errors.AddRange(entResult.AsT1);
+                errors.AddRange(entResult.AsT1);
             else
                 dataType.ReturnValues = ReturnValues(entResult.AsT0);
             dataTypeModels.Add(dataType);
@@ -107,20 +106,20 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
     }
 
 
-    public async Task<Option<Err[]>> OptimizeRights(CancellationToken cancellationToken)
-    {
-        var errors = new List<Err>();
-        var result = await ClearRights(ERightsSides.Parent, cancellationToken);
-        if (result.IsSome)
-            errors.AddRange((Err[])result);
-        result = await ClearRights(ERightsSides.Child, cancellationToken);
-        if (result.IsSome)
-            errors.AddRange((Err[])result);
-        if (errors.Count > 0)
-            return errors.ToArray();
-        await _carcassContext.SaveChangesAsync(cancellationToken);
-        return null;
-    }
+    //public async Task<Option<Err[]>> OptimizeRights(CancellationToken cancellationToken)
+    //{
+    //    var errors = new List<Err>();
+    //    var result = await ClearRights(ERightsSides.Parent, cancellationToken);
+    //    if (result.IsSome)
+    //        errors.AddRange((Err[])result);
+    //    result = await ClearRights(ERightsSides.Child, cancellationToken);
+    //    if (result.IsSome)
+    //        errors.AddRange((Err[])result);
+    //    if (errors.Count > 0)
+    //        return errors.ToArray();
+    //    await _carcassContext.SaveChangesAsync(cancellationToken);
+    //    return null;
+    //}
 
     public async Task<List<string>> UserAppClaims(string userName, CancellationToken cancellationToken)
     {
@@ -334,49 +333,49 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
     }
 
 
-    private async Task<List<DataTypeModel>> ParentsDataTypesNormalView(string userName,
-        CancellationToken cancellationToken)
-    {
-        var dtDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
-        var mmjDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
-        var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
-        var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
+    //private async Task<List<DataTypeModel>> ParentsDataTypesNormalView(string userName,
+    //    CancellationToken cancellationToken)
+    //{
+    //    var dtDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
+    //    var mmjDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
+    //    var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
+    //    var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
 
-        var dataTypeKey = ECarcassDataTypeKeys.DataType.ToDtKey();
+    //    var dataTypeKey = ECarcassDataTypeKeys.DataType.ToDtKey();
 
-        var result = from dt in _carcassContext.DataTypes
-            join pc in ManyToManyJoinsPc(dtDataId, dataTypeKey, dtDataId) on dt.DtKey equals pc
-            join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtKey
-                equals
-                pcc2
-            select new DataTypeModel(dt.DtId, dt.DtKey, dt.DtName, dt.DtTable, dt.DtParentDataTypeId);
-        return await result.ToListAsync(cancellationToken);
-    }
+    //    var result = from dt in _carcassContext.DataTypes
+    //        join pc in ManyToManyJoinsPc(dtDataId, dataTypeKey, dtDataId) on dt.DtKey equals pc
+    //        join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
+    //            dt.DtKey
+    //            equals
+    //            pcc2
+    //        select new DataTypeModel(dt.DtId, dt.DtKey, dt.DtName, dt.DtTable, dt.DtParentDataTypeId);
+    //    return await result.ToListAsync(cancellationToken);
+    //}
 
-    private async Task<List<DataTypeModel>> ParentsDataTypesReverseView(string userName,
-        CancellationToken cancellationToken)
-    {
-        var dtDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
-        var mmjDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
-        var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
-        var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
+    //private async Task<List<DataTypeModel>> ParentsDataTypesReverseView(string userName,
+    //    CancellationToken cancellationToken)
+    //{
+    //    var dtDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
+    //    var mmjDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
+    //    var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
+    //    var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
 
 
-        var result = from dt in _carcassContext.DataTypes
-            join dr in _carcassContext.ManyToManyJoins on new { a = dt.DtKey, b = dtDataId, c = dtDataId } equals new
-            {
-                a = dr.CKey,
-                b = dr.PtId,
-                c = dr.CtId
-            }
-            join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtKey
-                equals
-                pcc3
-            select new DataTypeModel(dt.DtId, dt.DtKey, dt.DtName, dt.DtTable, dt.DtParentDataTypeId);
-        return await result.ToListAsync(cancellationToken);
-    }
+    //    var result = from dt in _carcassContext.DataTypes
+    //        join dr in _carcassContext.ManyToManyJoins on new { a = dt.DtKey, b = dtDataId, c = dtDataId } equals new
+    //        {
+    //            a = dr.CKey,
+    //            b = dr.PtId,
+    //            c = dr.CtId
+    //        }
+    //        join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
+    //            dt.DtKey
+    //            equals
+    //            pcc3
+    //        select new DataTypeModel(dt.DtId, dt.DtKey, dt.DtName, dt.DtTable, dt.DtParentDataTypeId);
+    //    return await result.ToListAsync(cancellationToken);
+    //}
 
     private async Task<List<DataTypeModel>> ChildrenDataTypesNormalView(string userName, string parentTypeKey,
         CancellationToken cancellationToken)
@@ -456,48 +455,48 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
                 m.MenIconName);
     }
 
-    private async Task<Option<Err[]>> ClearRights(ERightsSides rightSide, CancellationToken cancellationToken)
-    {
-        var rightsTable = DataTypesTableForRightsOptimization(rightSide);
-        var errors = new List<Err>();
-        foreach (var dataTypeTable in rightsTable)
-        {
-            var res = await DeleteUnusedRights(dataTypeTable.DtTable, rightSide, dataTypeTable.DtId, cancellationToken);
-            if (res.IsSome)
-                errors.AddRange((Err[])res);
-        }
+    //private async Task<Option<Err[]>> ClearRights(ERightsSides rightSide, CancellationToken cancellationToken)
+    //{
+    //    var rightsTable = DataTypesTableForRightsOptimization(rightSide);
+    //    var errors = new List<Err>();
+    //    foreach (var dataTypeTable in rightsTable)
+    //    {
+    //        var res = await DeleteUnusedRights(dataTypeTable.DtTable, rightSide, dataTypeTable.DtId, cancellationToken);
+    //        if (res.IsSome)
+    //            errors.AddRange((Err[])res);
+    //    }
 
-        return errors.Count > 0 ? errors.ToArray() : null;
-    }
+    //    return errors.Count > 0 ? errors.ToArray() : null;
+    //}
 
-    private IEnumerable<DataTypeTableModel> DataTypesTableForRightsOptimization(ERightsSides rightSide)
-    {
-        return (from dr in _carcassContext.ManyToManyJoins
-            join dt in _carcassContext.DataTypes on rightSide == ERightsSides.Parent ? dr.PtId : dr.CtId equals
-                dt.DtId
-            select new DataTypeTableModel(dt.DtId, dt.DtTable)).Distinct();
-    }
+    //private IEnumerable<DataTypeTableModel> DataTypesTableForRightsOptimization(ERightsSides rightSide)
+    //{
+    //    return (from dr in _carcassContext.ManyToManyJoins
+    //        join dt in _carcassContext.DataTypes on rightSide == ERightsSides.Parent ? dr.PtId : dr.CtId equals
+    //            dt.DtId
+    //        select new DataTypeTableModel(dt.DtId, dt.DtTable)).Distinct();
+    //}
 
 
-    private async Task<Option<Err[]>> DeleteUnusedRights(string dtTable, ERightsSides rightSide, int dtId,
-        CancellationToken cancellationToken)
-    {
-        var entResult = await EntitiesByTableName(dtTable, cancellationToken);
-        if (entResult.IsT1)
-            return entResult.AsT1;
+    //private async Task<Option<Err[]>> DeleteUnusedRights(string dtTable, ERightsSides rightSide, int dtId,
+    //    CancellationToken cancellationToken)
+    //{
+    //    var entResult = await EntitiesByTableName(dtTable, cancellationToken);
+    //    if (entResult.IsT1)
+    //        return entResult.AsT1;
 
-        var ens = entResult.AsT0.ToList();
-        var mmjs = _carcassContext.ManyToManyJoins.ToList();
+    //    var ens = entResult.AsT0.ToList();
+    //    var mmjs = _carcassContext.ManyToManyJoins.ToList();
 
-        var forDelete = from dr in mmjs
-            join t in ens on rightSide == ERightsSides.Parent ? dr.PKey : dr.CKey equals t.Key into drt
-            from sub in drt.DefaultIfEmpty()
-            where sub == null && (rightSide == ERightsSides.Parent ? dr.PtId : dr.CtId) == dtId
-            select dr;
+    //    var forDelete = from dr in mmjs
+    //        join t in ens on rightSide == ERightsSides.Parent ? dr.PKey : dr.CKey equals t.Key into drt
+    //        from sub in drt.DefaultIfEmpty()
+    //        where sub == null && (rightSide == ERightsSides.Parent ? dr.PtId : dr.CtId) == dtId
+    //        select dr;
 
-        _carcassContext.RemoveRange(forDelete);
-        return null;
-    }
+    //    _carcassContext.RemoveRange(forDelete);
+    //    return null;
+    //}
 
     private static void SetDataTypeCrudRight(string crtKey, DataTypesResponse dataType)
     {

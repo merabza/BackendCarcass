@@ -1,4 +1,4 @@
-﻿using CarcassRightsDom;
+﻿using CarcassDom;
 using Microsoft.Extensions.Logging;
 
 namespace BackendCarcassApi.Filters;
