@@ -5,17 +5,13 @@ using System.Threading.Tasks;
 using CarcassDb;
 using CarcassMasterDataDom.Models;
 using Microsoft.EntityFrameworkCore;
+// ReSharper disable ReplaceWithPrimaryConstructorParameter
 
 namespace CarcassRepositories;
 
-public class SqlReturnValuesRepository : ReturnValuesRepository
+public class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValuesRepository(ctx)
 {
-    private readonly CarcassDbContext _ctx;
-
-    public SqlReturnValuesRepository(CarcassDbContext ctx) : base(ctx)
-    {
-        _ctx = ctx;
-    }
+    private readonly CarcassDbContext _ctx = ctx;
 
     public override async Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt, CancellationToken cancellationToken)
     {
