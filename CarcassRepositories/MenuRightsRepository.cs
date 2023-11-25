@@ -5,36 +5,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using CarcassContracts.V1.Responses;
 using CarcassDb;
-using CarcassDb.Models;
 using CarcassDb.QueryModels;
 using CarcassDom;
-using CarcassDom.Models;
 using CarcassMasterDataDom;
-using CarcassMasterDataDom.Models;
 using CarcassRepositories.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using OneOf;
-using SystemToolsShared;
 
 namespace CarcassRepositories;
 
-public sealed class MenuRightsRepository : IMenuRightsRepository
+public sealed class MenuRightsRepository(CarcassDbContext context) : IMenuRightsRepository
 {
-    private readonly CarcassDbContext _carcassContext;
-
-    //private readonly IDataTypeKeys _dataTypeKeys;
-    private readonly ILogger<MenuRightsRepository> _logger;
-    private readonly IMasterDataLoaderCrudCreator _masterDataLoaderCrudCreator;
-
-    public MenuRightsRepository(CarcassDbContext context, ILogger<MenuRightsRepository> logger,
-        IMasterDataLoaderCrudCreator masterDataLoaderCrudCreator)
-    {
-        _carcassContext = context;
-        _logger = logger;
-        //_dataTypeKeys = dataTypeKeys;
-        _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
-    }
+    // ReSharper disable once ReplaceWithPrimaryConstructorParameter
+    private readonly CarcassDbContext _carcassContext = context;
 
     public async Task<MainMenuModel> MainMenu(string userName, CancellationToken cancellationToken)
     {
@@ -79,31 +61,31 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
     //    return dataTypeModels;
     //}
 
-    public async Task<List<DataTypeModel>> ChildrenTreeData(string userName, string dataTypeKey,
-        ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken)
-    {
-        var dataTypes =
-            (viewStyle == ERightsEditorViewStyle.NormalView
-                ? await ChildrenDataTypesNormalView(userName, dataTypeKey, cancellationToken)
-                : await ChildrenDataTypesReverseView(userName, dataTypeKey, cancellationToken)).OrderBy(o => o.DtName)
-            .GroupBy(g => g.DtId)
-            .Select(s => s.First()).ToList();
+    //public async Task<List<DataTypeModel>> ChildrenTreeData(string userName, string dataTypeKey,
+    //    ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken)
+    //{
+    //    var dataTypes =
+    //        (viewStyle == ERightsEditorViewStyle.NormalView
+    //            ? await ChildrenDataTypesNormalView(userName, dataTypeKey, cancellationToken)
+    //            : await ChildrenDataTypesReverseView(userName, dataTypeKey, cancellationToken)).OrderBy(o => o.DtName)
+    //        .GroupBy(g => g.DtId)
+    //        .Select(s => s.First()).ToList();
 
-        var dataTypeModels = new List<DataTypeModel>();
-        var errors = new List<Err>();
-        foreach (var dataType in dataTypes)
-        {
-            var entResult = await EntityForRetValues(dataType, userName, cancellationToken);
+    //    var dataTypeModels = new List<DataTypeModel>();
+    //    var errors = new List<Err>();
+    //    foreach (var dataType in dataTypes)
+    //    {
+    //        var entResult = await EntityForRetValues(dataType, userName, cancellationToken);
 
-            if (entResult.IsT1)
-                errors.AddRange(entResult.AsT1);
-            else
-                dataType.ReturnValues = ReturnValues(entResult.AsT0);
-            dataTypeModels.Add(dataType);
-        }
+    //        if (entResult.IsT1)
+    //            errors.AddRange(entResult.AsT1);
+    //        else
+    //            dataType.ReturnValues = ReturnValues(entResult.AsT0);
+    //        dataTypeModels.Add(dataType);
+    //    }
 
-        return dataTypeModels;
-    }
+    //    return dataTypeModels;
+    //}
 
 
     //public async Task<Option<Err[]>> OptimizeRights(CancellationToken cancellationToken)
@@ -131,75 +113,75 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
             .ToList());
     }
 
-    public async Task<bool> SaveRightsChanges(string userName, List<RightsChangeModel> changedRights,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var dtDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
-            var mmjDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
-            var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
-            var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
-            var allowPairs =
-                ManyToManyJoinsPcc4(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId).ToList();
+    //public async Task<bool> SaveRightsChanges(string userName, List<RightsChangeModel> changedRights,
+    //    CancellationToken cancellationToken)
+    //{
+    //    try
+    //    {
+    //        var dtDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
+    //        var mmjDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
+    //        var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
+    //        var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
+    //        var allowPairs =
+    //            ManyToManyJoinsPcc4(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId).ToList();
 
-            foreach (var drr in changedRights)
-            {
-                if (drr.Parent is null || drr.Child is null)
-                    throw new Exception("SaveRightsChanges: parent or child keys are not valid");
+    //        foreach (var drr in changedRights)
+    //        {
+    //            if (drr.Parent is null || drr.Child is null)
+    //                throw new Exception("SaveRightsChanges: parent or child keys are not valid");
 
-                var parentKey = await DataTypeKeyById(drr.Parent.DtId, cancellationToken);
-                var childKey = await DataTypeKeyById(drr.Child.DtId, cancellationToken);
+    //            var parentKey = await DataTypeKeyById(drr.Parent.DtId, cancellationToken);
+    //            var childKey = await DataTypeKeyById(drr.Child.DtId, cancellationToken);
 
-                if (parentKey is null || childKey is null)
-                    throw new Exception("SaveRightsChanges: parent or child keys are not valid");
+    //            if (parentKey is null || childKey is null)
+    //                throw new Exception("SaveRightsChanges: parent or child keys are not valid");
 
-                if (!allowPairs.Contains(new Tuple<string, string>(parentKey, childKey)))
-                    continue;
-                var mmj = _carcassContext.ManyToManyJoins.SingleOrDefault(c =>
-                    c.PtId == drr.Parent.DtId && c.PKey == drr.Parent.DKey &&
-                    c.CtId == drr.Child.DtId && c.CKey == drr.Child.DKey);
-                if (mmj == null && drr.Checked)
-                {
-                    var parentDataType = _carcassContext.DataTypes.SingleOrDefault(x => x.DtId == drr.Parent.DtId);
-                    if (parentDataType is null)
-                    {
-                        _logger.Log(LogLevel.Error, "parentDataType is null");
-                        return false;
-                    }
+    //            if (!allowPairs.Contains(new Tuple<string, string>(parentKey, childKey)))
+    //                continue;
+    //            var mmj = _carcassContext.ManyToManyJoins.SingleOrDefault(c =>
+    //                c.PtId == drr.Parent.DtId && c.PKey == drr.Parent.DKey &&
+    //                c.CtId == drr.Child.DtId && c.CKey == drr.Child.DKey);
+    //            if (mmj == null && drr.Checked)
+    //            {
+    //                var parentDataType = _carcassContext.DataTypes.SingleOrDefault(x => x.DtId == drr.Parent.DtId);
+    //                if (parentDataType is null)
+    //                {
+    //                    _logger.Log(LogLevel.Error, "parentDataType is null");
+    //                    return false;
+    //                }
 
-                    var childDataType = _carcassContext.DataTypes.SingleOrDefault(x => x.DtId == drr.Child.DtId);
-                    if (childDataType is null)
-                    {
-                        _logger.Log(LogLevel.Error, "childDataType is null");
-                        return false;
-                    }
+    //                var childDataType = _carcassContext.DataTypes.SingleOrDefault(x => x.DtId == drr.Child.DtId);
+    //                if (childDataType is null)
+    //                {
+    //                    _logger.Log(LogLevel.Error, "childDataType is null");
+    //                    return false;
+    //                }
 
-                    await _carcassContext.ManyToManyJoins.AddAsync(new ManyToManyJoin
-                    {
-                        ParentDataTypeNavigation = parentDataType,
-                        PtId = parentDataType.DtId,
-                        PKey = drr.Parent.DKey,
-                        ChildDataTypeNavigation = childDataType,
-                        CtId = childDataType.DtId,
-                        CKey = drr.Child.DKey
-                    }, cancellationToken);
-                }
-                else if (mmj != null && !drr.Checked)
-                {
-                    _carcassContext.ManyToManyJoins.Remove(mmj);
-                }
-            }
+    //                await _carcassContext.ManyToManyJoins.AddAsync(new ManyToManyJoin
+    //                {
+    //                    ParentDataTypeNavigation = parentDataType,
+    //                    PtId = parentDataType.DtId,
+    //                    PKey = drr.Parent.DKey,
+    //                    ChildDataTypeNavigation = childDataType,
+    //                    CtId = childDataType.DtId,
+    //                    CKey = drr.Child.DKey
+    //                }, cancellationToken);
+    //            }
+    //            else if (mmj != null && !drr.Checked)
+    //            {
+    //                _carcassContext.ManyToManyJoins.Remove(mmj);
+    //            }
+    //        }
 
-            await _carcassContext.SaveChangesAsync(cancellationToken);
-            return true;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return false;
-        }
-    }
+    //        await _carcassContext.SaveChangesAsync(cancellationToken);
+    //        return true;
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        _logger.LogError(e.Message);
+    //        return false;
+    //    }
+    //}
 
     public async Task<string?> GridModel(string tableName, CancellationToken cancellationToken)
     {
@@ -237,100 +219,100 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
         return res2.ToArray();
     }
 
-    public async Task<List<TypeDataModel>> HalfChecks(string userName, int dataTypeId, string dataKey,
-        ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken)
-    {
-        var dtDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
-        var mmjDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
-        var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
-        var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
+    //public async Task<List<TypeDataModel>> HalfChecks(string userName, int dataTypeId, string dataKey,
+    //    ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken)
+    //{
+    //    var dtDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
+    //    var mmjDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
+    //    var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
+    //    var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
 
-        if (viewStyle == ERightsEditorViewStyle.NormalView)
-        {
-            var normViewResult = (from dr in _carcassContext.ManyToManyJoins
-                join dt in _carcassContext.DataTypes on dr.CtId equals dt.DtId
-                join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId,
-                        dtDataId) on
-                    dt.DtKey
-                    equals pcc3
-                where dr.PtId == dataTypeId && dr.PKey == dataKey
-                select new TypeDataModel(dr.CtId, dr.CKey)).Distinct();
-            return await normViewResult.ToListAsync(cancellationToken);
-        }
+    //    if (viewStyle == ERightsEditorViewStyle.NormalView)
+    //    {
+    //        var normViewResult = (from dr in _carcassContext.ManyToManyJoins
+    //            join dt in _carcassContext.DataTypes on dr.CtId equals dt.DtId
+    //            join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId,
+    //                    dtDataId) on
+    //                dt.DtKey
+    //                equals pcc3
+    //            where dr.PtId == dataTypeId && dr.PKey == dataKey
+    //            select new TypeDataModel(dr.CtId, dr.CKey)).Distinct();
+    //        return await normViewResult.ToListAsync(cancellationToken);
+    //    }
 
-        var result = (from dr in _carcassContext.ManyToManyJoins
-            join dt in _carcassContext.DataTypes on dr.PtId equals dt.DtId
-            join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtKey
-                equals pcc2
-            where dr.CtId == dataTypeId && dr.CKey == dataKey
-            select new TypeDataModel(dr.PtId, dr.PKey)).Distinct();
-        return await result.ToListAsync(cancellationToken);
-    }
+    //    var result = (from dr in _carcassContext.ManyToManyJoins
+    //        join dt in _carcassContext.DataTypes on dr.PtId equals dt.DtId
+    //        join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
+    //            dt.DtKey
+    //            equals pcc2
+    //        where dr.CtId == dataTypeId && dr.CKey == dataKey
+    //        select new TypeDataModel(dr.PtId, dr.PKey)).Distinct();
+    //    return await result.ToListAsync(cancellationToken);
+    //}
 
-    private async Task<OneOf<IEnumerable<IDataType>, Err[]>> EntitiesByTableName(string tableName,
-        CancellationToken cancellationToken)
-    {
-        var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(tableName);
-        return await loader.GetAllRecords(cancellationToken);
-    }
+    //private async Task<OneOf<IEnumerable<IDataType>, Err[]>> EntitiesByTableName(string tableName,
+    //    CancellationToken cancellationToken)
+    //{
+    //    var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(tableName);
+    //    return await loader.GetAllRecords(cancellationToken);
+    //}
 
-    private async Task<OneOf<IEnumerable<IDataType>, Err[]>> EntityForRetValues(DataTypeModel dataType, string userName,
-        CancellationToken cancellationToken)
-    {
-        if (dataType.DtKey == ECarcassDataTypeKeys.User.ToDtKey())
-        {
-            var minOfLevel = await UserMinLevel(userName, cancellationToken);
-            var uml = await UsersMinLevels(cancellationToken);
-            var users = await _carcassContext.Users.ToListAsync(cancellationToken);
-            return (from usr in users
-                join ml in uml on usr.UsrId equals ml.Item1 into gj
-                from s in gj.DefaultIfEmpty()
-                where (s?.Item2 ?? int.MaxValue) >= minOfLevel
-                select usr).Cast<IDataType>().ToList();
-        }
+    //private async Task<OneOf<IEnumerable<IDataType>, Err[]>> EntityForRetValues(DataTypeModel dataType, string userName,
+    //    CancellationToken cancellationToken)
+    //{
+    //    if (dataType.DtKey == ECarcassDataTypeKeys.User.ToDtKey())
+    //    {
+    //        var minOfLevel = await UserMinLevel(userName, cancellationToken);
+    //        var uml = await UsersMinLevels(cancellationToken);
+    //        var users = await _carcassContext.Users.ToListAsync(cancellationToken);
+    //        return (from usr in users
+    //            join ml in uml on usr.UsrId equals ml.Item1 into gj
+    //            from s in gj.DefaultIfEmpty()
+    //            where (s?.Item2 ?? int.MaxValue) >= minOfLevel
+    //            select usr).Cast<IDataType>().ToList();
+    //    }
 
-        if (dataType.DtKey != ECarcassDataTypeKeys.Role.ToDtKey())
-            return await EntitiesByTableName(dataType.DtTable, cancellationToken);
+    //    if (dataType.DtKey != ECarcassDataTypeKeys.Role.ToDtKey())
+    //        return await EntitiesByTableName(dataType.DtTable, cancellationToken);
 
-        var minLevel = await UserMinLevel(userName, cancellationToken);
-        return _carcassContext.Roles.Where(w => w.RolLevel >= minLevel).Cast<IDataType>().ToList();
+    //    var minLevel = await UserMinLevel(userName, cancellationToken);
+    //    return _carcassContext.Roles.Where(w => w.RolLevel >= minLevel).Cast<IDataType>().ToList();
 
-    }
+    //}
 
 
-    private static List<ReturnValueModel> ReturnValues(IEnumerable<IDataType> ent)
-    {
-        return ent.Select(s => new ReturnValueModel { Value = s.Id, Key = s.Key, Name = s.Name, ParentId = s.ParentId })
-            .ToList();
-    }
+    //private static List<ReturnValueModel> ReturnValues(IEnumerable<IDataType> ent)
+    //{
+    //    return ent.Select(s => new ReturnValueModel { Value = s.Id, Key = s.Key, Name = s.Name, ParentId = s.ParentId })
+    //        .ToList();
+    //}
 
-    private async Task<List<Tuple<int, int>>> UsersMinLevels(CancellationToken cancellationToken)
-    {
-        var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
-        var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
+    //private async Task<List<Tuple<int, int>>> UsersMinLevels(CancellationToken cancellationToken)
+    //{
+    //    var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
+    //    var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
 
-        return (from dr in _carcassContext.ManyToManyJoins
-            join usr in _carcassContext.Users on new { a = dr.PtId, b = dr.PKey } equals new
-                { a = userDataId, b = usr.UserName }
-            join rol in _carcassContext.Roles on new { a = dr.CtId, b = dr.CKey } equals new
-                { a = roleDataId, b = rol.RolKey }
-            group rol by usr.UsrId
-            into ug
-            select new Tuple<int, int>(ug.Key, ug.Min(usr => usr.RolLevel))).ToList();
-    }
+    //    return (from dr in _carcassContext.ManyToManyJoins
+    //        join usr in _carcassContext.Users on new { a = dr.PtId, b = dr.PKey } equals new
+    //            { a = userDataId, b = usr.UserName }
+    //        join rol in _carcassContext.Roles on new { a = dr.CtId, b = dr.CKey } equals new
+    //            { a = roleDataId, b = rol.RolKey }
+    //        group rol by usr.UsrId
+    //        into ug
+    //        select new Tuple<int, int>(ug.Key, ug.Min(usr => usr.RolLevel))).ToList();
+    //}
 
-    private async Task<int> UserMinLevel(string userName, CancellationToken cancellationToken)
-    {
-        var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
-        var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
+    //private async Task<int> UserMinLevel(string userName, CancellationToken cancellationToken)
+    //{
+    //    var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
+    //    var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
 
-        var drPcs = ManyToManyJoinsPc(userDataId, userName, roleDataId).ToList();
+    //    var drPcs = ManyToManyJoinsPc(userDataId, userName, roleDataId).ToList();
 
-        return (from drPc in drPcs
-            join rol in _carcassContext.Roles on drPc equals rol.RolKey
-            select rol.RolLevel).DefaultIfEmpty(1000).Min();
-    }
+    //    return (from drPc in drPcs
+    //        join rol in _carcassContext.Roles on drPc equals rol.RolKey
+    //        select rol.RolLevel).DefaultIfEmpty(1000).Min();
+    //}
 
 
     //private async Task<List<DataTypeModel>> ParentsDataTypesNormalView(string userName,
@@ -377,43 +359,43 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
     //    return await result.ToListAsync(cancellationToken);
     //}
 
-    private async Task<List<DataTypeModel>> ChildrenDataTypesNormalView(string userName, string parentTypeKey,
-        CancellationToken cancellationToken)
-    {
-        var dtDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
-        var mmjDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
-        var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
-        var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
+    //private async Task<List<DataTypeModel>> ChildrenDataTypesNormalView(string userName, string parentTypeKey,
+    //    CancellationToken cancellationToken)
+    //{
+    //    var dtDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
+    //    var mmjDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
+    //    var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
+    //    var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
 
 
-        var result = from dt in _carcassContext.DataTypes
-            join pc in ManyToManyJoinsPc(dtDataId, parentTypeKey, dtDataId) on dt.DtKey equals pc
-            join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtKey
-                equals
-                pcc3
-            select new DataTypeModel(dt.DtId, dt.DtKey, dt.DtName, dt.DtTable, dt.DtParentDataTypeId);
-        return await result.ToListAsync(cancellationToken);
-    }
+    //    var result = from dt in _carcassContext.DataTypes
+    //        join pc in ManyToManyJoinsPc(dtDataId, parentTypeKey, dtDataId) on dt.DtKey equals pc
+    //        join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
+    //            dt.DtKey
+    //            equals
+    //            pcc3
+    //        select new DataTypeModel(dt.DtId, dt.DtKey, dt.DtName, dt.DtTable, dt.DtParentDataTypeId);
+    //    return await result.ToListAsync(cancellationToken);
+    //}
 
-    private async Task<List<DataTypeModel>> ChildrenDataTypesReverseView(string userName, string parentTypeKey,
-        CancellationToken cancellationToken)
-    {
-        var dtDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
-        var mmjDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
-        var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
-        var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
+    //private async Task<List<DataTypeModel>> ChildrenDataTypesReverseView(string userName, string parentTypeKey,
+    //    CancellationToken cancellationToken)
+    //{
+    //    var dtDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
+    //    var mmjDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
+    //    var roleDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
+    //    var userDataId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
 
 
-        var result = from dt in _carcassContext.DataTypes
-            join cp in ManyToManyJoinsCp(dtDataId, parentTypeKey, dtDataId) on dt.DtKey equals cp
-            join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtKey
-                equals
-                pcc2
-            select new DataTypeModel(dt.DtId, dt.DtKey, dt.DtName, dt.DtTable, dt.DtParentDataTypeId);
-        return await result.ToListAsync(cancellationToken);
-    }
+    //    var result = from dt in _carcassContext.DataTypes
+    //        join cp in ManyToManyJoinsCp(dtDataId, parentTypeKey, dtDataId) on dt.DtKey equals cp
+    //        join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
+    //            dt.DtKey
+    //            equals
+    //            pcc2
+    //        select new DataTypeModel(dt.DtId, dt.DtKey, dt.DtName, dt.DtTable, dt.DtParentDataTypeId);
+    //    return await result.ToListAsync(cancellationToken);
+    //}
 
     private async Task<IQueryable<MenuGroupModel>> MenuGroups(string userName, CancellationToken cancellationToken)
     {
@@ -423,7 +405,7 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
         var userDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
 
 
-        var mengIdsDist = (from m in _carcassContext.Menu
+        var mngIdsDist = (from m in _carcassContext.Menu
             join mg in _carcassContext.MenuGroups on m.MenGroupId equals mg.MengId
             //join f in CarcassContext.Forms on m.MenFormId equals f.FrmId
             join pccMg in ManyToManyJoinsPcc(userDtId, userName, roleDtId, menuGroupsDtId) on mg.MengKey equals pccMg
@@ -431,7 +413,7 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
             select mg.MengId).Distinct();
 
 
-        return from mgf in mengIdsDist
+        return from mgf in mngIdsDist
             join mg in _carcassContext.MenuGroups on mgf equals mg.MengId
             orderby mg.SortId
             select new MenuGroupModel(mg.MengId, mg.MengKey, mg.MengName, mg.SortId, mg.MengIconName, mg.Hidden);
@@ -538,23 +520,23 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
             .SingleOrDefaultAsync(cancellationToken);
     }
 
-    private async Task<string?> DataTypeKeyById(int dtId, CancellationToken cancellationToken)
-    {
-        return await _carcassContext.DataTypes.Where(w => w.DtId == dtId).Select(s => s.DtKey)
-            .SingleOrDefaultAsync(cancellationToken);
-    }
+    //private async Task<string?> DataTypeKeyById(int dtId, CancellationToken cancellationToken)
+    //{
+    //    return await _carcassContext.DataTypes.Where(w => w.DtId == dtId).Select(s => s.DtKey)
+    //        .SingleOrDefaultAsync(cancellationToken);
+    //}
 
-    private IEnumerable<string> ManyToManyJoinsPc(int parentTypeId, string parentKey, int childTypeId)
-    {
-        return _carcassContext.ManyToManyJoins
-            .Where(w => w.PtId == parentTypeId && w.PKey == parentKey && w.CtId == childTypeId).Select(s => s.CKey);
-    }
+    //private IEnumerable<string> ManyToManyJoinsPc(int parentTypeId, string parentKey, int childTypeId)
+    //{
+    //    return _carcassContext.ManyToManyJoins
+    //        .Where(w => w.PtId == parentTypeId && w.PKey == parentKey && w.CtId == childTypeId).Select(s => s.CKey);
+    //}
 
-    private IEnumerable<string> ManyToManyJoinsCp(int childTypeId, string childKey, int parentTypeId)
-    {
-        return _carcassContext.ManyToManyJoins
-            .Where(w => w.CtId == childTypeId && w.CKey == childKey && w.PtId == parentTypeId).Select(s => s.PKey);
-    }
+    //private IEnumerable<string> ManyToManyJoinsCp(int childTypeId, string childKey, int parentTypeId)
+    //{
+    //    return _carcassContext.ManyToManyJoins
+    //        .Where(w => w.CtId == childTypeId && w.CKey == childKey && w.PtId == parentTypeId).Select(s => s.PKey);
+    //}
 
     private IEnumerable<string> ManyToManyJoinsPcc(int parentTypeId, string parentKey, int childTypeId,
         int childTypeId2)
@@ -566,39 +548,39 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
             select r2.CKey;
     }
 
-    private IEnumerable<string> ManyToManyJoinsPcc2(int parentTypeId, string parentKey, int childTypeId,
-        int mmjDataId, int childTypeId2, int childTypeId3)
-    {
-        return from r in _carcassContext.ManyToManyJoins
-            join r1 in _carcassContext.ManyToManyJoins on new { t = r.PtId, i = r.PKey } equals new
-                { t = r1.CtId, i = r1.CKey }
-            join drt in _carcassContext.ManyToManyJoins on r.CKey equals drt.PKey + "." + drt.CKey
-            where r.CtId == mmjDataId && r.PtId == childTypeId && r1.PtId == parentTypeId &&
-                  r1.PKey == parentKey && drt.PtId == childTypeId2 && drt.CtId == childTypeId3
-            select drt.PKey;
-    }
+    //private IEnumerable<string> ManyToManyJoinsPcc2(int parentTypeId, string parentKey, int childTypeId,
+    //    int mmjDataId, int childTypeId2, int childTypeId3)
+    //{
+    //    return from r in _carcassContext.ManyToManyJoins
+    //        join r1 in _carcassContext.ManyToManyJoins on new { t = r.PtId, i = r.PKey } equals new
+    //            { t = r1.CtId, i = r1.CKey }
+    //        join drt in _carcassContext.ManyToManyJoins on r.CKey equals drt.PKey + "." + drt.CKey
+    //        where r.CtId == mmjDataId && r.PtId == childTypeId && r1.PtId == parentTypeId &&
+    //              r1.PKey == parentKey && drt.PtId == childTypeId2 && drt.CtId == childTypeId3
+    //        select drt.PKey;
+    //}
 
-    private IEnumerable<string> ManyToManyJoinsPcc3(int parentTypeId, string parentKey, int childTypeId,
-        int mmjDataId, int childTypeId2, int childTypeId3)
-    {
-        return from r in _carcassContext.ManyToManyJoins
-            join r1 in _carcassContext.ManyToManyJoins on new { t = r.PtId, i = r.PKey } equals new
-                { t = r1.CtId, i = r1.CKey }
-            join drt in _carcassContext.ManyToManyJoins on r.CKey equals drt.PKey + "." + drt.CKey
-            where r.CtId == mmjDataId && r.PtId == childTypeId && r1.PtId == parentTypeId &&
-                  r1.PKey == parentKey && drt.PtId == childTypeId2 && drt.CtId == childTypeId3
-            select drt.CKey;
-    }
+    //private IEnumerable<string> ManyToManyJoinsPcc3(int parentTypeId, string parentKey, int childTypeId,
+    //    int mmjDataId, int childTypeId2, int childTypeId3)
+    //{
+    //    return from r in _carcassContext.ManyToManyJoins
+    //        join r1 in _carcassContext.ManyToManyJoins on new { t = r.PtId, i = r.PKey } equals new
+    //            { t = r1.CtId, i = r1.CKey }
+    //        join drt in _carcassContext.ManyToManyJoins on r.CKey equals drt.PKey + "." + drt.CKey
+    //        where r.CtId == mmjDataId && r.PtId == childTypeId && r1.PtId == parentTypeId &&
+    //              r1.PKey == parentKey && drt.PtId == childTypeId2 && drt.CtId == childTypeId3
+    //        select drt.CKey;
+    //}
 
-    private IEnumerable<Tuple<string, string>> ManyToManyJoinsPcc4(int parentTypeId, string parentKey,
-        int childTypeId, int mmjDataId, int childTypeId2, int childTypeId3)
-    {
-        return from r in _carcassContext.ManyToManyJoins
-            join r1 in _carcassContext.ManyToManyJoins on new { t = r.PtId, i = r.PKey } equals new
-                { t = r1.CtId, i = r1.CKey }
-            join drt in _carcassContext.ManyToManyJoins on r.CKey equals drt.PKey + "." + drt.CKey
-            where r.CtId == mmjDataId && r.PtId == childTypeId && r1.PtId == parentTypeId &&
-                  r1.PKey == parentKey && drt.PtId == childTypeId2 && drt.CtId == childTypeId3
-            select new Tuple<string, string>(drt.PKey, drt.CKey);
-    }
+    //private IEnumerable<Tuple<string, string>> ManyToManyJoinsPcc4(int parentTypeId, string parentKey,
+    //    int childTypeId, int mmjDataId, int childTypeId2, int childTypeId3)
+    //{
+    //    return from r in _carcassContext.ManyToManyJoins
+    //        join r1 in _carcassContext.ManyToManyJoins on new { t = r.PtId, i = r.PKey } equals new
+    //            { t = r1.CtId, i = r1.CKey }
+    //        join drt in _carcassContext.ManyToManyJoins on r.CKey equals drt.PKey + "." + drt.CKey
+    //        where r.CtId == mmjDataId && r.PtId == childTypeId && r1.PtId == parentTypeId &&
+    //              r1.PKey == parentKey && drt.PtId == childTypeId2 && drt.CtId == childTypeId3
+    //        select new Tuple<string, string>(drt.PKey, drt.CKey);
+    //}
 }

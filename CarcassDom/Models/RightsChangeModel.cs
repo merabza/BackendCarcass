@@ -1,4 +1,4 @@
-﻿namespace CarcassRepositories.Models;
+﻿namespace CarcassDom.Models;
 
 public sealed class RightsChangeModel
 {

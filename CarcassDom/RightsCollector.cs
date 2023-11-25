@@ -157,10 +157,25 @@ public class RightsCollector
 
     private async Task<List<Tuple<int, int>>> UsersMinLevels(CancellationToken cancellationToken)
     {
-        int roleDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
-        int userDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
+        var roleDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
+        var userDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
 
         return await _repo.UsersMinLevels(roleDataId, userDataId, cancellationToken);
     }
 
+    public async Task<List<TypeDataModel>> HalfChecks(string userName, int dataTypeId, string dataKey,
+        ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken)
+    {
+        var dtDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
+        var mmjDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
+        var roleDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
+        var userDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
+
+        if (viewStyle == ERightsEditorViewStyle.NormalView)
+            return await _repo.HalfChecksNormalView(userDataId, userName, roleDataId, mmjDataId, dtDataId, dataTypeId,
+                dataKey, cancellationToken);
+
+        return await _repo.HalfChecksReverseView(userDataId, userName, roleDataId, mmjDataId, dtDataId, dataTypeId,
+            dataKey, cancellationToken);
+    }
 }
