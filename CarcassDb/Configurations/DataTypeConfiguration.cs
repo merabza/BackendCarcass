@@ -28,7 +28,7 @@ public class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
             .HasColumnName(nameof(DataType.DtNameGenitive).UnCapitalize()).HasMaxLength(100);
         builder.Property(e => e.DtTable).IsRequired().HasColumnName(nameof(DataType.DtTable).UnCapitalize())
             .HasMaxLength(100);
-        builder.Property(e => e.DtIdFieldName).IsRequired().HasColumnName(nameof(DataType.DtIdFieldName).UnCapitalize())
+        builder.Property(e => e.DtIdFieldName).HasColumnName(nameof(DataType.DtIdFieldName).UnCapitalize())
             .HasMaxLength(50);
         builder.Property(e => e.DtKeyFieldName).HasColumnName(nameof(DataType.DtKeyFieldName).UnCapitalize())
             .HasMaxLength(50);

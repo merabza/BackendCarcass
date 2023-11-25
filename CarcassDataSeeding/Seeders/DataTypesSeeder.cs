@@ -4,7 +4,6 @@ using System.Linq;
 using SystemToolsShared;
 using CarcassDataSeeding.Models;
 using CarcassDb.Models;
-using CarcassDb.QueryModels;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.CellModels;
 using Newtonsoft.Json;
@@ -195,10 +194,7 @@ public /*open*/
                 DtKey = ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey(),
                 DtName = "მონაცემების ცვლილებაზე უფლებები",
                 DtNameNominative = "მონაცემების ცვლილებაზე უფლება",
-                DtNameGenitive = "მონაცემების ცვლილებაზე უფლების", DtTable = "dataTypesToCrudTypes",
-                DtIdFieldName = nameof(DataTypeToCrudTypeModel.DtctId).UnCapitalize(),
-                DtKeyFieldName = nameof(DataTypeToCrudTypeModel.DtctKey).UnCapitalize(),
-                DtNameFieldName = nameof(DataTypeToCrudTypeModel.DtctName).UnCapitalize()
+                DtNameGenitive = "მონაცემების ცვლილებაზე უფლების", DtTable = "dataTypesToCrudTypes"
             },
             //CrudRightType
             new()
@@ -219,9 +215,6 @@ public /*open*/
                 DtNameNominative = "უფლება",
                 DtNameGenitive = "უფლების",
                 DtTable = "dataTypesToDataTypes",
-                DtIdFieldName = nameof(DataTypeToDataTypeModel.DtdtId).UnCapitalize(),
-                DtKeyFieldName = nameof(DataTypeToDataTypeModel.DtdtKey).UnCapitalize(),
-                DtNameFieldName = nameof(DataTypeToDataTypeModel.DtdtName).UnCapitalize()
             },
             //MenuGroup
             new()
@@ -391,7 +384,7 @@ public /*open*/
     protected static Cell GetComboCell(string fieldName, string caption, string dataMember,
         string valueMember, string displayMember, bool allowNull = false)
     {
-        var cell = Cell.Lookup(fieldName, caption, dataMember, valueMember, displayMember, null).Default();
+        var cell = Cell.Lookup(fieldName, caption, dataMember, valueMember, displayMember).Default();
         return allowNull
             ? cell.Nullable()
             : cell.Positive($"{caption} არჩეული უნდა იყოს").Required($"{caption} არჩეული უნდა იყოს");
@@ -400,7 +393,7 @@ public /*open*/
     protected static Cell GetComboCellWithRowSource(string fieldName, string caption, string rowSource,
         bool isShort = false)
     {
-        var res = Cell.Lookup(fieldName, caption, rowSource).Default();
+        var res = Cell.RsLookup(fieldName, caption, rowSource).Default();
         return isShort ? res.Short() : res;
     }
 

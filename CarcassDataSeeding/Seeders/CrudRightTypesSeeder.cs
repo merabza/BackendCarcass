@@ -2,7 +2,7 @@
 using System.Linq;
 using CarcassDataSeeding.Models;
 using CarcassDb.Models;
-using CarcassRightsDom;
+using CarcassDom;
 using LanguageExt;
 using SystemToolsShared;
 

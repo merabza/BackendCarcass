@@ -29,10 +29,10 @@ public /*open*/ class Cell
         return IntegerCell.Create(fieldName, caption, errorCode, errorMessage, visible);
     }
 
-    public static LookupCell Lookup(string fieldName, string? caption, string rowSource, string? errorCode = null,
+    public static RsLookupCell RsLookup(string fieldName, string? caption, string rowSource, string? errorCode = null,
         string? errorMessage = null, bool visible = true)
     {
-        return LookupCell.Create(fieldName, caption, rowSource, errorCode, errorMessage, visible);
+        return RsLookupCell.Create(fieldName, caption, rowSource, errorCode, errorMessage, visible);
     }
 
     public static LookupCell Lookup(string fieldName, string? caption, string dataMember, string valueMember,
