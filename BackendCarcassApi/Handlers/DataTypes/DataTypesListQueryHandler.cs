@@ -12,19 +12,15 @@ using MessagingAbstractions;
 using Microsoft.AspNetCore.Http;
 using OneOf;
 using SystemToolsShared;
+// ReSharper disable ReplaceWithPrimaryConstructorParameter
 
 namespace BackendCarcassApi.Handlers.DataTypes;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class DataTypesListQueryHandler : LoginCommandBase,
+public sealed class DataTypesListQueryHandler(IMenuRightsRepository repository) : LoginCommandBase,
     IQueryHandler<DataTypesQueryRequest, DataTypesResponse[]>
 {
-    private readonly IMenuRightsRepository _repository;
-
-    public DataTypesListQueryHandler(IMenuRightsRepository repository)
-    {
-        _repository = repository;
-    }
+    private readonly IMenuRightsRepository _repository = repository;
 
     public async Task<OneOf<DataTypesResponse[], IEnumerable<Err>>> Handle(DataTypesQueryRequest request,
         CancellationToken cancellationToken)
