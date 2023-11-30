@@ -30,7 +30,7 @@ public class RightsApiErrors
         new()
         {
             ErrorCode = nameof(TableNamesListNotIdentified),
-            ErrorMessage = "ცხრილის სახელების სია იდენტიფიცირება ვერ მოხერხდა"
+            ErrorMessage = "ცხრილის სახელების სიის იდენტიფიცირება ვერ მოხერხდა"
         };
 
     public static readonly Err InsufficientRights =
