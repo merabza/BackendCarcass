@@ -42,6 +42,12 @@ public /*open*/ class Cell
             visible);
     }
 
+    public static MdLookupCell MdLookup(string fieldName, string? caption, string dtTable, string? errorCode = null,
+        string? errorMessage = null, bool visible = true)
+    {
+        return MdLookupCell.Create(fieldName, caption, dtTable, errorCode, errorMessage, visible);
+    }
+
     public static BooleanCell Boolean(string fieldName, string? caption, bool visible = true)
     {
         return BooleanCell.Create(fieldName, caption, visible);
@@ -58,8 +64,5 @@ public /*open*/ class Cell
         return StringCell.Create(fieldName, caption, visible);
     }
 
-    public virtual List<Err> Validate(object? value)
-    {
-        return new List<Err>();
-    }
+    public virtual List<Err> Validate(object? value) => new();
 }

@@ -280,12 +280,22 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
                 continue;
             foreach (var cell in gm.Cells)
             {
-                if (cell is not LookupCell lookupCell)
+                var dtTable = cell switch
+                {
+                    LookupCell lookupCell => lookupCell.DataMember,
+                    MdLookupCell mdLookupCell => mdLookupCell.DtTable,
+                    _ => null
+                };
+
+                if ( dtTable is null)
                     continue;
-                dataType = existingDataTypes.SingleOrDefault(s => s.DtTable == lookupCell.DataMember);
+
+                dataType = existingDataTypes.SingleOrDefault(s => s.DtTable == dtTable);
                 if (dataType == null)
                     continue;
+
                 res.Add(new ManyToManyJoin { PtId = dtmen, PKey = miItm.MenKey, CtId = dtdt, CKey = dataType.DtKey });
+
             }
         }
 

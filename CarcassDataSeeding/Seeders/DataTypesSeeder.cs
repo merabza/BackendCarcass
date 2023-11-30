@@ -381,10 +381,18 @@ public /*open*/
         return Cell.Integer("sortId", "რიგითი ნომერი").Required("რიგითი ნომერი შევსებული უნდა იყოს").Default();
     }
 
-    protected static Cell GetComboCell(string fieldName, string caption, string dataMember,
-        string valueMember, string displayMember, bool allowNull = false)
+    protected static Cell GetComboCell(string fieldName, string caption, string dataMember, string valueMember,
+        string displayMember, bool allowNull = false)
     {
         var cell = Cell.Lookup(fieldName, caption, dataMember, valueMember, displayMember).Default();
+        return allowNull
+            ? cell.Nullable()
+            : cell.Positive($"{caption} არჩეული უნდა იყოს").Required($"{caption} არჩეული უნდა იყოს");
+    }
+
+    protected static Cell GetMdComboCell(string fieldName, string caption, string dtTable, bool allowNull = false)
+    {
+        var cell = Cell.MdLookup(fieldName, caption, dtTable).Default();
         return allowNull
             ? cell.Nullable()
             : cell.Positive($"{caption} არჩეული უნდა იყოს").Required($"{caption} არჩეული უნდა იყოს");
