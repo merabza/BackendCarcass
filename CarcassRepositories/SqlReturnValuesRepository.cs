@@ -13,7 +13,8 @@ public class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValuesRepos
 {
     private readonly CarcassDbContext _ctx = ctx;
 
-    public override async Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt, CancellationToken cancellationToken)
+    public override async Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt,
+        CancellationToken cancellationToken)
     {
         string? strSql = null;
         if (dt.DtManyToManyJoinParentDataTypeId is not null && dt.DtManyToManyJoinChildDataTypeId is not null)
@@ -38,13 +39,14 @@ public class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValuesRepos
                           	AND MMJ.CtId = {dt.DtManyToManyJoinChildDataTypeId}
                           """;
         }
-        else if (IsIdentifier(dt.DtIdFieldName) && IsIdentifier(dt.DtKeyFieldName) && IsIdentifier(dt.DtNameFieldName))
+        else if (IsIdentifier(dt.DtIdFieldName) && (dt.DtKeyFieldName is null || IsIdentifier(dt.DtKeyFieldName)) &&
+                 (dt.DtNameFieldName is null || IsIdentifier(dt.DtNameFieldName)))
         {
             //ინფორმაციის დაბრუნება უნდა მოხდეს ერთი ცხრილიდან
             var parentFieldName = await FindParentFieldName(dt, cancellationToken);
 
             strSql =
-                $"SELECT {dt.DtIdFieldName} AS value, {dt.DtKeyFieldName} AS [key], {dt.DtNameFieldName} AS [name], {parentFieldName ?? "NULL"} AS parentId FROM {dt.DtTable}";
+                $"SELECT {dt.DtIdFieldName} AS id, {dt.DtKeyFieldName ?? "NULL"} AS [key], {dt.DtNameFieldName ?? "NULL"} AS [name], {parentFieldName ?? "NULL"} AS parentId FROM {dt.DtTable}";
         }
 
         if (strSql != null)

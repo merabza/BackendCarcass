@@ -133,7 +133,7 @@ public class RightsCollector
                     join ml in uml on usr.UsrId equals ml.Item1 into gj
                     from s in gj.DefaultIfEmpty()
                     where s.Item2 >= minOfLevel
-                    select new ReturnValueModel { Value = usr.UsrId, Key = usr.NormalizedUserName, Name = usr.FullName })
+                    select new ReturnValueModel { Id = usr.UsrId, Key = usr.NormalizedUserName, Name = usr.FullName })
                 .ToList();
         }
 

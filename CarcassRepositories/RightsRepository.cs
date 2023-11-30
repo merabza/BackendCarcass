@@ -59,7 +59,7 @@ public sealed class RightsRepository
     public async Task<List<ReturnValueModel>> GetRoleReturnValues(int minLevel, CancellationToken cancellationToken)
     {
         return await _carcassContext.Roles.Where(w => w.RolLevel >= minLevel)
-            .Select(role => new ReturnValueModel { Value = role.RolId, Key = role.RolKey, Name = role.RolName })
+            .Select(role => new ReturnValueModel { Id = role.RolId, Key = role.RolKey, Name = role.RolName })
             .ToListAsync(cancellationToken: cancellationToken);
     }
 
