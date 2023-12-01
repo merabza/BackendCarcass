@@ -9,4 +9,6 @@ public interface IReturnValuesRepository
 {
     Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string> tableNames, CancellationToken cancellationToken);
     Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt, CancellationToken cancellationToken);
+    Task<List<SrvModel>> GetAllSimpleReturnValues(DataTypeModelForRvs dt, CancellationToken cancellationToken);
+
 }

@@ -72,4 +72,8 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
 
     public abstract Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt, CancellationToken cancellationToken);
 
+    public abstract Task<List<SrvModel>> GetAllSimpleReturnValues(DataTypeModelForRvs dt,
+        CancellationToken cancellationToken);
+
+
 }

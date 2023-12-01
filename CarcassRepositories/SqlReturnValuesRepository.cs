@@ -13,6 +13,22 @@ public class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValuesRepos
 {
     private readonly CarcassDbContext _ctx = ctx;
 
+    public override async Task<List<SrvModel>> GetAllSimpleReturnValues(DataTypeModelForRvs dt, CancellationToken cancellationToken)
+    {
+        string? strSql = null;
+        if (IsIdentifier(dt.DtIdFieldName) && (dt.DtKeyFieldName is null || IsIdentifier(dt.DtKeyFieldName)) &&
+                 (dt.DtNameFieldName is null || IsIdentifier(dt.DtNameFieldName)))
+        {
+            //ინფორმაციის დაბრუნება უნდა მოხდეს ერთი ცხრილიდან
+            strSql =
+                $"SELECT {dt.DtIdFieldName} AS id, {dt.DtNameFieldName ?? dt.DtKeyFieldName ?? "NULL"} AS [name] FROM {dt.DtTable}";
+        }
+
+        if (strSql != null)
+            return await _ctx.Set<SrvModel>().FromSqlRaw(strSql).ToListAsync(cancellationToken);
+        return new List<SrvModel>();
+    }
+
     public override async Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt,
         CancellationToken cancellationToken)
     {
