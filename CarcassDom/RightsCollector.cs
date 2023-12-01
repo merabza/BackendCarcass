@@ -9,19 +9,14 @@ using System;
 using CarcassDom.Models;
 using CarcassMasterDataDom.Models;
 using Microsoft.EntityFrameworkCore;
+// ReSharper disable ReplaceWithPrimaryConstructorParameter
 
 namespace CarcassDom;
 
-public class RightsCollector
+public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvRepo)
 {
-    private readonly IRightsRepository _repo;
-    private readonly IReturnValuesRepository _rvRepo;
-
-    public RightsCollector(IRightsRepository repo, IReturnValuesRepository rvRepo)
-    {
-        _repo = repo;
-        _rvRepo = rvRepo;
-    }
+    private readonly IRightsRepository _repo = repo;
+    private readonly IReturnValuesRepository _rvRepo = rvRepo;
 
     public async Task<OneOf<List<DataTypeModel>, Err[]>> ParentsTreeData(string userName, ERightsEditorViewStyle viewStyle,
         CancellationToken cancellationToken)

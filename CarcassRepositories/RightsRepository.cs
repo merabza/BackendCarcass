@@ -239,7 +239,7 @@ public sealed class RightsRepository
         //.ToListAsync(cancellationToken: cancellationToken);
     }
 
-    public IQueryable<string> ManyToManyJoinsPcc2(int parentTypeId, string parentKey, int childTypeId,
+    private IQueryable<string> ManyToManyJoinsPcc2(int parentTypeId, string parentKey, int childTypeId,
         int mmjDataId, int childTypeId2, int childTypeId3)
     {
         return from r in _carcassContext.ManyToManyJoins
@@ -274,6 +274,4 @@ public sealed class RightsRepository
                   r1.PKey == parentKey && drt.PtId == childTypeId2 && drt.CtId == childTypeId3
             select new Tuple<string, string>(drt.PKey, drt.CKey);
     }
-
-
 }
