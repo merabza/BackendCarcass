@@ -1,8 +1,6 @@
-﻿using CarcassMasterDataDom.Models;
-
-namespace CarcassMasterDataDom;
+﻿namespace CarcassMasterDataDom;
 
 public interface IReturnValuesLoaderCreator
 {
-    IReturnValuesLoader CreateReturnValuesLoaderLoader(DataTypeModelForRvs dt);
+    IReturnValuesLoader? CreateReturnValuesLoaderLoader(string tableName);
 }

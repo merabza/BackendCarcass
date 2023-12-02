@@ -1,6 +1,4 @@
 ﻿using System;
-using CarcassMasterDataDom.Models;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CarcassMasterDataDom;
 
@@ -8,15 +6,13 @@ public class ReturnValuesLoaderCreator : IReturnValuesLoaderCreator
 {
     protected readonly IServiceProvider Services;
 
-    public ReturnValuesLoaderCreator(IServiceProvider services)
+    protected ReturnValuesLoaderCreator(IServiceProvider services)
     {
         Services = services;
     }
 
-    public virtual IReturnValuesLoader CreateReturnValuesLoaderLoader(DataTypeModelForRvs dt)
+    public virtual IReturnValuesLoader? CreateReturnValuesLoaderLoader(string tableName)
     {
-        var scope = Services.CreateScope();
-
-        return new MasterDataReturnValuesLoader(dt, scope.ServiceProvider.GetRequiredService<IReturnValuesRepository>());
+        return null;
     }
 }
