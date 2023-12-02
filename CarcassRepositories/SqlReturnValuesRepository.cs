@@ -13,7 +13,7 @@ public class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValuesRepos
 {
     private readonly CarcassDbContext _ctx = ctx;
 
-    public override async Task<List<SrvModel>> GetAllSimpleReturnValues(DataTypeModelForRvs dt, CancellationToken cancellationToken)
+    public override async Task<List<SrvModel>> GetSimpleReturnValues(DataTypeModelForRvs dt, CancellationToken cancellationToken)
     {
         string? strSql = null;
         if (IsIdentifier(dt.DtIdFieldName) && (dt.DtKeyFieldName is null || IsIdentifier(dt.DtKeyFieldName)) &&

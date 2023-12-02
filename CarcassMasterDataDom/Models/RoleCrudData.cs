@@ -29,6 +29,6 @@ public class RoleCrudData : ICrudData, IDataType
 
     public dynamic EditFields()
     {
-        return new { RolKey, RolName, RolLevel };
+        return new { Id, RolKey, RolName, RolLevel };
     }
 }

@@ -35,10 +35,14 @@ public class UsersCrud : CrudBase, IMasterDataLoader
             .Select(x => new UserCrudData(x.UserName!, x.FirstName, x.LastName, x.Email!)));
     }
 
-    public override Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+    public override async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken)
     {
-        throw new System.NotImplementedException();
+        var users = _userManager.Users;
+        var (realOffset, count, rows) = await users.UseCustomSortFilterPagination(filterSortRequest,
+            x => new UserCrudData(x.UserName!, x.FirstName, x.LastName, x.Email!), cancellationToken);
+
+        return new TableRowsData(count, realOffset, rows.Select(s=>s.EditFields()).ToList());
     }
 
     protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)
