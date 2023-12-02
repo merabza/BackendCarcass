@@ -9,12 +9,12 @@ using Microsoft.Extensions.Logging;
 
 namespace CarcassMasterDataDom;
 
-public class MasterDataLoaderCrudCreator : IMasterDataLoaderCrudCreator
+public class MasterDataLoaderCreator : IMasterDataLoaderCreator
 {
-    private readonly ILogger<MasterDataLoaderCrudCreator> _logger;
+    private readonly ILogger<MasterDataLoaderCreator> _logger;
     protected readonly IServiceProvider Services;
 
-    protected MasterDataLoaderCrudCreator(ILogger<MasterDataLoaderCrudCreator> logger, IServiceProvider services)
+    protected MasterDataLoaderCreator(ILogger<MasterDataLoaderCreator> logger, IServiceProvider services)
     {
         _logger = logger;
         Services = services;

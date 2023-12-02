@@ -9,15 +9,16 @@ using MediatR;
 using MessagingAbstractions;
 using OneOf;
 using SystemToolsShared;
+// ReSharper disable ConvertToPrimaryConstructor
 
 namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MdDeleteOneRecordCommandHandler : ICommandHandler<MdDeleteOneRecordCommandRequest>
 {
-    private readonly IMasterDataLoaderCrudCreator _masterDataLoaderCrudCreator;
+    private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
 
-    public MdDeleteOneRecordCommandHandler(IMasterDataLoaderCrudCreator masterDataLoaderCrudCreator)
+    public MdDeleteOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
     {
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }

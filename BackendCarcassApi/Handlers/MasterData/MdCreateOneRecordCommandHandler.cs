@@ -10,6 +10,7 @@ using CarcassMasterDataDom.Models;
 using MessagingAbstractions;
 using OneOf;
 using SystemToolsShared;
+// ReSharper disable ConvertToPrimaryConstructor
 
 namespace BackendCarcassApi.Handlers.MasterData;
 
@@ -17,10 +18,10 @@ namespace BackendCarcassApi.Handlers.MasterData;
 public sealed class
     MdCreateOneRecordCommandHandler : ICommandHandler<MdCreateOneRecordCommandRequest, MasterDataCrudLoadedData>
 {
-    private readonly IMasterDataLoaderCrudCreator _masterDataLoaderCrudCreator;
+    private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
 
 
-    public MdCreateOneRecordCommandHandler(IMasterDataLoaderCrudCreator masterDataLoaderCrudCreator)
+    public MdCreateOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
     {
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }

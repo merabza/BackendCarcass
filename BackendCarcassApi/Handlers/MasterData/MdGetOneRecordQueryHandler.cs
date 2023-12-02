@@ -7,15 +7,16 @@ using CarcassMasterDataDom.Models;
 using MessagingAbstractions;
 using OneOf;
 using SystemToolsShared;
+// ReSharper disable ConvertToPrimaryConstructor
 
 namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MdGetOneRecordQueryHandler : IQueryHandler<MdGetOneRecordQueryRequest, MasterDataCrudLoadedData>
 {
-    private readonly IMasterDataLoaderCrudCreator _masterDataLoaderCrudCreator;
+    private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
 
-    public MdGetOneRecordQueryHandler(IMasterDataLoaderCrudCreator masterDataLoaderCrudCreator)
+    public MdGetOneRecordQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
     {
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }

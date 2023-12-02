@@ -40,22 +40,6 @@ public class ReturnValuesLoader(List<string> tableNames, IReturnValuesRepository
                 var res = tableResult.AsT0;
                 resultList.Add(dt.DtTable, res);
             }
-
-
-
-            //if (!Enum.TryParse(tableName.CapitalizeCamel(), out EAgrMdQueryNames qName))
-            //    return base.CreateMasterDataLoader(queryName);
-
-            //List<SrvModel> oneTableReturnValues;
-
-            //switch (dt.DtTable)
-            //{
-
-
-            //}
-
-            //oneTableReturnValues = await _rvRepo.GetSimpleReturnValues(dt, cancellationToken);
-            //resultList.Add(dt.DtTable, oneTableReturnValues);
         }
 
         var tablesWithoutDataType = _tableNames.Except(tableDataTypes.Select(x => x.DtTable));
@@ -85,7 +69,6 @@ public class ReturnValuesLoader(List<string> tableNames, IReturnValuesRepository
         return resultList;
 
 
-        //return resultList;
     }
 
 }

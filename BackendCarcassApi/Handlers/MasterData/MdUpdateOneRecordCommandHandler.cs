@@ -11,15 +11,16 @@ using MediatR;
 using MessagingAbstractions;
 using OneOf;
 using SystemToolsShared;
+// ReSharper disable ConvertToPrimaryConstructor
 
 namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOneRecordCommandRequest>
 {
-    private readonly IMasterDataLoaderCrudCreator _masterDataLoaderCrudCreator;
+    private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
 
-    public MdUpdateOneRecordCommandHandler(IMasterDataLoaderCrudCreator masterDataLoaderCrudCreator)
+    public MdUpdateOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
     {
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
