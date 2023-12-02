@@ -4,7 +4,6 @@ using System.Linq;
 using CarcassDb;
 using CarcassDb.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared;
 
@@ -47,7 +46,7 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
 
     public string GetTableName<T>()
     {
-        IEntityType entType = _context.Model.GetEntityTypes().SingleOrDefault(s => s.ClrType == typeof(T));
+        var entType = _context.Model.GetEntityTypes().SingleOrDefault(s => s.ClrType == typeof(T));
         return entType?.GetTableName();
     }
 
@@ -58,8 +57,26 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
 
         try
         {
-            foreach (T entity in entities)
+            foreach (var entity in entities)
                 _context.Add(entity);
+            return SaveChanges();
+        }
+        catch (Exception e)
+        {
+            StShared.WriteException(e, $"Error when creating CreateEntities type: {typeof(T)}", true, _logger, false);
+            return false;
+        }
+    }
+
+    public bool DeleteEntities<T>(List<T> entities)
+    {
+        if (entities == null || entities.Count == 0)
+            return true;
+
+        try
+        {
+            foreach (var entity in entities)
+                _context.Remove(entity);
             return SaveChanges();
         }
         catch (Exception e)

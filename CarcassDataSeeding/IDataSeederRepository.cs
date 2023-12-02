@@ -8,6 +8,7 @@ public interface IDataSeederRepository
 {
     bool HaveAnyRecord<T>() where T : class;
     bool CreateEntities<T>(List<T> entities);
+    bool DeleteEntities<T>(List<T> entities);
     List<T> GetAll<T>() where T : class;
     List<ManyToManyJoin> GetManyToManyJoins(int parentDataTypeId, int childDataTypeId);
     string GetTableName<T>();

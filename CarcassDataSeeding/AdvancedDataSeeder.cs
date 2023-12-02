@@ -22,7 +22,7 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
 
     protected override Option<Err[]> AdditionalCheck()
     {
-        var (forAdd, forUpdate) = CompareLists(Repo.GetAll<TDst>(), CreateMustList());
+        var (forAdd, forUpdate, forDelete) = CompareLists(Repo.GetAll<TDst>(), CreateMustList());
 
         if (!Repo.CreateEntities(forAdd))
             return new Err[]
@@ -44,15 +44,24 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
                 }
             };
 
+        if (!Repo.DeleteEntities(forDelete))
+            return new Err[]
+            {
+                new()
+                {
+                    ErrorCode = "CanNotDeleteEntitiesInAdditionalCheck",
+                    ErrorMessage = "Can Not Delete Entities In Additional Check"
+                }
+            };
+
         DataSeederTempData.Instance.SaveIntIdKeys<TDst>(Repo.GetAll<TDst>().ToDictionary(k => k.Key, v => v.Id));
         return null;
     }
 
-    private static (List<TDst>, List<TDst>) CompareLists(IReadOnlyCollection<TDst> existing,
-        IReadOnlyCollection<TDst> mustBe)
+    private static (List<TDst>, List<TDst>, List<TDst>) CompareLists(IReadOnlyCollection<TDst> existing, IReadOnlyCollection<TDst> mustBe)
     {
         if (mustBe == null)
-            return (null, null);
+            return (null, null, null);
 
         var duplicateExistingKeys = existing.GroupBy(x => x.Key)
             .Where(group => group.Count() > 1)
@@ -79,22 +88,28 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
 
         var forAdd = new List<TDst>();
         var forUpdate = new List<TDst>();
+        var forDelete = new List<TDst>();
         var allKeys = existing.Select(s => s.Key).Union(mustBe.Select(s => s.Key)).Distinct().ToList();
         var couples = allKeys.Select(s => new Tuple<TDst, TDst>(existing.SingleOrDefault(sod => sod.Key == s),
             mustBe.SingleOrDefault(sod => sod.Key == s))).ToList();
         foreach (var couple in couples)
         {
-            if (couple.Item1 == null)
+            if (couple.Item2 is not null && couple.Item1 is null)
             {
                 forAdd.Add(couple.Item2);
             }
-            else if (couple.Item2 != null && !couple.Item1.EqualsTo(couple.Item2))
+            else if (couple.Item1 is not null && couple.Item2 is null)
+            {
+                forDelete.Add(couple.Item1);
+            }
+            else if (couple.Item1 is not null && couple.Item2 is not null && !couple.Item1.EqualsTo(couple.Item2))
             {
                 couple.Item1.UpdateTo(couple.Item2);
                 forUpdate.Add(couple.Item1);
             }
+
         }
 
-        return (forAdd, forUpdate);
+        return (forAdd, forUpdate, forDelete);
     }
 }
