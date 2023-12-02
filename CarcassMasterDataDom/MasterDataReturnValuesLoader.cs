@@ -4,28 +4,26 @@ using System.Threading.Tasks;
 using CarcassMasterDataDom.Models;
 using SystemToolsShared;
 using System.Threading;
+
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
 
 namespace CarcassMasterDataDom;
 
-public class MasterDataReturnValuesLoader(List<string> tableNames, IReturnValuesRepository rvRepo)
+public class MasterDataReturnValuesLoader : IReturnValuesLoader
 {
-    private readonly List<string> _tableNames = tableNames;
-    private readonly IReturnValuesRepository _rvRepo = rvRepo;
+    private readonly DataTypeModelForRvs _dt;
+    private readonly IReturnValuesRepository _rvRepo;
 
-    public async Task<OneOf<Dictionary<string, IEnumerable<SrvModel>>, IEnumerable<Err>>> Run(
-        CancellationToken cancellationToken)
+    public MasterDataReturnValuesLoader(DataTypeModelForRvs dt, IReturnValuesRepository rvRepo)
     {
-        var resultList = new Dictionary<string, IEnumerable<SrvModel>>();
-        var tableDataTypes = await _rvRepo.GetDataTypesByTableNames(_tableNames, cancellationToken);
-        //ჩაიტვირთოს ყველა ცხრილი სათითაოდ
-        foreach (var dt in tableDataTypes)
-        {
-            var oneTableReturnValues = await _rvRepo.GetAllSimpleReturnValues(dt, cancellationToken);
-            resultList.Add(dt.DtTable, oneTableReturnValues);
-        }
-
-        return resultList;
+        _dt = dt;
+        _rvRepo = rvRepo;
     }
 
+    public async Task<OneOf<IEnumerable<SrvModel>, Err[]>> GetSimpleReturnValues(CancellationToken cancellationToken)
+    {
+        return await _rvRepo.GetSimpleReturnValues(_dt, cancellationToken);
+    }
+
+    
 }

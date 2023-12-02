@@ -34,10 +34,15 @@ public class RolesCrud : CrudBase, IMasterDataLoader
             new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level)));
     }
 
-    public override Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+    public override async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken)
     {
-        throw new System.NotImplementedException();
+        var roles = _roleManager.Roles;
+
+        var (realOffset, count, rows) = await roles.UseCustomSortFilterPagination(filterSortRequest,
+            x => new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level), cancellationToken);
+
+        return new TableRowsData(count, realOffset, rows.Select(s=>s.EditFields()).ToList());
     }
 
     protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)
