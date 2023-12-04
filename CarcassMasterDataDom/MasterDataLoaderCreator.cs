@@ -24,17 +24,20 @@ public class MasterDataLoaderCreator : IMasterDataLoaderCreator
     {
         var scope = Services.CreateScope();
 
-        return queryName switch
-        {
-            "menuToCrudTypes" => new MenuToCrudTypesMdLoader(scope.ServiceProvider
-                .GetRequiredService<IDataTypesRepository>()),
-            "dataTypesToDataTypes" => new DataTypesToDataTypesMdLoader(scope.ServiceProvider
-                .GetRequiredService<IDataTypesRepository>()),
-            "dataTypesToCrudTypes" => new DataTypesToCrudTypesMdLoader(scope.ServiceProvider
-                .GetRequiredService<IDataTypesRepository>()),
-            _ => new MasterDataCrud(queryName, _logger,
-                scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>())
-        };
+        //return queryName switch
+        //{
+        //    "menuToCrudTypes" => new MenuToCrudTypesMdLoader(scope.ServiceProvider
+        //        .GetRequiredService<IDataTypesRepository>()),
+        //    "dataTypesToDataTypes" => new DataTypesToDataTypesMdLoader(scope.ServiceProvider
+        //        .GetRequiredService<IDataTypesRepository>()),
+        //    "dataTypesToCrudTypes" => new DataTypesToCrudTypesMdLoader(scope.ServiceProvider
+        //        .GetRequiredService<IDataTypesRepository>()),
+        //    _ => new MasterDataCrud(queryName, _logger,
+        //        scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>())
+        //};
+
+        return new MasterDataCrud(queryName, _logger,
+            scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>());
     }
 
     public virtual CrudBase CreateMasterDataCrud(string tableName)

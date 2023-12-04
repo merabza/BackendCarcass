@@ -18,14 +18,11 @@ public sealed class GetTablesQueryHandler : IQueryHandler<MdGetTablesQueryReques
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCreator;
     private readonly IReturnValuesRepository _rvRepo;
-    private readonly IReturnValuesLoaderCreator _returnValuesLoaderCreator;
 
-    public GetTablesQueryHandler(IMasterDataLoaderCreator masterDataLoaderCreator, IReturnValuesRepository rvRepo,
-        IReturnValuesLoaderCreator returnValuesLoaderCreator)
+    public GetTablesQueryHandler(IMasterDataLoaderCreator masterDataLoaderCreator, IReturnValuesRepository rvRepo)
     {
         _masterDataLoaderCreator = masterDataLoaderCreator;
         _rvRepo = rvRepo;
-        _returnValuesLoaderCreator = returnValuesLoaderCreator;
     }
 
     public async Task<OneOf<MdGetTablesQueryResponse, IEnumerable<Err>>> Handle(MdGetTablesQueryRequest request,
