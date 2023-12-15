@@ -11,7 +11,8 @@ using CarcassContracts.ErrorModels;
 
 namespace CarcassMasterDataDom;
 
-public class ReturnValuesLoader(List<string> tableNames, IReturnValuesRepository rvRepo, IReturnValuesLoaderCreator returnValuesLoaderCreator)
+public class ReturnValuesLoader(List<string> tableNames, IReturnValuesRepository rvRepo,
+    IReturnValuesLoaderCreator returnValuesLoaderCreator)
 {
     private readonly IReturnValuesLoaderCreator _returnValuesLoaderCreator = returnValuesLoaderCreator;
     private readonly List<string> _tableNames = tableNames;
@@ -27,9 +28,9 @@ public class ReturnValuesLoader(List<string> tableNames, IReturnValuesRepository
         //ჩაიტვირთოს ყველა ცხრილი სათითაოდ
         foreach (var dt in tableDataTypes)
         {
-            
-
-            var loader = new MasterDataReturnValuesLoader(dt, _rvRepo);// _returnValuesLoaderCreator.CreateReturnValuesLoaderLoader(dt);
+            var loader =
+                new MasterDataReturnValuesLoader(dt,
+                    _rvRepo); // _returnValuesLoaderCreator.CreateReturnValuesLoaderLoader(dt);
             var tableResult = await loader.GetSimpleReturnValues(cancellationToken);
             if (tableResult.IsT1)
             {
@@ -46,11 +47,13 @@ public class ReturnValuesLoader(List<string> tableNames, IReturnValuesRepository
         foreach (var tableName in tablesWithoutDataType)
         {
             var loader = _returnValuesLoaderCreator.CreateReturnValuesLoaderLoader(tableName);
-            if ( loader is null)
+            if (loader is null)
             {
-                errors.Add(MasterDataApiErrors.LoaderForTableNotFound(tableName)); //ჩამტვირთავი ცხრილისთვის სახელით {tableName} ვერ მოიძებნა
+                errors.Add(MasterDataApiErrors
+                    .LoaderForTableNotFound(tableName)); //ჩამტვირთავი ცხრილისთვის სახელით {tableName} ვერ მოიძებნა
                 continue;
             }
+
             var tableResult = await loader.GetSimpleReturnValues(cancellationToken);
             if (tableResult.IsT1)
             {
@@ -67,8 +70,5 @@ public class ReturnValuesLoader(List<string> tableNames, IReturnValuesRepository
         if (errors.Count > 0)
             return errors;
         return resultList;
-
-
     }
-
 }

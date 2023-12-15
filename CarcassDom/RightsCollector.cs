@@ -9,6 +9,7 @@ using System;
 using CarcassDom.Models;
 using CarcassMasterDataDom.Models;
 using Microsoft.EntityFrameworkCore;
+
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
 
 namespace CarcassDom;
@@ -18,7 +19,8 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
     private readonly IRightsRepository _repo = repo;
     private readonly IReturnValuesRepository _rvRepo = rvRepo;
 
-    public async Task<OneOf<List<DataTypeModel>, Err[]>> ParentsTreeData(string userName, ERightsEditorViewStyle viewStyle,
+    public async Task<OneOf<List<DataTypeModel>, Err[]>> ParentsTreeData(string userName,
+        ERightsEditorViewStyle viewStyle,
         CancellationToken cancellationToken)
     {
         var dataTypes =
@@ -30,7 +32,8 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
         return await GetTreeData(userName, dataTypes, cancellationToken);
     }
 
-    private async Task<OneOf<List<DataTypeModel>, Err[]>> GetTreeData(string userName, IEnumerable<DataTypeModelForRvs> dataTypes, CancellationToken cancellationToken)
+    private async Task<OneOf<List<DataTypeModel>, Err[]>> GetTreeData(string userName,
+        IEnumerable<DataTypeModelForRvs> dataTypes, CancellationToken cancellationToken)
     {
         var dataTypeModels = new List<DataTypeModel>();
         var errors = new List<Err>();
@@ -111,7 +114,8 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
         var roleDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
         var userDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
 
-        return await _repo.ChildrenDataTypesReverseView(dtDataId, parentTypeKey, userDataId, userName, roleDataId, mmjDataId, cancellationToken);
+        return await _repo.ChildrenDataTypesReverseView(dtDataId, parentTypeKey, userDataId, userName, roleDataId,
+            mmjDataId, cancellationToken);
     }
 
     private async Task<OneOf<List<ReturnValueModel>, Err[]>> GetRetValues(DataTypeModelForRvs dt, string userName,

@@ -12,8 +12,8 @@ namespace CarcassRepositories;
 
 public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValuesRepository
 {
-
-    public async Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string> tableNames, CancellationToken cancellationToken)
+    public async Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string> tableNames,
+        CancellationToken cancellationToken)
     {
         return await ctx.DataTypes.Where(x => tableNames.Contains(x.DtTable)).Select(x =>
             new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName,
@@ -65,15 +65,12 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
             x.PrincipalKey.Properties[0].Name == parentPrimaryKeyFieldName);
 
         return fn?.Properties[0].Name;
-
     }
 
 
-
-    public abstract Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt, CancellationToken cancellationToken);
+    public abstract Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt,
+        CancellationToken cancellationToken);
 
     public abstract Task<List<SrvModel>> GetSimpleReturnValues(DataTypeModelForRvs dt,
         CancellationToken cancellationToken);
-
-
 }

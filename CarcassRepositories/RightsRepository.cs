@@ -12,6 +12,7 @@ using CarcassMappers;
 using CarcassMasterDataDom.Models;
 using CarcassDb.Models;
 using Microsoft.Extensions.Logging;
+
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
 
 namespace CarcassRepositories;
@@ -222,8 +223,6 @@ public sealed class RightsRepository
 
         return true;
     }
-
-
 
 
     private IEnumerable<string> ManyToManyJoinsCp(int childTypeId, string childKey, int parentTypeId)

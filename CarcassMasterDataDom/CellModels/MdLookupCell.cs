@@ -3,7 +3,8 @@
 namespace CarcassMasterDataDom.CellModels;
 
 public sealed class MdLookupCell(string fieldName, string? caption, string dtTable,
-    string? intErrCode = null, string? intErrMessage = null, bool visible = true, string? typeName = null) : IntegerCell(
+    string? intErrCode = null, string? intErrMessage = null, bool visible = true,
+    string? typeName = null) : IntegerCell(
     fieldName, caption, intErrCode, intErrMessage, visible, typeName ?? "MdLookup")
 {
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]

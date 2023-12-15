@@ -9,7 +9,9 @@ public sealed class DataTypeModel(int dtId, string dtKey, string dtName, string 
     public string DtKey { get; set; } = dtKey;
     public string DtName { get; set; } = dtName;
     public string DtTable { get; set; } = dtTable;
+
     public int? DtParentDataTypeId { get; set; } = dtParentDataTypeId;
+
     //[NotMapped] public List<Err> Errors { get; set; } = new();
     public List<ReturnValueModel> ReturnValues { get; set; } = new();
 }

@@ -104,7 +104,10 @@ public static class MasterDataApiErrors
     public static Err LoaderForTableNotFound(string tableName)
     {
         return new Err
-            { ErrorCode = "LoaderForTableNotFound", ErrorMessage = $"ჩამტვირთავი ცხრილისთვის სახელით {tableName} ვერ მოიძებნა" };
+        {
+            ErrorCode = "LoaderForTableNotFound",
+            ErrorMessage = $"ჩამტვირთავი ცხრილისთვის სახელით {tableName} ვერ მოიძებნა"
+        };
     }
 
     public static Err RecordNotFound(string tableName, int id)

@@ -8,17 +8,20 @@ using CarcassMasterDataDom;
 using MessagingAbstractions;
 using OneOf;
 using SystemToolsShared;
+
 // ReSharper disable ConvertToPrimaryConstructor
 
 namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class GetLookupTablesQueryHandler : IQueryHandler<MdGetLookupTablesQueryRequest, MdGetLookupTablesQueryResponse>
+public sealed class
+    GetLookupTablesQueryHandler : IQueryHandler<MdGetLookupTablesQueryRequest, MdGetLookupTablesQueryResponse>
 {
     private readonly IReturnValuesRepository _rvRepo;
     private readonly IReturnValuesLoaderCreator _returnValuesLoaderCreator;
 
-    public GetLookupTablesQueryHandler(IReturnValuesRepository rvRepo, IReturnValuesLoaderCreator returnValuesLoaderCreator)
+    public GetLookupTablesQueryHandler(IReturnValuesRepository rvRepo,
+        IReturnValuesLoaderCreator returnValuesLoaderCreator)
     {
         _rvRepo = rvRepo;
         _returnValuesLoaderCreator = returnValuesLoaderCreator;

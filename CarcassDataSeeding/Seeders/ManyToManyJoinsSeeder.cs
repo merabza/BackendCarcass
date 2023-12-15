@@ -287,7 +287,7 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
                     _ => null
                 };
 
-                if ( dtTable is null)
+                if (dtTable is null)
                     continue;
 
                 dataType = existingDataTypes.SingleOrDefault(s => s.DtTable == dtTable);
@@ -295,7 +295,6 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
                     continue;
 
                 res.Add(new ManyToManyJoin { PtId = dtmen, PKey = miItm.MenKey, CtId = dtdt, CKey = dataType.DtKey });
-
             }
         }
 

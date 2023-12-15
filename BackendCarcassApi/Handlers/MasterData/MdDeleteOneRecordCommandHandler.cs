@@ -9,6 +9,7 @@ using MediatR;
 using MessagingAbstractions;
 using OneOf;
 using SystemToolsShared;
+
 // ReSharper disable ConvertToPrimaryConstructor
 
 namespace BackendCarcassApi.Handlers.MasterData;

@@ -42,7 +42,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
         var (realOffset, count, rows) = await users.UseCustomSortFilterPagination(filterSortRequest,
             x => new UserCrudData(x.UserName!, x.FirstName, x.LastName, x.Email!), cancellationToken);
 
-        return new TableRowsData(count, realOffset, rows.Select(s=>s.EditFields()).ToList());
+        return new TableRowsData(count, realOffset, rows.Select(s => s.EditFields()).ToList());
     }
 
     protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)

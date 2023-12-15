@@ -24,6 +24,4 @@ public class MasterDataReturnValuesLoader : IReturnValuesLoader
     {
         return await _rvRepo.GetSimpleReturnValues(_dt, cancellationToken);
     }
-
-    
 }

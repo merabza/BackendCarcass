@@ -13,7 +13,6 @@ namespace CarcassMasterDataDom;
 
 public class MasterDataLoader
 {
-
     private readonly IMasterDataLoaderCreator _masterDataLoaderCreator;
     private readonly List<string> _tableNames;
     private readonly IReturnValuesRepository _rvRepo;
@@ -53,8 +52,5 @@ public class MasterDataLoader
         if (errors.Count > 0)
             return errors;
         return resultList;
-
-
     }
-
 }

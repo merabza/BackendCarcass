@@ -58,7 +58,8 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
         return null;
     }
 
-    private static (List<TDst>, List<TDst>, List<TDst>) CompareLists(IReadOnlyCollection<TDst> existing, IReadOnlyCollection<TDst> mustBe)
+    private static (List<TDst>, List<TDst>, List<TDst>) CompareLists(IReadOnlyCollection<TDst> existing,
+        IReadOnlyCollection<TDst> mustBe)
     {
         if (mustBe == null)
             return (null, null, null);
@@ -107,7 +108,6 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
                 couple.Item1.UpdateTo(couple.Item2);
                 forUpdate.Add(couple.Item1);
             }
-
         }
 
         return (forAdd, forUpdate, forDelete);

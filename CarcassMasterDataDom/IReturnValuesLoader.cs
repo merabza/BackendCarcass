@@ -11,5 +11,4 @@ public interface IReturnValuesLoader
 {
     Task<OneOf<IEnumerable<SrvModel>, Err[]>> GetSimpleReturnValues(CancellationToken cancellationToken);
     //Task<List<SrvModel>> GetSimpleReturnValues(DataTypeModelForRvs dt, CancellationToken cancellationToken);
-
 }

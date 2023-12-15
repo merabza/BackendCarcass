@@ -23,7 +23,8 @@ public interface IRightsRepository : IAbstractRepository
 
     IQueryable<string> ManyToManyJoinsPc(int parentTypeId, string parentKey, int childTypeId);
 
-    Task<List<DataTypeModelForRvs>> ParentsDataTypesReverseView(int dtDataId, int userDataId, string userName, int roleDataId,
+    Task<List<DataTypeModelForRvs>> ParentsDataTypesReverseView(int dtDataId, int userDataId, string userName,
+        int roleDataId,
         int mmjDataId, CancellationToken cancellationToken);
 
     Task<List<DataTypeModelForRvs>> ChildrenDataTypesNormalView(int dtDataId, string parentTypeKey, int userDataId,
@@ -52,6 +53,4 @@ public interface IRightsRepository : IAbstractRepository
         CancellationToken cancellationToken);
 
     Task<bool> RemoveOneManyToManyJoin(ManyToManyJoinModel manyToManyJoinModel, CancellationToken cancellationToken);
-
-
 }

@@ -24,7 +24,7 @@ public sealed class CarcassRepositoriesInstaller : IInstaller
         builder.Services.AddScoped<IDataTypesRepository, DataTypesRepository>();
         builder.Services.AddScoped<IReturnValuesRepository, SqlReturnValuesRepository>();
         builder.Services.AddScoped<IRightsRepository, RightsRepository>();
-        
+
 
         //Console.WriteLine("CarcassRepositoriesInstaller.InstallServices Finished");
     }

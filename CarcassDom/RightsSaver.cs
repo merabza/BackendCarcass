@@ -45,7 +45,8 @@ public class RightsSaver
                 if (!allowPairs.Contains(new Tuple<string, string>(parentKey, childKey)))
                     continue;
 
-                var mmj = await _repo.GetOneManyToManyJoin(drr.Parent.DtId, drr.Parent.DKey, drr.Child.DtId, drr.Child.DKey,
+                var mmj = await _repo.GetOneManyToManyJoin(drr.Parent.DtId, drr.Parent.DKey, drr.Child.DtId,
+                    drr.Child.DKey,
                     cancellationToken);
 
                 if (mmj == null && drr.Checked)
@@ -70,6 +71,4 @@ public class RightsSaver
             return false;
         }
     }
-
-
 }
