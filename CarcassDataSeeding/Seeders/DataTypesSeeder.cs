@@ -204,7 +204,8 @@ public /*open*/
                 DtNameGenitive = "მონაცემების ცვლილებაზე უფლების ტიპის",
                 DtTable = Repo.GetTableName<CrudRightType>(),
                 DtIdFieldName = nameof(CrudRightType.CrtId).UnCapitalize(),
-                DtNameFieldName = nameof(CrudRightType.CrtKey).UnCapitalize(),
+                DtKeyFieldName = nameof(CrudRightType.CrtKey).UnCapitalize(),
+                DtNameFieldName = nameof(CrudRightType.CrtName).UnCapitalize(),
                 DtGridRulesJson =
                     JsonConvert.SerializeObject(GetKeyNameGridModel(crudRightTypeDKey), serializerSettings)
             },
