@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CarcassDom.Models;
 using CarcassMasterDataDom;
 using Microsoft.Extensions.Logging;
+// ReSharper disable ConvertToPrimaryConstructor
 
 namespace CarcassDom;
 
