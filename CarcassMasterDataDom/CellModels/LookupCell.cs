@@ -2,8 +2,15 @@
 
 namespace CarcassMasterDataDom.CellModels;
 
-public sealed class LookupCell(string fieldName, string? caption, string dataMember, string valueMember,
-    string displayMember, string? intErrCode = null, string? intErrMessage = null, bool visible = true,
+public sealed class LookupCell(
+    string fieldName,
+    string? caption,
+    string dataMember,
+    string valueMember,
+    string displayMember,
+    string? intErrCode = null,
+    string? intErrMessage = null,
+    bool visible = true,
     string? typeName = null) : IntegerCell(fieldName, caption, intErrCode, intErrMessage, visible, typeName ?? "Lookup")
 {
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]

@@ -1,22 +1,24 @@
-﻿using OneOf;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using CarcassMasterDataDom.Models;
-using SystemToolsShared;
 using System.Threading;
+using System.Threading.Tasks;
 using CarcassContracts.ErrorModels;
+using CarcassMasterDataDom.Models;
+using OneOf;
+using SystemToolsShared;
 
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
 
 namespace CarcassMasterDataDom;
 
-public class ReturnValuesLoader(List<string> tableNames, IReturnValuesRepository rvRepo,
+public class ReturnValuesLoader(
+    List<string> tableNames,
+    IReturnValuesRepository rvRepo,
     IReturnValuesLoaderCreator returnValuesLoaderCreator)
 {
     private readonly IReturnValuesLoaderCreator _returnValuesLoaderCreator = returnValuesLoaderCreator;
-    private readonly List<string> _tableNames = tableNames;
     private readonly IReturnValuesRepository _rvRepo = rvRepo;
+    private readonly List<string> _tableNames = tableNames;
 
     public async Task<OneOf<Dictionary<string, IEnumerable<SrvModel>>, IEnumerable<Err>>> Run(
         CancellationToken cancellationToken)

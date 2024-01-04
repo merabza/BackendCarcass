@@ -17,7 +17,7 @@ public static class PaginationQuery
         Expression<Func<TSource, TResult>> selector, CancellationToken cancellationToken) where TSource : class
     {
         var (realOffset, count, preparedQuery) = query.PrepareSortFilterPagination(filterSortRequest);
-        var rowsSel = await preparedQuery.Select(selector).ToListAsync(cancellationToken: cancellationToken);
+        var rowsSel = await preparedQuery.Select(selector).ToListAsync(cancellationToken);
         return (realOffset, count, rowsSel);
     }
 
@@ -59,10 +59,7 @@ public static class PaginationQuery
     private static IQueryable<T> CustomFilter<T>(this IQueryable<T> query, Expression<Func<T, bool>>? filter = null)
         where T : class
     {
-        if (filter != null)
-        {
-            query = query.Where(filter);
-        }
+        if (filter != null) query = query.Where(filter);
 
         return query;
     }

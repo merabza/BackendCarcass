@@ -6,6 +6,7 @@ using LibCrud.Models;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using SystemToolsShared;
+
 // ReSharper disable ConvertToPrimaryConstructor
 
 namespace LibCrud;
@@ -15,16 +16,16 @@ public abstract class CrudBase
     private readonly IAbstractRepository _absRepo;
     protected readonly ILogger Logger;
 
-    //ასეთი მიდგომა სწორია და არ უნდა შეიცვალოს, რადგან ახალი ჩანაწერის შექმნისას იდენტიფიკატორი მანამ არის 0, სანამ არ მოხდება ბაზაში შენახვა.
-    //შესაბამისად შექმნის პროცედურას შეუძლია დააბრუნოს შესანახ ობიექტზე რეფერენსი და როცა უკვე შენახვა მოხდება, ამ რეფერენსიდან შესაძლებელი იქნება იდენტიფიკატორის ამოღება
-    protected virtual int JustCreatedId => 0;
-
 
     protected CrudBase(ILogger logger, IAbstractRepository absRepo)
     {
         Logger = logger;
         _absRepo = absRepo;
     }
+
+    //ასეთი მიდგომა სწორია და არ უნდა შეიცვალოს, რადგან ახალი ჩანაწერის შექმნისას იდენტიფიკატორი მანამ არის 0, სანამ არ მოხდება ბაზაში შენახვა.
+    //შესაბამისად შექმნის პროცედურას შეუძლია დააბრუნოს შესანახ ობიექტზე რეფერენსი და როცა უკვე შენახვა მოხდება, ამ რეფერენსიდან შესაძლებელი იქნება იდენტიფიკატორის ამოღება
+    protected virtual int JustCreatedId => 0;
 
     public async Task<OneOf<ICrudData, Err[]>> GetOne(int id, CancellationToken cancellationToken)
     {

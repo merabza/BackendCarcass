@@ -13,7 +13,7 @@ public sealed class DataType : IDataType, IMyEquatable
     public string DtNameNominative { get; set; } = null!;
     public string DtNameGenitive { get; set; } = null!;
     public string DtTable { get; set; } = null!;
-    public string? DtIdFieldName { get; set; } = null!;
+    public string? DtIdFieldName { get; set; }
     public string? DtKeyFieldName { get; set; }
     public string? DtNameFieldName { get; set; }
     public int? DtParentDataTypeId { get; set; }

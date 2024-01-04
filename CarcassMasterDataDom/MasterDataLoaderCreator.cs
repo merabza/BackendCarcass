@@ -1,6 +1,5 @@
 ﻿using System;
 using CarcassMasterDataDom.Crud;
-using CarcassMasterDataDom.Loaders;
 using CarcassMasterDataDom.Models;
 using LibCrud;
 using Microsoft.AspNetCore.Identity;

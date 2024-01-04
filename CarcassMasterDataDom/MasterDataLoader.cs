@@ -1,9 +1,9 @@
-﻿using OneOf;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using SystemToolsShared;
 using System.Threading;
+using System.Threading.Tasks;
+using OneOf;
+using SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -14,8 +14,8 @@ namespace CarcassMasterDataDom;
 public class MasterDataLoader
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCreator;
-    private readonly List<string> _tableNames;
     private readonly IReturnValuesRepository _rvRepo;
+    private readonly List<string> _tableNames;
 
     public MasterDataLoader(List<string> tableNames, IReturnValuesRepository rvRepo,
         IMasterDataLoaderCreator masterDataLoaderCreator)

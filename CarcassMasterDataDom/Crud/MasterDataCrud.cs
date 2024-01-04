@@ -21,7 +21,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     private readonly ICarcassMasterDataRepository _cmdRepo;
     private readonly string _tableName;
     private IDataType? _justCreated;
-    protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
     public MasterDataCrud(string tableName, ILogger logger, ICarcassMasterDataRepository cmdRepo) : base(logger,
         cmdRepo)
@@ -29,6 +28,8 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         _tableName = tableName;
         _cmdRepo = cmdRepo;
     }
+
+    protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
     public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
     {

@@ -19,13 +19,14 @@ public class UsersCrud : CrudBase, IMasterDataLoader
 {
     private readonly UserManager<AppUser> _userManager;
     private AppUser? _justCreated;
-    protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
     public UsersCrud(ILogger logger, UserManager<AppUser> userManager, IAbstractRepository absRepo) : base(logger,
         absRepo)
     {
         _userManager = userManager;
     }
+
+    protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
     public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
     {

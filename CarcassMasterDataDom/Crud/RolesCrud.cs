@@ -19,13 +19,14 @@ public class RolesCrud : CrudBase, IMasterDataLoader
 {
     private readonly RoleManager<AppRole> _roleManager;
     private AppRole? _justCreated;
-    protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
     public RolesCrud(ILogger logger, RoleManager<AppRole> roleManager, IAbstractRepository absRepo) : base(logger,
         absRepo)
     {
         _roleManager = roleManager;
     }
+
+    protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
     public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
     {

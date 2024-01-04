@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassMasterDataDom.Models;
 using LanguageExt;
 using LibCrud;
 using Microsoft.EntityFrameworkCore.Metadata;
