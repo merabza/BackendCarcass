@@ -25,7 +25,7 @@ public static class CustomExpressionFilter<T> where T : class
             Expression? filterExpression = null;
             foreach (var filter in expressionFilters)
             {
-                if ( filter.ColumnName is null)
+                if (filter.ColumnName is null)
                     continue;
 
                 var property = Expression.Property(parameter, filter.ColumnName);
@@ -44,7 +44,7 @@ public static class CustomExpressionFilter<T> where T : class
                 }
                 else if (property.Type == typeof(Guid))
                 {
-                    if ( filter.Value is null)
+                    if (filter.Value is null)
                         continue;
                     var constant = Expression.Constant(Guid.Parse(filter.Value));
                     comparison = Expression.Equal(property, constant);

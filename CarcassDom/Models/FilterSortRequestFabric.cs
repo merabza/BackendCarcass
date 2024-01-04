@@ -14,7 +14,7 @@ public static class FilterSortRequestFabric
 
         var options = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true,
+            PropertyNameCaseInsensitive = true
         };
 
         return JsonSerializer.Deserialize<FilterSortRequest>(decodedString, options);

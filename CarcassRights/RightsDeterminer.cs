@@ -126,7 +126,7 @@ public class RightsDeterminer
         var menuNamesList = menuNames.ToList();
         var menuClaimCombo =
             from menuName in menuNamesList from roleName in roleNames select new { menuName, roleName };
-        List<Err> errors = new();
+        List<Err> errors = [];
 
         foreach (var menuClaim in menuClaimCombo)
         {
@@ -142,7 +142,7 @@ public class RightsDeterminer
             }
         }
 
-        if (errors.Any())
+        if (errors.Count != 0)
             return errors.ToList();
         return false;
     }
@@ -177,7 +177,7 @@ public class RightsDeterminer
         IEnumerable<Claim> userClaims, CancellationToken cancellationToken)
     {
         var roleNames = GetRoles(userClaims);
-        List<Err> errors = new();
+        List<Err> errors = [];
 
         foreach (var roleName in roleNames)
         {
@@ -194,7 +194,7 @@ public class RightsDeterminer
             }
         }
 
-        if (errors.Any())
+        if (errors.Count != 0)
             return errors.ToList();
         return false;
     }
@@ -237,7 +237,7 @@ public class RightsDeterminer
         var roleNames = GetRoles(userClaims);
         var tableClaimCombo =
             from tableKeyName in tableKeysNames from roleName in roleNames select new { tableKeyName, roleName };
-        List<Err> errors = new();
+        List<Err> errors = [];
 
         foreach (var menuClaim in tableClaimCombo)
         {
@@ -253,7 +253,7 @@ public class RightsDeterminer
             }
         }
 
-        if (errors.Any())
+        if (errors.Count != 0)
             return errors.ToList();
         return false;
     }
@@ -290,7 +290,7 @@ public class RightsDeterminer
         IEnumerable<Claim> userClaims, Option<ECrudOperationType> crudType, CancellationToken cancellationToken)
     {
         var roleNames = GetRoles(userClaims);
-        List<Err> errors = new();
+        List<Err> errors = [];
         if (crudType.IsNone)
             return new[] { RightsApiErrors.ErrorWhenDeterminingCrudType };
 
@@ -310,7 +310,7 @@ public class RightsDeterminer
             }
         }
 
-        if (errors.Any())
+        if (errors.Count != 0)
             return errors.ToList();
         return false;
     }

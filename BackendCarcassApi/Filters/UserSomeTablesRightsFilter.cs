@@ -14,8 +14,8 @@ namespace BackendCarcassApi.Filters;
 //შემოწმდეს, ყველა მოწოდებულ ცხრილზე ნახვის უფლება აქვს თუ არა მომხმარებელს
 //თუ რომელიმეზე არ აქვს, დაბრუნდეს შეცდომა
 
-public class UserSomeTablesRightsFilter
-    (IUserRightsRepository repo, ILogger<UserMenuRightsFilter> logger) : IEndpointFilter
+public class UserSomeTablesRightsFilter(IUserRightsRepository repo, ILogger<UserMenuRightsFilter> logger)
+    : IEndpointFilter
 {
     private readonly ILogger<UserMenuRightsFilter> _logger = logger;
     private readonly IUserRightsRepository _repo = repo;

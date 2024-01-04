@@ -1,27 +1,27 @@
-﻿using System.Linq;
-using CarcassDom;
-using CarcassMasterDataDom;
-using System.Threading.Tasks;
-using System.Threading;
-using CarcassDb;
-using Microsoft.EntityFrameworkCore;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using CarcassDb;
+using CarcassDb.Models;
+using CarcassDom;
 using CarcassDom.Models;
 using CarcassMappers;
+using CarcassMasterDataDom;
 using CarcassMasterDataDom.Models;
-using CarcassDb.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
 
 namespace CarcassRepositories;
 
-public sealed class RightsRepository
-    (ILogger<RightsRepository> logger, CarcassDbContext context) : AbstractRepository(context), IRightsRepository
+public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDbContext context)
+    : AbstractRepository(context), IRightsRepository
 {
-    private readonly ILogger<RightsRepository> _logger = logger;
     private readonly CarcassDbContext _carcassContext = context;
+    private readonly ILogger<RightsRepository> _logger = logger;
 
     public async Task<int> DataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey, CancellationToken cancellationToken)
     {
@@ -47,7 +47,7 @@ public sealed class RightsRepository
                 group rol by usr.UsrId
                 into ug
                 select new Tuple<int, int>(ug.Key, ug.Min(usr => usr.RolLevel)))
-            .ToListAsync(cancellationToken: cancellationToken);
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<List<UserModel>> GetUsers(CancellationToken cancellationToken)
@@ -61,7 +61,7 @@ public sealed class RightsRepository
     {
         return await _carcassContext.Roles.Where(w => w.RolLevel >= minLevel)
             .Select(role => new ReturnValueModel { Id = role.RolId, Key = role.RolKey, Name = role.RolName })
-            .ToListAsync(cancellationToken: cancellationToken);
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<List<DataTypeModelForRvs>> ParentsDataTypesNormalView(int dtDataId, string dataTypeKey,
@@ -169,16 +169,6 @@ public sealed class RightsRepository
         return mmj?.AdaptTo();
     }
 
-    private async Task<ManyToManyJoin?> ManyToManyJoin(int parentDtId, string parentDKey, int childDtId,
-        string childDKey,
-        CancellationToken cancellationToken)
-    {
-        var mmj = await _carcassContext.ManyToManyJoins.SingleOrDefaultAsync(c =>
-            c.PtId == parentDtId && c.PKey == parentDKey &&
-            c.CtId == childDtId && c.CKey == childDKey, cancellationToken: cancellationToken);
-        return mmj;
-    }
-
     public async Task<bool> RemoveOneManyToManyJoin(ManyToManyJoinModel manyToManyJoinModel,
         CancellationToken cancellationToken)
     {
@@ -195,7 +185,7 @@ public sealed class RightsRepository
     {
         var parentDataType =
             await _carcassContext.DataTypes.SingleOrDefaultAsync(x => x.DtId == parentDtId,
-                cancellationToken: cancellationToken);
+                cancellationToken);
         if (parentDataType is null)
         {
             _logger.Log(LogLevel.Error, "parentDataType is null");
@@ -204,7 +194,7 @@ public sealed class RightsRepository
 
         var childDataType =
             await _carcassContext.DataTypes.SingleOrDefaultAsync(x => x.DtId == childDtId,
-                cancellationToken: cancellationToken);
+                cancellationToken);
         if (childDataType is null)
         {
             _logger.Log(LogLevel.Error, "childDataType is null");
@@ -224,18 +214,41 @@ public sealed class RightsRepository
         return true;
     }
 
-
-    private IEnumerable<string> ManyToManyJoinsCp(int childTypeId, string childKey, int parentTypeId)
-    {
-        return _carcassContext.ManyToManyJoins
-            .Where(w => w.CtId == childTypeId && w.CKey == childKey && w.PtId == parentTypeId).Select(s => s.PKey);
-    }
-
     public IQueryable<string> ManyToManyJoinsPc(int parentTypeId, string parentKey, int childTypeId)
     {
         return _carcassContext.ManyToManyJoins
             .Where(w => w.PtId == parentTypeId && w.PKey == parentKey && w.CtId == childTypeId).Select(s => s.CKey);
         //.ToListAsync(cancellationToken: cancellationToken);
+    }
+
+    public async Task<List<Tuple<string, string>>> ManyToManyJoinsPcc4(int parentTypeId, string parentKey,
+        int childTypeId, int mmjDataId, int childTypeId2, int childTypeId3, CancellationToken cancellationToken)
+    {
+        var manyToManyJoins = await _carcassContext.ManyToManyJoins.ToListAsync(cancellationToken);
+        return (from r in manyToManyJoins
+            join r1 in manyToManyJoins on new { t = r.PtId, i = r.PKey } equals new
+                { t = r1.CtId, i = r1.CKey }
+            join drt in manyToManyJoins on r.CKey equals drt.PKey + "." + drt.CKey
+            where r.CtId == mmjDataId && r.PtId == childTypeId && r1.PtId == parentTypeId &&
+                  r1.PKey == parentKey && drt.PtId == childTypeId2 && drt.CtId == childTypeId3
+            select new Tuple<string, string>(drt.PKey, drt.CKey)).ToList();
+    }
+
+    private async Task<ManyToManyJoin?> ManyToManyJoin(int parentDtId, string parentDKey, int childDtId,
+        string childDKey,
+        CancellationToken cancellationToken)
+    {
+        var mmj = await _carcassContext.ManyToManyJoins.SingleOrDefaultAsync(c =>
+            c.PtId == parentDtId && c.PKey == parentDKey &&
+            c.CtId == childDtId && c.CKey == childDKey, cancellationToken);
+        return mmj;
+    }
+
+
+    private IEnumerable<string> ManyToManyJoinsCp(int childTypeId, string childKey, int parentTypeId)
+    {
+        return _carcassContext.ManyToManyJoins
+            .Where(w => w.CtId == childTypeId && w.CKey == childKey && w.PtId == parentTypeId).Select(s => s.PKey);
     }
 
     private IQueryable<string> ManyToManyJoinsPcc2(int parentTypeId, string parentKey, int childTypeId,
@@ -260,18 +273,5 @@ public sealed class RightsRepository
             where r.CtId == mmjDataId && r.PtId == childTypeId && r1.PtId == parentTypeId &&
                   r1.PKey == parentKey && drt.PtId == childTypeId2 && drt.CtId == childTypeId3
             select drt.CKey;
-    }
-
-    public async Task<List<Tuple<string, string>>> ManyToManyJoinsPcc4(int parentTypeId, string parentKey,
-        int childTypeId, int mmjDataId, int childTypeId2, int childTypeId3, CancellationToken cancellationToken)
-    {
-        var manyToManyJoins = await _carcassContext.ManyToManyJoins.ToListAsync(cancellationToken: cancellationToken);
-        return (from r in manyToManyJoins
-            join r1 in manyToManyJoins on new { t = r.PtId, i = r.PKey } equals new
-                { t = r1.CtId, i = r1.CKey }
-            join drt in manyToManyJoins on r.CKey equals drt.PKey + "." + drt.CKey
-            where r.CtId == mmjDataId && r.PtId == childTypeId && r1.PtId == parentTypeId &&
-                  r1.PKey == parentKey && drt.PtId == childTypeId2 && drt.CtId == childTypeId3
-            select new Tuple<string, string>(drt.PKey, drt.CKey)).ToList();
     }
 }

@@ -6,13 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="OneOf" Version="3.0.263" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
-        <ProjectReference Include="..\CarcassMasterDataDom\CarcassMasterDataDom.csproj" />
-    </ItemGroup>
-
 </Project>

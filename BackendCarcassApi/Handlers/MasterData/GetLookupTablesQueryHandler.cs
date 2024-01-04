@@ -17,8 +17,8 @@ namespace BackendCarcassApi.Handlers.MasterData;
 public sealed class
     GetLookupTablesQueryHandler : IQueryHandler<MdGetLookupTablesQueryRequest, MdGetLookupTablesQueryResponse>
 {
-    private readonly IReturnValuesRepository _rvRepo;
     private readonly IReturnValuesLoaderCreator _returnValuesLoaderCreator;
+    private readonly IReturnValuesRepository _rvRepo;
 
     public GetLookupTablesQueryHandler(IReturnValuesRepository rvRepo,
         IReturnValuesLoaderCreator returnValuesLoaderCreator)

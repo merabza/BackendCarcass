@@ -13,9 +13,10 @@ namespace BackendCarcassApi.Handlers.Rights;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class SaveDataCommandHandler : ICommandHandler<SaveDataCommandRequest, bool>
 {
+    private readonly ILogger<SaveDataCommandHandler> _logger;
+
     //private readonly IMenuRightsRepository _repository;
     private readonly IRightsRepository _repo;
-    private readonly ILogger<SaveDataCommandHandler> _logger;
 
     public SaveDataCommandHandler(ILogger<SaveDataCommandHandler> logger, IRightsRepository repo)
     {

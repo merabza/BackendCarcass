@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
-using SystemToolsShared;
-using CarcassMasterDataDom;
-using OneOf;
-using System;
+using System.Threading.Tasks;
 using CarcassDom.Models;
+using CarcassMasterDataDom;
 using CarcassMasterDataDom.Models;
 using Microsoft.EntityFrameworkCore;
+using OneOf;
+using SystemToolsShared;
 
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
 
@@ -149,7 +149,7 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
         var userDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
 
         var drPcs = await _repo.ManyToManyJoinsPc(userDataId, userName, roleDataId)
-            .ToListAsync(cancellationToken: cancellationToken);
+            .ToListAsync(cancellationToken);
 
         return _repo.UserMinLevel(drPcs);
     }

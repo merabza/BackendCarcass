@@ -18,15 +18,22 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
         return await ctx.DataTypes.Where(x => tableNames.Contains(x.DtTable)).Select(x =>
             new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName,
                 x.DtNameFieldName, x.DtParentDataTypeId, x.DtManyToManyJoinParentDataTypeId,
-                x.DtManyToManyJoinChildDataTypeId)).ToListAsync(cancellationToken: cancellationToken);
+                x.DtManyToManyJoinChildDataTypeId)).ToListAsync(cancellationToken);
     }
+
+
+    public abstract Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt,
+        CancellationToken cancellationToken);
+
+    public abstract Task<List<SrvModel>> GetSimpleReturnValues(DataTypeModelForRvs dt,
+        CancellationToken cancellationToken);
 
     protected async Task<DataTypeModelForRvs?> GetDataType(int dtId, CancellationToken cancellationToken)
     {
         return await ctx.DataTypes.Where(x => x.DtId == dtId).Select(x => new DataTypeModelForRvs(x.DtId, x.DtKey,
                 x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName, x.DtNameFieldName, x.DtParentDataTypeId,
                 x.DtManyToManyJoinParentDataTypeId, x.DtManyToManyJoinChildDataTypeId))
-            .SingleOrDefaultAsync(cancellationToken: cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
     private IEntityType? GetEntityTypeByTableName(string tableName)
@@ -66,11 +73,4 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
 
         return fn?.Properties[0].Name;
     }
-
-
-    public abstract Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt,
-        CancellationToken cancellationToken);
-
-    public abstract Task<List<SrvModel>> GetSimpleReturnValues(DataTypeModelForRvs dt,
-        CancellationToken cancellationToken);
 }
