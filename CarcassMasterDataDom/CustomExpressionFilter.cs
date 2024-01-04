@@ -10,7 +10,7 @@ public static class CustomExpressionFilter<T> where T : class
 {
     public static Expression<Func<T, bool>>? CustomFilter(ColumnFilter[]? columnFilters, string className)
     {
-        if (columnFilters is null || !columnFilters.Any())
+        if (columnFilters is null || columnFilters.Length == 0)
             return null;
 
         Expression<Func<T, bool>>? filters;
@@ -25,6 +25,9 @@ public static class CustomExpressionFilter<T> where T : class
             Expression? filterExpression = null;
             foreach (var filter in expressionFilters)
             {
+                if ( filter.ColumnName is null)
+                    continue;
+
                 var property = Expression.Property(parameter, filter.ColumnName);
 
                 Expression comparison;
@@ -41,6 +44,8 @@ public static class CustomExpressionFilter<T> where T : class
                 }
                 else if (property.Type == typeof(Guid))
                 {
+                    if ( filter.Value is null)
+                        continue;
                     var constant = Expression.Constant(Guid.Parse(filter.Value));
                     comparison = Expression.Equal(property, constant);
                 }
