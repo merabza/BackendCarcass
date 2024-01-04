@@ -30,7 +30,8 @@ public class RightsSaver
             var mmjDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
             var roleDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
             var userDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
-            var allowPairs = _repo.ManyToManyJoinsPcc4(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId);
+            var allowPairs = await _repo.ManyToManyJoinsPcc4(userDataId, userName, roleDataId, mmjDataId, dtDataId,
+                dtDataId, cancellationToken);
 
             foreach (var drr in changedRights)
             {

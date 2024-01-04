@@ -41,8 +41,8 @@ public interface IRightsRepository : IAbstractRepository
     Task<List<TypeDataModel>> HalfChecksReverseView(int userDataId, string userName, int roleDataId, int mmjDataId,
         int dtDataId, int dataTypeId, string dataKey, CancellationToken cancellationToken);
 
-    IQueryable<Tuple<string, string>> ManyToManyJoinsPcc4(int parentTypeId, string parentKey, int childTypeId,
-        int mmjDataId, int childTypeId2, int childTypeId3);
+    Task<List<Tuple<string, string>>> ManyToManyJoinsPcc4(int parentTypeId, string parentKey, int childTypeId,
+        int mmjDataId, int childTypeId2, int childTypeId3, CancellationToken cancellationToken);
 
     Task<string?> DataTypeKeyById(int dtId, CancellationToken cancellationToken);
 

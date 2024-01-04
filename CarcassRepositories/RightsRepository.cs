@@ -262,15 +262,16 @@ public sealed class RightsRepository
             select drt.CKey;
     }
 
-    public IQueryable<Tuple<string, string>> ManyToManyJoinsPcc4(int parentTypeId, string parentKey, int childTypeId,
-        int mmjDataId, int childTypeId2, int childTypeId3)
+    public async Task<List<Tuple<string, string>>> ManyToManyJoinsPcc4(int parentTypeId, string parentKey,
+        int childTypeId, int mmjDataId, int childTypeId2, int childTypeId3, CancellationToken cancellationToken)
     {
-        return from r in _carcassContext.ManyToManyJoins
-            join r1 in _carcassContext.ManyToManyJoins on new { t = r.PtId, i = r.PKey } equals new
+        var manyToManyJoins = await _carcassContext.ManyToManyJoins.ToListAsync(cancellationToken: cancellationToken);
+        return (from r in manyToManyJoins
+            join r1 in manyToManyJoins on new { t = r.PtId, i = r.PKey } equals new
                 { t = r1.CtId, i = r1.CKey }
-            join drt in _carcassContext.ManyToManyJoins on r.CKey equals drt.PKey + "." + drt.CKey
+            join drt in manyToManyJoins on r.CKey equals drt.PKey + "." + drt.CKey
             where r.CtId == mmjDataId && r.PtId == childTypeId && r1.PtId == parentTypeId &&
                   r1.PKey == parentKey && drt.PtId == childTypeId2 && drt.CtId == childTypeId3
-            select new Tuple<string, string>(drt.PKey, drt.CKey);
+            select new Tuple<string, string>(drt.PKey, drt.CKey)).ToList();
     }
 }
