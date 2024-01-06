@@ -261,7 +261,7 @@ public /*open*/
             }
         };
 
-        return newDataTypes.ToList();
+        return [.. newDataTypes];
     }
 
     private static GridModel CreateDataTypesGridModel()
@@ -281,7 +281,7 @@ public /*open*/
         return gridModel;
     }
 
-    private GridModel CreateMenuGridModel()
+    private static GridModel CreateMenuGridModel()
     {
         var gridModel = GetKeyNameSortIdGridModel(ECarcassDataTypeKeys.MenuItm.ToDtKey());
         var cells = new[]
@@ -295,14 +295,14 @@ public /*open*/
         return gridModel;
     }
 
-    private GridModel CreateMenuGroupsGridModel()
+    private static GridModel CreateMenuGroupsGridModel()
     {
         var gridModel = GetKeyNameSortIdGridModel(ECarcassDataTypeKeys.MenuGroup.ToDtKey());
         gridModel.Cells.Add(GetTextBoxCell(nameof(MenuGroup.MengIconName).UnCapitalize(), "ხატულა"));
         return gridModel;
     }
 
-    private GridModel CreateRolesGridModel()
+    private static GridModel CreateRolesGridModel()
     {
         var gridModel = GetKeyNameGridModel(ECarcassDataTypeKeys.Role.ToDtKey());
         gridModel.Cells.Add(GetIntegerCell(nameof(Role.RolLevel).UnCapitalize(), "დონე"));
@@ -320,7 +320,7 @@ public /*open*/
             GetTextBoxCell(nameof(User.FirstName).UnCapitalize(), "სახელი"),
             GetTextBoxCell(nameof(User.LastName).UnCapitalize(), "გვარი")
         };
-        gridModel.Cells = cells.ToList();
+        gridModel.Cells = [.. cells];
         return gridModel;
     }
 
@@ -341,7 +341,7 @@ public /*open*/
             GetKeyColumn($"{pref}Key"),
             GetNameColumn($"{pref}Name")
         };
-        gridModel.Cells = cells.ToList();
+        gridModel.Cells = [.. cells];
         return gridModel;
     }
 
@@ -381,14 +381,14 @@ public /*open*/
         return Cell.Integer("sortId", "რიგითი ნომერი").Required("რიგითი ნომერი შევსებული უნდა იყოს").Default();
     }
 
-    protected static Cell GetComboCell(string fieldName, string caption, string dataMember, string valueMember,
-        string displayMember, bool allowNull = false)
-    {
-        var cell = Cell.Lookup(fieldName, caption, dataMember, valueMember, displayMember).Default();
-        return allowNull
-            ? cell.Nullable()
-            : cell.Positive($"{caption} არჩეული უნდა იყოს").Required($"{caption} არჩეული უნდა იყოს");
-    }
+    //protected static Cell GetComboCell(string fieldName, string caption, string dataMember, string valueMember,
+    //    string displayMember, bool allowNull = false)
+    //{
+    //    var cell = Cell.Lookup(fieldName, caption, dataMember, valueMember, displayMember).Default();
+    //    return allowNull
+    //        ? cell.Nullable()
+    //        : cell.Positive($"{caption} არჩეული უნდა იყოს").Required($"{caption} არჩეული უნდა იყოს");
+    //}
 
     protected static Cell GetMdComboCell(string fieldName, string caption, string dtTable, bool allowNull = false)
     {

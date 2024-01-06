@@ -98,43 +98,43 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
         const string adminRoleKey = "Admin";
 
         ManyToManyJoin[] newManyToManyJoins =
-        {
+        [
             //dt dt dt [dt, usr, role, menu, crudRightType]
-            new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
-            new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = userDKey },
-            new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
-            new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = menuDKey },
-            new()
+            new ManyToManyJoin { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
+            new ManyToManyJoin { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = userDKey },
+            new ManyToManyJoin { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
+            new ManyToManyJoin { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = menuDKey },
+            new ManyToManyJoin
             {
                 PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = crudRightTypeDKey
             },
             //dt mnu dt [dt, crudRightType]
-            new()
+            new ManyToManyJoin
             {
                 PtId = dataTypeDataTypeId, PKey = menuDKey, CtId = dataTypeDataTypeId, CKey = crudRightTypeDKey
             },
             //dt usr dt rol
-            new() { PtId = dataTypeDataTypeId, PKey = userDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
+            new ManyToManyJoin { PtId = dataTypeDataTypeId, PKey = userDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
             //dt rol dt [meng, men, dt, DataTypeToDataTypeModel, DataTypeToCrudTypeModel, rol]
-            new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = menuGroupDKey },
-            new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = menuDKey },
-            new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
-            new()
+            new ManyToManyJoin { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = menuGroupDKey },
+            new ManyToManyJoin { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = menuDKey },
+            new ManyToManyJoin { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
+            new ManyToManyJoin
             {
                 PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId,
                 CKey = ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey()
             },
-            new()
+            new ManyToManyJoin
             {
                 PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId,
                 CKey = ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey()
             },
-            new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
+            new ManyToManyJoin { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
             //admin dt dt [dt, usr, rol]
-            new() { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
-            new() { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = userDKey },
-            new() { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
-        };
+            new ManyToManyJoin { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
+            new ManyToManyJoin { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = userDKey },
+            new ManyToManyJoin { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = roleDKey }
+        ];
         var lst = newManyToManyJoins.ToList();
 
         //DataTypes by CrudRightTypes
@@ -172,16 +172,16 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
 
 
         //admin meng
-        string[] menGroupKeys = { "Main", "MasterData" }; //, "ProgramConstructor"
+        string[] menGroupKeys = ["Main", "MasterData"]; //, "ProgramConstructor"
         lst.AddRange(menGroupKeys.Select(s => new ManyToManyJoin
             { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = menuGroupDataTypeId, CKey = s }));
 
         //admin menu
         string[] menKeys =
-        {
+        [
             //"DataInitEditor", 
             "DataTypes", "Roles", "Users", "MenuGroups", "MenuEditor", "Rights", "CrudRightTypes"
-        };
+        ];
         lst.AddRange(menKeys.Select(s =>
             new ManyToManyJoin { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = menuDataTypeId, CKey = s }));
 
