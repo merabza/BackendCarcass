@@ -48,8 +48,7 @@ public sealed class DataType : IDataType, IMyEquatable
         return new
         {
             DtId, DtKey, DtName, DtNameNominative, DtNameGenitive, DtTable, DtIdFieldName, DtKeyFieldName,
-            DtNameFieldName,
-            DtParentDataTypeId
+            DtNameFieldName, DtParentDataTypeId
         };
     }
 
