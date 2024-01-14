@@ -10,8 +10,6 @@ using MessagingAbstractions;
 using OneOf;
 using SystemToolsShared;
 
-// ReSharper disable ConvertToPrimaryConstructor
-
 namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
@@ -19,6 +17,7 @@ public sealed class GetTableRowsDataHandler : IQueryHandler<GetTableRowsDataQuer
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public GetTableRowsDataHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
     {
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
@@ -37,7 +36,11 @@ public sealed class GetTableRowsDataHandler : IQueryHandler<GetTableRowsDataQuer
         //return result.Match<OneOf<TableRowsData, IEnumerable<Err>>>(
         //    r => r, e => e);
 
-        var masterDataCruder = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+        var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+        if (createMasterDataCrudResult.IsT1)
+            return createMasterDataCrudResult.AsT1;
+        var masterDataCruder = createMasterDataCrudResult.AsT0;
+
         var result = await masterDataCruder.GetTableRowsData(filterSortRequestObject, cancellationToken);
         return result.Match<OneOf<TableRowsData, IEnumerable<Err>>>(r => r, e => e);
     }

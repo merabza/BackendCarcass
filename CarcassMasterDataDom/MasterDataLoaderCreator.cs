@@ -5,6 +5,8 @@ using LibCrud;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OneOf;
+using SystemToolsShared;
 
 namespace CarcassMasterDataDom;
 
@@ -19,7 +21,7 @@ public class MasterDataLoaderCreator : IMasterDataLoaderCreator
         Services = services;
     }
 
-    public virtual IMasterDataLoader CreateMasterDataLoader(string queryName)
+    public virtual OneOf<IMasterDataLoader, Err[]> CreateMasterDataLoader(string queryName)
     {
         var scope = Services.CreateScope();
 
@@ -35,11 +37,12 @@ public class MasterDataLoaderCreator : IMasterDataLoaderCreator
         //        scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>())
         //};
 
-        return new MasterDataCrud(queryName, _logger,
-            scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>());
+        return MasterDataCrud
+            .Create(queryName, _logger, scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>())
+            .Match<OneOf<IMasterDataLoader, Err[]>>(f0 => f0, f1 => f1);
     }
 
-    public virtual CrudBase CreateMasterDataCrud(string tableName)
+    public virtual OneOf<CrudBase, Err[]> CreateMasterDataCrud(string tableName)
     {
         var scope = Services.CreateScope();
         var carcassMasterDataRepository = scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>();
@@ -50,7 +53,8 @@ public class MasterDataLoaderCreator : IMasterDataLoaderCreator
                 carcassMasterDataRepository),
             "roles" => new RolesCrud(_logger, scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>(),
                 carcassMasterDataRepository),
-            _ => new MasterDataCrud(tableName, _logger, carcassMasterDataRepository)
+            _ => MasterDataCrud.Create(tableName, _logger, carcassMasterDataRepository)
+                .Match<OneOf<CrudBase, Err[]>>(f0 => f0, f1 => f1)
         };
     }
 }

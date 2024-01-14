@@ -9,6 +9,7 @@ using LanguageExt;
 using LibCrud;
 using LibCrud.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OneOf;
@@ -20,12 +21,25 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 {
     private readonly ICarcassMasterDataRepository _cmdRepo;
     private readonly string _tableName;
+    private readonly IEntityType _entityType;
     private IDataType? _justCreated;
 
-    public MasterDataCrud(string tableName, ILogger logger, ICarcassMasterDataRepository cmdRepo) : base(logger,
-        cmdRepo)
+    public static OneOf<MasterDataCrud, Err[]> Create(string tableName, ILogger logger,
+        ICarcassMasterDataRepository cmdRepo)
+    {
+        var entityType = cmdRepo.GetEntityTypeByTableName(tableName);
+        if (entityType == null)
+            return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
+
+        return new MasterDataCrud(tableName, entityType, logger, cmdRepo);
+    }
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    private MasterDataCrud(string tableName, IEntityType entityType, ILogger logger,
+        ICarcassMasterDataRepository cmdRepo) : base(logger, cmdRepo)
     {
         _tableName = tableName;
+        _entityType = entityType;
         _cmdRepo = cmdRepo;
     }
 
@@ -48,14 +62,36 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     public override async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken)
     {
-        return await Query().Match<Task<OneOf<TableRowsData, Err[]>>>(
-            async x =>
-            {
-                var (realOffset, count, rows) =
-                    await x.UseCustomSortFilterPagination(filterSortRequest, s => s.EditFields(), cancellationToken);
-                return new TableRowsData(count, realOffset, rows);
-            },
-            e => Task.FromResult<OneOf<TableRowsData, Err[]>>(e));
+        var queryResult = QueryObject();
+        if (queryResult.IsT1)
+            return queryResult.AsT1;
+
+        var query = queryResult.AsT0;
+
+        var method = typeof(MasterDataCrud).GetMethod(nameof(UseUseCustomSortFilterPagination), 1,
+            [typeof(object), typeof(FilterSortRequest), typeof(CancellationToken)]);
+        //var method = typeof(MasterDataCrud).GetMethod(nameof(UseUseCustomSortFilterPagination));
+        var generic = method?.MakeGenericMethod(_entityType.ClrType);
+        if (generic is null)
+            return new[] {new Err { ErrorCode = "GenericMethodDoesNotCreated", ErrorMessage = "Generic Method Does Not Created" }};
+        var result = (Task<TableRowsData>?)generic.Invoke(this, [query, filterSortRequest, cancellationToken]);
+        if (result is null)
+            return new[] {new Err { ErrorCode = "TaskMethodDoesNotCreated", ErrorMessage = "Task Method Does Not Created" }};
+        return await result;
+
+        //var (realOffset, count, rows) = await query.UseCustomSortFilterPagination(filterSortRequest,
+        //            s => s.EditFields(), cancellationToken, _entityType.ClrType);
+        //        return new TableRowsData(count, realOffset, rows);
+    }
+
+    public async Task<TableRowsData> UseUseCustomSortFilterPagination<T>(object query,
+        FilterSortRequest filterSortRequest, CancellationToken cancellationToken) where T : class, IDataType
+    {
+        var tQuery = (IQueryable<T>)query;
+        //tQuery.Include()
+        var (realOffset, count, rows) = await tQuery.UseCustomSortFilterPagination(filterSortRequest,
+            s => s.EditFields(), cancellationToken);
+        return new TableRowsData(count, realOffset, rows);
     }
 
 
@@ -91,11 +127,8 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
     private OneOf<string, Err[]> GetSingleKeyName()
     {
-        var entityType = _cmdRepo.GetEntityTypeByTableName(_tableName);
-        if (entityType == null)
-            return new[] { MasterDataApiErrors.TableNotFound(_tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
 
-        var singleKey = entityType.GetKeys().SingleOrDefault();
+        var singleKey = _entityType.GetKeys().SingleOrDefault();
         if (singleKey == null)
             return new[] { MasterDataApiErrors.TableHaveNotSingleKey(_tableName) }; //ვერ ვიპოვეთ ერთადერთი გასაღები
 
@@ -106,6 +139,28 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         return singleKey.Properties[0].Name;
     }
 
+    private OneOf<object, Err[]> QueryObject()
+    {
+        //var q = _cmdRepo.RunGenericMethodForQueryRecords(entityType);
+        //var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); //
+
+
+        //return _cmdRepo.LoadByTableName(_tableName);
+
+        var setMethod = _cmdRepo.SetMethodInfo();
+        if (setMethod == null)
+            return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(_tableName) }; //ცხრილს არ აქვს მეთოდი Set
+
+        var result = _cmdRepo.RunGenericMethodForLoadAllRecords(setMethod, _entityType);
+        return result == null
+            ? new[]
+            {
+                MasterDataApiErrors.SetMethodReturnsNullForTable(_tableName)
+            } //ცხრილის Set მეთოდი აბრუნებს null-ს
+            : OneOf<object, Err[]>.FromT0(result);
+    }
+
+
     private OneOf<IQueryable<IDataType>, Err[]> Query()
     {
         //var q = _cmdRepo.RunGenericMethodForQueryRecords(entityType);
@@ -113,15 +168,12 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
 
         //return _cmdRepo.LoadByTableName(_tableName);
-        var entityType = _cmdRepo.GetEntityTypeByTableName(_tableName);
-        if (entityType == null)
-            return new[] { MasterDataApiErrors.TableNotFound(_tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
 
-        var setMethod = _cmdRepo.MethodInfo();
+        var setMethod = _cmdRepo.SetMethodInfo();
         if (setMethod == null)
             return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(_tableName) }; //ცხრილს არ აქვს მეთოდი Set
 
-        var result = _cmdRepo.RunGenericMethodForLoadAllRecords(setMethod, entityType);
+        var result = _cmdRepo.RunGenericMethodForLoadAllRecords(setMethod, _entityType);
         return result == null
             ? new[]
             {
@@ -134,11 +186,8 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         CancellationToken cancellationToken)
     {
         var masterDataCrudDataForCreate = (MasterDataCrudData)crudDataForCreate;
-        var entityType = _cmdRepo.GetEntityTypeByTableName(_tableName);
-        if (entityType == null)
-            return new[] { MasterDataApiErrors.TableNotFound(_tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
 
-        dynamic? jObj = JsonConvert.DeserializeObject(masterDataCrudDataForCreate.Json, entityType.ClrType);
+        dynamic? jObj = JsonConvert.DeserializeObject(masterDataCrudDataForCreate.Json, _entityType.ClrType);
         if (jObj is not IDataType newItem)
             return new[]
             {
@@ -160,11 +209,8 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         CancellationToken cancellationToken)
     {
         var masterDataCrudDataForUpdate = (MasterDataCrudData)crudDataNewVersion;
-        var entityType = _cmdRepo.GetEntityTypeByTableName(_tableName);
-        if (entityType == null)
-            return new[] { MasterDataApiErrors.TableNotFound(_tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
 
-        dynamic? jObj = JsonConvert.DeserializeObject(masterDataCrudDataForUpdate.Json, entityType.ClrType);
+        dynamic? jObj = JsonConvert.DeserializeObject(masterDataCrudDataForUpdate.Json, _entityType.ClrType);
         if (jObj is not IDataType newItem)
             return new[]
             {
@@ -221,22 +267,15 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     private async Task<Option<Err[]>> Validate(IDataType newItem, CancellationToken cancellationToken)
     {
         //var dt = _context.DataTypes.SingleOrDefault(s => s.DtTable == tableName);
-        var dtGridRulesJson = await _cmdRepo.GetDataTypeGridRulesByTableName(_tableName, cancellationToken);
+        var gridModel = await _cmdRepo.GetDataTypeGridRulesByTableName(_tableName, cancellationToken);
 
-        //if (dt == null)
-        //    return new[] { MasterDataApiErrors.MasterDataTableNotFound(_tableName) };
-
-        if (dtGridRulesJson == null)
-            return null;
-
-        var gm = GridModel.DeserializeGridModel(dtGridRulesJson);
-        if (gm == null)
+        if (gridModel == null)
             return new[] { MasterDataApiErrors.MasterDataInvalidValidationRules(_tableName) };
 
-        List<Err> errors = new();
+        List<Err> errors = [];
         var props = newItem.GetType().GetProperties();
 
-        foreach (var cell in gm.Cells)
+        foreach (var cell in gridModel.Cells)
         {
             var prop = props.SingleOrDefault(w => w.Name == cell.FieldName.CapitalizeCamel());
             if (prop == null)

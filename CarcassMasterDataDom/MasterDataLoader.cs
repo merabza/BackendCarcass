@@ -5,24 +5,18 @@ using System.Threading.Tasks;
 using OneOf;
 using SystemToolsShared;
 
-// ReSharper disable ConvertToPrimaryConstructor
-
-// ReSharper disable ReplaceWithPrimaryConstructorParameter
-
 namespace CarcassMasterDataDom;
 
 public class MasterDataLoader
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCreator;
-    private readonly IReturnValuesRepository _rvRepo;
     private readonly List<string> _tableNames;
 
-    public MasterDataLoader(List<string> tableNames, IReturnValuesRepository rvRepo,
-        IMasterDataLoaderCreator masterDataLoaderCreator)
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public MasterDataLoader(List<string> tableNames, IMasterDataLoaderCreator masterDataLoaderCreator)
     {
         _masterDataLoaderCreator = masterDataLoaderCreator;
         _tableNames = tableNames;
-        _rvRepo = rvRepo;
     }
 
 
@@ -35,7 +29,10 @@ public class MasterDataLoader
         //ჩაიტვირთოს ყველა ცხრილი სათითაოდ
         foreach (var tableName in _tableNames)
         {
-            var loader = _masterDataLoaderCreator.CreateMasterDataLoader(tableName!);
+            var createMasterDataLoaderResult = _masterDataLoaderCreator.CreateMasterDataLoader(tableName);
+            if (createMasterDataLoaderResult.IsT1)
+                return createMasterDataLoaderResult.AsT1;
+            var loader = createMasterDataLoaderResult.AsT0;
             var tableResult = await loader.GetAllRecords(cancellationToken);
             if (tableResult.IsT1)
             {
@@ -44,7 +41,7 @@ public class MasterDataLoader
             else
             {
                 var res = tableResult.AsT0.Select(s => s.EditFields());
-                resultList.Add(tableName!, res);
+                resultList.Add(tableName, res);
             }
         }
 

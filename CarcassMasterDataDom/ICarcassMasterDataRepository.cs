@@ -14,14 +14,14 @@ public interface ICarcassMasterDataRepository : IAbstractRepository
     //OneOf<IQueryable<IDataType>, Err[]> LoadByTableName(string tableName);
 
     object? RunGenericMethodForLoadAllRecords(MethodInfo setMethod, IReadOnlyTypeBase entityType);
-    IQueryable<IDataType>? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType);
+    IQueryable? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType);
 
-    MethodInfo? MethodInfo();
+    MethodInfo? SetMethodInfo();
 
     IEntityType? GetEntityTypeByTableName(string tableName);
     Task<Option<Err[]>> Create(IDataType newItem, CancellationToken cancellationToken);
 
-    Task<string?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken);
+    Task<GridModel?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken);
     void Update(IDataType newItem);
     void Delete(IDataType dataType);
 }

@@ -25,7 +25,10 @@ public sealed class MdGetOneRecordQueryHandler : IQueryHandler<MdGetOneRecordQue
     public async Task<OneOf<MasterDataCrudLoadedData, IEnumerable<Err>>> Handle(
         MdGetOneRecordQueryRequest request, CancellationToken cancellationToken)
     {
-        var masterDataCruder = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+        var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+        if (createMasterDataCrudResult.IsT1)
+            return createMasterDataCrudResult.AsT1;
+        var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.GetOne(request.Id, cancellationToken);
         return result.Match<OneOf<MasterDataCrudLoadedData, IEnumerable<Err>>>(r => (MasterDataCrudLoadedData)r,
             e => e);

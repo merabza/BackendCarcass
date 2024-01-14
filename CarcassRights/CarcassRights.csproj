@@ -15,13 +15,4 @@
         <ProjectReference Include="..\CarcassDom\CarcassDom.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
-            <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.AspNetCore.Http.Results">
-            <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.0\Microsoft.AspNetCore.Http.Results.dll</HintPath>
-        </Reference>
-    </ItemGroup>
-
 </Project>

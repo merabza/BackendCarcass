@@ -6,9 +6,9 @@ using LibCrud.Models;
 
 namespace CarcassMasterDataDom;
 
-public static class CustomExpressionFilter<T> where T : class
+public static class CustomExpressionFilter 
 {
-    public static Expression<Func<T, bool>>? CustomFilter(ColumnFilter[]? columnFilters, string className)
+    public static Expression<Func<T, bool>>? CustomFilter<T>(ColumnFilter[]? columnFilters) where T : class
     {
         if (columnFilters is null || columnFilters.Length == 0)
             return null;
@@ -19,7 +19,7 @@ public static class CustomExpressionFilter<T> where T : class
             var expressionFilters = columnFilters
                 .Select(item => new ExpressionFilter { ColumnName = item.FieldName, Value = item.Value }).ToList();
             // Create the parameter expression for the input data
-            var parameter = Expression.Parameter(typeof(T), className);
+            var parameter = Expression.Parameter(typeof(T));
 
             // Build the filter expression dynamically
             Expression? filterExpression = null;
@@ -49,6 +49,11 @@ public static class CustomExpressionFilter<T> where T : class
                     var constant = Expression.Constant(Guid.Parse(filter.Value));
                     comparison = Expression.Equal(property, constant);
                 }
+                else if (property.Type == typeof(int?))
+                {
+                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableInt()), typeof(int?));
+                    comparison = Expression.Equal(property, constant);
+                }
                 else
                 {
                     var constant = Expression.Constant(Convert.ToInt32(filter.Value));
@@ -66,11 +71,19 @@ public static class CustomExpressionFilter<T> where T : class
             // Create the lambda expression with the parameter and the filter expression
             filters = Expression.Lambda<Func<T, bool>>(filterExpression, parameter);
         }
-        catch (Exception)
+        catch (Exception e)
         {
             filters = null;
         }
 
         return filters;
+    }
+
+
+    private static int? ToNullableInt(this string s)
+    {
+        if (int.TryParse(s, out var i)) 
+            return i;
+        return null;
     }
 }

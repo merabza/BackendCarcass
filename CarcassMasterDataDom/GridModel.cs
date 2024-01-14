@@ -8,7 +8,7 @@ namespace CarcassMasterDataDom;
 
 public sealed class GridModel
 {
-    public List<Cell> Cells { get; set; } = new();
+    public List<Cell> Cells { get; set; } = [];
 
 
     public static GridModel? DeserializeGridModel(string dtGridRulesJson)

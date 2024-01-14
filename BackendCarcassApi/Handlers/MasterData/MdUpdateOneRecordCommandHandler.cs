@@ -33,8 +33,11 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
         using StreamReader reader = new(request.HttpRequest.Body);
         var body = await reader.ReadToEndAsync(cancellationToken);
 
-        var masterDataCruder = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         var crudData = new MasterDataCrudData(body);
+        var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+        if (createMasterDataCrudResult.IsT1)
+            return createMasterDataCrudResult.AsT1;
+        var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
         return result.Match<OneOf<Unit, IEnumerable<Err>>>(
             y =>

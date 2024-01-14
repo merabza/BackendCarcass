@@ -70,6 +70,7 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ რომელიმე ცხრილის ნახვის უფლება არ აქვს მიმდინარე მომხმარებელს, ბრუნდება შეცდომა
     //  თუ ეს ყველა ცხრილზე ნახვის უფლება აქვს მიმდინარე მომხმარებელს, მოხდება ყველა ცხრილის ჩატვირთვა და გამომძახებლისთვის დაბრუნება
     //query like this: localhost:3000/api/masterdata/gettables?tables=tableName1&tables=tableName2&tables=tableName3
+    //deprecated
     private static async Task<IResult> GetTables(HttpRequest request, IMediator mediator,
         CancellationToken cancellationToken)
     {

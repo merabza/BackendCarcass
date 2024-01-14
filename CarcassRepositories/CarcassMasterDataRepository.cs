@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,15 +44,15 @@ public class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDat
         return setMethod.MakeGenericMethod(entityType.ClrType).Invoke(_context, null);
     }
 
-    public IQueryable<IDataType>? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType)
+    public IQueryable? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType)
     {
-        return (IQueryable<IDataType>?)_context.GetType().GetMethod("Set")?.MakeGenericMethod(entityType.ClrType)
+        return (IQueryable?)_context.GetType().GetMethod("Set")?.MakeGenericMethod(entityType.ClrType)
             .Invoke(_context, null);
     }
 
-    public MethodInfo? MethodInfo()
+    public MethodInfo? SetMethodInfo()
     {
-        return _context.GetType().GetMethod("Set", Array.Empty<Type>());
+        return _context.GetType().GetMethod("Set", []);
     }
 
     public IEntityType? GetEntityTypeByTableName(string tableName)
@@ -69,10 +68,12 @@ public class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDat
         return null;
     }
 
-    public async Task<string?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken)
+    public async Task<GridModel?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken)
     {
         var dataType = await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
-        return dataType?.DtGridRulesJson;
+        var dtGridRulesJson = dataType?.DtGridRulesJson;
+
+        return dtGridRulesJson == null ? null : GridModel.DeserializeGridModel(dtGridRulesJson);
     }
 
     public void Update(IDataType newItem)
