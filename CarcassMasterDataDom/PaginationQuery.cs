@@ -32,9 +32,8 @@ public static class PaginationQuery
     private static (int, int, IQueryable<T>) PrepareSortFilterPagination<T>(this IQueryable<T> query, FilterSortRequest filterSortRequest) where T : class
     {
 
-        Expression<Func<T, bool>>? filters = null;
-        //if (subObjType is null)
-            filters = CustomExpressionFilter.CustomFilter<T>(filterSortRequest.FilterFields);
+        var filters = CustomExpressionFilter.CustomFilter<T>(filterSortRequest.FilterFields);
+            //if (subObjType is null)
         //else
         //{
         //    var customExpressionFilterType = typeof(CustomExpressionFilter);
@@ -85,8 +84,7 @@ public static class PaginationQuery
     {
         if (sortByFields is not null && sortByFields.Length != 0)
             foreach (var field in sortByFields)
-                query = query.OrderBy(field.FieldName.CapitalizeCamel(), field.Ascending);
-
+                query = query.OrderBy(field.FieldName.CapitalizeCamel(), field.Ascending, field.PropObjType);
         return query;
     }
 

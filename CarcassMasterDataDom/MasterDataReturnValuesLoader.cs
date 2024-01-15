@@ -14,6 +14,7 @@ public class MasterDataReturnValuesLoader : IReturnValuesLoader
     private readonly DataTypeModelForRvs _dt;
     private readonly IReturnValuesRepository _rvRepo;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public MasterDataReturnValuesLoader(DataTypeModelForRvs dt, IReturnValuesRepository rvRepo)
     {
         _dt = dt;

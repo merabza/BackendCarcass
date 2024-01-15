@@ -8,8 +8,8 @@ namespace CarcassMasterDataDom.CellModels;
 public /*open*/ class IntegerCell : NumberCell
 {
     public IntegerCell(string fieldName, string? caption, string? errorCode = null, string? errorMessage = null,
-        bool visible = true,
-        string? typeName = null) : base(fieldName, caption, visible, typeName ?? "Integer")
+        bool visible = true, string? typeName = null) : base(fieldName, caption, visible,
+        typeName ?? CellTypeNameForSave(nameof(IntegerCell)))
     {
         IsIntegerErr = visible
             ? new Err

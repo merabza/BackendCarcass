@@ -7,6 +7,7 @@ using CarcassMasterDataDom;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SystemToolsShared;
 
 namespace CarcassRepositories;
@@ -84,5 +85,11 @@ public class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDat
     public void Delete(IDataType itemForDelete)
     {
         _context.Remove(itemForDelete);
+    }
+
+    public async Task<string?> GetSortFieldNameByTableName(string tableName, CancellationToken cancellationToken)
+    {
+        var dataType = await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
+        return dataType?.DtNameFieldName;
     }
 }

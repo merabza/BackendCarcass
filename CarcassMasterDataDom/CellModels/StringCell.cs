@@ -7,8 +7,9 @@ namespace CarcassMasterDataDom.CellModels;
 
 public sealed class StringCell : MixedCell
 {
-    public StringCell(string fieldName, string? caption, bool visible = true, string? typeName = null) : base(
-        fieldName, caption, visible, typeName ?? "String")
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public StringCell(string fieldName, string? caption, bool visible = true, string? typeName = null) : base(fieldName,
+        caption, visible, typeName ?? CellTypeNameForSave(nameof(StringCell)))
     {
     }
 

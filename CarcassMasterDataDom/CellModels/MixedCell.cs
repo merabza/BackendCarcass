@@ -11,8 +11,9 @@ public /*open*/ class MixedCell : Cell
 
     //}
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public MixedCell(string fieldName, string? caption, bool visible = true, string? typeName = null) : base(
-        typeName ?? "Mixed", fieldName, caption, visible)
+        typeName ?? CellTypeNameForSave(nameof(MixedCell)), fieldName, caption, visible)
     {
     }
 

@@ -2,25 +2,27 @@
 
 namespace CarcassMasterDataDom.CellModels;
 
-public sealed class LookupCell(
-    string fieldName,
-    string? caption,
-    string dataMember,
-    string valueMember,
-    string displayMember,
-    string? intErrCode = null,
-    string? intErrMessage = null,
-    bool visible = true,
-    string? typeName = null) : IntegerCell(fieldName, caption, intErrCode, intErrMessage, visible, typeName ?? "Lookup")
+//Deprecated
+public sealed class LookupCell : IntegerCell
 {
-    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public string? DataMember { get; set; } = dataMember;
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public LookupCell(string fieldName, string? caption, string dataMember, string valueMember, string displayMember,
+        string? intErrCode = null, string? intErrMessage = null, bool visible = true, string? typeName = null) : base(
+        fieldName, caption, intErrCode, intErrMessage, visible, typeName ?? CellTypeNameForSave(nameof(LookupCell)))
+    {
+        DataMember = dataMember;
+        ValueMember = valueMember;
+        DisplayMember = displayMember;
+    }
 
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public string? ValueMember { get; set; } = valueMember;
+    public string? DataMember { get; set; }
 
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public string? DisplayMember { get; set; } = displayMember;
+    public string? ValueMember { get; set; }
+
+    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+    public string? DisplayMember { get; set; }
 
     public static LookupCell Create(string fieldName, string? caption, string dataMember, string valueMember,
         string displayMember, string? intErrCode = null, string? intErrMessage = null, bool visible = true,

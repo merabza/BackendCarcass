@@ -2,18 +2,18 @@
 
 namespace CarcassMasterDataDom.CellModels;
 
-public sealed class MdLookupCell(
-    string fieldName,
-    string? caption,
-    string dtTable,
-    string? intErrCode = null,
-    string? intErrMessage = null,
-    bool visible = true,
-    string? typeName = null) : IntegerCell(
-    fieldName, caption, intErrCode, intErrMessage, visible, typeName ?? "MdLookup")
+public sealed class MdLookupCell : IntegerCell
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public MdLookupCell(string fieldName, string? caption, string dtTable, string? intErrCode = null,
+        string? intErrMessage = null, bool visible = true, string? typeName = null) : base(fieldName, caption,
+        intErrCode, intErrMessage, visible, typeName ?? CellTypeNameForSave(nameof(MdLookupCell)))
+    {
+        DtTable = dtTable;
+    }
+
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public string? DtTable { get; set; } = dtTable;
+    public string? DtTable { get; set; }
 
     public static MdLookupCell Create(string fieldName, string? caption, string dtTable, string? intErrCode = null,
         string? intErrMessage = null, bool visible = true, string? typeName = null)

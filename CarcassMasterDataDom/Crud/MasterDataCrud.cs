@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading;
 using System.Threading.Tasks;
 using CarcassContracts.ErrorModels;
+using CarcassMasterDataDom.CellModels;
 using CarcassMasterDataDom.Models;
 using LanguageExt;
 using LibCrud;
@@ -83,12 +85,40 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //            s => s.EditFields(), cancellationToken, _entityType.ClrType);
         //        return new TableRowsData(count, realOffset, rows);
     }
-
+    
     public async Task<TableRowsData> UseUseCustomSortFilterPagination<T>(object query,
         FilterSortRequest filterSortRequest, CancellationToken cancellationToken) where T : class, IDataType
     {
         var tQuery = (IQueryable<T>)query;
         //tQuery.Include()
+        if (filterSortRequest.SortByFields?.Length > 0)
+        {
+            var gridModel = await _cmdRepo.GetDataTypeGridRulesByTableName(_tableName, cancellationToken);
+            //DtNameFieldName
+            if (gridModel is not null)
+            {
+                foreach (var sortField in filterSortRequest.SortByFields)
+                {
+                    var cell = gridModel.Cells.SingleOrDefault(x => x.FieldName == sortField.FieldName);
+
+                    if (cell is null)
+                        continue;
+                    if (cell.TypeName != "MdLookup") 
+                        continue;
+                    if (cell is not MdLookupCell { DtTable: not null } mdLookupCell) 
+                        continue;
+                    var sortFieldName = await _cmdRepo.GetSortFieldNameByTableName(mdLookupCell.DtTable, cancellationToken);
+                    if (sortFieldName is null) 
+                        continue;
+                    tQuery.Include(mdLookupCell.DtTable);
+                    sortField.FieldName = sortFieldName;
+                    //sortField.PropObjType = Type.GetType($"{nameof(GrammarGeDb)}.{nameof(Models)}.{mdLookupCell.DtTable}");
+                    //sortField.PropObjType = Type.GetType($"GrammarGeDb.Models.{mdLookupCell.DtTable}");
+                    sortField.PropObjType = _cmdRepo.GetEntityTypeByTableName(mdLookupCell.DtTable)?.ClrType;
+                }
+            }
+        }
+
         var (realOffset, count, rows) = await tQuery.UseCustomSortFilterPagination(filterSortRequest,
             s => s.EditFields(), cancellationToken);
         return new TableRowsData(count, realOffset, rows);

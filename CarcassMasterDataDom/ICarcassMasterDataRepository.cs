@@ -24,4 +24,5 @@ public interface ICarcassMasterDataRepository : IAbstractRepository
     Task<GridModel?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken);
     void Update(IDataType newItem);
     void Delete(IDataType dataType);
+    Task<string?> GetSortFieldNameByTableName(string tableName, CancellationToken cancellationToken);
 }

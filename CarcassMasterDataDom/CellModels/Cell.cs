@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SystemToolsShared;
 
 namespace CarcassMasterDataDom.CellModels;
@@ -17,6 +18,14 @@ public /*open*/ class Cell
     public string FieldName { get; set; }
     public string? Caption { get; set; }
     public bool Visible { get; set; }
+
+
+    public static string CellTypeNameForSave(string sourceCellTypeName)
+    {
+        if (!sourceCellTypeName.EndsWith(nameof(Cell)) || sourceCellTypeName.Length <= nameof(Cell).Length)
+            throw new Exception($"Invalid Cell Type Name {sourceCellTypeName}");
+        return sourceCellTypeName[..^4];
+    }
 
     public static NumberCell Number(string fieldName, string? caption, bool visible = true)
     {
