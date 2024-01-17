@@ -35,7 +35,9 @@ public static class CustomExpressionFilter
                 if (property.Type == typeof(string))
                 {
                     var constant = Expression.Constant(filter.Value);
-                    comparison = Expression.Call(property, "Contains", Type.EmptyTypes, constant);
+                    comparison = filter.Value is null
+                        ? Expression.Call(typeof(string), "IsNullOrEmpty", null, property)
+                        : Expression.Call(property, "Contains", Type.EmptyTypes, constant);
                 }
                 else if (property.Type == typeof(double))
                 {
@@ -52,6 +54,11 @@ public static class CustomExpressionFilter
                 else if (property.Type == typeof(int?))
                 {
                     var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableInt()), typeof(int?));
+                    comparison = Expression.Equal(property, constant);
+                }
+                else if (property.Type == typeof(short) || property.Type == typeof(short?))
+                {
+                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableShort()), typeof(short));
                     comparison = Expression.Equal(property, constant);
                 }
                 else
@@ -82,7 +89,16 @@ public static class CustomExpressionFilter
 
     private static int? ToNullableInt(this string s)
     {
+        
         if (int.TryParse(s, out var i)) 
+            return i;
+        return null;
+    }
+
+    private static int? ToNullableShort(this string s)
+    {
+        
+        if (short.TryParse(s, out var i)) 
             return i;
         return null;
     }

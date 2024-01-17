@@ -21,33 +21,11 @@ public static class PaginationQuery
         return (realOffset, count, rowsSel);
     }
 
-    //public static async Task<(int, int, List<T>)> UseCustomSortFilterPagination<T>(this IQueryable<T> query,
-    //    FilterSortRequest filterSortRequest, CancellationToken cancellationToken) where T : class
-    //{
-    //    var (realOffset, count, preparedQuery) = query.PrepareSortFilterPagination(filterSortRequest);
-    //    var rowsSel = await preparedQuery.ToListAsync(cancellationToken);
-    //    return (realOffset, count, rowsSel);
-    //}
-
-    private static (int, int, IQueryable<T>) PrepareSortFilterPagination<T>(this IQueryable<T> query, FilterSortRequest filterSortRequest) where T : class
+    private static (int, int, IQueryable<T>) PrepareSortFilterPagination<T>(this IQueryable<T> query,
+        FilterSortRequest filterSortRequest) where T : class
     {
 
         var filters = CustomExpressionFilter.CustomFilter<T>(filterSortRequest.FilterFields);
-            //if (subObjType is null)
-        //else
-        //{
-        //    var customExpressionFilterType = typeof(CustomExpressionFilter);
-        //    var customFilterMethod = customExpressionFilterType?.GetMethod("CustomFilter", [typeof(ColumnFilter[])]);
-        //    var f = customFilterMethod?.MakeGenericMethod(subObjType).Invoke(null, [filterSortRequest.FilterFields]);
-
-        //    //var filters =
-        //    //    CustomExpressionFilter.CustomFilter<T>(filterSortRequest.FilterFields);
-        //    if (f is not null)
-        //        filters = (Expression<Func<T, bool>>?)f;//Convert.ChangeType(f, Convert.GetTypeCode(f));
-
-            
-        //}
-
 
         if (filters is not null)
             query = query.CustomFilter(filters);
@@ -83,8 +61,9 @@ public static class PaginationQuery
         where T : class
     {
         if (sortByFields is not null && sortByFields.Length != 0)
-            foreach (var field in sortByFields)
-                query = query.OrderBy(field.FieldName.CapitalizeCamel(), field.Ascending, field.PropObjType);
+            query = sortByFields.Aggregate(query,
+                (current, field) =>
+                    current.OrderBy(field.FieldName.CapitalizeCamel(), field.Ascending, field.PropObjType));
         return query;
     }
 

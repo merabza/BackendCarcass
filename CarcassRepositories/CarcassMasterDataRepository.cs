@@ -7,7 +7,6 @@ using CarcassMasterDataDom;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SystemToolsShared;
 
 namespace CarcassRepositories;
