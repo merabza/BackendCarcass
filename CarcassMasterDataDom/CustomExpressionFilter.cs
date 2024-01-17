@@ -51,14 +51,19 @@ public static class CustomExpressionFilter
                     var constant = Expression.Constant(Guid.Parse(filter.Value));
                     comparison = Expression.Equal(property, constant);
                 }
-                else if (property.Type == typeof(int?))
+                else if (property.Type == typeof(int) || property.Type == typeof(int?))
                 {
                     var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableInt()), typeof(int?));
                     comparison = Expression.Equal(property, constant);
                 }
                 else if (property.Type == typeof(short) || property.Type == typeof(short?))
                 {
-                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableShort()), typeof(short));
+                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableShort()), typeof(short?));
+                    comparison = Expression.Equal(property, constant);
+                }
+                else if (property.Type == typeof(bool) || property.Type == typeof(bool?))
+                {
+                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableBool()), typeof(bool?));
                     comparison = Expression.Equal(property, constant);
                 }
                 else
@@ -95,10 +100,18 @@ public static class CustomExpressionFilter
         return null;
     }
 
-    private static int? ToNullableShort(this string s)
+    private static short? ToNullableShort(this string s)
     {
         
         if (short.TryParse(s, out var i)) 
+            return i;
+        return null;
+    }
+
+    private static bool? ToNullableBool(this string s)
+    {
+        
+        if (bool.TryParse(s, out var i)) 
             return i;
         return null;
     }
