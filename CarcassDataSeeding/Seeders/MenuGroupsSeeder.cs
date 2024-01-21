@@ -44,6 +44,6 @@ public /*open*/
             new() { MengKey = "MasterData", MengName = "ძირითადი ინფორმაცია", SortId = 200, Hidden = false },
         };
 
-        return menuGroups.ToList();
+        return [.. menuGroups];
     }
 }
