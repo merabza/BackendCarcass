@@ -1,5 +1,6 @@
 namespace CarcassDataSeeding.Models;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MenuItmSeederModel
 {
     public string MenGroupIdMengKey { get; set; }

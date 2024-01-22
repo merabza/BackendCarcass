@@ -32,6 +32,9 @@ public /*open*/ class IntegerCell : NumberCell
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
     public bool IsShort { get; set; }
 
+    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+    public bool IsSortId { get; set; }
+
     public static IntegerCell Create(string fieldName, string? caption, string? errorCode = null,
         string? errorMessage = null, bool visible = true, string? typeName = null)
     {
@@ -105,6 +108,12 @@ public /*open*/ class IntegerCell : NumberCell
     public IntegerCell Short()
     {
         IsShort = true;
+        return this;
+    }
+
+    public IntegerCell SortId()
+    {
+        IsSortId = true;
         return this;
     }
 }

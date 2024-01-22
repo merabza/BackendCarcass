@@ -378,7 +378,8 @@ public /*open*/
 
     protected static Cell GetSortIdCell()
     {
-        return Cell.Integer("sortId", "რიგითი ნომერი").Required("რიგითი ნომერი შევსებული უნდა იყოს").Default();
+        return Cell.Integer("sortId", "რიგითი ნომერი").Required("რიგითი ნომერი შევსებული უნდა იყოს").Default(-1).Min(-1)
+            .SortId();
     }
 
     //protected static Cell GetComboCell(string fieldName, string caption, string dataMember, string valueMember,
