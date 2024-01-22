@@ -102,7 +102,7 @@ public static class CustomExpressionFilter
             // Create the lambda expression with the parameter and the filter expression
             filters = Expression.Lambda<Func<T, bool>>(filterExpression, parameter);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             filters = null;
         }
