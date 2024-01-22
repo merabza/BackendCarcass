@@ -8,7 +8,6 @@ namespace CarcassMasterDataDom;
 
 public static class LinqExtensions
 {
-
     private static PropertyInfo GetPropertyInfo(Type objType, string name)
     {
         var properties = objType.GetProperties();
@@ -56,7 +55,8 @@ public static class LinqExtensions
         throw new Exception("OrderBy result is not null");
     }
 
-    public static IQueryable<T> OrderBy<T>(this IQueryable<T> query, string name, bool ascending, Type? propObjType = null)
+    public static IQueryable<T> OrderBy<T>(this IQueryable<T> query, string name, bool ascending,
+        Type? propObjType = null)
     {
         LambdaExpression expr;
         PropertyInfo propInfo;
@@ -75,7 +75,6 @@ public static class LinqExtensions
             //    : GetOrderExpression(propObjType, propInfo);
             expr = GetOrderExpression(typeof(T), propInfo);
         }
-
 
 
         var methodName = ascending ? nameof(Queryable.OrderBy) : nameof(Queryable.OrderByDescending);

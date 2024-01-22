@@ -24,7 +24,6 @@ public static class PaginationQuery
     private static (int, int, IQueryable<T>) PrepareSortFilterPagination<T>(this IQueryable<T> query,
         FilterSortRequest filterSortRequest) where T : class
     {
-
         var filters = CustomExpressionFilter.CustomFilter<T>(filterSortRequest.FilterFields);
 
         if (filters is not null)

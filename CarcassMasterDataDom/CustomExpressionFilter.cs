@@ -6,7 +6,7 @@ using LibCrud.Models;
 
 namespace CarcassMasterDataDom;
 
-public static class CustomExpressionFilter 
+public static class CustomExpressionFilter
 {
     public static Expression<Func<T, bool>>? CustomFilter<T>(ColumnFilter[]? columnFilters) where T : class
     {
@@ -63,22 +63,26 @@ public static class CustomExpressionFilter
                 }
                 else if (property.Type == typeof(short))
                 {
-                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableShort()), typeof(short));
+                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableShort()),
+                        typeof(short));
                     comparison = Expression.Equal(property, constant);
                 }
                 else if (property.Type == typeof(short?))
                 {
-                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableShort()), typeof(short?));
+                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableShort()),
+                        typeof(short?));
                     comparison = Expression.Equal(property, constant);
                 }
                 else if (property.Type == typeof(bool))
                 {
-                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableBool()), typeof(bool));
+                    var constant =
+                        Expression.Convert(Expression.Constant(filter.Value?.ToNullableBool()), typeof(bool));
                     comparison = Expression.Equal(property, constant);
                 }
                 else if (property.Type == typeof(bool?))
                 {
-                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableBool()), typeof(bool?));
+                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableBool()),
+                        typeof(bool?));
                     comparison = Expression.Equal(property, constant);
                 }
                 else
@@ -109,24 +113,21 @@ public static class CustomExpressionFilter
 
     private static int? ToNullableInt(this string s)
     {
-        
-        if (int.TryParse(s, out var i)) 
+        if (int.TryParse(s, out var i))
             return i;
         return null;
     }
 
     private static short? ToNullableShort(this string s)
     {
-        
-        if (short.TryParse(s, out var i)) 
+        if (short.TryParse(s, out var i))
             return i;
         return null;
     }
 
     private static bool? ToNullableBool(this string s)
     {
-        
-        if (bool.TryParse(s, out var i)) 
+        if (bool.TryParse(s, out var i))
             return i;
         return null;
     }

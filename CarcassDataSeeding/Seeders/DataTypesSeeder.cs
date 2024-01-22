@@ -14,7 +14,7 @@ namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
     class DataTypesSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<DataType>(
-        dataSeedFolder, repo)
+    dataSeedFolder, repo)
 {
     protected override Option<Err[]> CreateByJsonFile()
     {

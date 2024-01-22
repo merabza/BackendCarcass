@@ -75,17 +75,21 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //var method = typeof(MasterDataCrud).GetMethod(nameof(UseUseCustomSortFilterPagination));
         var generic = method?.MakeGenericMethod(_entityType.ClrType);
         if (generic is null)
-            return new[] {new Err { ErrorCode = "GenericMethodDoesNotCreated", ErrorMessage = "Generic Method Does Not Created" }};
+            return new[]
+            {
+                new Err { ErrorCode = "GenericMethodDoesNotCreated", ErrorMessage = "Generic Method Does Not Created" }
+            };
         var result = (Task<TableRowsData>?)generic.Invoke(this, [query, filterSortRequest, cancellationToken]);
         if (result is null)
-            return new[] {new Err { ErrorCode = "TaskMethodDoesNotCreated", ErrorMessage = "Task Method Does Not Created" }};
+            return new[]
+                { new Err { ErrorCode = "TaskMethodDoesNotCreated", ErrorMessage = "Task Method Does Not Created" } };
         return await result;
 
         //var (realOffset, count, rows) = await query.UseCustomSortFilterPagination(filterSortRequest,
         //            s => s.EditFields(), cancellationToken, _entityType.ClrType);
         //        return new TableRowsData(count, realOffset, rows);
     }
-    
+
     public async Task<TableRowsData> UseUseCustomSortFilterPagination<T>(object query,
         FilterSortRequest filterSortRequest, CancellationToken cancellationToken) where T : class, IDataType
     {
@@ -103,12 +107,13 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
                     if (cell is null)
                         continue;
-                    if (cell.TypeName != "MdLookup") 
+                    if (cell.TypeName != "MdLookup")
                         continue;
-                    if (cell is not MdLookupCell { DtTable: not null } mdLookupCell) 
+                    if (cell is not MdLookupCell { DtTable: not null } mdLookupCell)
                         continue;
-                    var sortFieldName = await _cmdRepo.GetSortFieldNameByTableName(mdLookupCell.DtTable, cancellationToken);
-                    if (sortFieldName is null) 
+                    var sortFieldName =
+                        await _cmdRepo.GetSortFieldNameByTableName(mdLookupCell.DtTable, cancellationToken);
+                    if (sortFieldName is null)
                         continue;
                     tQuery.Include(mdLookupCell.DtTable);
                     sortField.FieldName = sortFieldName;
@@ -157,7 +162,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
     private OneOf<string, Err[]> GetSingleKeyName()
     {
-
         var singleKey = _entityType.GetKeys().SingleOrDefault();
         if (singleKey == null)
             return new[] { MasterDataApiErrors.TableHaveNotSingleKey(_tableName) }; //ვერ ვიპოვეთ ერთადერთი გასაღები

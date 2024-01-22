@@ -9,7 +9,7 @@ namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
     class MenuSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<MenuItm>(dataSeedFolder,
-        repo)
+    repo)
 {
     protected override Option<Err[]> CreateByJsonFile()
     {

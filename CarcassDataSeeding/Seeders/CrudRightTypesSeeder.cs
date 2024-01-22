@@ -10,7 +10,7 @@ namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
     class CrudRightTypesSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<CrudRightType>(
-        dataSeedFolder, repo)
+    dataSeedFolder, repo)
 {
     protected override Option<Err[]> CreateByJsonFile()
     {

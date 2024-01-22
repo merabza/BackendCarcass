@@ -9,7 +9,7 @@ namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
     class AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<AppClaim>(
-        dataSeedFolder, repo)
+    dataSeedFolder, repo)
 {
     protected override Option<Err[]> CreateByJsonFile()
     {

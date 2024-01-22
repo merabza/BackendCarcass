@@ -170,5 +170,4 @@ public sealed class MenuRightsRepository(CarcassDbContext context) : IMenuRights
             where r1.PtId == parentTypeId && r1.PKey == parentKey && r1.CtId == childTypeId && r2.CtId == childTypeId2
             select r2.CKey;
     }
-
 }

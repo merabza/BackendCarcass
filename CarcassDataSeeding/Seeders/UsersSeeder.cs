@@ -9,7 +9,10 @@ using SystemToolsShared;
 
 namespace CarcassDataSeeding.Seeders;
 
-public sealed class UsersSeeder(UserManager<AppUser> userManager, string secretDataFolder, string dataSeedFolder,
+public sealed class UsersSeeder(
+    UserManager<AppUser> userManager,
+    string secretDataFolder,
+    string dataSeedFolder,
     IDataSeederRepository repo) : DataSeeder<User>(dataSeedFolder, repo)
 {
     protected override Option<Err[]> AdditionalCheck()

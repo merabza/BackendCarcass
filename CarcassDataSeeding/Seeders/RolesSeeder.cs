@@ -10,7 +10,10 @@ using SystemToolsShared;
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
-    class RolesSeeder(RoleManager<AppRole> roleManager, string secretDataFolder, string dataSeedFolder,
+    class RolesSeeder(
+        RoleManager<AppRole> roleManager,
+        string secretDataFolder,
+        string dataSeedFolder,
         IDataSeederRepository repo) : AdvancedDataSeeder<Role>(dataSeedFolder, repo)
 {
     protected override Option<Err[]> CreateByJsonFile()
