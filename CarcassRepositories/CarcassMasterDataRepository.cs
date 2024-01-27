@@ -44,11 +44,11 @@ public class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDat
         return setMethod.MakeGenericMethod(entityType.ClrType).Invoke(_context, null);
     }
 
-    public IQueryable? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType)
-    {
-        return (IQueryable?)_context.GetType().GetMethod("Set")?.MakeGenericMethod(entityType.ClrType)
-            .Invoke(_context, null);
-    }
+    //public IQueryable? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType)
+    //{
+    //    return (IQueryable?)_context.GetType().GetMethod("Set")?.MakeGenericMethod(entityType.ClrType)
+    //        .Invoke(_context, null);
+    //}
 
     public MethodInfo? SetMethodInfo()
     {

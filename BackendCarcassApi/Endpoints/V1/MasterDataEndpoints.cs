@@ -111,8 +111,7 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ tableName ცხრილის ნახვის უფლება არ აქვს მიმდინარე მომხმარებელს, ბრუნდება შეცდომა
     //  თუ tableName ცხრილის ნახვის უფლება აქვს მიმდინარე მომხმარებელს,
     //   მოხდება id იდენტიფიკატორით ჩანაწერის ამოღება ბაზიდან და გამომძახებლისთვის დაბრუნება
-    // GET api/<controller>/<tableName>/5
-    //[HttpGet("{tableName}/{id}")]
+    // GET api/v1/masterdata/{tableName}/{id}
     private static async Task<IResult> MdGetOneRecord(HttpRequest request, string tableName, int id, IMediator mediator,
         CancellationToken cancellationToken)
     {

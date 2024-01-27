@@ -14,7 +14,7 @@ public interface ICarcassMasterDataRepository : IAbstractRepository
     //OneOf<IQueryable<IDataType>, Err[]> LoadByTableName(string tableName);
 
     object? RunGenericMethodForLoadAllRecords(MethodInfo setMethod, IReadOnlyTypeBase entityType);
-    IQueryable? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType);
+    //IQueryable? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType);
 
     MethodInfo? SetMethodInfo();
 

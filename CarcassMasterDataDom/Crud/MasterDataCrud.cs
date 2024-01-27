@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading;
@@ -25,6 +24,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     private readonly string _tableName;
     private readonly IEntityType _entityType;
     private IDataType? _justCreated;
+    private GridModel? _gridModel;
 
     public static OneOf<MasterDataCrud, Err[]> Create(string tableName, ILogger logger,
         ICarcassMasterDataRepository cmdRepo)
@@ -49,16 +49,66 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
     public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
     {
-        //var queryResult = Query();
-        //if (queryResult.IsT1)
-        //    return queryResult.AsT1;
+        var queryResult = Query();
+        if (queryResult.IsT1)
+            return queryResult.AsT1;
 
-        //var res = await queryResult.AsT0.ToListAsync(cancellationToken);
-        //return res; // OneOf<IEnumerable<IDataType>, Err[]>.FromT0(res);
+        var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
+        if (gridModel is null)
+            return new Err[]
+                { new() { ErrorCode = "GridModelIsNull", ErrorMessage = $"gridModel is null for Table {_tableName}" } };
 
-        return await Query().Match<Task<OneOf<IEnumerable<IDataType>, Err[]>>>(
-            async x => await x.ToListAsync(cancellationToken),
-            e => Task.FromResult<OneOf<IEnumerable<IDataType>, Err[]>>(e));
+
+        IntegerCell? sortIdCell = null;
+        foreach (var cell in gridModel.Cells.Where(x => x.TypeName == "Integer"))
+        {
+            if (cell is not IntegerCell intCell)
+                continue;
+            if (!intCell.IsSortId)
+                continue;
+            sortIdCell = intCell;
+            break;
+        }
+
+        var query = queryResult.AsT0;
+
+        if (sortIdCell is null) 
+            return await query.ToListAsync(cancellationToken);
+
+        var method = typeof(MasterDataCrud).GetMethod(nameof(OrderBySortId), 1,
+            [typeof(object)]);
+        var generic = method?.MakeGenericMethod(_entityType.ClrType);
+        if (generic is null)
+            return new[]
+            {
+                new Err
+                {
+                    ErrorCode = "GenericMethodDoesNotCreated", ErrorMessage = "Generic Method Does Not Created"
+                }
+            };
+        query = (IQueryable<IDataType>?)generic.Invoke(this, [query]);
+        if (query is null)
+            return new[]
+            {
+                new Err { ErrorCode = "TaskMethodDoesNotCreated", ErrorMessage = "Task Method Does Not Created" }
+            };
+
+        return await query.ToListAsync(cancellationToken);
+
+        //return await Query().Match<Task<OneOf<IEnumerable<IDataType>, Err[]>>>(
+        //    async x => await x.ToListAsync(cancellationToken),
+        //    e => Task.FromResult<OneOf<IEnumerable<IDataType>, Err[]>>(e));
+    }
+
+    public static IEnumerable<T> OrderBySortId<T>(object query) where T : class, ISortedDataType
+    {
+        var tQuery = (IQueryable<T>)query;
+        return tQuery.OrderBy(x => x.SortId).Select(
+            delegate(T s)
+            {
+                s.SortId++;
+                return s;
+            });
     }
 
     public override async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
@@ -70,7 +120,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
         var query = queryResult.AsT0;
 
-        var method = typeof(MasterDataCrud).GetMethod(nameof(UseUseCustomSortFilterPagination), 1,
+        var method = typeof(MasterDataCrud).GetMethod(nameof(UseCustomSortFilterPagination), 1,
             [typeof(object), typeof(FilterSortRequest), typeof(CancellationToken)]);
         //var method = typeof(MasterDataCrud).GetMethod(nameof(UseUseCustomSortFilterPagination));
         var generic = method?.MakeGenericMethod(_entityType.ClrType);
@@ -90,14 +140,19 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //        return new TableRowsData(count, realOffset, rows);
     }
 
-    public async Task<TableRowsData> UseUseCustomSortFilterPagination<T>(object query,
-        FilterSortRequest filterSortRequest, CancellationToken cancellationToken) where T : class, IDataType
+    private async Task<GridModel?> GetDataTypeGridRulesByTableName(CancellationToken cancellationToken)
+    {
+        return _gridModel ??= await _cmdRepo.GetDataTypeGridRulesByTableName(_tableName, cancellationToken);
+    }
+
+    public async Task<TableRowsData> UseCustomSortFilterPagination<T>(object query, FilterSortRequest filterSortRequest,
+        CancellationToken cancellationToken) where T : class, IDataType
     {
         var tQuery = (IQueryable<T>)query;
         //tQuery.Include()
         if (filterSortRequest.SortByFields?.Length > 0)
         {
-            var gridModel = await _cmdRepo.GetDataTypeGridRulesByTableName(_tableName, cancellationToken);
+            var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
             //DtNameFieldName
             if (gridModel is not null)
             {
@@ -301,7 +356,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     private async Task<Option<Err[]>> Validate(IDataType newItem, CancellationToken cancellationToken)
     {
         //var dt = _context.DataTypes.SingleOrDefault(s => s.DtTable == tableName);
-        var gridModel = await _cmdRepo.GetDataTypeGridRulesByTableName(_tableName, cancellationToken);
+        var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
 
         if (gridModel == null)
             return new[] { MasterDataApiErrors.MasterDataInvalidValidationRules(_tableName) };
