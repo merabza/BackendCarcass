@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CarcassContracts.ErrorModels;
+using Newtonsoft.Json;
 using SystemToolsShared;
 
 namespace CarcassMasterDataDom.CellModels;
@@ -33,11 +34,7 @@ public /*open*/ class NumberCell : MixedCell
 
     public NumberCell Positive(string? errorCode = null, string? errorMessage = null)
     {
-        IsPositiveErr = new Err
-        {
-            ErrorCode = errorCode ?? $"{FieldName}MustBePositive",
-            ErrorMessage = errorMessage ?? $"{Caption} უნდა იყოს დადებითი რიცხვი"
-        };
+        IsPositiveErr = CarcassMasterDataDomErrors.MustBePositive(FieldName, Caption, errorCode, errorMessage);
         return this;
     }
 }

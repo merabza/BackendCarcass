@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CarcassContracts.ErrorModels;
 using Newtonsoft.Json;
 using SystemToolsShared;
 
@@ -31,11 +32,7 @@ public /*open*/ class MixedCell : Cell
 
     public MixedCell Required(string? errorCode = null, string? errorMessage = null)
     {
-        IsRequiredErr = new Err
-        {
-            ErrorCode = errorCode ?? $"{FieldName}Required",
-            ErrorMessage = errorMessage ?? $"{Caption} შევსებული უნდა იყოს"
-        };
+        IsRequiredErr = CarcassMasterDataDomErrors.Required(FieldName, Caption, errorCode, errorMessage);
         return this;
     }
 
@@ -60,8 +57,7 @@ public /*open*/ class MixedCell : Cell
         if (value is T)
             return errors;
 
-        errors.Add(new Err
-            { ErrorCode = $"{FieldName}MustBeBoolean", ErrorMessage = $"{Caption} ველი უნდა იყოს {typeName} ტიპის" });
+        errors.Add(CarcassMasterDataDomErrors.MustBeBoolean(FieldName, Caption, typeName));
 
         return errors;
     }

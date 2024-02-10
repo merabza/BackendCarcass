@@ -9,6 +9,6 @@ public static class CommonErrors
 
     public static Err CannotFindMethod(string methodName)
     {
-        return new Err { ErrorCode = nameof(CannotFindMethod), ErrorMessage = "cannot find method {methodName}" };
+        return new Err { ErrorCode = nameof(CannotFindMethod), ErrorMessage = $"cannot find method {methodName}" };
     }
 }

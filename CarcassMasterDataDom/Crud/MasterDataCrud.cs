@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using CarcassContracts.ErrorModels;
 using CarcassMasterDataDom.CellModels;
 using CarcassMasterDataDom.Models;
+using CarcassMasterDataDom.SortIdStuff;
 using LanguageExt;
 using LibCrud;
 using LibCrud.Models;
@@ -25,6 +27,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     private readonly IEntityType _entityType;
     private IDataType? _justCreated;
     private GridModel? _gridModel;
+    private ISortIdHelper? _sortHelper;
 
     public static OneOf<MasterDataCrud, Err[]> Create(string tableName, ILogger logger,
         ICarcassMasterDataRepository cmdRepo)
@@ -47,16 +50,12 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
+    private async Task<OneOf<bool,Err[]>> IsGridWithSortId(CancellationToken cancellationToken)
     {
-        var queryResult = Query();
-        if (queryResult.IsT1)
-            return queryResult.AsT1;
 
         var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
         if (gridModel is null)
-            return new Err[]
-                { new() { ErrorCode = "GridModelIsNull", ErrorMessage = $"gridModel is null for Table {_tableName}" } };
+            return new[] { MasterDataCrudErrors.GridModelIsNull(_tableName) };
 
 
         IntegerCell? sortIdCell = null;
@@ -70,45 +69,51 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
             break;
         }
 
+        return sortIdCell is not null;
+    }
+
+    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
+    {
+        var queryResult = Query();
+        if (queryResult.IsT1)
+            return queryResult.AsT1;
+
+        var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
+        if (isGridWithSortIdResult.IsT1)
+            return isGridWithSortIdResult.AsT1;
+
+        var isGridWithSortId = isGridWithSortIdResult.AsT0;
+
         var query = queryResult.AsT0;
 
-        if (sortIdCell is null) 
+        if (!isGridWithSortId) 
             return await query.ToListAsync(cancellationToken);
 
         var method = typeof(MasterDataCrud).GetMethod(nameof(OrderBySortId), 1,
             [typeof(object)]);
         var generic = method?.MakeGenericMethod(_entityType.ClrType);
         if (generic is null)
-            return new[]
-            {
-                new Err
-                {
-                    ErrorCode = "GenericMethodDoesNotCreated", ErrorMessage = "Generic Method Does Not Created"
-                }
-            };
-        query = (IQueryable<IDataType>?)generic.Invoke(this, [query]);
-        if (query is null)
-            return new[]
-            {
-                new Err { ErrorCode = "TaskMethodDoesNotCreated", ErrorMessage = "Task Method Does Not Created" }
-            };
+            return new[] { MasterDataCrudErrors.GenericMethodWasNotCreated(nameof(OrderBySortId)) };
+        var queryRunResult = generic.Invoke(this, [query]);
+        if (queryRunResult is null)
+            return new[] { MasterDataCrudErrors.MethodResultIsNull(nameof(OrderBySortId)) };
 
-        return await query.ToListAsync(cancellationToken);
+        return (List<IDataType>)queryRunResult;
 
         //return await Query().Match<Task<OneOf<IEnumerable<IDataType>, Err[]>>>(
         //    async x => await x.ToListAsync(cancellationToken),
         //    e => Task.FromResult<OneOf<IEnumerable<IDataType>, Err[]>>(e));
     }
 
-    public static IEnumerable<T> OrderBySortId<T>(object query) where T : class, ISortedDataType
+    public static IEnumerable<IDataType> OrderBySortId<T>(object query) where T : class, ISortedDataType
     {
         var tQuery = (IQueryable<T>)query;
         return tQuery.OrderBy(x => x.SortId).Select(
             delegate(T s)
             {
                 s.SortId++;
-                return s;
-            });
+                return (IDataType)s;
+            }).ToList();
     }
 
     public override async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
@@ -125,14 +130,10 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //var method = typeof(MasterDataCrud).GetMethod(nameof(UseUseCustomSortFilterPagination));
         var generic = method?.MakeGenericMethod(_entityType.ClrType);
         if (generic is null)
-            return new[]
-            {
-                new Err { ErrorCode = "GenericMethodDoesNotCreated", ErrorMessage = "Generic Method Does Not Created" }
-            };
+            return new[] { MasterDataCrudErrors.GenericMethodWasNotCreated(nameof(UseCustomSortFilterPagination)) };
         var result = (Task<TableRowsData>?)generic.Invoke(this, [query, filterSortRequest, cancellationToken]);
         if (result is null)
-            return new[]
-                { new Err { ErrorCode = "TaskMethodDoesNotCreated", ErrorMessage = "Task Method Does Not Created" } };
+            return new[] { MasterDataCrudErrors.MethodResultTaskIsNull(nameof(UseCustomSortFilterPagination)) };
         return await result;
 
         //var (realOffset, count, rows) = await query.UseCustomSortFilterPagination(filterSortRequest,
@@ -187,9 +188,25 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
     protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)
     {
-        var result = await GetOneRecord(id, cancellationToken);
-        return result.Match<OneOf<ICrudData, Err[]>>(t0 => new MasterDataCrudLoadedData(t0.EditFields()),
-            t1 => t1);
+        var getOneRecordResult = await GetOneRecord(id, cancellationToken);
+        if (getOneRecordResult.IsT1)
+            return getOneRecordResult.AsT1;
+
+        var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
+        if (isGridWithSortIdResult.IsT1)
+            return isGridWithSortIdResult.AsT1;
+
+        var isGridWithSortId = isGridWithSortIdResult.AsT0;
+
+        if (!isGridWithSortId) 
+            return new MasterDataCrudLoadedData(getOneRecordResult.AsT0.EditFields());
+
+        var sortedData = (ISortedDataType)getOneRecordResult.AsT0;
+        sortedData.SortId++;
+        return new MasterDataCrudLoadedData(sortedData.EditFields());
+
+        //return getOneRecordResult.Match<OneOf<ICrudData, Err[]>>(t0 => new MasterDataCrudLoadedData(t0.EditFields()),
+        //    t1 => t1);
     }
 
 
@@ -288,9 +305,69 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         if (validateResult.IsSome)
             return (Err[])validateResult;
 
+
+
+        var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
+        if (isGridWithSortIdResult.IsT1)
+            return isGridWithSortIdResult.AsT1;
+
+        var isGridWithSortId = isGridWithSortIdResult.AsT0;
+
+        if (!isGridWithSortId)
+        {
+            await _cmdRepo.Create(newItem, cancellationToken);
+            _justCreated = newItem;
+            return null;
+        }   
+
+        //უნდა მოხდეს SortId-ის დამუშავება შემდეგნაირად:
+        //1. თუ SortId <= 0-ზე,
+        //1.1. უნდა მოხდეს არსებული SortId-ების მაქსიმუმის დათვლა
+        //1.2. მიღებულ მაქსიმუმს დაემატოს 1
+        //1.3. მიღებული რიცხვით ჩანაცვლდეს SortId-ის მნიშვნელობა
+        //1.4. მოხდეს ახალი ჩანაწერის შენახვა
+        
+        var sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
+        if (Activator.CreateInstance(sortIdHelperType, _cmdRepo) is not ISortIdHelper sortHelper)
+            return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
+
+        var queryResult = Query();
+        if (queryResult.IsT1)
+            return queryResult.AsT1;
+
+        //მაქსიმუმის დათვლა სხვადასხვა მიზეზებით გვჭირდება, ამიტომ ვითვლით აქ.
+        var sortIdMax = sortHelper.CountSortIdMax(queryResult.AsT0);
+
+        var newItemWsi = (ISortedDataType)newItem;
+        if ( newItemWsi.SortId <=0)
+        {
+            newItemWsi.SortId = sortIdMax + 1;
+        }
+
+        //2. თუ SortId > 0-ზე,
+        //2.1. SortId--
+        //2.2. ვიპოვოთ SortId-ის შესაბამისი ჩანაწერი არსებობს თუ არა ცხრილში
+        //2.2.2. თუ არსებობს
+        //2.2.2.1 ყველა ჩანაწერი, რომლი SortId >= შესანახ SortId-ს, ყველას გავუზარდოთ 1-ით
+        //2.2.3 ვამატებთ ახალ ჩანაწერს არსებული SortId მნიშვნელობით
+        else
+        {
+            newItemWsi.SortId--;
+            if (await sortHelper.IsSortIdExists(queryResult.AsT0, newItemWsi.SortId, 0))
+            {
+                await sortHelper.IncreaseSortIds(queryResult.AsT0, newItemWsi.SortId, sortIdMax, 0, cancellationToken);
+            }
+        }
+        //3. დავადგინოთ არის თუ არა ისეთი ჩანაწერები, რომლებიც იწვევს SortId-ის ჩავარდნას და გამოვასწოროთ ჩავარდნები.
+        //3.1 უნდა ჩავტვირთოთ იდენტიფიკატორები, SortId-ები, RowId-ები დალაგებული SortId-ებით
+        //3.2. ისეთი ჩანაწერებისათვის რომლებისთვისაც SortId != RowId, გავაახლოთ SortId, RowId-ის მნიშვნელობით.
+
+        //await sortHelper.ReSortSortIds(queryResult.AsT0, cancellationToken);
+
         await _cmdRepo.Create(newItem, cancellationToken);
         _justCreated = newItem;
         return null;
+        
         //return createResult.Match(x => x, () => OneOf<IDataType, Err[]>.FromT0(newItem));
     }
 
@@ -317,11 +394,85 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         if (validateResult.IsSome)
             return validateResult;
 
-        //_cmdRepo.Update(newItem);
+        var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
+        if (isGridWithSortIdResult.IsT1)
+            return isGridWithSortIdResult.AsT1;
 
-        //var crudMdRepo = MdRepoCreator.CreateMdCruderRepo(_context, _tableName, _roleManager, _userManager);
+        var isGridWithSortId = isGridWithSortIdResult.AsT0;
+
+        if (!isGridWithSortId)
+        {
+            return await Update(id, newItem, cancellationToken);
+        }   
+
+        //უნდა მოხდეს SortId-ის დამუშავება შემდეგნაირად:
+        //1. თუ SortId <= 0-ზე,
+        //1.1. უნდა მოხდეს არსებული SortId-ების მაქსიმუმის დათვლა
+        //1.2. მიღებულ მაქსიმუმს დაემატოს 1
+        //1.3. მიღებული რიცხვით ჩანაცვლდეს SortId-ის მნიშვნელობა
+        //1.4. მოხდეს არსებული ჩანაწერის შენახვა
+        
+        var sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
+        if (Activator.CreateInstance(sortIdHelperType, _cmdRepo) is not ISortIdHelper sortHelper)
+            return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
+
+        _sortHelper = sortHelper;
+
+        var queryResult = Query();
+        if (queryResult.IsT1)
+            return queryResult.AsT1;
+
+        var sortIdMax = sortHelper.CountSortIdMax(queryResult.AsT0);
+
+        //var newSortId = sortIdMax + itemsCount;
+
+        var newItemWsi = (ISortedDataType)newItem;
+        if ( newItemWsi.SortId <=0)
+        {
+            newItemWsi.SortId = sortIdMax + 1;
+        }
+
+        //2. თუ SortId > 0-ზე,
+        //2.1. SortId--
+        //2.2. ვიპოვოთ SortId-ის შესაბამისი ჩანაწერი არსებობს თუ არა ცხრილში. (ოღონდ ეს ჩანაწერი უნდა იყოს დასარედაქტირებელი ჩანაწერისგან განსხვავებული)
+        //2.2.2. თუ არსებობს
+        //2.2.2.1 ყველა ჩანაწერი, რომლი SortId >= შესანახ SortId-ს, ყველას გავუზარდოთ 1-ით
+        //2.2.3 მოხდეს არსებული ჩანაწერის შენახვა არსებული SortId მნიშვნელობით
+        else
+        {
+            var newSortId = newItemWsi.SortId - 1;
+            var itemsCount = sortHelper.CountItems(queryResult.AsT0);
+            var increaseWith = sortIdMax + itemsCount;
+            newItemWsi.SortId += increaseWith;
+            await sortHelper.IncreaseSortIds(queryResult.AsT0, newSortId, increaseWith + 2, newItemWsi.Id,
+                cancellationToken);
+        }
+
         return await Update(id, newItem, cancellationToken);
+
+
+        //3. დავადგინოთ არის თუ არა ისეთი ჩანაწერები, რომლებიც იწვევს SortId-ის ჩავარდნას და გამოვასწოროთ ჩავარდნები.
+        //3.1 უნდა ჩავტვირთოთ იდენტიფიკატორები, SortId-ები, RowId-ები დალაგებული SortId-ებით
+        //3.2. ისეთი ჩანაწერებისათვის რომლებისთვისაც SortId != RowId, გავაახლოთ SortId, RowId-ის მნიშვნელობით.
+
+        //sortHelper.ReSortSortIds(queryResult.AsT0);
+
     }
+
+
+    protected override async Task<Option<Err[]>> AfterUpdateData(CancellationToken cancellationToken)
+    {
+        if ( _sortHelper is null )
+            return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
+
+        var queryResult = Query();
+        if (queryResult.IsT1)
+            return queryResult.AsT1;
+
+        await _sortHelper.ReSortSortIds(queryResult.AsT0, cancellationToken);
+        return null;
+    }
+
 
     private async Task<Option<Err[]>> Update(int id, IDataType newItem, CancellationToken cancellationToken)
     {
@@ -345,12 +496,40 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
     protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken)
     {
-        var result = await GetOneRecord(id, cancellationToken);
-        return result.Match<Option<Err[]>>(r =>
-        {
-            _cmdRepo.Delete(r);
+        var getOneRecordResult = await GetOneRecord(id, cancellationToken);
+
+        if (getOneRecordResult.IsT1)
+            return getOneRecordResult.AsT1;
+
+        _cmdRepo.Delete(getOneRecordResult.AsT0);
+
+        var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
+        if (isGridWithSortIdResult.IsT1)
+            return isGridWithSortIdResult.AsT1;
+
+        var isGridWithSortId = isGridWithSortIdResult.AsT0;
+
+        if (!isGridWithSortId) 
             return null;
-        }, e => e);
+
+
+        //3. დავადგინოთ არის თუ არა ისეთი ჩანაწერები, რომლებიც იწვევს SortId-ის ჩავარდნას და გამოვასწოროთ ჩავარდნები.
+        //3.1 უნდა ჩავტვირთოთ იდენტიფიკატორები, SortId-ები, RowId-ები დალაგებული SortId-ებით
+        //3.2. ისეთი ჩანაწერებისათვის რომლებისთვისაც SortId != RowId, გავაახლოთ SortId, RowId-ის მნიშვნელობით.
+
+
+        var sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
+        if (Activator.CreateInstance(sortIdHelperType, _cmdRepo) is not ISortIdHelper sortHelper)
+            return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
+
+        var queryResult = Query();
+        if (queryResult.IsT1)
+            return queryResult.AsT1;
+
+        await sortHelper.ReSortSortIds(queryResult.AsT0, cancellationToken);
+
+        return null;
+
     }
 
     private async Task<Option<Err[]>> Validate(IDataType newItem, CancellationToken cancellationToken)
@@ -380,4 +559,10 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
         return errors.Count == 0 ? null : errors.ToArray();
     }
+
+
+
+
+
+
 }

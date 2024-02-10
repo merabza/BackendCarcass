@@ -20,6 +20,7 @@ public class RolesCrud : CrudBase, IMasterDataLoader
     private readonly RoleManager<AppRole> _roleManager;
     private AppRole? _justCreated;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public RolesCrud(ILogger logger, RoleManager<AppRole> roleManager, IAbstractRepository absRepo) : base(logger,
         absRepo)
     {

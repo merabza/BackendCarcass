@@ -5,6 +5,7 @@ namespace BackendCarcassApi.CommandRequests.MasterData;
 
 public sealed class MdDeleteOneRecordCommandRequest : ICommand
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public MdDeleteOneRecordCommandRequest(string tableName, HttpRequest httpRequest, int id)
     {
         TableName = tableName;

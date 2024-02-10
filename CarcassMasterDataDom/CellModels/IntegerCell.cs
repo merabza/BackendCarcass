@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CarcassContracts.ErrorModels;
 using CarcassMasterDataDom.Validation;
 using Newtonsoft.Json;
 using SystemToolsShared;
@@ -12,11 +13,7 @@ public /*open*/ class IntegerCell : NumberCell
         typeName ?? CellTypeNameForSave(nameof(IntegerCell)))
     {
         IsIntegerErr = visible
-            ? new Err
-            {
-                ErrorCode = errorCode ?? $"{FieldName}MustBeInteger",
-                ErrorMessage = errorMessage ?? $"{Caption} მთელი უნდა იყოს"
-            }
+            ? CarcassMasterDataDomErrors.MustBeInteger(FieldName, Caption, errorCode, errorMessage)
             : null;
     }
 

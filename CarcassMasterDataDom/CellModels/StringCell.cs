@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CarcassContracts.ErrorModels;
 using CarcassMasterDataDom.Validation;
 using Newtonsoft.Json;
 using SystemToolsShared;
@@ -57,10 +58,10 @@ public sealed class StringCell : MixedCell
             return errMes;
 
         if (IsRequiredErr is not null && strValue == string.Empty)
-            errMes.Add(new Err { ErrorCode = $"{FieldName}IsEmpty", ErrorMessage = $"{Caption} შევსებული არ არის" });
+            errMes.Add(CarcassMasterDataDomErrors.IsEmpty(FieldName, Caption));
 
         if (MaxLenRule is not null && strValue.Length > MaxLenRule.Val)
-            errMes.Add(new Err { ErrorCode = $"{FieldName}IsTooLong", ErrorMessage = $"{Caption} ძალიან გრძელია" });
+            errMes.Add(CarcassMasterDataDomErrors.IsTooLong(FieldName, Caption));
 
         return errMes;
     }

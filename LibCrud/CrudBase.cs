@@ -6,6 +6,7 @@ using LibCrud.Models;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using SystemToolsShared;
+using SystemToolsShared.ErrorModels;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -63,17 +64,17 @@ public abstract class CrudBase
                 {
                     Logger.LogError(e.InnerException, "Error occurred executing {methodName}.", methodName);
                     if (e.InnerException.Message.StartsWith("Cannot insert duplicate key row in object"))
-                        return new[] { Errors.SuchARecordAlreadyExists };
+                        return new[] { SystemToolsErrors.SuchARecordAlreadyExists };
                 }
 
                 Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
-                return new[] { Errors.UnexpectedApiException(e) };
+                return new[] { SystemToolsErrors.UnexpectedApiException(e) };
             }
         }
         catch (Exception e)
         {
             Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
-            return new[] { Errors.UnexpectedApiException(e) };
+            return new[] { SystemToolsErrors.UnexpectedApiException(e) };
         }
     }
 
@@ -84,9 +85,13 @@ public abstract class CrudBase
             await using var transaction = await _absRepo.GetTransaction(cancellationToken);
             try
             {
-                var result = await UpdateData(id, crudDataNewVersion, cancellationToken);
-                if (result.IsSome)
-                    return result;
+                var updateDataResult = await UpdateData(id, crudDataNewVersion, cancellationToken);
+                if (updateDataResult.IsSome)
+                    return updateDataResult;
+                await _absRepo.SaveChangesAsync(cancellationToken);
+                var afterUpdateDataResult = await AfterUpdateData(cancellationToken);
+                if (afterUpdateDataResult.IsSome)
+                    return afterUpdateDataResult;
                 await _absRepo.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
                 return null;
@@ -94,12 +99,12 @@ public abstract class CrudBase
             catch (Exception e)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                return new[] { Errors.UnexpectedApiException(e) };
+                return new[] { SystemToolsErrors.UnexpectedApiException(e) };
             }
         }
         catch (Exception e)
         {
-            return new[] { Errors.UnexpectedApiException(e) };
+            return new[] { SystemToolsErrors.UnexpectedApiException(e) };
         }
     }
 
@@ -126,16 +131,16 @@ public abstract class CrudBase
                     Logger.LogError(e.InnerException, "Error occurred executing {methodName}.", methodName);
                     if (e.InnerException.Message.StartsWith(
                             "The DELETE statement conflicted with the REFERENCE constraint"))
-                        return new[] { Errors.TheEntryHasBeenUsedAndCannotBeDeleted };
+                        return new[] { SystemToolsErrors.TheEntryHasBeenUsedAndCannotBeDeleted };
                 }
 
                 Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
-                return new[] { Errors.UnexpectedApiException(e) };
+                return new[] { SystemToolsErrors.UnexpectedApiException(e) };
             }
         }
         catch (Exception e)
         {
-            return new[] { Errors.UnexpectedApiException(e) };
+            return new[] { SystemToolsErrors.UnexpectedApiException(e) };
         }
     }
 
@@ -145,6 +150,11 @@ public abstract class CrudBase
 
     protected abstract Task<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken);
+
+    protected virtual Task<Option<Err[]>> AfterUpdateData(CancellationToken cancellationToken)
+    {
+        return Task.FromResult<Option<Err[]>>(null);
+    }
 
     protected abstract Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken);
 
