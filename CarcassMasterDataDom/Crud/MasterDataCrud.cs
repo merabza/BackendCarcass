@@ -50,9 +50,8 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    private async Task<OneOf<bool,Err[]>> IsGridWithSortId(CancellationToken cancellationToken)
+    private async Task<OneOf<bool, Err[]>> IsGridWithSortId(CancellationToken cancellationToken)
     {
-
         var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
         if (gridModel is null)
             return new[] { MasterDataCrudErrors.GridModelIsNull(_tableName) };
@@ -86,7 +85,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
         var query = queryResult.AsT0;
 
-        if (!isGridWithSortId) 
+        if (!isGridWithSortId)
             return await query.ToListAsync(cancellationToken);
 
         var method = typeof(MasterDataCrud).GetMethod(nameof(OrderBySortId), 1,
@@ -198,7 +197,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
         var isGridWithSortId = isGridWithSortIdResult.AsT0;
 
-        if (!isGridWithSortId) 
+        if (!isGridWithSortId)
             return new MasterDataCrudLoadedData(getOneRecordResult.AsT0.EditFields());
 
         var sortedData = (ISortedDataType)getOneRecordResult.AsT0;
@@ -306,7 +305,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
             return (Err[])validateResult;
 
 
-
         var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
         if (isGridWithSortIdResult.IsT1)
             return isGridWithSortIdResult.AsT1;
@@ -318,7 +316,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
             await _cmdRepo.Create(newItem, cancellationToken);
             _justCreated = newItem;
             return null;
-        }   
+        }
 
         //უნდა მოხდეს SortId-ის დამუშავება შემდეგნაირად:
         //1. თუ SortId <= 0-ზე,
@@ -326,7 +324,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //1.2. მიღებულ მაქსიმუმს დაემატოს 1
         //1.3. მიღებული რიცხვით ჩანაცვლდეს SortId-ის მნიშვნელობა
         //1.4. მოხდეს ახალი ჩანაწერის შენახვა
-        
+
         var sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
         if (Activator.CreateInstance(sortIdHelperType, _cmdRepo) is not ISortIdHelper sortHelper)
             return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
@@ -339,7 +337,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         var sortIdMax = sortHelper.CountSortIdMax(queryResult.AsT0);
 
         var newItemWsi = (ISortedDataType)newItem;
-        if ( newItemWsi.SortId <=0)
+        if (newItemWsi.SortId <= 0)
         {
             newItemWsi.SortId = sortIdMax + 1;
         }
@@ -367,7 +365,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         await _cmdRepo.Create(newItem, cancellationToken);
         _justCreated = newItem;
         return null;
-        
+
         //return createResult.Match(x => x, () => OneOf<IDataType, Err[]>.FromT0(newItem));
     }
 
@@ -403,7 +401,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         if (!isGridWithSortId)
         {
             return await Update(id, newItem, cancellationToken);
-        }   
+        }
 
         //უნდა მოხდეს SortId-ის დამუშავება შემდეგნაირად:
         //1. თუ SortId <= 0-ზე,
@@ -411,7 +409,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //1.2. მიღებულ მაქსიმუმს დაემატოს 1
         //1.3. მიღებული რიცხვით ჩანაცვლდეს SortId-ის მნიშვნელობა
         //1.4. მოხდეს არსებული ჩანაწერის შენახვა
-        
+
         var sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
         if (Activator.CreateInstance(sortIdHelperType, _cmdRepo) is not ISortIdHelper sortHelper)
             return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
@@ -427,7 +425,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //var newSortId = sortIdMax + itemsCount;
 
         var newItemWsi = (ISortedDataType)newItem;
-        if ( newItemWsi.SortId <=0)
+        if (newItemWsi.SortId <= 0)
         {
             newItemWsi.SortId = sortIdMax + 1;
         }
@@ -456,13 +454,12 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //3.2. ისეთი ჩანაწერებისათვის რომლებისთვისაც SortId != RowId, გავაახლოთ SortId, RowId-ის მნიშვნელობით.
 
         //sortHelper.ReSortSortIds(queryResult.AsT0);
-
     }
 
 
     protected override async Task<Option<Err[]>> AfterUpdateData(CancellationToken cancellationToken)
     {
-        if ( _sortHelper is null )
+        if (_sortHelper is null)
             return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
 
         var queryResult = Query();
@@ -509,7 +506,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
         var isGridWithSortId = isGridWithSortIdResult.AsT0;
 
-        if (!isGridWithSortId) 
+        if (!isGridWithSortId)
             return null;
 
 
@@ -529,7 +526,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         await sortHelper.ReSortSortIds(queryResult.AsT0, cancellationToken);
 
         return null;
-
     }
 
     private async Task<Option<Err[]>> Validate(IDataType newItem, CancellationToken cancellationToken)
@@ -559,10 +555,4 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
         return errors.Count == 0 ? null : errors.ToArray();
     }
-
-
-
-
-
-
 }

@@ -5,7 +5,6 @@ namespace CarcassContracts.ErrorModels;
 
 public static class MasterDataCrudErrors
 {
-
     public static Err GridModelIsNull(string tableName) => new()
         { ErrorCode = nameof(GridModelIsNull), ErrorMessage = $"gridModel is null for Table {tableName}" };
 
@@ -21,9 +20,10 @@ public static class MasterDataCrudErrors
         { ErrorCode = nameof(MethodResultTaskIsNull), ErrorMessage = $"Method {methodName} Result Task Is Null" };
 
     public static Err SortIdHelperWasNotCreatedForType(Type type) => new()
-        { ErrorCode = nameof(SortIdHelperWasNotCreatedForType), ErrorMessage = $"SortIdHelper was not created for type {type.Name}" };
-
-
+    {
+        ErrorCode = nameof(SortIdHelperWasNotCreatedForType),
+        ErrorMessage = $"SortIdHelper was not created for type {type.Name}"
+    };
 }
 
 

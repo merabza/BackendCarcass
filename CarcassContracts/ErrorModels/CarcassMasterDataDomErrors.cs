@@ -4,7 +4,6 @@ namespace CarcassContracts.ErrorModels;
 
 public static class CarcassMasterDataDomErrors
 {
-
     public static Err MustBeInteger(string fieldName, string? caption, string? defErrorCode, string? defErrorMessage) =>
         new()
         {
@@ -12,7 +11,8 @@ public static class CarcassMasterDataDomErrors
             ErrorMessage = defErrorMessage ?? $"{caption} მთელი უნდა იყოს"
         };
 
-    public static Err MustBePositive(string fieldName, string? caption, string? defErrorCode, string? defErrorMessage) =>
+    public static Err MustBePositive(string fieldName, string? caption, string? defErrorCode,
+        string? defErrorMessage) =>
         new()
         {
             ErrorCode = defErrorCode ?? $"{fieldName}{nameof(MustBePositive)}",
@@ -36,5 +36,4 @@ public static class CarcassMasterDataDomErrors
 
     public static Err IsTooLong(string fieldName, string? caption) => new()
         { ErrorCode = $"{fieldName}{nameof(IsTooLong)}", ErrorMessage = $"{caption} ძალიან გრძელია" };
-
 }

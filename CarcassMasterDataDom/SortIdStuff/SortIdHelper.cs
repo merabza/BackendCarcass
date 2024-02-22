@@ -44,13 +44,13 @@ public class SortIdHelper<T> : ISortIdHelper where T : class, ISortedDataType
     //}
 
 
-
     //არსებული SortId-ების მაქსიმუმის დათვლა
     public int CountSortIdMax(object query)
     {
         var tQuery = (IQueryable<T>)query;
         return tQuery.Max(x => x.SortId);
     }
+
     public int CountItems(object query)
     {
         var tQuery = (IQueryable<T>)query;
@@ -67,17 +67,16 @@ public class SortIdHelper<T> : ISortIdHelper where T : class, ISortedDataType
     }
 
     //ყველა ჩანაწერი, რომლი SortId >= შესანახ SortId-ს, ყველას გავუზარდოთ 1-ით
-    public async Task IncreaseSortIds(object query, int fromSortId, int increaseWith, int exceptId, CancellationToken cancellationToken)
+    public async Task IncreaseSortIds(object query, int fromSortId, int increaseWith, int exceptId,
+        CancellationToken cancellationToken)
     {
         var tQuery = (IQueryable<T>)query;
-        var forUpdateList = await tQuery.Where(x => x.SortId >= fromSortId).OrderBy(x => x.SortId).ToListAsync(cancellationToken);
+        var forUpdateList = await tQuery.Where(x => x.SortId >= fromSortId).OrderBy(x => x.SortId)
+            .ToListAsync(cancellationToken);
         foreach (var item in forUpdateList.Where(x => x.Id != exceptId))
         {
             item.SortId += increaseWith;
             _cmdRepo.Update(item);
         }
     }
-
-
-
 }
