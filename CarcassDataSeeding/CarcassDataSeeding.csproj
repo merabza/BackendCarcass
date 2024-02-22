@@ -8,7 +8,6 @@
         <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
         <ProjectReference Include="..\CarcassDom\CarcassDom.csproj" />
         <ProjectReference Include="..\CarcassMasterDataDom\CarcassMasterDataDom.csproj" />
-        <ProjectReference Include="..\CarcassShared\CarcassShared.csproj" />
     </ItemGroup>
 
 </Project>
