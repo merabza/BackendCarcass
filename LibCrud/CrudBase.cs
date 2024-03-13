@@ -8,8 +8,6 @@ using OneOf;
 using SystemToolsShared;
 using SystemToolsShared.ErrorModels;
 
-// ReSharper disable ConvertToPrimaryConstructor
-
 namespace LibCrud;
 
 public abstract class CrudBase
@@ -18,6 +16,7 @@ public abstract class CrudBase
     protected readonly ILogger Logger;
 
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     protected CrudBase(ILogger logger, IAbstractRepository absRepo)
     {
         Logger = logger;
