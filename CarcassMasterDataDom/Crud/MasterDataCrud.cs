@@ -23,21 +23,11 @@ namespace CarcassMasterDataDom.Crud;
 public class MasterDataCrud : CrudBase, IMasterDataLoader
 {
     private readonly ICarcassMasterDataRepository _cmdRepo;
-    private readonly string _tableName;
     private readonly IEntityType _entityType;
-    private IDataType? _justCreated;
+    private readonly string _tableName;
     private GridModel? _gridModel;
+    private IDataType? _justCreated;
     private ISortIdHelper? _sortHelper;
-
-    public static OneOf<MasterDataCrud, Err[]> Create(string tableName, ILogger logger,
-        ICarcassMasterDataRepository cmdRepo)
-    {
-        var entityType = cmdRepo.GetEntityTypeByTableName(tableName);
-        if (entityType == null)
-            return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
-
-        return new MasterDataCrud(tableName, entityType, logger, cmdRepo);
-    }
 
     // ReSharper disable once ConvertToPrimaryConstructor
     private MasterDataCrud(string tableName, IEntityType entityType, ILogger logger,
@@ -49,27 +39,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     }
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
-
-    private async Task<OneOf<bool, Err[]>> IsGridWithSortId(CancellationToken cancellationToken)
-    {
-        var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
-        if (gridModel is null)
-            return new[] { MasterDataCrudErrors.GridModelIsNull(_tableName) };
-
-
-        IntegerCell? sortIdCell = null;
-        foreach (var cell in gridModel.Cells.Where(x => x.TypeName == "Integer"))
-        {
-            if (cell is not IntegerCell intCell)
-                continue;
-            if (!intCell.IsSortId)
-                continue;
-            sortIdCell = intCell;
-            break;
-        }
-
-        return sortIdCell is not null;
-    }
 
     public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
     {
@@ -102,6 +71,37 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //return await Query().Match<Task<OneOf<IEnumerable<IDataType>, Err[]>>>(
         //    async x => await x.ToListAsync(cancellationToken),
         //    e => Task.FromResult<OneOf<IEnumerable<IDataType>, Err[]>>(e));
+    }
+
+    public static OneOf<MasterDataCrud, Err[]> Create(string tableName, ILogger logger,
+        ICarcassMasterDataRepository cmdRepo)
+    {
+        var entityType = cmdRepo.GetEntityTypeByTableName(tableName);
+        if (entityType == null)
+            return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
+
+        return new MasterDataCrud(tableName, entityType, logger, cmdRepo);
+    }
+
+    private async Task<OneOf<bool, Err[]>> IsGridWithSortId(CancellationToken cancellationToken)
+    {
+        var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
+        if (gridModel is null)
+            return new[] { MasterDataCrudErrors.GridModelIsNull(_tableName) };
+
+
+        IntegerCell? sortIdCell = null;
+        foreach (var cell in gridModel.Cells.Where(x => x.TypeName == "Integer"))
+        {
+            if (cell is not IntegerCell intCell)
+                continue;
+            if (!intCell.IsSortId)
+                continue;
+            sortIdCell = intCell;
+            break;
+        }
+
+        return sortIdCell is not null;
     }
 
     public static IEnumerable<IDataType> OrderBySortId<T>(object query) where T : class, ISortedDataType
@@ -155,7 +155,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
             var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
             //DtNameFieldName
             if (gridModel is not null)
-            {
                 foreach (var sortField in filterSortRequest.SortByFields)
                 {
                     var cell = gridModel.Cells.SingleOrDefault(x => x.FieldName == sortField.FieldName);
@@ -176,7 +175,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
                     //sortField.PropObjType = Type.GetType($"GrammarGeDb.Models.{mdLookupCell.DtTable}");
                     sortField.PropObjType = _cmdRepo.GetEntityTypeByTableName(mdLookupCell.DtTable)?.ClrType;
                 }
-            }
         }
 
         var (realOffset, count, rows) = await tQuery.UseCustomSortFilterPagination(filterSortRequest,
@@ -352,9 +350,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         {
             newItemWsi.SortId--;
             if (await sortHelper.IsSortIdExists(queryResult.AsT0, newItemWsi.SortId, 0))
-            {
                 await sortHelper.IncreaseSortIds(queryResult.AsT0, newItemWsi.SortId, sortIdMax, 0, cancellationToken);
-            }
         }
         //3. დავადგინოთ არის თუ არა ისეთი ჩანაწერები, რომლებიც იწვევს SortId-ის ჩავარდნას და გამოვასწოროთ ჩავარდნები.
         //3.1 უნდა ჩავტვირთოთ იდენტიფიკატორები, SortId-ები, RowId-ები დალაგებული SortId-ებით
@@ -398,10 +394,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
         var isGridWithSortId = isGridWithSortIdResult.AsT0;
 
-        if (!isGridWithSortId)
-        {
-            return await Update(id, newItem, cancellationToken);
-        }
+        if (!isGridWithSortId) return await Update(id, newItem, cancellationToken);
 
         //უნდა მოხდეს SortId-ის დამუშავება შემდეგნაირად:
         //1. თუ SortId <= 0-ზე,
