@@ -107,12 +107,14 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     public static IEnumerable<IDataType> OrderBySortId<T>(object query) where T : class, ISortedDataType
     {
         var tQuery = (IQueryable<T>)query;
-        return tQuery.OrderBy(x => x.SortId).Select(
+        return tQuery.OrderBy(x => x.SortId)
+            .Select(
             delegate(T s)
             {
-                s.SortId++;
+                //s.SortId++;
                 return (IDataType)s;
-            }).ToList();
+            })
+            .ToList();
     }
 
     public override async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
