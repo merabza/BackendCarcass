@@ -71,6 +71,7 @@ public static class CarcassApiRoutes
     {
         public const string UserRightsBase = Base + "/userrights";
 
+        // GET api/v1/userrights/iscurrentuservalid
         public const string IsCurrentUserValid = "/iscurrentuservalid";
         public const string ChangeProfile = "/changeprofile";
         public const string ChangePassword = "/changepassword";

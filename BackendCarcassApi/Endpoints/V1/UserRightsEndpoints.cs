@@ -72,8 +72,7 @@ public sealed class UserRightsEndpoints : IInstaller
     //უფლება -> ნებისმიერი
     //მოქმედება -> თუ ამ მეთოდამდე მოვიდა კოდი, ეს ნიშნავს, რომ მომხმარებელს ავტორიზაცია აქვს გავლილი
     //   ამიტომ მეთოდი ყოველთვის აბრუნებს Ok()-ს
-    // GET: api/<controller>/iscurrentuservalid
-    //[HttpGet("iscurrentuservalid")]
+    // GET api/v1/userrights/iscurrentuservalid
     private static IResult IsCurrentUserValid()
     {
         return Results.Ok();
@@ -84,8 +83,7 @@ public sealed class UserRightsEndpoints : IInstaller
     //შემავალი ინფორმაცია -> ChangeProfileModel კლასის ობიექტი
     //უფლება -> მხოლოდ ავტორიზაცია
     //მოქმედება -> მოწმდება მიღებული ინფორმაციის ვალიდურობა და ხდება პროფაილში ცვლილებების დაფიქსირება
-    // GET: api/<controller>/changeprofile
-    //[HttpPut("changeprofile")]
+    // GET api/v1/userrights/changeprofile
     private static async Task<IResult> ChangeProfile([FromBody] ChangeProfileRequest? request, HttpRequest httpRequest,
         IMediator mediator, CancellationToken cancellationToken)
     {
@@ -102,7 +100,7 @@ public sealed class UserRightsEndpoints : IInstaller
     //შემავალი ინფორმაცია -> ChangePasswordModel კლასის ობიექტი
     //უფლება -> მხოლოდ ავტორიზაცია
     //მოქმედება -> მოწმდება მიღებული ინფორმაციის ვალიდურობა და ხდება პაროლის ცვლილებების დაფიქსირება
-    //[HttpPut("changepassword")]
+    // PUT api/v1/userrights/changepassword
     private static async Task<IResult> ChangePassword([FromBody] ChangePasswordRequest? request,
         HttpRequest httpRequest, IMediator mediator, CancellationToken cancellationToken)
     {
@@ -124,7 +122,7 @@ public sealed class UserRightsEndpoints : IInstaller
     //  თუ მომხმარებელი სადმე არის მითითებული, მაშინ მისი წაშლა არ უნდა მოხდეს.
     //  თუ მაინც გახდა საჭირო მომავალში მომხმარებლის წაშლა, უნდა აეწყოს მომხმარებლის ჩანაწერების გადაბარების მექანიზმი
     //  რის მერეც შესაძლებელი გახდება მომხმარებლის იდენტიფიკატორის გათავისუფლება კავშირებისაგან და წაშლაც მოხერხდება
-    //[HttpDelete("deletecurrentuser/{userName}")]
+    // DELETE api/v1/userrights/deletecurrentuser/{userName}
     private static async Task<IResult> DeleteCurrentUser(string userName, HttpRequest httpRequest, IMediator mediator,
         CancellationToken cancellationToken)
     {
@@ -140,7 +138,7 @@ public sealed class UserRightsEndpoints : IInstaller
     //უფლება -> მხოლოდ ავტორიზაცია
     //მოქმედება -> რეპოზიტორიას გადაეწოდება მიმდინარე მომხმარებლის სახელი და
     //  მისი უფლებების მიხედვით ჩატვირთული მენიუს შესახებ ინფორმაციას უბრუნებს გამომძახებელს
-    //[HttpGet("getmainmenu")]
+    // GET api/v1/userrights/getmainmenu
     private static async Task<IResult> MainMenu(HttpRequest httpRequest, IMediator mediator,
         CancellationToken cancellationToken)
     {

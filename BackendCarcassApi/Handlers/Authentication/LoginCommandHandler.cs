@@ -24,6 +24,7 @@ public sealed class LoginCommandHandler : LoginCommandBase, ICommandHandler<Logi
     private readonly SignInManager<AppUser> _signinMgr;
     private readonly UserManager<AppUser> _userMgr;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public LoginCommandHandler(UserManager<AppUser> userMgr, SignInManager<AppUser> signinMgr,
         IOptions<IdentitySettings> identitySettings, IMenuRightsRepository mdRepo)
     {
