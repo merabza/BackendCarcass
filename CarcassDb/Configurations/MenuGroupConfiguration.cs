@@ -21,7 +21,8 @@ public class MenuGroupConfiguration : IEntityTypeConfiguration<MenuGroup>
         builder.Property(e => e.MengName).IsRequired().HasColumnName(nameof(MenuGroup.MengName).UnCapitalize())
             .HasMaxLength(100);
         builder.Property(e => e.SortId).HasColumnName(nameof(MenuGroup.SortId).UnCapitalize());
-        builder.Property(e => e.MengIconName).HasColumnName(nameof(MenuGroup.MengIconName).UnCapitalize());
+        builder.Property(e => e.MengIconName).HasColumnName(nameof(MenuGroup.MengIconName).UnCapitalize())
+            .HasMaxLength(50);
         builder.Property(e => e.Hidden).HasColumnName(nameof(MenuGroup.Hidden).UnCapitalize());
     }
 }

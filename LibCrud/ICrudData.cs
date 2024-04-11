@@ -1,5 +1,3 @@
 ﻿namespace LibCrud;
 
-public interface ICrudData
-{
-}
+public interface ICrudData;

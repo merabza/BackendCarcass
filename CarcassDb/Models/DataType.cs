@@ -19,6 +19,7 @@ public sealed class DataType : IDataType, IMyEquatable
     public int? DtParentDataTypeId { get; set; }
     public int? DtManyToManyJoinParentDataTypeId { get; set; }
     public int? DtManyToManyJoinChildDataTypeId { get; set; }
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public string? DtGridRulesJson { get; set; }
 
     public DataType? DtParentDataTypeNavigation { get; set; }

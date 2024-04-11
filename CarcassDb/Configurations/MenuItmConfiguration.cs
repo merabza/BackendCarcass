@@ -18,7 +18,7 @@ public class MenuItmConfiguration : IEntityTypeConfiguration<MenuItm>
         builder.Property(e => e.MenId).HasColumnName(nameof(MenuItm.MenId).UnCapitalize());
         builder.Property(e => e.MenGroupId).HasColumnName(nameof(MenuItm.MenGroupId).UnCapitalize());
 
-        builder.Property(e => e.MenIconName).HasColumnName(nameof(MenuItm.MenIconName).UnCapitalize());
+        builder.Property(e => e.MenIconName).HasColumnName(nameof(MenuItm.MenIconName).UnCapitalize()).HasMaxLength(50);
         builder.Property(e => e.MenKey).IsRequired().HasColumnName(nameof(MenuItm.MenKey).UnCapitalize())
             .HasMaxLength(72);
         builder.Property(e => e.MenLinkKey).HasColumnName(nameof(MenuItm.MenLinkKey).UnCapitalize()).HasMaxLength(72);

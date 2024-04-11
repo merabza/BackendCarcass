@@ -132,7 +132,8 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         var generic = method?.MakeGenericMethod(_entityType.ClrType);
         if (generic is null)
             return new[] { MasterDataCrudErrors.GenericMethodWasNotCreated(nameof(UseCustomSortFilterPagination)) };
-        var result = (Task<TableRowsData>?)generic.Invoke(this, [query, filterSortRequest, cancellationToken]);
+        // ReSharper disable once using
+        using var result = (Task<TableRowsData>?)generic.Invoke(this, [query, filterSortRequest, cancellationToken]);
         if (result is null)
             return new[] { MasterDataCrudErrors.MethodResultTaskIsNull(nameof(UseCustomSortFilterPagination)) };
         return await result;
