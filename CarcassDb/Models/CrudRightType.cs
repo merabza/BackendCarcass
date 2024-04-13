@@ -10,6 +10,7 @@ namespace CarcassDb.Models;
 //  ეს უკვე ნიშნავს, რომ ნახვის უფლება არსებობს
 public sealed class CrudRightType : IDataType, IMyEquatable
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public CrudRightType(string crtKey, string crtName)
     {
         CrtKey = crtKey;

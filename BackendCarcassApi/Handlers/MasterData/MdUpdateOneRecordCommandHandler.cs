@@ -30,6 +30,7 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
         CancellationToken cancellationToken)
     {
         //ამოვიღოთ მოთხოვნის ტანი
+        // ReSharper disable once using
         using StreamReader reader = new(request.HttpRequest.Body);
         var body = await reader.ReadToEndAsync(cancellationToken);
 

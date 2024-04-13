@@ -30,7 +30,7 @@ public sealed class ChildrenTreeDataQueryHandler : ICommandHandler<ChildrenTreeD
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo);
         var result = await rightsCollector.ChildrenTreeData(request.HttpRequest.HttpContext.User.Identity!.Name!,
-            request.dataTypeKey, request.ViewStyle, cancellationToken);
+            request.DataTypeKey, request.ViewStyle, cancellationToken);
         return result.Match<OneOf<List<DataTypeModel>, IEnumerable<Err>>>(r => r, e => e);
 
         //var dataTypeModels = await _mdRepo.ChildrenTreeData(request.HttpRequest.HttpContext.User.Identity!.Name!,

@@ -31,6 +31,7 @@ public sealed class
         MdCreateOneRecordCommandRequest request, CancellationToken cancellationToken)
     {
         //ამოვიღოთ მოთხოვნის ტანი
+        // ReSharper disable once using
         using StreamReader reader = new(request.HttpRequest.Body);
         var body = await reader.ReadToEndAsync(cancellationToken);
 
