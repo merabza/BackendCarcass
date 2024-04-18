@@ -24,7 +24,7 @@ public class MasterDataLoaderCreator : IMasterDataLoaderCreator
     public virtual OneOf<IMasterDataLoader, Err[]> CreateMasterDataLoader(string queryName)
     {
         // ReSharper disable once using
-        using var scope = Services.CreateScope();
+        var scope = Services.CreateScope();
 
         return MasterDataCrud
             .Create(queryName, _logger, scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>())
@@ -34,7 +34,7 @@ public class MasterDataLoaderCreator : IMasterDataLoaderCreator
     public virtual OneOf<CrudBase, Err[]> CreateMasterDataCrud(string tableName)
     {
         // ReSharper disable once using
-        using var scope = Services.CreateScope();
+        var scope = Services.CreateScope();
         var carcassMasterDataRepository = scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>();
 
         return tableName switch
