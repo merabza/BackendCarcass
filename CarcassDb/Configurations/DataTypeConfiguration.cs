@@ -10,9 +10,9 @@ public class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
     public void Configure(EntityTypeBuilder<DataType> builder)
     {
         var tableName = nameof(DataType).Pluralize();
+        builder.ToTable(tableName.UnCapitalize());
 
         builder.HasKey(e => e.DtId);
-        builder.ToTable(tableName.UnCapitalize());
         builder.HasIndex(e => e.DtKey).HasDatabaseName(tableName.CreateIndexName(true, nameof(DataType.DtKey)))
             .IsUnique();
         builder.HasIndex(e => e.DtTable).HasDatabaseName(tableName.CreateIndexName(true, nameof(DataType.DtTable)))
