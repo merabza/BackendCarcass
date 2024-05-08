@@ -27,28 +27,27 @@ namespace CarcassDataSeeding
         {
         }
 
-        private readonly Dictionary<Type, Dictionary<int, int>> _keyIntIdIntDictionary = new();
+        private readonly Dictionary<Type, Dictionary<int, int>> _keyIntIdIntDictionary = [];
 
-        private readonly Dictionary<Type, Dictionary<string, int>> _keyIdIntDictionary = new();
+        private readonly Dictionary<Type, Dictionary<string, int>> _keyIdIntDictionary = [];
 
-        private readonly Dictionary<Type, Dictionary<int, int>> _oldIntIdsDictToIntIds = new();
+        private readonly Dictionary<Type, Dictionary<int, int>> _oldIntIdsDictToIntIds = [];
 
-        private readonly Dictionary<Type, Dictionary<Tuple<int, int>, int>> _keyIntIntIdIntDictionary = new();
+        private readonly Dictionary<Type, Dictionary<Tuple<int, int>, int>> _keyIntIntIdIntDictionary = [];
 
-        private readonly Dictionary<Type, Dictionary<Tuple<string, short>, int>> _keyStringShortIdIntDictionary = new();
+        private readonly Dictionary<Type, Dictionary<Tuple<string, short>, int>> _keyStringShortIdIntDictionary = [];
 
-        private readonly Dictionary<Type, Dictionary<Tuple<string, int>, int>> _keyStringIntIdIntDictionary = new();
+        private readonly Dictionary<Type, Dictionary<Tuple<string, int>, int>> _keyStringIntIdIntDictionary = [];
 
-        private readonly Dictionary<Type, Dictionary<Tuple<int, string>, int>> _keyIntStringIdIntDictionary = new();
+        private readonly Dictionary<Type, Dictionary<Tuple<int, string>, int>> _keyIntStringIdIntDictionary = [];
 
-        private readonly Dictionary<Type, Dictionary<Tuple<int, int, int>, int>> _keyInt3IdIntDictionary = new();
+        private readonly Dictionary<Type, Dictionary<Tuple<int, int, int>, int>> _keyInt3IdIntDictionary = [];
 
-        private readonly Dictionary<Type, Dictionary<Tuple<int, int, short>, int>> _keyInt2ShortIdIntDictionary = new();
+        private readonly Dictionary<Type, Dictionary<Tuple<int, int, short>, int>> _keyInt2ShortIdIntDictionary = [];
 
-        private readonly Dictionary<Type, Dictionary<Tuple<int, int, int, int>, int>> _keyInt4IdIntDictionary = new();
+        private readonly Dictionary<Type, Dictionary<Tuple<int, int, int, int>, int>> _keyInt4IdIntDictionary = [];
 
-        private readonly Dictionary<Type, Dictionary<Tuple<int, int, int, int, int>, int>> _keyInt5IdIntDictionary =
-            new();
+        private readonly Dictionary<Type, Dictionary<Tuple<int, int, int, int, int>, int>> _keyInt5IdIntDictionary = [];
 
 
         public void SaveIntIdKeys<T>(Dictionary<Tuple<int, int, int, int, int>, int> dict)
@@ -155,6 +154,7 @@ namespace CarcassDataSeeding
         }
 
         //public საჭიროა GanmartebaGe ბაზისათვის
+        // ReSharper disable once MemberCanBePrivate.Global
         public int GetIntIdByKey<T>(string key1, int key2)
         {
             var key = new Tuple<string, int>(key1, key2);
