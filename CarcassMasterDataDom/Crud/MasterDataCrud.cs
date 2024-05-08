@@ -109,11 +109,11 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         var tQuery = (IQueryable<T>)query;
         return tQuery.OrderBy(x => x.SortId)
             .Select(
-            delegate(T s)
-            {
-                //s.SortId++;
-                return (IDataType)s;
-            })
+                delegate(T s)
+                {
+                    //s.SortId++;
+                    return (IDataType)s;
+                })
             .ToList();
     }
 

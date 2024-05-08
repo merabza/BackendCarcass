@@ -4,7 +4,8 @@ namespace CarcassContracts.V1.Responses;
 
 public sealed class LoginResponse
 {
-    public LoginResponse(int userId, int sequentialNumber, string userName, string email, string token, string firstName, string lastName, string roleName)
+    public LoginResponse(int userId, int sequentialNumber, string userName, string email, string token,
+        string firstName, string lastName, string roleName)
     {
         UserId = userId;
         SequentialNumber = sequentialNumber;
@@ -16,7 +17,8 @@ public sealed class LoginResponse
         RoleName = roleName;
     }
 
-    public LoginResponse(int userId, int sequentialNumber, string userName, string email, string token, string roleName, string firstName, string lastName, List<string> appClaims)
+    public LoginResponse(int userId, int sequentialNumber, string userName, string email, string token, string roleName,
+        string firstName, string lastName, List<string> appClaims)
     {
         UserId = userId;
         SequentialNumber = sequentialNumber;

@@ -25,7 +25,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.Email).IsRequired().HasColumnName(nameof(User.Email).UnCapitalize()).HasMaxLength(256);
         builder.Property(e => e.NormalizedEmail).IsRequired().HasColumnName(nameof(User.NormalizedEmail).UnCapitalize())
             .HasMaxLength(256);
-        builder.Property(e => e.PasswordHash).IsRequired().HasColumnName(nameof(User.PasswordHash).UnCapitalize()).HasMaxLength(256);
+        builder.Property(e => e.PasswordHash).IsRequired().HasColumnName(nameof(User.PasswordHash).UnCapitalize())
+            .HasMaxLength(256);
         builder.Property(e => e.FirstName).IsRequired().HasColumnName(nameof(User.FirstName).UnCapitalize())
             .HasMaxLength(50);
         builder.Property(e => e.LastName).IsRequired().HasColumnName(nameof(User.LastName).UnCapitalize())
