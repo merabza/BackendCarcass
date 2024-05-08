@@ -134,7 +134,7 @@ namespace CarcassDataSeeding
                 _keyStringShortIdIntDictionary.Add(typeof(T), dict);
         }
 
-        private int GetIntIdByKey<T>(string key1, short key2)
+        public int GetIntIdByKey<T>(string key1, short key2)
         {
             var key = new Tuple<string, short>(key1, key2);
             if (!_keyStringShortIdIntDictionary.ContainsKey(typeof(T)))
@@ -195,6 +195,7 @@ namespace CarcassDataSeeding
         }
 
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public int GetIntIdByKey<T>(int key1, int key2)
         {
             var key = new Tuple<int, int>(key1, key2);
