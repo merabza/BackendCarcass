@@ -154,8 +154,8 @@ namespace CarcassDataSeeding
                 _keyStringIntIdIntDictionary.Add(typeof(T), dict);
         }
 
-
-        private int GetIntIdByKey<T>(string key1, int key2)
+        //public საჭიროა GanmartebaGe ბაზისათვის
+        public int GetIntIdByKey<T>(string key1, int key2)
         {
             var key = new Tuple<string, int>(key1, key2);
             if (!_keyStringIntIdIntDictionary.ContainsKey(typeof(T)))
