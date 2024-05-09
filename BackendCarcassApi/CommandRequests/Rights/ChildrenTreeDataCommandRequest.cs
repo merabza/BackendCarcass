@@ -13,7 +13,7 @@ public sealed class ChildrenTreeDataCommandRequest : ICommand<List<DataTypeModel
     {
         HttpRequest = httpRequest;
         ViewStyle = viewStyle;
-        this.DataTypeKey = dataTypeKey;
+        DataTypeKey = dataTypeKey;
     }
 
     public HttpRequest HttpRequest { get; set; }
