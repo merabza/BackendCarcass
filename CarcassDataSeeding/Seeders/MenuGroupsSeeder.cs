@@ -41,7 +41,7 @@ public /*open*/
         {
             //carcass
             new() { MengKey = "Main", MengName = "მთავარი", SortId = 0, Hidden = true },
-            new() { MengKey = "MasterData", MengName = "ძირითადი ინფორმაცია", SortId = 200, Hidden = false },
+            new() { MengKey = "MasterData", MengName = "ძირითადი ინფორმაცია", SortId = 200, Hidden = false }
         };
 
         return [.. menuGroups];

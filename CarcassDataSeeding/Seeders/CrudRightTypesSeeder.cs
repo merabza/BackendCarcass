@@ -44,7 +44,7 @@ public /*open*/
             //ამიტომ ნახვის უფლებას ვაუქმებ
             new(nameof(ECrudOperationType.Create), "შექმნა"),
             new(nameof(ECrudOperationType.Update), "შეცვლა"),
-            new(nameof(ECrudOperationType.Delete), "წაშლა"),
+            new(nameof(ECrudOperationType.Delete), "წაშლა")
             //new(nameof(ECrudOperationType.Confirm), "დადასტურება"),
         };
 

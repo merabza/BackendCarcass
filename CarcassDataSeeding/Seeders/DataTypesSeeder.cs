@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SystemToolsShared;
 using CarcassDataSeeding.Models;
 using CarcassDb.Models;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.CellModels;
+using LanguageExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using LanguageExt;
+using SystemToolsShared;
 
 namespace CarcassDataSeeding.Seeders;
 
@@ -86,10 +86,7 @@ public /*open*/
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtParentDataTypeIdDtKey != null))
         {
             var oneRec = dataTypesList.SingleOrDefault(s => s.DtKey == dataTypeSeederModel.DtKey);
-            if (oneRec == null)
-            {
-                continue;
-            }
+            if (oneRec == null) continue;
 
             oneRec.DtParentDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtParentDataTypeIdDtKey);
             forUpdate.Add(oneRec);
@@ -99,10 +96,7 @@ public /*open*/
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtManyToManyJoinParentDataTypeKey != null))
         {
             var oneRec = dataTypesList.SingleOrDefault(s => s.DtKey == dataTypeSeederModel.DtKey);
-            if (oneRec == null)
-            {
-                continue;
-            }
+            if (oneRec == null) continue;
 
             oneRec.DtManyToManyJoinParentDataTypeId =
                 tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinParentDataTypeKey);
@@ -113,10 +107,7 @@ public /*open*/
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtManyToManyJoinChildDataTypeKey != null))
         {
             var oneRec = dataTypesList.SingleOrDefault(s => s.DtKey == dataTypeSeederModel.DtKey);
-            if (oneRec == null)
-            {
-                continue;
-            }
+            if (oneRec == null) continue;
 
             oneRec.DtManyToManyJoinChildDataTypeId =
                 tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinChildDataTypeKey);
@@ -141,7 +132,7 @@ public /*open*/
         var dtdt = new Tuple<int, int>[]
         {
             new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuItm.ToDtKey()),
-                tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuGroup.ToDtKey())),
+                tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuGroup.ToDtKey()))
         };
 
         var dtdtdt = new Tuple<int, int, int>[]
@@ -149,7 +140,7 @@ public /*open*/
             new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey()), dataTypeId,
                 dataTypeId),
             new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey()), dataTypeId,
-                tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.CrudRightType.ToDtKey())),
+                tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.CrudRightType.ToDtKey()))
         };
 
         return Repo.SetDtParentDataTypes(dtdt) && Repo.SetManyToManyJoinParentChildDataTypes(dtdtdt);
@@ -215,7 +206,7 @@ public /*open*/
                 DtKey = ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(), DtName = "უფლებები",
                 DtNameNominative = "უფლება",
                 DtNameGenitive = "უფლების",
-                DtTable = "dataTypesToDataTypes",
+                DtTable = "dataTypesToDataTypes"
             },
             //MenuGroup
             new()
@@ -289,7 +280,7 @@ public /*open*/
             GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
             GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი", "menuGroups"),
             GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
-            GetTextBoxCell(nameof(MenuItm.MenIconName).UnCapitalize(), "ხატულა"),
+            GetTextBoxCell(nameof(MenuItm.MenIconName).UnCapitalize(), "ხატულა")
         };
         gridModel.Cells.AddRange(cells);
         return gridModel;

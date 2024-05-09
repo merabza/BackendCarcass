@@ -33,10 +33,7 @@ public sealed class UsersSeeder(
         foreach (var userModel in userToCreate)
         {
             var result = CreateUser(userModel);
-            if (result.IsSome)
-            {
-                userCreateErrors.AddRange((Err[])result);
-            }
+            if (result.IsSome) userCreateErrors.AddRange((Err[])result);
         }
 
         if (userCreateErrors.Count > 0)

@@ -151,25 +151,25 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
 
         //DataTypes by CrudRightTypes
         lst.AddRange(
-            (from dataType in Repo.GetAll<DataType>()
-                from crudRightType in
-                    Repo.GetAll<CrudRightType>() //.Where(w=>w.CrtKey != nameof(ECrudOperationType.Confirm))
-                select new ManyToManyJoin
-                {
-                    PtId = dataTypeDataTypeId, PKey = dataType.DtKey, CtId = crudRightTypeDataTypeId,
-                    CKey = crudRightType.CrtKey
-                }));
+            from dataType in Repo.GetAll<DataType>()
+            from crudRightType in
+                Repo.GetAll<CrudRightType>() //.Where(w=>w.CrtKey != nameof(ECrudOperationType.Confirm))
+            select new ManyToManyJoin
+            {
+                PtId = dataTypeDataTypeId, PKey = dataType.DtKey, CtId = crudRightTypeDataTypeId,
+                CKey = crudRightType.CrtKey
+            });
 
         //Menu by CrudRightTypes
         lst.AddRange(
-            (from mnu in Repo.GetAll<MenuItm>().Where(w => w.MenLinkKey != "mdList")
-                from crudRightType in
-                    Repo.GetAll<CrudRightType>() //.Where(w=>w.CrtKey != nameof(ECrudOperationType.Confirm))
-                select new ManyToManyJoin
-                {
-                    PtId = dataTypeDataTypeId, PKey = mnu.MenKey, CtId = crudRightTypeDataTypeId,
-                    CKey = crudRightType.CrtKey
-                }));
+            from mnu in Repo.GetAll<MenuItm>().Where(w => w.MenLinkKey != "mdList")
+            from crudRightType in
+                Repo.GetAll<CrudRightType>() //.Where(w=>w.CrtKey != nameof(ECrudOperationType.Confirm))
+            select new ManyToManyJoin
+            {
+                PtId = dataTypeDataTypeId, PKey = mnu.MenKey, CtId = crudRightTypeDataTypeId,
+                CKey = crudRightType.CrtKey
+            });
 
         var userByRoles = LoadFromJsonFile<UserByRole>(secretDataFolder, "UsersByRoles.json");
 

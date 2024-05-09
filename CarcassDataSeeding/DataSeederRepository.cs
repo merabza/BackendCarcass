@@ -11,8 +11,8 @@ namespace CarcassDataSeeding;
 
 public /*open*/ class DataSeederRepository : IDataSeederRepository
 {
-    private readonly ILogger<DataSeederRepository> _logger;
     private readonly CarcassDbContext _context;
+    private readonly ILogger<DataSeederRepository> _logger;
 
     public DataSeederRepository(CarcassDbContext ctx, ILogger<DataSeederRepository> logger)
     {
@@ -149,7 +149,7 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
             return true;
         try
         {
-            foreach (T rec in forUpdate)
+            foreach (var rec in forUpdate)
                 _context.Update(rec);
             return SaveChanges();
         }

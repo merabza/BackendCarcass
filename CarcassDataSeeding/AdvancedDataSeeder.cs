@@ -94,7 +94,6 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
         var couples = allKeys.Select(s => new Tuple<TDst, TDst>(existing.SingleOrDefault(sod => sod.Key == s),
             mustBe.SingleOrDefault(sod => sod.Key == s))).ToList();
         foreach (var couple in couples)
-        {
             if (couple.Item2 is not null && couple.Item1 is null)
             {
                 forAdd.Add(couple.Item2);
@@ -108,7 +107,6 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
                 couple.Item1.UpdateTo(couple.Item2);
                 forUpdate.Add(couple.Item1);
             }
-        }
 
         return (forAdd, forUpdate, forDelete);
     }

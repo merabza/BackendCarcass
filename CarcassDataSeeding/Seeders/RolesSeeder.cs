@@ -40,10 +40,7 @@ public /*open*/
         foreach (var roleModel in rolesToCreate)
         {
             var result = CreateRole(roleModel);
-            if (result.IsSome)
-            {
-                roleCreateErrors.AddRange((Err[])result);
-            }
+            if (result.IsSome) roleCreateErrors.AddRange((Err[])result);
         }
 
         if (roleCreateErrors.Count > 0)

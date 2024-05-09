@@ -6,11 +6,11 @@ namespace CarcassDataSeeding;
 
 public /*open*/ class DataSeedersFabric
 {
-    protected readonly string SecretDataFolder;
-    protected readonly string DataSeedFolder;
-    private readonly IDataSeederRepository _repo;
     private readonly UserManager<AppUser> _myUserManager;
+    private readonly IDataSeederRepository _repo;
+    protected readonly string DataSeedFolder;
     protected readonly RoleManager<AppRole> MyRoleManager;
+    protected readonly string SecretDataFolder;
 
     protected DataSeedersFabric(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager,
         string secretDataFolder, string dataSeedFolder, IDataSeederRepository repo)

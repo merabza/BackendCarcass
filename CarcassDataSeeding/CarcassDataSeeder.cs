@@ -6,9 +6,9 @@ namespace CarcassDataSeeding;
 
 public /*open*/ class CarcassDataSeeder
 {
-    protected readonly ILogger<CarcassDataSeeder> Logger;
-    protected readonly DataSeedersFabric DataSeedersFabric;
     private readonly bool _checkOnly;
+    protected readonly DataSeedersFabric DataSeedersFabric;
+    protected readonly ILogger<CarcassDataSeeder> Logger;
 
     protected CarcassDataSeeder(ILogger<CarcassDataSeeder> logger, DataSeedersFabric dataSeedersFabric,
         bool checkOnly)

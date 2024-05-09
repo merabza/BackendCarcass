@@ -1,23 +1,53 @@
-﻿using LanguageExt;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using LanguageExt;
 using SystemToolsShared;
 
 namespace CarcassDataSeeding;
 
 public /*open*/ class DataSeeder<TDst> : IDataSeeder where TDst : class
 {
-    protected readonly IDataSeederRepository Repo;
     //protected readonly List<string> Messages = new();
 
     private readonly string _dataSeedFolder;
     private readonly string _tableName;
+    protected readonly IDataSeederRepository Repo;
 
     protected DataSeeder(string dataSeedFolder, IDataSeederRepository repo)
     {
         _dataSeedFolder = dataSeedFolder;
         Repo = repo;
         _tableName = Repo.GetTableName<TDst>();
+    }
+
+
+    public Option<Err[]> Create(bool checkOnly)
+    {
+        if (checkOnly)
+            return AdditionalCheck();
+
+        //ეს ის ვარიანტია, როცა არც არსებულ ჩანაწერებს ვამოწმებთ და არც Json-დან შემოგვაქვს
+        if (CheckRecordsExists())
+            //Messages.Add($"Records in {_tableName} is already exists");
+            //return (false, Messages);
+            return new Err[]
+            {
+                new()
+                {
+                    ErrorCode = "RecordsIsAlreadyExists",
+                    ErrorMessage = $"Records in {_tableName} is already exists"
+                }
+            };
+
+        //ლოგიკა ასეთია: ჯერ მოისინჯება Json ფაილის გამოყენება
+        var result = CreateByJsonFile();
+        //თუ რამე შეცდომა მოხდა ამ დროს, აქედანაც დაბრუნდება შეცდომა
+        if (result.IsSome)
+            return (Err[])result;
+
+        //აქ დამატებით ვუშვებ მონაცემების შემოწმებას და თუ რომელიმე აუცილებელი ჩანაწერი აკლია, რაც ლოგიკით განისაზღვრება,
+        //მაშინ ისინიც ჩაემატება. ან თუ არასწორად არის რომელიმე ჩანაწერი, შეიცვლება. ან თუ ზედმეტია წაიშლება
+        return AdditionalCheck();
     }
 
 
@@ -37,38 +67,6 @@ public /*open*/ class DataSeeder<TDst> : IDataSeeder where TDst : class
         //აქ true ბრუნდება იმ მიზნით, რომ თუ ეს მეთოდი კლასში არ გადააწერეს, ითვლებოდეს, რომ ჩანაწერები არსებობს
         //return true;
         return Repo.HaveAnyRecord<TDst>();
-    }
-
-
-    public Option<Err[]> Create(bool checkOnly)
-    {
-        if (checkOnly)
-            return AdditionalCheck();
-
-        //ეს ის ვარიანტია, როცა არც არსებულ ჩანაწერებს ვამოწმებთ და არც Json-დან შემოგვაქვს
-        if (CheckRecordsExists())
-        {
-            //Messages.Add($"Records in {_tableName} is already exists");
-            //return (false, Messages);
-            return new Err[]
-            {
-                new()
-                {
-                    ErrorCode = "RecordsIsAlreadyExists",
-                    ErrorMessage = $"Records in {_tableName} is already exists"
-                }
-            };
-        }
-
-        //ლოგიკა ასეთია: ჯერ მოისინჯება Json ფაილის გამოყენება
-        var result = CreateByJsonFile();
-        //თუ რამე შეცდომა მოხდა ამ დროს, აქედანაც დაბრუნდება შეცდომა
-        if (result.IsSome)
-            return (Err[])result;
-
-        //აქ დამატებით ვუშვებ მონაცემების შემოწმებას და თუ რომელიმე აუცილებელი ჩანაწერი აკლია, რაც ლოგიკით განისაზღვრება,
-        //მაშინ ისინიც ჩაემატება. ან თუ არასწორად არის რომელიმე ჩანაწერი, შეიცვლება. ან თუ ზედმეტია წაიშლება
-        return AdditionalCheck();
     }
 
     protected virtual Option<Err[]> CreateByJsonFile()
