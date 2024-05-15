@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using WebInstallers;
@@ -10,7 +11,7 @@ public class CarcassDomInstaller : IInstaller
     public int InstallPriority => 30;
     public int ServiceUsePriority => 30;
 
-    public void InstallServices(WebApplicationBuilder builder, string[] args)
+    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
     {
         Console.WriteLine("CarcassDomInstaller.InstallServices Started");
 
