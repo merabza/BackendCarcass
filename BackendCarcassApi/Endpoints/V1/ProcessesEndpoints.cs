@@ -1,4 +1,5 @@
-﻿using CarcassContracts.V1.Responses;
+﻿using System.Collections.Generic;
+using CarcassContracts.V1.Responses;
 using CarcassContracts.V1.Routes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -19,7 +20,7 @@ public sealed class ProcessesEndpoints : IInstaller
     public int InstallPriority => 70;
     public int ServiceUsePriority => 70;
 
-    public void InstallServices(WebApplicationBuilder builder, string[] args)
+    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
     {
     }
 

@@ -1,6 +1,7 @@
 //Created by IdentityInstallerClassCreator at 8/3/2022 9:05:24 AM
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using CarcassIdentity.Models;
 using CarcassMasterDataDom.Models;
@@ -20,7 +21,7 @@ public sealed class CarcassIdentityInstaller : IInstaller
     public int InstallPriority => 27;
     public int ServiceUsePriority => 60;
 
-    public void InstallServices(WebApplicationBuilder builder, string[] args)
+    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
     {
         //Console.WriteLine("CarcassIdentityInstaller.InstallServices Started");
 

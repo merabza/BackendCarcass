@@ -1,5 +1,6 @@
 //Created by CarcassRepositoriesInstallerClassCreator at 8/1/2022 9:35:56 PM
 
+using System.Collections.Generic;
 using CarcassDom;
 using CarcassIdentity;
 using CarcassMasterDataDom;
@@ -15,7 +16,7 @@ public sealed class CarcassRepositoriesInstaller : IInstaller
     public int InstallPriority => 30;
     public int ServiceUsePriority => 30;
 
-    public void InstallServices(WebApplicationBuilder builder, string[] args)
+    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
     {
         //Console.WriteLine("CarcassRepositoriesInstaller.InstallServices Started");
 

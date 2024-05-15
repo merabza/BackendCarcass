@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.Handlers.DataTypes;
@@ -25,7 +26,7 @@ public sealed class DataTypesEndpoints : IInstaller
     public int ServiceUsePriority => 70;
 
     //private static int _lastSequentialNumber;
-    public void InstallServices(WebApplicationBuilder builder, string[] args)
+    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
     {
     }
 
