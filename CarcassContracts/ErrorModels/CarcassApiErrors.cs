@@ -1,4 +1,5 @@
 ﻿using SystemToolsShared;
+using SystemToolsShared.ErrorModels;
 
 namespace CarcassContracts.ErrorModels;
 
@@ -22,19 +23,9 @@ public static class CarcassApiErrors
 
     public static string IsLongerThenErrCode => "{PropertyName}IsLongerThen{MaxLength}";
 
-    public static string IsEmptyErrMessage(string propertyNameLocalized)
-    {
-        return $"{propertyNameLocalized} შევსებული უნდა იყოს";
-    }
-
-    public static string IsLongerThenErrMessage(string propertyNameLocalized)
-    {
-        return propertyNameLocalized + " სიგრძე არ შეიძლება იყოს {MaxLength} სიმბოლოზე მეტი";
-    }
-
     public static Err IsLongerThen(string propertyNameLocalized)
     {
         return new Err
-            { ErrorCode = IsLongerThenErrCode, ErrorMessage = IsLongerThenErrMessage(propertyNameLocalized) };
+            { ErrorCode = IsLongerThenErrCode, ErrorMessage = ApiErrors.IsLongerThenErrMessage(propertyNameLocalized) };
     }
 }

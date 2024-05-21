@@ -1,4 +1,5 @@
 ﻿using SystemToolsShared;
+using SystemToolsShared.ErrorModels;
 
 namespace CarcassContracts.ErrorModels;
 
@@ -38,17 +39,17 @@ public static class AuthenticationApiErrors
 
 
     public static readonly Err UserNameIsLongerThenErr = CarcassApiErrors.IsLongerThen("მომხმარებლის სახელის");
-    public static string IsEmptyEmailErrMessage => CarcassApiErrors.IsEmptyErrMessage("ელექტრონული ფოსტის მისამართი");
-    public static string IsEmptyFirstNameErrMessage => CarcassApiErrors.IsEmptyErrMessage("სახელი");
-    public static string IsEmptyLastNameErrMessage => CarcassApiErrors.IsEmptyErrMessage("გვარი");
-    public static string IsEmptyUserNameErrMessage => CarcassApiErrors.IsEmptyErrMessage("მომხმარებლის სახელი");
-    public static string IsEmptyPasswordErrMessage => CarcassApiErrors.IsEmptyErrMessage("პაროლი");
-    public static string IsEmptyOldPasswordErrMessage => CarcassApiErrors.IsEmptyErrMessage("ძველი პაროლი");
-    public static string IsEmptyNewPasswordErrMessage => CarcassApiErrors.IsEmptyErrMessage("ახალი პაროლი");
+    public static string IsEmptyEmailErrMessage => ApiErrors.IsEmptyErrMessage("ელექტრონული ფოსტის მისამართი");
+    public static string IsEmptyFirstNameErrMessage => ApiErrors.IsEmptyErrMessage("სახელი");
+    public static string IsEmptyLastNameErrMessage => ApiErrors.IsEmptyErrMessage("გვარი");
+    public static string IsEmptyUserNameErrMessage => ApiErrors.IsEmptyErrMessage("მომხმარებლის სახელი");
+    public static string IsEmptyPasswordErrMessage => ApiErrors.IsEmptyErrMessage("პაროლი");
+    public static string IsEmptyOldPasswordErrMessage => ApiErrors.IsEmptyErrMessage("ძველი პაროლი");
+    public static string IsEmptyNewPasswordErrMessage => ApiErrors.IsEmptyErrMessage("ახალი პაროლი");
     public static string InvalidEmailAddressErrCode => "InvalidEmailAddress";
     public static string InvalidEmailAddressErrMessage => "ელექტრონული ფოსტის მისამართი არასწორია";
-    public static string NameIsLongerThenErrMessage => CarcassApiErrors.IsEmptyErrMessage("სახელის");
-    public static string LastNameIsLongerThenErrMessage => CarcassApiErrors.IsEmptyErrMessage("გვარის");
+    public static string NameIsLongerThenErrMessage => ApiErrors.IsEmptyErrMessage("სახელის");
+    public static string LastNameIsLongerThenErrMessage => ApiErrors.IsEmptyErrMessage("გვარის");
     public static string PasswordsDoNotMatchErrCode => "PasswordsDoNotMatch";
     public static string PasswordsDoNotMatchErrMessage => "პაროლები ერთმანეთს არ ემთხვევა";
 }
