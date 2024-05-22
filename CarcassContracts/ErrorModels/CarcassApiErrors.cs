@@ -1,6 +1,5 @@
 ﻿using ApiToolsShared;
 using SystemToolsShared;
-using SystemToolsShared.ErrorModels;
 
 namespace CarcassContracts.ErrorModels;
 
