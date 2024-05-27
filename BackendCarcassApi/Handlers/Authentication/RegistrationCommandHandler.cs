@@ -88,7 +88,7 @@ public sealed class RegistrationCommandHandler : LoginCommandBase,
 
         LastSequentialNumber++;
         LoginResponse appUserModel = new(user.Id, LastSequentialNumber, user.UserName, user.Email, token,
-            user.FirstName, user.LastName, "");
+            user.FirstName, user.LastName, string.Empty);
         return appUserModel;
     }
 }
