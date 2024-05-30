@@ -22,6 +22,7 @@ public sealed class RegistrationCommandHandler : LoginCommandBase,
     private readonly SignInManager<AppUser> _signinMgr;
     private readonly UserManager<AppUser> _userMgr;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public RegistrationCommandHandler(UserManager<AppUser> userMgr, SignInManager<AppUser> signinMgr,
         IOptions<IdentitySettings> identitySettings)
     {
