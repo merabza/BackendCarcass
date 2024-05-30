@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="LanguageExt.Core" Version="4.4.8" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
         <PackageReference Include="OneOf" Version="3.0.271" />
     </ItemGroup>
 
