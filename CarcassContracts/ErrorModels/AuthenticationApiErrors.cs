@@ -1,4 +1,4 @@
-﻿using ApiToolsShared;
+﻿using ApiContracts;
 using SystemToolsShared;
 
 namespace CarcassContracts.ErrorModels;
