@@ -1,6 +1,6 @@
 ﻿using CarcassContracts.Errors;
 using Newtonsoft.Json;
-using SystemToolsShared;
+using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom.CellModels;
 

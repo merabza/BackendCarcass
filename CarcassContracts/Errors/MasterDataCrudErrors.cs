@@ -1,5 +1,5 @@
 ﻿using System;
-using SystemToolsShared;
+using SystemToolsShared.Errors;
 
 namespace CarcassContracts.Errors;
 
