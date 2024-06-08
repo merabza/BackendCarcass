@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SystemToolsShared;
+using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom.CellModels;
 

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using CarcassContracts.Errors;
+﻿using CarcassContracts.Errors;
 using CarcassMasterDataDom.Models;
 using LanguageExt;
 using LibCrud;
@@ -11,7 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using SystemToolsShared;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom.Crud;
 

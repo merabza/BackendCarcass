@@ -1,6 +1,6 @@
 ﻿using LibCrud;
 using OneOf;
-using SystemToolsShared;
+using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom;
 

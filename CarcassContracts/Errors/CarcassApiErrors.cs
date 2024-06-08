@@ -1,5 +1,5 @@
-﻿using ApiContracts;
-using SystemToolsShared;
+﻿using ApiContracts.Errors;
+using SystemToolsShared.Errors;
 
 namespace CarcassContracts.Errors;
 
