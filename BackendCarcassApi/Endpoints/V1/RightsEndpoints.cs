@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using BackendCarcassApi.CommandRequests.Rights;
+﻿using BackendCarcassApi.CommandRequests.Rights;
 using BackendCarcassApi.Filters;
 using BackendCarcassApi.Handlers.Rights;
 using BackendCarcassApi.QueryRequests.Rights;
-using CarcassContracts.ErrorModels;
+using CarcassContracts.Errors;
 using CarcassContracts.V1.Routes;
 using CarcassDom;
 using CarcassDom.Models;
@@ -15,6 +11,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;

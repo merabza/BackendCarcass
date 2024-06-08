@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BackendCarcassApi.CommandRequests.Rights;
+﻿using BackendCarcassApi.CommandRequests.Rights;
 using CarcassDom;
 using CarcassDom.Models;
 using CarcassMasterDataDom;
 using MessagingAbstractions;
 using OneOf;
-using SystemToolsShared;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Handlers.Rights;
 
@@ -18,6 +18,7 @@ public sealed class HalfChecksQueryHandler : ICommandHandler<HalfChecksCommandRe
     private readonly IRightsRepository _repo;
     private readonly IReturnValuesRepository _rvRepo;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public HalfChecksQueryHandler(IRightsRepository repo, IReturnValuesRepository rvRepo)
     {
         //_repository = repository;

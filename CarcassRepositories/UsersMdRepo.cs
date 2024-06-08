@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using CarcassContracts.ErrorModels;
+﻿using CarcassContracts.Errors;
 using CarcassDb;
 using CarcassDb.Models;
 using CarcassMasterDataDom;
@@ -8,7 +6,9 @@ using CarcassMasterDataDom.Models;
 using LanguageExt;
 using Microsoft.AspNetCore.Identity;
 using OneOf;
-using SystemToolsShared;
+using System.Linq;
+using System.Threading.Tasks;
+using SystemToolsShared.Errors;
 
 namespace CarcassRepositories;
 

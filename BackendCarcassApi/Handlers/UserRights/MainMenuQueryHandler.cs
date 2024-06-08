@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BackendCarcassApi.CommandRequests.UserRights;
+﻿using BackendCarcassApi.CommandRequests.UserRights;
 using CarcassRepositories;
 using CarcassRepositories.Models;
 using MessagingAbstractions;
 using OneOf;
-using SystemToolsShared;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Handlers.UserRights;
 
@@ -15,6 +15,7 @@ public sealed class MainMenuQueryHandler : IQueryHandler<MainMenuQueryRequest, M
 {
     private readonly IMenuRightsRepository _mdRepo;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public MainMenuQueryHandler(IMenuRightsRepository mdRepo)
     {
         _mdRepo = mdRepo;

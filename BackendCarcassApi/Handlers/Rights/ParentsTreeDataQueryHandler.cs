@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BackendCarcassApi.QueryRequests.Rights;
+﻿using BackendCarcassApi.QueryRequests.Rights;
 using CarcassDom;
 using CarcassDom.Models;
 using CarcassMasterDataDom;
 using MessagingAbstractions;
 using OneOf;
-using SystemToolsShared;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Handlers.Rights;
 
@@ -17,6 +17,7 @@ internal sealed class ParentsTreeDataQueryHandler : IQueryHandler<ParentsTreeDat
     private readonly IRightsRepository _repo;
     private readonly IReturnValuesRepository _rvRepo;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ParentsTreeDataQueryHandler(IRightsRepository repo, IReturnValuesRepository rvRepo)
     {
         _repo = repo;

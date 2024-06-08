@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BackendCarcassApi.CommandRequests.UserRights;
-using CarcassContracts.ErrorModels;
+﻿using BackendCarcassApi.CommandRequests.UserRights;
+using CarcassContracts.Errors;
 using CarcassMasterDataDom.Models;
 using CarcassRepositories;
 using MediatR;
 using MessagingAbstractions;
 using Microsoft.AspNetCore.Identity;
 using OneOf;
-using SystemToolsShared;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Handlers.UserRights;
 
@@ -18,6 +18,7 @@ public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurr
 {
     private readonly UserManager<AppUser> _userMgr;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DeleteCurrentUserCommandHandler(UserManager<AppUser> userMgr)
     {
         _userMgr = userMgr;
