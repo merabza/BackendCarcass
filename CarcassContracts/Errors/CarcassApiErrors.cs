@@ -1,7 +1,7 @@
 ﻿using ApiContracts;
 using SystemToolsShared;
 
-namespace CarcassContracts.ErrorModels;
+namespace CarcassContracts.Errors;
 
 public static class CarcassApiErrors
 {
@@ -17,11 +17,7 @@ public static class CarcassApiErrors
 
     public static string IsEmptyErrCode => "{PropertyName}IsEmpty";
 
-    //public static Err IsEmpty(string propertyNameLocalized) => new()
-    //    { ErrorCode = IsEmptyErrCode, ErrorMessage = IsEmptyErrMessage(propertyNameLocalized) };
-
-
-    public static string IsLongerThenErrCode => "{PropertyName}IsLongerThen{MaxLength}";
+    private static string IsLongerThenErrCode => "{PropertyName}IsLongerThen{MaxLength}";
 
     public static Err IsLongerThen(string propertyNameLocalized)
     {

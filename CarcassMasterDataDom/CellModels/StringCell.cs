@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CarcassContracts.ErrorModels;
+using CarcassContracts.Errors;
 using CarcassMasterDataDom.Validation;
 using Newtonsoft.Json;
 using SystemToolsShared;

@@ -1,6 +1,6 @@
 ﻿using SystemToolsShared;
 
-namespace CarcassContracts.ErrorModels;
+namespace CarcassContracts.Errors;
 
 public static class CommonErrors
 {

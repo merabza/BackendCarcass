@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassContracts.ErrorModels;
+using CarcassContracts.Errors;
 using CarcassMasterDataDom.Models;
 using LanguageExt;
 using LibCrud;
@@ -61,9 +61,9 @@ public class RolesCrud : CrudBase, IMasterDataLoader
         var role = (RoleCrudData)crudDataForCreate;
         AppRole appRole = new(role.RolKey, role.RolName, role.RolLevel);
         //შევქმნათ როლი
-        var result = await _roleManager.CreateAsync(appRole);
-        if (!result.Succeeded)
-            return result.Errors.Select(x => new Err { ErrorCode = x.Code, ErrorMessage = x.Description }).ToArray();
+        var createResult = await _roleManager.CreateAsync(appRole);
+        if (!createResult.Succeeded)
+            return ConvertError(createResult);
         _justCreated = appRole;
         return null;
     }

@@ -4,6 +4,7 @@ namespace CarcassMasterDataDom.Validation;
 
 public class IntRule
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public IntRule(int val, string errCode, string errMessage)
     {
         Val = val;

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CarcassContracts.ErrorModels;
+using CarcassContracts.Errors;
 using Newtonsoft.Json;
 using SystemToolsShared;
 
@@ -30,13 +30,13 @@ public /*open*/ class MixedCell : Cell
         return new MixedCell(fieldName, caption, visible, typeName);
     }
 
-    public MixedCell Required(string? errorCode = null, string? errorMessage = null)
+    protected MixedCell Required(string? errorCode = null, string? errorMessage = null)
     {
         IsRequiredErr = CarcassMasterDataDomErrors.Required(FieldName, Caption, errorCode, errorMessage);
         return this;
     }
 
-    public MixedCell Nullable(bool isNullable = false)
+    protected MixedCell Nullable(bool isNullable = false)
     {
         IsNullable = true;
         return this;
@@ -44,7 +44,7 @@ public /*open*/ class MixedCell : Cell
 
     public override List<Err> Validate(object? value)
     {
-        List<Err> errors = new();
+        List<Err> errors = [];
         if (IsRequiredErr is not null && value == null)
             errors.Add(IsRequiredErr.Value);
 

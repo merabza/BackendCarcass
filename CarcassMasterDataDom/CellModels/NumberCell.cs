@@ -1,4 +1,4 @@
-﻿using CarcassContracts.ErrorModels;
+﻿using CarcassContracts.Errors;
 using Newtonsoft.Json;
 using SystemToolsShared;
 
@@ -20,19 +20,19 @@ public /*open*/ class NumberCell : MixedCell
         return new NumberCell(fieldName, caption, visible, typeName);
     }
 
-    public new NumberCell Required(string? errorCode = null, string? errorMessage = null)
+    protected new NumberCell Required(string? errorCode = null, string? errorMessage = null)
     {
         base.Required(errorCode, errorMessage);
         return this;
     }
 
-    public new NumberCell Nullable(bool isNullable = true)
+    protected new NumberCell Nullable(bool isNullable = true)
     {
         base.Nullable(isNullable);
         return this;
     }
 
-    public NumberCell Positive(string? errorCode = null, string? errorMessage = null)
+    protected NumberCell Positive(string? errorCode = null, string? errorMessage = null)
     {
         IsPositiveErr = CarcassMasterDataDomErrors.MustBePositive(FieldName, Caption, errorCode, errorMessage);
         return this;

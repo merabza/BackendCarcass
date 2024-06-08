@@ -6,20 +6,20 @@ using LibCrud.Models;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using SystemToolsShared;
-using SystemToolsShared.ErrorModels;
+using SystemToolsShared.Errors;
 
 namespace LibCrud;
 
 public abstract class CrudBase
 {
     private readonly IAbstractRepository _absRepo;
-    protected readonly ILogger Logger;
+    private readonly ILogger _logger;
 
 
     // ReSharper disable once ConvertToPrimaryConstructor
     protected CrudBase(ILogger logger, IAbstractRepository absRepo)
     {
-        Logger = logger;
+        _logger = logger;
         _absRepo = absRepo;
     }
 
@@ -36,7 +36,7 @@ public abstract class CrudBase
         catch (Exception e)
         {
             const string methodName = nameof(GetOne);
-            Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
+            _logger.LogError(e, "Error occurred executing {methodName}.", methodName);
             throw;
         }
     }
@@ -62,18 +62,18 @@ public abstract class CrudBase
                 await transaction.RollbackAsync(cancellationToken);
                 if (e.InnerException is not null)
                 {
-                    Logger.LogError(e.InnerException, "Error occurred executing {methodName}.", methodName);
+                    _logger.LogError(e.InnerException, "Error occurred executing {methodName}.", methodName);
                     if (e.InnerException.Message.StartsWith("Cannot insert duplicate key row in object"))
                         return new[] { SystemToolsErrors.SuchARecordAlreadyExists };
                 }
 
-                Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
+                _logger.LogError(e, "Error occurred executing {methodName}.", methodName);
                 return new[] { SystemToolsErrors.UnexpectedApiException(e) };
             }
         }
         catch (Exception e)
         {
-            Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
+            _logger.LogError(e, "Error occurred executing {methodName}.", methodName);
             return new[] { SystemToolsErrors.UnexpectedApiException(e) };
         }
     }
@@ -130,13 +130,13 @@ public abstract class CrudBase
                 await transaction.RollbackAsync(cancellationToken);
                 if (e.InnerException is not null)
                 {
-                    Logger.LogError(e.InnerException, "Error occurred executing {methodName}.", methodName);
+                    _logger.LogError(e.InnerException, "Error occurred executing {methodName}.", methodName);
                     if (e.InnerException.Message.StartsWith(
                             "The DELETE statement conflicted with the REFERENCE constraint"))
                         return new[] { SystemToolsErrors.TheEntryHasBeenUsedAndCannotBeDeleted };
                 }
 
-                Logger.LogError(e, "Error occurred executing {methodName}.", methodName);
+                _logger.LogError(e, "Error occurred executing {methodName}.", methodName);
                 return new[] { SystemToolsErrors.UnexpectedApiException(e) };
             }
         }

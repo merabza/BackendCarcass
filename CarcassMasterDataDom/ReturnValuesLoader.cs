@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassContracts.ErrorModels;
+using CarcassContracts.Errors;
 using CarcassMasterDataDom.Models;
 using OneOf;
 using SystemToolsShared;

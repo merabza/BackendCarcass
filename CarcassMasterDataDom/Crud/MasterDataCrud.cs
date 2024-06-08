@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassContracts.ErrorModels;
+using CarcassContracts.Errors;
 using CarcassMasterDataDom.CellModels;
 using CarcassMasterDataDom.Models;
 using CarcassMasterDataDom.SortIdStuff;

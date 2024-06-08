@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CarcassContracts.ErrorModels;
+using CarcassContracts.Errors;
 using CarcassMasterDataDom.Validation;
 using Newtonsoft.Json;
 using SystemToolsShared;
@@ -57,7 +57,7 @@ public /*open*/ class IntegerCell : NumberCell
         return this;
     }
 
-    public IntegerCell Default(int defaultValue = default)
+    protected IntegerCell Default(int defaultValue = default)
     {
         Def = defaultValue;
         return this;
