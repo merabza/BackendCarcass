@@ -17,7 +17,7 @@ public static class CarcassApiErrors
 
     public static string IsEmptyErrCode => "{PropertyName}IsEmpty";
 
-    private static string IsLongerThenErrCode => "{PropertyName}IsLongerThen{MaxLength}";
+    public static string IsLongerThenErrCode => "{PropertyName}IsLongerThen{MaxLength}";
 
     public static Err IsLongerThen(string propertyNameLocalized)
     {

@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BackendCarcassApi.CommandRequests.Rights;
+﻿using BackendCarcassApi.CommandRequests.Rights;
 using CarcassDom;
 using MessagingAbstractions;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using SystemToolsShared;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Handlers.Rights;
 
@@ -18,6 +18,7 @@ public sealed class SaveDataCommandHandler : ICommandHandler<SaveDataCommandRequ
     //private readonly IMenuRightsRepository _repository;
     private readonly IRightsRepository _repo;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public SaveDataCommandHandler(ILogger<SaveDataCommandHandler> logger, IRightsRepository repo)
     {
         //_repository = mdRepo;

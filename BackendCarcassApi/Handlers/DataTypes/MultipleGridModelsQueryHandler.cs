@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BackendCarcassApi.QueryRequests.DataTypes;
-using CarcassContracts.ErrorModels;
+﻿using BackendCarcassApi.QueryRequests.DataTypes;
+using CarcassContracts.Errors;
 using CarcassRepositories;
 using MessagingAbstractions;
 using OneOf;
-using SystemToolsShared;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Handlers.DataTypes;
 
@@ -17,6 +17,7 @@ public sealed class
 {
     private readonly IMenuRightsRepository _repository;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public MultipleGridModelsQueryHandler(IMenuRightsRepository repository)
     {
         _repository = repository;
