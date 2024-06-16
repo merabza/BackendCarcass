@@ -78,7 +78,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         ICarcassMasterDataRepository cmdRepo)
     {
         var entityType = cmdRepo.GetEntityTypeByTableName(tableName);
-        if (entityType == null)
+        if (entityType is null)
             return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
 
         return new MasterDataCrud(tableName, entityType, logger, cmdRepo);
@@ -236,7 +236,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     private OneOf<string, Err[]> GetSingleKeyName()
     {
         var singleKey = _entityType.GetKeys().SingleOrDefault();
-        if (singleKey == null)
+        if (singleKey is null)
             return new[] { MasterDataApiErrors.TableHaveNotSingleKey(_tableName) }; //ვერ ვიპოვეთ ერთადერთი გასაღები
 
         if (singleKey.Properties.Count != 1)
@@ -255,11 +255,11 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //return _cmdRepo.LoadByTableName(_tableName);
 
         var setMethod = _cmdRepo.SetMethodInfo();
-        if (setMethod == null)
+        if (setMethod is null)
             return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(_tableName) }; //ცხრილს არ აქვს მეთოდი Set
 
         var result = _cmdRepo.RunGenericMethodForLoadAllRecords(setMethod, _entityType);
-        return result == null
+        return result is null
             ? new[]
             {
                 MasterDataApiErrors.SetMethodReturnsNullForTable(_tableName)
@@ -277,11 +277,11 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //return _cmdRepo.LoadByTableName(_tableName);
 
         var setMethod = _cmdRepo.SetMethodInfo();
-        if (setMethod == null)
+        if (setMethod is null)
             return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(_tableName) }; //ცხრილს არ აქვს მეთოდი Set
 
         var result = _cmdRepo.RunGenericMethodForLoadAllRecords(setMethod, _entityType);
-        return result == null
+        return result is null
             ? new[]
             {
                 MasterDataApiErrors.SetMethodReturnsNullForTable(_tableName)
@@ -472,7 +472,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     {
         //var q = _cmdRepo.RunGenericMethodForQueryRecords(entityType);
         //var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); //
-        //if (idt == null)
+        //if (idt is null)
         //    return new[]
         //    {
         //        MasterDataApiErrors.RecordNotFound(_tableName, id)
@@ -530,7 +530,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //var dt = _context.DataTypes.SingleOrDefault(s => s.DtTable == tableName);
         var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
 
-        if (gridModel == null)
+        if (gridModel is null)
             return new[] { MasterDataApiErrors.MasterDataInvalidValidationRules(_tableName) };
 
         List<Err> errors = [];
@@ -539,7 +539,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         foreach (var cell in gridModel.Cells)
         {
             var prop = props.SingleOrDefault(w => w.Name == cell.FieldName.CapitalizeCamel());
-            if (prop == null)
+            if (prop is null)
             {
                 errors.Add(MasterDataApiErrors.MasterDataFieldNotFound(_tableName, cell.FieldName));
                 continue;

@@ -45,7 +45,7 @@ public /*open*/ class MixedCell : Cell
     public override List<Err> Validate(object? value)
     {
         List<Err> errors = [];
-        if (IsRequiredErr is not null && value == null)
+        if (IsRequiredErr is not null && value is null)
             errors.Add(IsRequiredErr.Value);
 
         return errors;

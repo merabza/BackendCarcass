@@ -34,7 +34,7 @@ public sealed class AppUser : IdentityUser<int>
             return null;
         var claims = new List<Claim>
             { new(ClaimTypes.Name, UserName), new(ClaimTypes.Email, Email) };
-        if (roles != null)
+        if (roles is not null)
             claims.AddRange(roles.Select(s => new Claim(ClaimTypes.Role, s)));
         claims.Add(new Claim(ClaimTypes.SerialNumber, serialNumber.ToString()));
 

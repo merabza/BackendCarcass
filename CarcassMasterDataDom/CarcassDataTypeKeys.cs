@@ -59,7 +59,7 @@ public sealed class CarcassDataTypeKeys
             //ეს ატრიბუტები სესიაზე არ არის დამოკიდებული და იქმნება პროგრამის გაშვებისთანავე, 
             //შემდგომში მასში ცვლილებები არ შედის,
             //მაგრამ შეიძლება პროგრამამ თავისი მუშაობის განმავლობაში რამდენჯერმე გამოიყენოს აქ არსებული ინფორმაცია
-            if (_instance != null)
+            if (_instance is not null)
                 return _instance;
             lock (SyncRoot) //thread safe singleton
             {

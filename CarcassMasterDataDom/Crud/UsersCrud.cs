@@ -76,7 +76,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
         CancellationToken cancellationToken)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
-        if (oldUser == null)
+        if (oldUser is null)
             return new[] { MasterDataApiErrors.CannotFindUser };
 
         var user = (UserCrudData)crudDataNewVersion;
@@ -105,7 +105,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
     protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
-        if (oldUser == null)
+        if (oldUser is null)
             return new[] { MasterDataApiErrors.CannotFindUser };
         var deleteResult = await _userManager.DeleteAsync(oldUser);
         return ConvertError(deleteResult);

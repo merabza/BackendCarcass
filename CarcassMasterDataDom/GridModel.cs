@@ -15,7 +15,7 @@ public sealed class GridModel
     {
         var jo = JObject.Parse(dtGridRulesJson);
         var jCommands = (JArray?)jo["cells"];
-        if (jCommands == null)
+        if (jCommands is null)
             return null;
         GridModel gridModel = new();
         foreach (var jt in jCommands)

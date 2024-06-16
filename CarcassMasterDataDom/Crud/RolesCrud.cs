@@ -50,7 +50,7 @@ public class RolesCrud : CrudBase, IMasterDataLoader
     protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)
     {
         var appRole = await _roleManager.FindByIdAsync(id.ToString());
-        if (appRole?.Name != null)
+        if (appRole?.Name is not null)
             return new RoleCrudData(appRole.Name, appRole.RoleName, appRole.Level);
         return new[] { MasterDataApiErrors.CannotFindRole };
     }
@@ -72,7 +72,7 @@ public class RolesCrud : CrudBase, IMasterDataLoader
         CancellationToken cancellationToken)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
-        if (oldRole == null)
+        if (oldRole is null)
             return new[] { MasterDataApiErrors.CannotFindRole };
 
         var role = (RoleCrudData)crudDataNewVersion;
@@ -93,7 +93,7 @@ public class RolesCrud : CrudBase, IMasterDataLoader
     protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
-        if (oldRole == null)
+        if (oldRole is null)
             return new[] { MasterDataApiErrors.CannotFindRole };
         var deleteResult = await _roleManager.DeleteAsync(oldRole);
         return ConvertError(deleteResult);
