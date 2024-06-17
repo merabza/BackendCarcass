@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
 
 namespace CarcassDb.Models;
@@ -7,10 +8,13 @@ namespace CarcassDb.Models;
 public sealed class Role : IDataType, IMyEquatable
 {
     public int RolId { get; set; }
-    public string RolKey { get; set; } = null!;
-    public string RolName { get; set; } = null!;
+    [MaxLength(256)]
+    public required string RolKey { get; set; } = null!;
+    [MaxLength(100)]
+    public required string RolName { get; set; } = null!;
     public int RolLevel { get; set; }
-    public string RolNormalizedKey { get; set; } = null!;
+    [MaxLength(256)]
+    public required string RolNormalizedKey { get; set; } = null!;
 
     [NotMapped]
     public int Id

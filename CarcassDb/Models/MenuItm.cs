@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
 
@@ -10,12 +11,17 @@ public sealed class MenuItm : IDataType, IMyEquatable
     private MenuGroup? _menGroupNavigation;
 
     public int MenId { get; set; }
-    public string MenKey { get; set; } = null!;
-    public string MenName { get; set; } = null!;
+    [MaxLength(72)]
+    public required string MenKey { get; set; } = null!;
+    [MaxLength(200)]
+    public required string MenName { get; set; } = null!;
+    [MaxLength(72)]
     public string? MenValue { get; set; }
-    public string MenLinkKey { get; set; } = null!;
+    [MaxLength(72)]
+    public required string MenLinkKey { get; set; } = null!;
     public int MenGroupId { get; set; }
     public int SortId { get; set; }
+    [MaxLength(50)]
     public string? MenIconName { get; set; }
 
     public MenuGroup MenGroupNavigation

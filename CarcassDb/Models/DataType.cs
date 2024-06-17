@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
 
@@ -8,13 +9,21 @@ namespace CarcassDb.Models;
 public sealed class DataType : IDataType, IMyEquatable
 {
     public int DtId { get; set; }
-    public string DtKey { get; set; } = null!;
-    public string DtName { get; set; } = null!;
-    public string DtNameNominative { get; set; } = null!;
-    public string DtNameGenitive { get; set; } = null!;
-    public string DtTable { get; set; } = null!;
+    [MaxLength(36)]
+    public required string DtKey { get; set; } = null!;
+    [MaxLength(100)]
+    public required string DtName { get; set; } = null!;
+    [MaxLength(100)]
+    public required string DtNameNominative { get; set; } = null!;
+    [MaxLength(100)]
+    public required string DtNameGenitive { get; set; } = null!;
+    [MaxLength(100)]
+    public required string DtTable { get; set; } = null!;
+    [MaxLength(50)]
     public string? DtIdFieldName { get; set; }
+    [MaxLength(50)]
     public string? DtKeyFieldName { get; set; }
+    [MaxLength(50)]
     public string? DtNameFieldName { get; set; }
     public int? DtParentDataTypeId { get; set; }
     public int? DtManyToManyJoinParentDataTypeId { get; set; }

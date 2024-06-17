@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
 
 namespace CarcassDb.Models;
@@ -13,8 +14,10 @@ public sealed class AppClaim : IDataType, IMyEquatable
     }
 
     public int AclId { get; set; } //იდენტიფიკატორი
-    public string AclKey { get; set; }//კოდი
-    public string AclName { get; set; }//სახელი
+    [MaxLength(50)]
+    public required string AclKey { get; set; }//კოდი
+    [MaxLength(50)]
+    public required string AclName { get; set; }//სახელი
 
     [NotMapped]
     public int Id

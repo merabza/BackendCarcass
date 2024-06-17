@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
 
 namespace CarcassDb.Models;
@@ -7,27 +8,31 @@ namespace CarcassDb.Models;
 public sealed class User : IDataType
 {
     public int UsrId { get; set; }
-    public string UserName { get; set; } = null!;
-    public string NormalizedUserName { get; set; } = null!;
-    public string Email { get; set; } = null!;
-    public string NormalizedEmail { get; set; } = null!;
-    public string PasswordHash { get; set; } = null!;
-    public string FullName { get; set; } = null!;
-    public string FirstName { get; set; } = null!;
-    public string LastName { get; set; } = null!;
 
+    [MaxLength(256)]
+    public required string UserName { get; set; }
+    [MaxLength(256)]
+    public required string NormalizedUserName { get; set; }
+    [MaxLength(256)]
+    public required string Email { get; set; }
+    [MaxLength(256)]
+    public required string NormalizedEmail { get; set; }
+    [MaxLength(256)]
+    public required string PasswordHash { get; set; }
+    [MaxLength(100)]
+    public required string FullName { get; set; }
+    [MaxLength(50)]
+    public required string FirstName { get; set; }
+    [MaxLength(100)]
+    public required string LastName { get; set; }
     [NotMapped]
-    public int Id
-    {
-        get => UsrId;
-        set => UsrId = value;
-    }
-
-    [NotMapped] public string Key => NormalizedUserName;
-
-    [NotMapped] public string Name => FullName;
-
-    [NotMapped] public int? ParentId => null;
+    public int Id { get => UsrId; set => UsrId = value; }
+    [NotMapped] 
+    public string Key => NormalizedUserName;
+    [NotMapped] 
+    public string Name => FullName;
+    [NotMapped] 
+    public int? ParentId => null;
 
     public bool UpdateTo(IDataType data)
     {

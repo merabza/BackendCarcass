@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
 
 namespace CarcassDb.Models;
@@ -10,16 +11,12 @@ namespace CarcassDb.Models;
 //  ეს უკვე ნიშნავს, რომ ნახვის უფლება არსებობს
 public sealed class CrudRightType : IDataType, IMyEquatable
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public CrudRightType(string crtKey, string crtName)
-    {
-        CrtKey = crtKey;
-        CrtName = crtName;
-    }
 
     public int CrtId { get; set; } //იდენტიფიკატორი
-    public string CrtKey { get; set; } //კოდი
-    public string CrtName { get; set; } //სახელი
+    [MaxLength(50)]
+    public required string CrtKey { get; set; } //კოდი
+    [MaxLength(50)]
+    public required string CrtName { get; set; } //სახელი
 
     [NotMapped]
     public int Id
