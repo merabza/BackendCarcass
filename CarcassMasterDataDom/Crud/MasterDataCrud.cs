@@ -175,8 +175,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
                         continue;
                     tQuery.Include(mdLookupCell.DtTable);
                     sortField.FieldName = sortFieldName;
-                    //sortField.PropObjType = Type.GetType($"{nameof(GrammarGeDb)}.{nameof(Models)}.{mdLookupCell.DtTable}");
-                    //sortField.PropObjType = Type.GetType($"GrammarGeDb.Models.{mdLookupCell.DtTable}");
                     sortField.PropObjType = _cmdRepo.GetEntityTypeByTableName(mdLookupCell.DtTable)?.ClrType;
                 }
         }
