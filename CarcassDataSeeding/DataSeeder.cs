@@ -56,11 +56,9 @@ public /*open*/ class DataSeeder<TDst> : IDataSeeder where TDst : class
     {
         var folName = folderName ?? _dataSeedFolder;
         if (folName == null)
-            return new List<T>();
-        var jsonFullFileName = Path.Combine(folName, fileName ?? $"{_tableName}.json");
-        return File.Exists(jsonFullFileName)
-            ? FileLoader.LoadDeserializeResolve<List<T>>(jsonFullFileName, true)
-            : new List<T>();
+            return [];
+        var jsonFullFileName = Path.Combine(folName, fileName ?? $"{_tableName.Capitalize()}.json");
+        return File.Exists(jsonFullFileName) ? FileLoader.LoadDeserializeResolve<List<T>>(jsonFullFileName, true) : [];
     }
 
     private bool CheckRecordsExists()

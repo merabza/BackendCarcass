@@ -43,9 +43,9 @@ public /*open*/
         [
             //თუ მონაცემთა ტიპზე არის უფლება, ჩავთვალოთ, რომ შესაბამის ცხრილზეც არის უფლება
             //ამიტომ ნახვის უფლებას ვაუქმებ
-            new CrudRightType {CrtKey = nameof(ECrudOperationType.Create), CrtName = "შექმნა"},
-            new CrudRightType {CrtKey = nameof(ECrudOperationType.Update), CrtName = "შეცვლა"},
-            new CrudRightType {CrtKey = nameof(ECrudOperationType.Delete), CrtName = "წაშლა"}
+            new CrudRightType { CrtKey = nameof(ECrudOperationType.Create), CrtName = "შექმნა" },
+            new CrudRightType { CrtKey = nameof(ECrudOperationType.Update), CrtName = "შეცვლა" },
+            new CrudRightType { CrtKey = nameof(ECrudOperationType.Delete), CrtName = "წაშლა" }
             //new(nameof(ECrudOperationType.Confirm), "დადასტურება"),
         ];
 
