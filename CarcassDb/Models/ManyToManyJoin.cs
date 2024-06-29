@@ -10,11 +10,9 @@ public sealed class ManyToManyJoin
 
     public int MmjId { get; set; }
     public int PtId { get; set; }
-    [MaxLength(100)]
-    public required string PKey { get; set; } = null!;
+    [MaxLength(100)] public required string PKey { get; set; } = null!;
     public int CtId { get; set; }
-    [MaxLength(100)]
-    public required string CKey { get; set; } = null!;
+    [MaxLength(100)] public required string CKey { get; set; } = null!;
 
     public DataType ParentDataTypeNavigation
     {

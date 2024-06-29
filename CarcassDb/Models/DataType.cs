@@ -9,22 +9,14 @@ namespace CarcassDb.Models;
 public sealed class DataType : IDataType, IMyEquatable
 {
     public int DtId { get; set; }
-    [MaxLength(36)]
-    public required string DtKey { get; set; } = null!;
-    [MaxLength(100)]
-    public required string DtName { get; set; } = null!;
-    [MaxLength(100)]
-    public required string DtNameNominative { get; set; } = null!;
-    [MaxLength(100)]
-    public required string DtNameGenitive { get; set; } = null!;
-    [MaxLength(100)]
-    public required string DtTable { get; set; } = null!;
-    [MaxLength(50)]
-    public string? DtIdFieldName { get; set; }
-    [MaxLength(50)]
-    public string? DtKeyFieldName { get; set; }
-    [MaxLength(50)]
-    public string? DtNameFieldName { get; set; }
+    [MaxLength(36)] public required string DtKey { get; set; } = null!;
+    [MaxLength(100)] public required string DtName { get; set; } = null!;
+    [MaxLength(100)] public required string DtNameNominative { get; set; } = null!;
+    [MaxLength(100)] public required string DtNameGenitive { get; set; } = null!;
+    [MaxLength(100)] public required string DtTable { get; set; } = null!;
+    [MaxLength(50)] public string? DtIdFieldName { get; set; }
+    [MaxLength(50)] public string? DtKeyFieldName { get; set; }
+    [MaxLength(50)] public string? DtNameFieldName { get; set; }
     public int? DtParentDataTypeId { get; set; }
     public int? DtManyToManyJoinParentDataTypeId { get; set; }
     public int? DtManyToManyJoinChildDataTypeId { get; set; }

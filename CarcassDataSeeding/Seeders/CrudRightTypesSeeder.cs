@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using CarcassDataSeeding.Models;
+﻿using CarcassDataSeeding.Models;
 using CarcassDb.Models;
 using CarcassDom;
 using LanguageExt;
-using SystemToolsShared;
+using System.Collections.Generic;
+using System.Linq;
+using SystemToolsShared.Errors;
 
 namespace CarcassDataSeeding.Seeders;
 
@@ -33,21 +33,22 @@ public /*open*/
     private static List<CrudRightType> CreateListBySeedData(
         IEnumerable<CrudRightTypeSeederModel> crudRightTypesSeedData)
     {
-        return crudRightTypesSeedData.Select(s => new CrudRightType(s.CrtKey, s.CrtName)).ToList();
+        return crudRightTypesSeedData.Select(s => new CrudRightType { CrtKey = s.CrtKey, CrtName = s.CrtName })
+            .ToList();
     }
 
     protected override List<CrudRightType> CreateMustList()
     {
         CrudRightType[] crudRightTypes =
-        {
+        [
             //თუ მონაცემთა ტიპზე არის უფლება, ჩავთვალოთ, რომ შესაბამის ცხრილზეც არის უფლება
             //ამიტომ ნახვის უფლებას ვაუქმებ
-            new(nameof(ECrudOperationType.Create), "შექმნა"),
-            new(nameof(ECrudOperationType.Update), "შეცვლა"),
-            new(nameof(ECrudOperationType.Delete), "წაშლა")
+            new CrudRightType {CrtKey = nameof(ECrudOperationType.Create), CrtName = "შექმნა"},
+            new CrudRightType {CrtKey = nameof(ECrudOperationType.Update), CrtName = "შეცვლა"},
+            new CrudRightType {CrtKey = nameof(ECrudOperationType.Delete), CrtName = "წაშლა"}
             //new(nameof(ECrudOperationType.Confirm), "დადასტურება"),
-        };
+        ];
 
-        return crudRightTypes.ToList();
+        return [..crudRightTypes];
     }
 }

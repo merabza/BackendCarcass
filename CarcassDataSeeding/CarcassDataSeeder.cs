@@ -1,6 +1,6 @@
 ﻿using LanguageExt;
 using Microsoft.Extensions.Logging;
-using SystemToolsShared;
+using SystemToolsShared.Errors;
 
 namespace CarcassDataSeeding;
 

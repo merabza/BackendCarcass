@@ -9,6 +9,7 @@ using LanguageExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SystemToolsShared;
+using SystemToolsShared.Errors;
 
 namespace CarcassDataSeeding.Seeders;
 

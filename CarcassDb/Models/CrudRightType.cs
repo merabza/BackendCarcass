@@ -11,12 +11,9 @@ namespace CarcassDb.Models;
 //  ეს უკვე ნიშნავს, რომ ნახვის უფლება არსებობს
 public sealed class CrudRightType : IDataType, IMyEquatable
 {
-
     public int CrtId { get; set; } //იდენტიფიკატორი
-    [MaxLength(50)]
-    public required string CrtKey { get; set; } //კოდი
-    [MaxLength(50)]
-    public required string CrtName { get; set; } //სახელი
+    [MaxLength(50)] public required string CrtKey { get; set; } //კოდი
+    [MaxLength(50)] public required string CrtName { get; set; } //სახელი
 
     [NotMapped]
     public int Id

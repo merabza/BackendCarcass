@@ -9,13 +9,10 @@ namespace CarcassDb.Models;
 public sealed class MenuGroup : IDataType, IMyEquatable
 {
     public int MengId { get; set; }
-    [MaxLength(36)]
-    public required string MengKey { get; set; } = null!;
-    [MaxLength(100)]
-    public required string MengName { get; set; } = null!;
+    [MaxLength(36)] public required string MengKey { get; set; } = null!;
+    [MaxLength(100)] public required string MengName { get; set; } = null!;
     public short SortId { get; set; }
-    [MaxLength(50)]
-    public string? MengIconName { get; set; }
+    [MaxLength(50)] public string? MengIconName { get; set; }
     public bool Hidden { get; set; }
 
     // ReSharper disable once CollectionNeverUpdated.Global

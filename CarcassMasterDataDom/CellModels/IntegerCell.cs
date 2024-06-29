@@ -57,7 +57,8 @@ public /*open*/ class IntegerCell : NumberCell
         return this;
     }
 
-    protected IntegerCell Default(int defaultValue = default)
+    //public საჭიროა DataTypesSeeder-ისთვის
+    public IntegerCell Default(int defaultValue = default)
     {
         Def = defaultValue;
         return this;

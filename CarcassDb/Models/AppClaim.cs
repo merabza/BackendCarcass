@@ -6,18 +6,10 @@ namespace CarcassDb.Models;
 
 public sealed class AppClaim : IDataType, IMyEquatable
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public AppClaim(string aclKey, string aclName)
-    {
-        AclKey = aclKey;
-        AclName = aclName;
-    }
 
     public int AclId { get; set; } //იდენტიფიკატორი
-    [MaxLength(50)]
-    public required string AclKey { get; set; }//კოდი
-    [MaxLength(50)]
-    public required string AclName { get; set; }//სახელი
+    [MaxLength(50)] public required string AclKey { get; set; } //კოდი
+    [MaxLength(50)] public required string AclName { get; set; } //სახელი
 
     [NotMapped]
     public int Id

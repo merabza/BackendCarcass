@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using CarcassDataSeeding.Models;
+﻿using CarcassDataSeeding.Models;
 using CarcassDb.Models;
 using LanguageExt;
-using SystemToolsShared;
+using System.Collections.Generic;
+using System.Linq;
+using SystemToolsShared.Errors;
 
 namespace CarcassDataSeeding.Seeders;
 
@@ -42,6 +42,6 @@ public /*open*/
         //};
 
         //return appClaims.ToList();
-        return new List<AppClaim>();
+        return [];
     }
 }

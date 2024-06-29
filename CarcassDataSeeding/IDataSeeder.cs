@@ -1,5 +1,5 @@
 ﻿using LanguageExt;
-using SystemToolsShared;
+using SystemToolsShared.Errors;
 
 namespace CarcassDataSeeding;
 

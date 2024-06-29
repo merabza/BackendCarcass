@@ -8,13 +8,10 @@ namespace CarcassDb.Models;
 public sealed class Role : IDataType, IMyEquatable
 {
     public int RolId { get; set; }
-    [MaxLength(256)]
-    public required string RolKey { get; set; } = null!;
-    [MaxLength(100)]
-    public required string RolName { get; set; } = null!;
+    [MaxLength(256)] public required string RolKey { get; set; } = null!;
+    [MaxLength(100)] public required string RolName { get; set; } = null!;
     public int RolLevel { get; set; }
-    [MaxLength(256)]
-    public required string RolNormalizedKey { get; set; } = null!;
+    [MaxLength(256)] public required string RolNormalizedKey { get; set; } = null!;
 
     [NotMapped]
     public int Id
