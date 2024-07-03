@@ -14,7 +14,8 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
     private readonly CarcassDbContext _context;
     private readonly ILogger<DataSeederRepository> _logger;
 
-    public DataSeederRepository(CarcassDbContext ctx, ILogger<DataSeederRepository> logger)
+    // ReSharper disable once ConvertToPrimaryConstructor
+    protected DataSeederRepository(CarcassDbContext ctx, ILogger<DataSeederRepository> logger)
     {
         _context = ctx;
         _logger = logger;
@@ -28,14 +29,13 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
         //if (loader != null && typeof(T) is IDataType)
         //  return loader.GetEntity().Cast<T>();
 
-        return _context.Set<T>().ToList();
+        return [.. _context.Set<T>()];
     }
 
 
     public List<ManyToManyJoin> GetManyToManyJoins(int parentDataTypeId, int childDataTypeId)
     {
-        return _context.ManyToManyJoins.Where(w => w.PtId == parentDataTypeId && w.CtId == childDataTypeId)
-            .ToList();
+        return [.. _context.ManyToManyJoins.Where(w => w.PtId == parentDataTypeId && w.CtId == childDataTypeId)];
     }
 
 
