@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\SystemTools\RepositoriesDom\RepositoriesDom.csproj" />
         <ProjectReference Include="..\..\WebSystemTools\WebInstallers\WebInstallers.csproj" />
         <ProjectReference Include="..\CarcassContracts\CarcassContracts.csproj" />
         <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
@@ -19,7 +20,6 @@
         <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
         <ProjectReference Include="..\CarcassMappers\CarcassMappers.csproj" />
         <ProjectReference Include="..\CarcassMasterDataDom\CarcassMasterDataDom.csproj" />
-        <ProjectReference Include="..\LibCrud\LibCrud.csproj" />
     </ItemGroup>
 
 </Project>

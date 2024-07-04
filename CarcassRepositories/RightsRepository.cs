@@ -12,6 +12,7 @@ using CarcassMasterDataDom;
 using CarcassMasterDataDom.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RepositoriesDom;
 
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
 
