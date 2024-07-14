@@ -1,4 +1,4 @@
-﻿using CarcassContracts.V1.Responses;
+﻿using BackendCarcassContracts.V1.Responses;
 using MessagingAbstractions;
 
 namespace BackendCarcassApi.CommandRequests.Authentication;

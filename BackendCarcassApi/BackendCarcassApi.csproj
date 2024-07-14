@@ -11,9 +11,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassContracts\BackendCarcassContracts.csproj" />
         <ProjectReference Include="..\..\SystemTools\MessagingAbstractions\MessagingAbstractions.csproj" />
         <ProjectReference Include="..\..\WebSystemTools\CorsTools\CorsTools.csproj" />
-        <ProjectReference Include="..\CarcassContracts\CarcassContracts.csproj" />
         <ProjectReference Include="..\CarcassDom\CarcassDom.csproj" />
         <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
         <ProjectReference Include="..\CarcassRepositories\CarcassRepositories.csproj" />

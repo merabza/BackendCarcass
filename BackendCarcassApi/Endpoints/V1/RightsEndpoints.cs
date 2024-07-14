@@ -2,8 +2,6 @@
 using BackendCarcassApi.Filters;
 using BackendCarcassApi.Handlers.Rights;
 using BackendCarcassApi.QueryRequests.Rights;
-using CarcassContracts.Errors;
-using CarcassContracts.V1.Routes;
 using CarcassDom;
 using CarcassDom.Models;
 using MediatR;
@@ -15,6 +13,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcassContracts.Errors;
+using BackendCarcassContracts.V1.Routes;
 using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;

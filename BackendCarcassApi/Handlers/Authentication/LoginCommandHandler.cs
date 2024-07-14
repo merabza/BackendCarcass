@@ -1,6 +1,4 @@
 ﻿using BackendCarcassApi.CommandRequests.Authentication;
-using CarcassContracts.Errors;
-using CarcassContracts.V1.Responses;
 using CarcassIdentity.Models;
 using CarcassMasterDataDom.Models;
 using CarcassRepositories;
@@ -12,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcassContracts.Errors;
+using BackendCarcassContracts.V1.Responses;
 using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Handlers.Authentication;

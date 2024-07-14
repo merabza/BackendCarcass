@@ -2,9 +2,6 @@
 using BackendCarcassApi.Filters;
 using BackendCarcassApi.Handlers.UserRights;
 using BackendCarcassApi.Mappers;
-using CarcassContracts.Errors;
-using CarcassContracts.V1.Requests;
-using CarcassContracts.V1.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +10,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcassContracts.Errors;
+using BackendCarcassContracts.V1.Requests;
+using BackendCarcassContracts.V1.Routes;
 using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;

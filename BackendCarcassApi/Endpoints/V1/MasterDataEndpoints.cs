@@ -6,7 +6,7 @@ using BackendCarcassApi.CommandRequests.MasterData;
 using BackendCarcassApi.Filters;
 using BackendCarcassApi.Handlers.MasterData;
 using BackendCarcassApi.QueryRequests.MasterData;
-using CarcassContracts.V1.Routes;
+using BackendCarcassContracts.V1.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

@@ -1,5 +1,4 @@
 ﻿using BackendCarcassApi.CommandRequests.MasterData;
-using CarcassContracts.Errors;
 using CarcassMasterDataDom;
 using MediatR;
 using MessagingAbstractions;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcassContracts.Errors;
 using SystemToolsShared.Errors;
 
 // ReSharper disable ConvertToPrimaryConstructor

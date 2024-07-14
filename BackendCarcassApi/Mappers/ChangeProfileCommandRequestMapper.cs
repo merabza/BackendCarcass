@@ -1,5 +1,5 @@
 ﻿using BackendCarcassApi.CommandRequests.UserRights;
-using CarcassContracts.V1.Requests;
+using BackendCarcassContracts.V1.Requests;
 using Microsoft.AspNetCore.Http;
 
 namespace BackendCarcassApi.Mappers;

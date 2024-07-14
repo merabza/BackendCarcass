@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.Handlers.DataTypes;
 using BackendCarcassApi.QueryRequests.DataTypes;
-using CarcassContracts.V1.Routes;
+using BackendCarcassContracts.V1.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

@@ -1,7 +1,5 @@
 ﻿using BackendCarcassApi.Handlers.Authentication;
 using BackendCarcassApi.QueryRequests.DataTypes;
-using CarcassContracts.Errors;
-using CarcassContracts.V1.Responses;
 using CarcassRepositories;
 using MessagingAbstractions;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +9,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcassContracts.Errors;
+using BackendCarcassContracts.V1.Responses;
 using SystemToolsShared.Errors;
 
 // ReSharper disable ReplaceWithPrimaryConstructorParameter

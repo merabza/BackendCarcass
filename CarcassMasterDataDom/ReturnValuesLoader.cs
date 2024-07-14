@@ -1,24 +1,28 @@
-﻿using CarcassContracts.Errors;
-using CarcassMasterDataDom.Models;
+﻿using CarcassMasterDataDom.Models;
 using OneOf;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcassContracts.Errors;
 using SystemToolsShared.Errors;
-
-// ReSharper disable ReplaceWithPrimaryConstructorParameter
 
 namespace CarcassMasterDataDom;
 
-public class ReturnValuesLoader(
-    List<string> tableNames,
-    IReturnValuesRepository rvRepo,
-    IReturnValuesLoaderCreator returnValuesLoaderCreator)
+public class ReturnValuesLoader
 {
-    private readonly IReturnValuesLoaderCreator _returnValuesLoaderCreator = returnValuesLoaderCreator;
-    private readonly IReturnValuesRepository _rvRepo = rvRepo;
-    private readonly List<string> _tableNames = tableNames;
+    private readonly IReturnValuesLoaderCreator _returnValuesLoaderCreator;
+    private readonly IReturnValuesRepository _rvRepo;
+    private readonly List<string> _tableNames;
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public ReturnValuesLoader(List<string> tableNames, IReturnValuesRepository rvRepo,
+        IReturnValuesLoaderCreator returnValuesLoaderCreator)
+    {
+        _returnValuesLoaderCreator = returnValuesLoaderCreator;
+        _rvRepo = rvRepo;
+        _tableNames = tableNames;
+    }
 
     public async Task<OneOf<Dictionary<string, IEnumerable<SrvModel>>, IEnumerable<Err>>> Run(
         CancellationToken cancellationToken)

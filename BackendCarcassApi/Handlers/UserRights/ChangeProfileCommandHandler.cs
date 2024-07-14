@@ -1,5 +1,4 @@
 ﻿using BackendCarcassApi.CommandRequests.UserRights;
-using CarcassContracts.Errors;
 using CarcassMasterDataDom.Models;
 using MediatR;
 using MessagingAbstractions;
@@ -8,6 +7,7 @@ using OneOf;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcassContracts.Errors;
 using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Handlers.UserRights;
