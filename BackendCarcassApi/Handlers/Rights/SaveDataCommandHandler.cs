@@ -1,11 +1,11 @@
-﻿using BackendCarcassApi.CommandRequests.Rights;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using BackendCarcassApi.CommandRequests.Rights;
 using CarcassDom;
 using MessagingAbstractions;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Handlers.Rights;

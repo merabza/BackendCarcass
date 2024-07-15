@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
+using Microsoft.AspNetCore.Http;
 
 namespace BackendCarcassApi.Filters;
 

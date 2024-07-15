@@ -6,7 +6,6 @@ using CarcassIdentity;
 using CarcassMasterDataDom;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using WebInstallers;
 
 namespace CarcassRepositories.Installers;
 

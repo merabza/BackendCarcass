@@ -1,18 +1,18 @@
-﻿using BackendCarcassApi.CommandRequests.UserRights;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using BackendCarcassApi.CommandRequests.UserRights;
 using BackendCarcassApi.Filters;
 using BackendCarcassApi.Handlers.UserRights;
 using BackendCarcassApi.Mappers;
+using BackendCarcassContracts.Errors;
+using BackendCarcassContracts.V1.Requests;
+using BackendCarcassContracts.V1.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using BackendCarcassContracts.Errors;
-using BackendCarcassContracts.V1.Requests;
-using BackendCarcassContracts.V1.Routes;
 using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;

@@ -1,6 +1,6 @@
-﻿using LanguageExt;
+﻿using System.Linq;
+using LanguageExt;
 using Microsoft.AspNetCore.Identity;
-using System.Linq;
 using SystemToolsShared.Errors;
 
 namespace CarcassRepositories;

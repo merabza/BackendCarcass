@@ -1,11 +1,11 @@
-﻿using BackendCarcassApi.CommandRequests.UserRights;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using BackendCarcassApi.CommandRequests.UserRights;
 using CarcassRepositories;
 using CarcassRepositories.Models;
 using MessagingAbstractions;
 using OneOf;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Handlers.UserRights;

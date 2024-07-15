@@ -1,4 +1,10 @@
-﻿using BackendCarcassApi.CommandRequests.Authentication;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using BackendCarcassApi.CommandRequests.Authentication;
+using BackendCarcassContracts.Errors;
+using BackendCarcassContracts.V1.Responses;
 using CarcassIdentity.Models;
 using CarcassMasterDataDom.Models;
 using CarcassRepositories;
@@ -6,12 +12,6 @@ using MessagingAbstractions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using OneOf;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BackendCarcassContracts.Errors;
-using BackendCarcassContracts.V1.Responses;
 using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Handlers.Authentication;
