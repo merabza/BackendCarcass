@@ -1,9 +1,9 @@
-﻿using LanguageExt;
-using Microsoft.EntityFrameworkCore.Metadata;
-using RepositoriesDom;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using LanguageExt;
+using Microsoft.EntityFrameworkCore.Metadata;
+using RepositoriesDom;
 using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom;
