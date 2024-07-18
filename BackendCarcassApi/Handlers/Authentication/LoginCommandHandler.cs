@@ -69,7 +69,7 @@ public sealed class LoginCommandHandler : LoginCommandBase, ICommandHandler<Logi
         if (token is null)
             return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
 
-        LoginResponse appUserModel = new(user.Id, LastSequentialNumber, user.UserName, user.Email, token,
+        var appUserModel = new LoginResponse(user.Id, LastSequentialNumber, user.UserName, user.Email, token,
             roles.Aggregate(string.Empty, (cur, next) => cur + (cur == string.Empty ? string.Empty : ", ") + next),
             user.FirstName, user.LastName, await _mdRepo.UserAppClaims(user.UserName, cancellationToken));
         return appUserModel;
