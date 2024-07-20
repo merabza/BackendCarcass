@@ -33,7 +33,8 @@ public sealed class DataTypesEndpoints : IInstaller
     public void UseServices(WebApplication app)
     {
         //Console.WriteLine("DataTypesEndpoints.UseServices Started");
-        var group = app.MapGroup(CarcassApiRoutes.DataTypes.DataTypesBase).RequireAuthorization();
+        var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.DataTypes.DataTypesBase)
+            .RequireAuthorization();
 
         group.MapGet(CarcassApiRoutes.DataTypes.DataTypesList, DataTypesList);
         group.MapGet(CarcassApiRoutes.DataTypes.GridModel, GridModel);

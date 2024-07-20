@@ -27,7 +27,9 @@ public sealed class ProcessesEndpoints : IInstaller
     public void UseServices(WebApplication app)
     {
         //Console.WriteLine("ProcessesEndpoints.UseServices Started");
-        app.MapGet(CarcassApiRoutes.Processes.Status, Status).RequireAuthorization();
+        app.MapGet(
+            CarcassApiRoutes.ApiBase + CarcassApiRoutes.Processes.ProcessesBase + CarcassApiRoutes.Processes.Status,
+            Status).RequireAuthorization();
         //Console.WriteLine("ProcessesEndpoints.UseServices Finished");
     }
 

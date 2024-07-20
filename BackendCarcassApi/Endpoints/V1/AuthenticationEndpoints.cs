@@ -29,7 +29,7 @@ public sealed class AuthenticationEndpoints : IInstaller
     public void UseServices(WebApplication app)
     {
         //Console.WriteLine("AuthenticationEndpoints.UseServices Started");
-        var group = app.MapGroup(CarcassApiRoutes.Authentication.AuthenticationBase)
+        var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
             .RequireCors(CorsInstaller.MyAllowSpecificOrigins);
 
         group.MapPost(CarcassApiRoutes.Authentication.Registration, Registration);

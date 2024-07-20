@@ -31,7 +31,8 @@ public sealed class MasterDataEndpoints : IInstaller
     public void UseServices(WebApplication app)
     {
         //Console.WriteLine("MasterDataEndpoints.UseServices Started");
-        var group = app.MapGroup(CarcassApiRoutes.MasterData.MasterDataBase).RequireAuthorization();
+        var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.MasterData.MasterDataBase)
+            .RequireAuthorization();
 
         //group.MapGet(CarcassApiRoutes.MasterData.All, AllRecords).AddEndpointFilter<UserTableRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.GetTables, GetTables);

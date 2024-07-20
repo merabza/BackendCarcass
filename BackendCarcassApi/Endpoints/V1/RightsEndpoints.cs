@@ -37,7 +37,7 @@ public sealed class RightsEndpoints : IInstaller
     public void UseServices(WebApplication app)
     {
         //Console.WriteLine("RightsEndpoints.UseServices Started");
-        var group = app.MapGroup(CarcassApiRoutes.Rights.RightsBase).RequireAuthorization()
+        var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Rights.RightsBase).RequireAuthorization()
             .AddEndpointFilter<UserMustHaveRightsEditorRightsFilter>();
 
         group.MapGet(CarcassApiRoutes.Rights.ParentsTreeData, ParentsTreeData);

@@ -37,8 +37,8 @@ public sealed class UserRightsEndpoints : IInstaller
     public void UseServices(WebApplication app)
     {
         //Console.WriteLine("UserRightsEndpoints.UseServices Started");
-        var group = app.MapGroup(CarcassApiRoutes.UserRights.UserRightsBase).RequireAuthorization()
-            .AddEndpointFilter<UserNameFilter>();
+        var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase)
+            .RequireAuthorization().AddEndpointFilter<UserNameFilter>();
 
         group.MapGet(CarcassApiRoutes.UserRights.IsCurrentUserValid, IsCurrentUserValid);
         group.MapPut(CarcassApiRoutes.UserRights.ChangeProfile, ChangeProfile);
