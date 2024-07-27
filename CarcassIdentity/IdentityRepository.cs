@@ -19,6 +19,7 @@ public sealed class IdentityRepository : IIdentityRepository
     //private readonly IDataTypeKeys _dataTypeKeys;
     private readonly ILogger<IdentityRepository> _logger;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public IdentityRepository(CarcassDbContext ctx, ILogger<IdentityRepository> logger)
     {
         _carcassContext = ctx;
