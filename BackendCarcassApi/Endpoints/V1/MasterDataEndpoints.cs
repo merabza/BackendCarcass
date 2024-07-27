@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,13 +25,15 @@ public sealed class MasterDataEndpoints : IInstaller
 
     public int ServiceUsePriority => 70;
 
-    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
+    public void InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
+        Dictionary<string, string> parameters)
     {
     }
 
-    public void UseServices(WebApplication app)
+    public void UseServices(WebApplication app, bool debugMode)
     {
-        //Console.WriteLine("MasterDataEndpoints.UseServices Started");
+        if (debugMode)
+            Console.WriteLine("MasterDataEndpoints.UseServices Started");
         var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.MasterData.MasterDataBase)
             .RequireAuthorization();
 
@@ -44,7 +47,9 @@ public sealed class MasterDataEndpoints : IInstaller
         group.MapPut(CarcassApiRoutes.MasterData.Put, MdUpdateOneRecord).AddEndpointFilter<UserTableRightsFilter>();
         group.MapDelete(CarcassApiRoutes.MasterData.Delete, MdDeleteOneRecord)
             .AddEndpointFilter<UserTableRightsFilter>();
-        //Console.WriteLine("MasterDataEndpoints.UseServices Finished");
+
+        if (debugMode)
+            Console.WriteLine("MasterDataEndpoints.UseServices Finished");
     }
 
     //შესასვლელი წერტილი (endpoint)

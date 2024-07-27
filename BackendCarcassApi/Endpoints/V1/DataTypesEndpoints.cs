@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,20 +27,25 @@ public sealed class DataTypesEndpoints : IInstaller
     public int ServiceUsePriority => 70;
 
     //private static int _lastSequentialNumber;
-    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
+    public void InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
+        Dictionary<string, string> parameters)
     {
     }
 
-    public void UseServices(WebApplication app)
+    public void UseServices(WebApplication app, bool debugMode)
     {
-        //Console.WriteLine("DataTypesEndpoints.UseServices Started");
+        if (debugMode)
+            Console.WriteLine("DataTypesEndpoints.UseServices Started");
+
         var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.DataTypes.DataTypesBase)
             .RequireAuthorization();
 
         group.MapGet(CarcassApiRoutes.DataTypes.DataTypesList, DataTypesList);
         group.MapGet(CarcassApiRoutes.DataTypes.GridModel, GridModel);
         group.MapGet(CarcassApiRoutes.DataTypes.MultipleGridModels, MultipleGridModels);
-        //Console.WriteLine("DataTypesEndpoints.UseServices Finished");
+
+        if (debugMode)
+            Console.WriteLine("DataTypesEndpoints.UseServices Finished");
     }
 
     //შესასვლელი წერტილი (endpoint)

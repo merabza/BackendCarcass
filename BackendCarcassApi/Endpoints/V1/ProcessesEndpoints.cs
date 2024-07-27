@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BackendCarcassContracts.V1.Responses;
 using BackendCarcassContracts.V1.Routes;
 using Microsoft.AspNetCore.Builder;
@@ -20,17 +21,22 @@ public sealed class ProcessesEndpoints : IInstaller
     public int InstallPriority => 70;
     public int ServiceUsePriority => 70;
 
-    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
+    public void InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
+        Dictionary<string, string> parameters)
     {
     }
 
-    public void UseServices(WebApplication app)
+    public void UseServices(WebApplication app, bool debugMode)
     {
-        //Console.WriteLine("ProcessesEndpoints.UseServices Started");
+        if (debugMode)
+            Console.WriteLine("ProcessesEndpoints.UseServices Started");
+
         app.MapGet(
             CarcassApiRoutes.ApiBase + CarcassApiRoutes.Processes.ProcessesBase + CarcassApiRoutes.Processes.Status,
             Status).RequireAuthorization();
-        //Console.WriteLine("ProcessesEndpoints.UseServices Finished");
+
+        if (debugMode)
+            Console.WriteLine("ProcessesEndpoints.UseServices Finished");
     }
 
     private static IResult Status(int userId, int viewStyle)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,26 +18,21 @@ using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;
 
-//კონტროლერი -> რომელიც დანიშნულებაცაა მომხმარებლის პირადი ინფორმაციის მომსახურება
-//აქ არსებული მოქმედებები დამატებით უფლებებს არ ითხოვს
-//მთავარია ავტორიზაცია ჰქონდეს გავლილი მომხმარებელს
-//[Authorize]
-//[ApiController]
-//[Route("api/[controller]")]
-
 // ReSharper disable once UnusedType.Global
 public sealed class UserRightsEndpoints : IInstaller
 {
     public int InstallPriority => 70;
     public int ServiceUsePriority => 70;
 
-    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
+    public void InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
+        Dictionary<string, string> parameters)
     {
     }
 
-    public void UseServices(WebApplication app)
+    public void UseServices(WebApplication app, bool debugMode)
     {
-        //Console.WriteLine("UserRightsEndpoints.UseServices Started");
+        if (debugMode)
+            Console.WriteLine("UserRightsEndpoints.UseServices Started");
         var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase)
             .RequireAuthorization().AddEndpointFilter<UserNameFilter>();
 
@@ -45,27 +41,9 @@ public sealed class UserRightsEndpoints : IInstaller
         group.MapPut(CarcassApiRoutes.UserRights.ChangePassword, ChangePassword);
         group.MapDelete(CarcassApiRoutes.UserRights.DeleteCurrentUser, DeleteCurrentUser);
         group.MapGet(CarcassApiRoutes.UserRights.MainMenu, MainMenu);
-        //Console.WriteLine("UserRightsEndpoints.UseServices Finished");
+        if (debugMode)
+            Console.WriteLine("UserRightsEndpoints.UseServices Finished");
     }
-    //private readonly IMasterDataRepository _mdRepo;
-    //private readonly UserManager<AppUser> _userManager;
-    //private readonly ILogger<UserRightsController> _logger;
-
-    ////private int CurrentUserId => int.TryParse(HttpContext.User.Identity.Name, out int userId) ? userId : 0;
-    //private string? CurrentUserName => HttpContext.User.Claims.SingleOrDefault(so => so.Type == ClaimTypes.Name)?.Value;
-    //private static string? CurrentUserName(HttpRequest request)
-    //{
-    //    return request.HttpContext.User.Claims.SingleOrDefault(so => so.Type == ClaimTypes.Name)?.Value;
-    //}
-
-
-    //public UserRightsController(IMasterDataRepository mdRepo, UserManager<AppUser> userManager,
-    //    ILogger<UserRightsController> logger)
-    //{
-    //    _mdRepo = mdRepo;
-    //    _userManager = userManager;
-    //    _logger = logger;
-    //}
 
     //შესასვლელი წერტილი (endpoint)
     //დანიშნულება -> მიმდინარე მომხმარებლის შემოწმება

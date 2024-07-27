@@ -1,5 +1,4 @@
-//Created by CarcassRepositoriesInstallerClassCreator at 8/1/2022 9:35:56 PM
-
+using System;
 using System.Collections.Generic;
 using CarcassDom;
 using CarcassIdentity;
@@ -16,9 +15,11 @@ public sealed class CarcassRepositoriesInstaller : IInstaller
     public int InstallPriority => 30;
     public int ServiceUsePriority => 30;
 
-    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
+    public void InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
+        Dictionary<string, string> parameters)
     {
-        //Console.WriteLine("CarcassRepositoriesInstaller.InstallServices Started");
+        if (debugMode)
+            Console.WriteLine("CarcassRepositoriesInstaller.InstallServices Started");
 
         builder.Services.AddScoped<IIdentityRepository, IdentityRepository>();
         builder.Services.AddScoped<IMenuRightsRepository, MenuRightsRepository>();
@@ -26,11 +27,11 @@ public sealed class CarcassRepositoriesInstaller : IInstaller
         builder.Services.AddScoped<IReturnValuesRepository, SqlReturnValuesRepository>();
         builder.Services.AddScoped<IRightsRepository, RightsRepository>();
 
-
-        //Console.WriteLine("CarcassRepositoriesInstaller.InstallServices Finished");
+        if (debugMode)
+            Console.WriteLine("CarcassRepositoriesInstaller.InstallServices Finished");
     }
 
-    public void UseServices(WebApplication app)
+    public void UseServices(WebApplication app, bool debugMode)
     {
     }
 }

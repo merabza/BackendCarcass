@@ -11,16 +11,19 @@ public class CarcassDomInstaller : IInstaller
     public int InstallPriority => 30;
     public int ServiceUsePriority => 30;
 
-    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
+    public void InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
+        Dictionary<string, string> parameters)
     {
-        Console.WriteLine("CarcassDomInstaller.InstallServices Started");
+        if (debugMode)
+            Console.WriteLine("CarcassDomInstaller.InstallServices Started");
 
         builder.Services.AddSingleton<FilterSortManager>();
 
-        Console.WriteLine("CarcassDomInstaller.InstallServices Finished");
+        if (debugMode)
+            Console.WriteLine("CarcassDomInstaller.InstallServices Finished");
     }
 
-    public void UseServices(WebApplication app)
+    public void UseServices(WebApplication app, bool debugMode)
     {
     }
 }

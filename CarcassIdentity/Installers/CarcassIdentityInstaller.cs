@@ -1,5 +1,3 @@
-//Created by IdentityInstallerClassCreator at 8/3/2022 9:05:24 AM
-
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,9 +19,11 @@ public sealed class CarcassIdentityInstaller : IInstaller
     public int InstallPriority => 27;
     public int ServiceUsePriority => 60;
 
-    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
+    public void InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
+        Dictionary<string, string> parameters)
     {
-        //Console.WriteLine("CarcassIdentityInstaller.InstallServices Started");
+        if (debugMode)
+            Console.WriteLine("CarcassIdentityInstaller.InstallServices Started");
 
         builder.Services.AddScoped<IUserStore<AppUser>, MyUserStore>();
         builder.Services.AddScoped<IUserPasswordStore<AppUser>, MyUserStore>();
@@ -67,14 +67,17 @@ public sealed class CarcassIdentityInstaller : IInstaller
 
         builder.Services.AddAuthorization();
 
-        //Console.WriteLine("CarcassIdentityInstaller.InstallServices Finished");
+        if (debugMode)
+            Console.WriteLine("CarcassIdentityInstaller.InstallServices Finished");
     }
 
-    public void UseServices(WebApplication app)
+    public void UseServices(WebApplication app, bool debugMode)
     {
-        //Console.WriteLine("CarcassIdentityInstaller.UseServices Started");
+        if (debugMode)
+            Console.WriteLine("CarcassIdentityInstaller.UseServices Started");
         app.UseAuthentication();
         app.UseAuthorization();
-        //Console.WriteLine("CarcassIdentityInstaller.UseServices Finished");
+        if (debugMode)
+            Console.WriteLine("CarcassIdentityInstaller.UseServices Finished");
     }
 }

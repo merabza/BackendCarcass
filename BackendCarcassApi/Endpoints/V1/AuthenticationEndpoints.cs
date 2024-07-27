@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,19 +23,24 @@ public sealed class AuthenticationEndpoints : IInstaller
     public int InstallPriority => 70;
     public int ServiceUsePriority => 70;
 
-    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
+    public void InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
+        Dictionary<string, string> parameters)
     {
     }
 
-    public void UseServices(WebApplication app)
+    public void UseServices(WebApplication app, bool debugMode)
     {
-        //Console.WriteLine("AuthenticationEndpoints.UseServices Started");
+        if (debugMode)
+            Console.WriteLine("AuthenticationEndpoints.UseServices Started");
+
         var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
             .RequireCors(CorsInstaller.MyAllowSpecificOrigins);
 
         group.MapPost(CarcassApiRoutes.Authentication.Registration, Registration);
         group.MapPost(CarcassApiRoutes.Authentication.Login, Login);
-        //Console.WriteLine("AuthenticationEndpoints.UseServices Finished");
+
+        if (debugMode)
+            Console.WriteLine("AuthenticationEndpoints.UseServices Finished");
     }
 
 

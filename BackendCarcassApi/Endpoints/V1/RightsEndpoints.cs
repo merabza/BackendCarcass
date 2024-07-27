@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,13 +31,15 @@ public sealed class RightsEndpoints : IInstaller
     public int InstallPriority => 70;
     public int ServiceUsePriority => 70;
 
-    public void InstallServices(WebApplicationBuilder builder, string[] args, Dictionary<string, string> parameters)
+    public void InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
+        Dictionary<string, string> parameters)
     {
     }
 
-    public void UseServices(WebApplication app)
+    public void UseServices(WebApplication app, bool debugMode)
     {
-        //Console.WriteLine("RightsEndpoints.UseServices Started");
+        if (debugMode)
+            Console.WriteLine("RightsEndpoints.UseServices Started");
         var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Rights.RightsBase).RequireAuthorization()
             .AddEndpointFilter<UserMustHaveRightsEditorRightsFilter>();
 
@@ -45,7 +48,9 @@ public sealed class RightsEndpoints : IInstaller
         group.MapGet(CarcassApiRoutes.Rights.HalfChecks, HalfChecks);
         group.MapPost(CarcassApiRoutes.Rights.SaveData, SaveData);
         group.MapPost(CarcassApiRoutes.Rights.Optimize, Optimize);
-        //Console.WriteLine("RightsEndpoints.UseServices Finished");
+
+        if (debugMode)
+            Console.WriteLine("RightsEndpoints.UseServices Finished");
     }
 
     //შესასვლელი წერტილი (endpoint)
