@@ -19,7 +19,7 @@ public sealed class CarcassRepositoriesInstaller : IInstaller
         Dictionary<string, string> parameters)
     {
         if (debugMode)
-            Console.WriteLine("CarcassRepositoriesInstaller.InstallServices Started");
+            Console.WriteLine($"{GetType().Name}.{nameof(InstallServices)} Started");
 
         builder.Services.AddScoped<IIdentityRepository, IdentityRepository>();
         builder.Services.AddScoped<IMenuRightsRepository, MenuRightsRepository>();
@@ -28,7 +28,7 @@ public sealed class CarcassRepositoriesInstaller : IInstaller
         builder.Services.AddScoped<IRightsRepository, RightsRepository>();
 
         if (debugMode)
-            Console.WriteLine("CarcassRepositoriesInstaller.InstallServices Finished");
+            Console.WriteLine($"{GetType().Name}.{nameof(InstallServices)} Finished");
     }
 
     public void UseServices(WebApplication app, bool debugMode)

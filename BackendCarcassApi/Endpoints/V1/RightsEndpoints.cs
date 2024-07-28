@@ -39,7 +39,8 @@ public sealed class RightsEndpoints : IInstaller
     public void UseServices(WebApplication app, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine("RightsEndpoints.UseServices Started");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
+
         var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Rights.RightsBase).RequireAuthorization()
             .AddEndpointFilter<UserMustHaveRightsEditorRightsFilter>();
 
@@ -50,7 +51,7 @@ public sealed class RightsEndpoints : IInstaller
         group.MapPost(CarcassApiRoutes.Rights.Optimize, Optimize);
 
         if (debugMode)
-            Console.WriteLine("RightsEndpoints.UseServices Finished");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
     }
 
     //შესასვლელი წერტილი (endpoint)

@@ -35,7 +35,7 @@ public sealed class DataTypesEndpoints : IInstaller
     public void UseServices(WebApplication app, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine("DataTypesEndpoints.UseServices Started");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
 
         var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.DataTypes.DataTypesBase)
             .RequireAuthorization();
@@ -45,7 +45,7 @@ public sealed class DataTypesEndpoints : IInstaller
         group.MapGet(CarcassApiRoutes.DataTypes.MultipleGridModels, MultipleGridModels);
 
         if (debugMode)
-            Console.WriteLine("DataTypesEndpoints.UseServices Finished");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
     }
 
     //შესასვლელი წერტილი (endpoint)

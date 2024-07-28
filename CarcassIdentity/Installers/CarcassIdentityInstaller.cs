@@ -23,7 +23,7 @@ public sealed class CarcassIdentityInstaller : IInstaller
         Dictionary<string, string> parameters)
     {
         if (debugMode)
-            Console.WriteLine("CarcassIdentityInstaller.InstallServices Started");
+            Console.WriteLine($"{GetType().Name}.{nameof(InstallServices)} Started");
 
         builder.Services.AddScoped<IUserStore<AppUser>, MyUserStore>();
         builder.Services.AddScoped<IUserPasswordStore<AppUser>, MyUserStore>();
@@ -74,10 +74,12 @@ public sealed class CarcassIdentityInstaller : IInstaller
     public void UseServices(WebApplication app, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine("CarcassIdentityInstaller.UseServices Started");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
+
         app.UseAuthentication();
         app.UseAuthorization();
+
         if (debugMode)
-            Console.WriteLine("CarcassIdentityInstaller.UseServices Finished");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
     }
 }

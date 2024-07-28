@@ -15,12 +15,12 @@ public class CarcassDomInstaller : IInstaller
         Dictionary<string, string> parameters)
     {
         if (debugMode)
-            Console.WriteLine("CarcassDomInstaller.InstallServices Started");
+            Console.WriteLine($"{GetType().Name}.{nameof(InstallServices)} Started");
 
         builder.Services.AddSingleton<FilterSortManager>();
 
         if (debugMode)
-            Console.WriteLine("CarcassDomInstaller.InstallServices Finished");
+            Console.WriteLine($"{GetType().Name}.{nameof(InstallServices)} Finished");
     }
 
     public void UseServices(WebApplication app, bool debugMode)

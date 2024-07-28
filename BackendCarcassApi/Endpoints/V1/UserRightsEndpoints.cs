@@ -32,7 +32,8 @@ public sealed class UserRightsEndpoints : IInstaller
     public void UseServices(WebApplication app, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine("UserRightsEndpoints.UseServices Started");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
+
         var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase)
             .RequireAuthorization().AddEndpointFilter<UserNameFilter>();
 
@@ -41,8 +42,9 @@ public sealed class UserRightsEndpoints : IInstaller
         group.MapPut(CarcassApiRoutes.UserRights.ChangePassword, ChangePassword);
         group.MapDelete(CarcassApiRoutes.UserRights.DeleteCurrentUser, DeleteCurrentUser);
         group.MapGet(CarcassApiRoutes.UserRights.MainMenu, MainMenu);
+
         if (debugMode)
-            Console.WriteLine("UserRightsEndpoints.UseServices Finished");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
     }
 
     //შესასვლელი წერტილი (endpoint)

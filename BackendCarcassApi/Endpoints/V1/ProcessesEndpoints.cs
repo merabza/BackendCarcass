@@ -29,14 +29,14 @@ public sealed class ProcessesEndpoints : IInstaller
     public void UseServices(WebApplication app, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine("ProcessesEndpoints.UseServices Started");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
 
         app.MapGet(
             CarcassApiRoutes.ApiBase + CarcassApiRoutes.Processes.ProcessesBase + CarcassApiRoutes.Processes.Status,
             Status).RequireAuthorization();
 
         if (debugMode)
-            Console.WriteLine("ProcessesEndpoints.UseServices Finished");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
     }
 
     private static IResult Status(int userId, int viewStyle)

@@ -31,7 +31,7 @@ public sealed class AuthenticationEndpoints : IInstaller
     public void UseServices(WebApplication app, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine("AuthenticationEndpoints.UseServices Started");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
 
         var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
             .RequireCors(CorsInstaller.MyAllowSpecificOrigins);
@@ -40,7 +40,7 @@ public sealed class AuthenticationEndpoints : IInstaller
         group.MapPost(CarcassApiRoutes.Authentication.Login, Login);
 
         if (debugMode)
-            Console.WriteLine("AuthenticationEndpoints.UseServices Finished");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
     }
 
 

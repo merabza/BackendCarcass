@@ -33,7 +33,8 @@ public sealed class MasterDataEndpoints : IInstaller
     public void UseServices(WebApplication app, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine("MasterDataEndpoints.UseServices Started");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
+
         var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.MasterData.MasterDataBase)
             .RequireAuthorization();
 
@@ -49,7 +50,7 @@ public sealed class MasterDataEndpoints : IInstaller
             .AddEndpointFilter<UserTableRightsFilter>();
 
         if (debugMode)
-            Console.WriteLine("MasterDataEndpoints.UseServices Finished");
+            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
     }
 
     //შესასვლელი წერტილი (endpoint)
