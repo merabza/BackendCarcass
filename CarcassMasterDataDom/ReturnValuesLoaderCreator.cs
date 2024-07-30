@@ -6,7 +6,7 @@ public class ReturnValuesLoaderCreator : IReturnValuesLoaderCreator
 {
     protected readonly IServiceProvider Services;
 
-    protected ReturnValuesLoaderCreator(IServiceProvider services)
+    public ReturnValuesLoaderCreator(IServiceProvider services)
     {
         Services = services;
     }

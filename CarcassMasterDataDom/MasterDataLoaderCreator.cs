@@ -15,7 +15,7 @@ public class MasterDataLoaderCreator : IMasterDataLoaderCreator
     private readonly ILogger<MasterDataLoaderCreator> _logger;
     protected readonly IServiceProvider Services;
 
-    protected MasterDataLoaderCreator(ILogger<MasterDataLoaderCreator> logger, IServiceProvider services)
+    public MasterDataLoaderCreator(ILogger<MasterDataLoaderCreator> logger, IServiceProvider services)
     {
         _logger = logger;
         Services = services;
