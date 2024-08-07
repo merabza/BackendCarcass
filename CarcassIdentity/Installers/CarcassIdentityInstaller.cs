@@ -19,7 +19,7 @@ public sealed class CarcassIdentityInstaller : IInstaller
     public int InstallPriority => 27;
     public int ServiceUsePriority => 60;
 
-    public void InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
+    public bool InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
         Dictionary<string, string> parameters)
     {
         if (debugMode)
@@ -69,9 +69,11 @@ public sealed class CarcassIdentityInstaller : IInstaller
 
         if (debugMode)
             Console.WriteLine("CarcassIdentityInstaller.InstallServices Finished");
+
+        return true;
     }
 
-    public void UseServices(WebApplication app, bool debugMode)
+    public bool UseServices(WebApplication app, bool debugMode)
     {
         if (debugMode)
             Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
@@ -81,5 +83,7 @@ public sealed class CarcassIdentityInstaller : IInstaller
 
         if (debugMode)
             Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
+
+        return true;
     }
 }
