@@ -100,52 +100,26 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
         ManyToManyJoin[] newManyToManyJoins =
         [
             //dt dt dt [dt, usr, role, menu, crudRightType]
-            new ManyToManyJoin
-                { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
-            new ManyToManyJoin
-                { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = userDKey },
-            new ManyToManyJoin
-                { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
-            new ManyToManyJoin
-                { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = menuDKey },
-            new ManyToManyJoin
-            {
-                PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = crudRightTypeDKey
-            },
+            new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
+            new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = userDKey },
+            new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
+            new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = menuDKey },
+            new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = crudRightTypeDKey },
             //dt mnu dt [dt, crudRightType]
-            new ManyToManyJoin
-            {
-                PtId = dataTypeDataTypeId, PKey = menuDKey, CtId = dataTypeDataTypeId, CKey = crudRightTypeDKey
-            },
+            new() { PtId = dataTypeDataTypeId, PKey = menuDKey, CtId = dataTypeDataTypeId, CKey = crudRightTypeDKey },
             //dt usr dt rol
-            new ManyToManyJoin
-                { PtId = dataTypeDataTypeId, PKey = userDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
+            new() { PtId = dataTypeDataTypeId, PKey = userDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
             //dt rol dt [meng, men, dt, DataTypeToDataTypeModel, DataTypeToCrudTypeModel, rol]
-            new ManyToManyJoin
-                { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = menuGroupDKey },
-            new ManyToManyJoin
-                { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = menuDKey },
-            new ManyToManyJoin
-                { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
-            new ManyToManyJoin
-            {
-                PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId,
-                CKey = ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey()
-            },
-            new ManyToManyJoin
-            {
-                PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId,
-                CKey = ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey()
-            },
-            new ManyToManyJoin
-                { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
+            new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = menuGroupDKey },
+            new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = menuDKey },
+            new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
+            new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey() },
+            new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey() },
+            new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
             //admin dt dt [dt, usr, rol]
-            new ManyToManyJoin
-                { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
-            new ManyToManyJoin
-                { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = userDKey },
-            new ManyToManyJoin
-                { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = roleDKey }
+            new() { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
+            new() { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = userDKey },
+            new() { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = roleDKey }
         ];
         var lst = newManyToManyJoins.ToList();
 
@@ -273,8 +247,8 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
     private List<ManyToManyJoin> GetMenuToDataTypes()
     {
         var tempData = DataSeederTempData.Instance;
-        var dtmen = tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuItm.ToDtKey());
-        var dtdt = tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataType.ToDtKey());
+        var dtMen = tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuItm.ToDtKey());
+        var dtDt = tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataType.ToDtKey());
 
         var res = new List<ManyToManyJoin>();
         var existingMenu = Repo.GetAll<MenuItm>();
@@ -286,7 +260,7 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
             var dataType = existingDataTypes.SingleOrDefault(s => s.DtTable == miItm.MenValue);
             if (dataType == null)
                 continue;
-            res.Add(new ManyToManyJoin { PtId = dtmen, PKey = miItm.MenKey, CtId = dtdt, CKey = dataType.DtKey });
+            res.Add(new ManyToManyJoin { PtId = dtMen, PKey = miItm.MenKey, CtId = dtDt, CKey = dataType.DtKey });
             var gm = dataType.DtGridRulesJson is null ? null : GridModel.DeserializeGridModel(dataType.DtGridRulesJson);
             if (gm == null)
                 continue;
@@ -306,7 +280,7 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
                 if (dataType == null)
                     continue;
 
-                res.Add(new ManyToManyJoin { PtId = dtmen, PKey = miItm.MenKey, CtId = dtdt, CKey = dataType.DtKey });
+                res.Add(new ManyToManyJoin { PtId = dtMen, PKey = miItm.MenKey, CtId = dtDt, CKey = dataType.DtKey });
             }
         }
 
@@ -320,15 +294,15 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
         var dataTypeDKey = ECarcassDataTypeKeys.DataType.ToDtKey();
 
         var tempData = DataSeederTempData.Instance;
-        var dtmen = tempData.GetIntIdByKey<DataType>(menuDKey);
-        var dtdt = tempData.GetIntIdByKey<DataType>(dataTypeDKey);
+        var dtMen = tempData.GetIntIdByKey<DataType>(menuDKey);
+        var dtDt = tempData.GetIntIdByKey<DataType>(dataTypeDKey);
 
         var res = new List<ManyToManyJoin>();
         var existingManyToManyJoins = Repo.GetAll<ManyToManyJoin>();
 
-        res.AddRange(existingManyToManyJoins.Where(s => s.PtId == dtmen && s.CtId == dtdt));
+        res.AddRange(existingManyToManyJoins.Where(s => s.PtId == dtMen && s.CtId == dtDt));
         res.AddRange(existingManyToManyJoins.Where(s =>
-            s.PtId == dtdt && s.PKey == menuDKey && s.CtId == dtdt && s.CKey == dataTypeDKey));
+            s.PtId == dtDt && s.PKey == menuDKey && s.CtId == dtDt && s.CKey == dataTypeDKey));
 
         return res;
     }
