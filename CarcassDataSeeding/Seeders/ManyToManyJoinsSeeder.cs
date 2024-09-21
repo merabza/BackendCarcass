@@ -1,11 +1,11 @@
-﻿using CarcassDataSeeding.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using CarcassDataSeeding.Models;
 using CarcassDb.Domain;
 using CarcassDb.Models;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.CellModels;
 using LanguageExt;
-using System.Collections.Generic;
-using System.Linq;
 using SystemToolsShared.Errors;
 
 namespace CarcassDataSeeding.Seeders;
@@ -31,7 +31,7 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
     protected override Option<Err[]> AdditionalCheck()
     {
         var dataTypeDKey = ECarcassDataTypeKeys.DataType.ToDtKey();
-        if (!Check(CreateMustList())
+        if (Check(CreateMustList())
             && Check(GetThirdPartRights(ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(),
                 dataTypeDKey,
                 dataTypeDKey)) //rol admin mmj(dt,dt) all
@@ -44,23 +44,23 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
             && Check(GetAdminRoleToMenuItems()) //rol admin MenuItems all
             && Check(GetMenuToDataTypes()) //men -> DataTypes
             && Repo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess()))
-            return new Err[]
+            return null;
+        return new Err[]
+        {
+            new()
             {
-                new()
-                {
-                    ErrorCode = "ManyToManyJoinEntitiesCannotBeChecked",
-                    ErrorMessage = "ManyToManyJoin entities cannot be Checked"
-                }
-            };
-        return null;
+                ErrorCode = "ManyToManyJoinEntitiesCannotBeChecked",
+                ErrorMessage = "ManyToManyJoin entities cannot be Checked"
+            }
+        };
     }
 
     private bool Check(IReadOnlyCollection<ManyToManyJoin> mustBeDataTypes)
     {
-        var existingManyToManyJoins = Repo.GetAll<ManyToManyJoin>()
-            .Select(s => new ManyToManyJoinDomain(s.PtId, s.PKey, s.CtId, s.CKey)).ToList();
         if (mustBeDataTypes == null)
             return true;
+        var existingManyToManyJoins = Repo.GetAll<ManyToManyJoin>()
+            .Select(s => new ManyToManyJoinDomain(s.PtId, s.PKey, s.CtId, s.CKey)).ToList();
         var forAdd = mustBeDataTypes.Select(s => new ManyToManyJoinDomain(s.PtId, s.PKey, s.CtId, s.CKey))
             .Except(existingManyToManyJoins).ToList();
         return Repo.CreateEntities(forAdd.Select(s => new ManyToManyJoin
@@ -104,7 +104,10 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
             new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = userDKey },
             new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
             new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = menuDKey },
-            new() { PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = crudRightTypeDKey },
+            new()
+            {
+                PtId = dataTypeDataTypeId, PKey = dataTypeDKey, CtId = dataTypeDataTypeId, CKey = crudRightTypeDKey
+            },
             //dt mnu dt [dt, crudRightType]
             new() { PtId = dataTypeDataTypeId, PKey = menuDKey, CtId = dataTypeDataTypeId, CKey = crudRightTypeDKey },
             //dt usr dt rol
@@ -113,8 +116,16 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
             new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = menuGroupDKey },
             new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = menuDKey },
             new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
-            new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey() },
-            new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey() },
+            new()
+            {
+                PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId,
+                CKey = ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey()
+            },
+            new()
+            {
+                PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId,
+                CKey = ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey()
+            },
             new() { PtId = dataTypeDataTypeId, PKey = roleDKey, CtId = dataTypeDataTypeId, CKey = roleDKey },
             //admin dt dt [dt, usr, rol]
             new() { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = dataTypeDKey },
