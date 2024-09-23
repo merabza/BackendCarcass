@@ -14,11 +14,11 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
     {
     }
 
-    public void CreateTempData()
-    {
-        var dataList = Repo.GetAll<TDst>();
-        DataSeederTempData.Instance.SaveIntIdKeys<TDst>(dataList.ToDictionary(k => k.Key, v => v.Id));
-    }
+    //public void CreateTempData()
+    //{
+    //    var dataList = Repo.GetAll<TDst>();
+    //    DataSeederTempData.Instance.SaveIntIdKeys<TDst>(dataList.ToDictionary(k => k.Key, v => v.Id));
+    //}
 
     protected override Option<Err[]> AdditionalCheck()
     {
