@@ -17,6 +17,18 @@ public /*open*/
     class DataTypesSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<DataType>(
     dataSeedFolder, repo)
 {
+    private static JsonSerializerSettings SerializerSettings => new()
+    {
+        ContractResolver = new CamelCasePropertyNamesContractResolver()
+    };
+
+
+    protected string SerializeGrid(GridModel gridModel)
+    {
+       return JsonConvert.SerializeObject(gridModel, SerializerSettings);
+    }
+
+
     protected override Option<Err[]> CreateByJsonFile()
     {
         var seedData = LoadFromJsonFile<DataTypeSeederModel>();
@@ -152,10 +164,6 @@ public /*open*/
     {
         var appClaimDKey = ECarcassDataTypeKeys.AppClaim.ToDtKey();
         var crudRightTypeDKey = ECarcassDataTypeKeys.CrudRightType.ToDtKey();
-        var serializerSettings = new JsonSerializerSettings
-        {
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
-        };
         var newDataTypes = new DataType[]
         {
             //carcass used
@@ -167,7 +175,7 @@ public /*open*/
                 DtIdFieldName = nameof(AppClaim.AclId).UnCapitalize(),
                 DtKeyFieldName = nameof(AppClaim.AclKey).UnCapitalize(),
                 DtNameFieldName = nameof(AppClaim.AclName).UnCapitalize(),
-                DtGridRulesJson = JsonConvert.SerializeObject(GetKeyNameGridModel(appClaimDKey), serializerSettings)
+                DtGridRulesJson = SerializeGrid(GetKeyNameGridModel(appClaimDKey))
             },
             //DataType
             new()
@@ -178,7 +186,7 @@ public /*open*/
                 DtIdFieldName = nameof(DataType.DtId).UnCapitalize(),
                 DtKeyFieldName = nameof(DataType.DtKey).UnCapitalize(),
                 DtNameFieldName = nameof(DataType.DtName).UnCapitalize(),
-                DtGridRulesJson = JsonConvert.SerializeObject(CreateDataTypesGridModel(), serializerSettings)
+                DtGridRulesJson = SerializeGrid(CreateDataTypesGridModel())
             },
             //dataTypeToCrudTypeModel
             new()
@@ -198,8 +206,7 @@ public /*open*/
                 DtIdFieldName = nameof(CrudRightType.CrtId).UnCapitalize(),
                 DtKeyFieldName = nameof(CrudRightType.CrtKey).UnCapitalize(),
                 DtNameFieldName = nameof(CrudRightType.CrtName).UnCapitalize(),
-                DtGridRulesJson =
-                    JsonConvert.SerializeObject(GetKeyNameGridModel(crudRightTypeDKey), serializerSettings)
+                DtGridRulesJson = SerializeGrid(GetKeyNameGridModel(crudRightTypeDKey))
             },
             //DataTypeToDataTypeModel
             new()
@@ -218,7 +225,7 @@ public /*open*/
                 DtIdFieldName = nameof(MenuGroup.MengId).UnCapitalize(),
                 DtKeyFieldName = nameof(MenuGroup.MengKey).UnCapitalize(),
                 DtNameFieldName = nameof(MenuGroup.MengName).UnCapitalize(),
-                DtGridRulesJson = JsonConvert.SerializeObject(CreateMenuGroupsGridModel(), serializerSettings)
+                DtGridRulesJson = SerializeGrid(CreateMenuGroupsGridModel())
             },
             //MenuItm
             new()
@@ -228,7 +235,7 @@ public /*open*/
                 DtTable = Repo.GetTableName<MenuItm>(), DtIdFieldName = nameof(MenuItm.MenId).UnCapitalize(),
                 DtKeyFieldName = nameof(MenuItm.MenKey).UnCapitalize(),
                 DtNameFieldName = nameof(MenuItm.MenName).UnCapitalize(),
-                DtGridRulesJson = JsonConvert.SerializeObject(CreateMenuGridModel(), serializerSettings)
+                DtGridRulesJson = SerializeGrid(CreateMenuGridModel())
             },
             //Role
             new()
@@ -238,7 +245,7 @@ public /*open*/
                 DtTable = Repo.GetTableName<Role>(), DtIdFieldName = nameof(Role.RolId).UnCapitalize(),
                 DtKeyFieldName = nameof(Role.RolKey).UnCapitalize(),
                 DtNameFieldName = nameof(Role.RolName).UnCapitalize(),
-                DtGridRulesJson = JsonConvert.SerializeObject(CreateRolesGridModel(), serializerSettings)
+                DtGridRulesJson = SerializeGrid(CreateRolesGridModel())
             },
             //User
             new()
@@ -249,7 +256,7 @@ public /*open*/
                 DtIdFieldName = nameof(User.UsrId).UnCapitalize(),
                 DtKeyFieldName = nameof(User.NormalizedUserName).UnCapitalize(),
                 DtNameFieldName = nameof(User.FullName).UnCapitalize(),
-                DtGridRulesJson = JsonConvert.SerializeObject(CreateUsersGridModel(), serializerSettings)
+                DtGridRulesJson = SerializeGrid(CreateUsersGridModel())
             }
         };
 
