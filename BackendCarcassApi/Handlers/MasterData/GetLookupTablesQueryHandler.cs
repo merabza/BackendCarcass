@@ -35,6 +35,6 @@ public sealed class
         var mdLoader = new ReturnValuesLoader(tableNames, _rvRepo, _returnValuesLoaderCreator);
         var loaderResult = await mdLoader.Run(cancellationToken);
         return loaderResult.Match<OneOf<MdGetLookupTablesQueryResponse, IEnumerable<Err>>>(
-            r => new MdGetLookupTablesQueryResponse(r), e => (Err[])e);
+            r => new MdGetLookupTablesQueryResponse(r), e => e.ToArray());
     }
 }
