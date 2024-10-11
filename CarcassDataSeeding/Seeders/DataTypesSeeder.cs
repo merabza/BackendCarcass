@@ -25,7 +25,7 @@ public /*open*/
 
     protected string SerializeGrid(GridModel gridModel)
     {
-       return JsonConvert.SerializeObject(gridModel, SerializerSettings);
+        return JsonConvert.SerializeObject(gridModel, SerializerSettings);
     }
 
 
