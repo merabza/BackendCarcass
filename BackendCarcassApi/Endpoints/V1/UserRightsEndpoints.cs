@@ -10,6 +10,7 @@ using BackendCarcassApi.Mappers;
 using BackendCarcassContracts.Errors;
 using BackendCarcassContracts.V1.Requests;
 using BackendCarcassContracts.V1.Routes;
+using CorsTools;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -36,7 +37,9 @@ public sealed class UserRightsEndpoints : IInstaller
             Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
 
         var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase)
-            .RequireAuthorization().AddEndpointFilter<UserNameFilter>();
+            .RequireCors(CorsInstaller.MyAllowSpecificOrigins)
+            .RequireAuthorization()
+            .AddEndpointFilter<UserNameFilter>();
 
         group.MapGet(CarcassApiRoutes.UserRights.IsCurrentUserValid, IsCurrentUserValid);
         group.MapPut(CarcassApiRoutes.UserRights.ChangeProfile, ChangeProfile);
