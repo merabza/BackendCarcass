@@ -1,6 +1,6 @@
-﻿namespace BackendCarcassApi.Filters;
+﻿//namespace BackendCarcassApi.Filters;
 
-public enum ERightType
-{
-    UserRightToClaim
-}
+//public enum ERightType
+//{
+//    UserRightToClaim
+//}
