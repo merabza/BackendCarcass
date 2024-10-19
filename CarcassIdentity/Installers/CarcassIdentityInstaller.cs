@@ -49,6 +49,7 @@ public sealed class CarcassIdentityInstaller : IInstaller
                                throw new Exception("IdentitySettings is null");
         var jwtSecret = identitySettings.JwtSecret ?? throw new Exception("jwtSecret is null");
         var key = Encoding.ASCII.GetBytes(jwtSecret);
+
         builder.Services.AddAuthentication(x =>
         {
             x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -65,7 +66,7 @@ public sealed class CarcassIdentityInstaller : IInstaller
             };
         });
 
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorization(x => { x.InvokeHandlersAfterFailure = true; });
 
         if (debugMode)
             Console.WriteLine("CarcassIdentityInstaller.InstallServices Finished");
