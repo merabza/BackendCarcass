@@ -10,7 +10,6 @@ using BackendCarcassApi.Mappers;
 using BackendCarcassContracts.Errors;
 using BackendCarcassContracts.V1.Requests;
 using BackendCarcassContracts.V1.Routes;
-using CorsTools;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
