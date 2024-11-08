@@ -12,12 +12,11 @@ namespace CarcassRepositories;
 public class DataTypesRepository : IDataTypesRepository
 {
     private readonly CarcassDbContext _context;
-    //private readonly IDataTypeKeys _dataTypeKeys;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DataTypesRepository(CarcassDbContext context)
     {
         _context = context;
-        //_dataTypeKeys = dataTypeKeys;
     }
 
     public async Task<IEnumerable<MenuToCrudTypeDomModel>> LoadMenuToCrudTypes(

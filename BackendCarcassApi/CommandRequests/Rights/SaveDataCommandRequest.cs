@@ -7,6 +7,7 @@ namespace BackendCarcassApi.CommandRequests.Rights;
 
 public sealed class SaveDataCommandRequest : ICommand<bool>
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public SaveDataCommandRequest(HttpRequest httpRequest, List<RightsChangeModel> changesForSave)
     {
         HttpRequest = httpRequest;

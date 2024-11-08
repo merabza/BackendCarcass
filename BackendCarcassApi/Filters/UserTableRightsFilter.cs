@@ -12,6 +12,7 @@ public class UserTableRightsFilter : IEndpointFilter
     private readonly ILogger<UserMenuRightsFilter> _logger;
     private readonly IUserRightsRepository _repo;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public UserTableRightsFilter(IUserRightsRepository repo, ILogger<UserMenuRightsFilter> logger)
     {
         _repo = repo;

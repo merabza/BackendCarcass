@@ -23,6 +23,7 @@ public sealed class MyUserStore :
 
     private bool _disposedValue; // To detect redundant calls
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public MyUserStore(IIdentityRepository repo, ILogger<MyUserStore> logger)
     {
         _repo = repo;

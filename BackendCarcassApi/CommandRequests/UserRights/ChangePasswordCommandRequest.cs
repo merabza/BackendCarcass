@@ -5,6 +5,7 @@ namespace BackendCarcassApi.CommandRequests.UserRights;
 
 public sealed class ChangePasswordCommandRequest : ICommand
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ChangePasswordCommandRequest(int userid, string? userName, string? oldPassword, string? newPassword,
         string? newPasswordConfirm, HttpRequest httpRequest)
     {

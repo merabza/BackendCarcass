@@ -8,6 +8,7 @@ namespace BackendCarcassApi.QueryRequests.Rights;
 
 public sealed class ParentsTreeDataQueryRequest : IQuery<List<DataTypeModel>>
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ParentsTreeDataQueryRequest(HttpRequest httpRequest, ERightsEditorViewStyle viewStyle)
     {
         HttpRequest = httpRequest;

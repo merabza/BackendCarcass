@@ -13,5 +13,5 @@ public sealed class DataTypeModel(int dtId, string dtKey, string dtName, string 
     public int? DtParentDataTypeId { get; set; } = dtParentDataTypeId;
 
     //[NotMapped] public List<Err> Errors { get; set; } = new();
-    public List<ReturnValueModel> ReturnValues { get; set; } = new();
+    public List<ReturnValueModel> ReturnValues { get; set; } = [];
 }

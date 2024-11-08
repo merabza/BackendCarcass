@@ -5,8 +5,9 @@ namespace BackendCarcassApi.Filters;
 
 public class UserMustHaveRightsEditorRightsFilter : UserMenuRightsFilter
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public UserMustHaveRightsEditorRightsFilter(IUserRightsRepository repo, ILogger<UserMenuRightsFilter> logger) :
-        base(new[] { "Rights" }, repo, logger)
+        base(["Rights"], repo, logger)
     {
     }
 }

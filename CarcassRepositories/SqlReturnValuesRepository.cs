@@ -26,7 +26,7 @@ public class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValuesRepos
 
         if (strSql != null)
             return await _ctx.Set<SrvModel>().FromSqlRaw(strSql).ToListAsync(cancellationToken);
-        return new List<SrvModel>();
+        return [];
     }
 
     public override async Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt,
@@ -68,7 +68,7 @@ public class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValuesRepos
 
         if (strSql != null)
             return await _ctx.Set<ReturnValueModel>().FromSqlRaw(strSql).ToListAsync(cancellationToken);
-        return new List<ReturnValueModel>();
+        return [];
     }
 
     private static bool IsIdentifier(string? text, int len = 20)

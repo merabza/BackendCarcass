@@ -19,7 +19,7 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
         if (vvv == null)
             return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
 
-        var setMethod = carcassContext.GetType().GetMethod("Set", Array.Empty<Type>());
+        var setMethod = carcassContext.GetType().GetMethod("Set", []);
         if (setMethod == null)
             return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(tableName) }; //ცხრილს არ აქვს მეთოდი Set
 

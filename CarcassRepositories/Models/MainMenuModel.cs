@@ -5,5 +5,5 @@ namespace CarcassRepositories.Models;
 
 public sealed class MainMenuModel
 {
-    public List<MenuGroupModel> MenuGroups { get; set; } = new();
+    public List<MenuGroupModel> MenuGroups { get; set; } = [];
 }

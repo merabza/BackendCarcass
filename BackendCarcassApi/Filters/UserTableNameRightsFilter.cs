@@ -13,6 +13,7 @@ public class UserTableNameRightsFilter : IEndpointFilter
     private readonly IUserRightsRepository _repo;
     private readonly string[] _tableKeys;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public UserTableNameRightsFilter(IUserRightsRepository repo, ILogger<UserMenuRightsFilter> logger,
         string[] tableKeys)
     {

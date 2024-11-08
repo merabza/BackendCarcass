@@ -16,6 +16,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
 {
     private readonly UserManager<AppUser> _userManager;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public UsersMdRepo(UserManager<AppUser> userManager)
     {
         _userManager = userManager;

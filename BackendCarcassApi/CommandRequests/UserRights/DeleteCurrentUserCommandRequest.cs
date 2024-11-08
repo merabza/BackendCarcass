@@ -5,6 +5,7 @@ namespace BackendCarcassApi.CommandRequests.UserRights;
 
 public sealed class DeleteCurrentUserCommandRequest : ICommand
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DeleteCurrentUserCommandRequest(HttpRequest httpRequest)
     {
         HttpRequest = httpRequest;

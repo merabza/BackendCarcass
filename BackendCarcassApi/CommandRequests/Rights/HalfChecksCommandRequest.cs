@@ -8,6 +8,7 @@ namespace BackendCarcassApi.CommandRequests.Rights;
 
 public sealed class HalfChecksCommandRequest : ICommand<List<TypeDataModel>>
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public HalfChecksCommandRequest(HttpRequest httpRequest, int dataTypeId, string dataKey,
         ERightsEditorViewStyle viewStyle)
     {

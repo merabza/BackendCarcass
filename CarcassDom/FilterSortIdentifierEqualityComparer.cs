@@ -1,5 +1,3 @@
 ﻿namespace CarcassDom;
 
-public class FilterSortIdentifierEqualityComparer
-{
-}
+public class FilterSortIdentifierEqualityComparer;

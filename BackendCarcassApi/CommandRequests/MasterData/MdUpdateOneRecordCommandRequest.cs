@@ -5,6 +5,7 @@ namespace BackendCarcassApi.CommandRequests.MasterData;
 
 public sealed class MdUpdateOneRecordCommandRequest : ICommand
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public MdUpdateOneRecordCommandRequest(string tableName, HttpRequest httpRequest, int id)
     {
         TableName = tableName;

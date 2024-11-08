@@ -5,6 +5,7 @@ namespace BackendCarcassApi.CommandRequests.UserRights;
 
 public sealed class ChangeProfileCommandRequest : ICommand
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ChangeProfileCommandRequest(HttpRequest httpRequest)
     {
         HttpRequest = httpRequest;
