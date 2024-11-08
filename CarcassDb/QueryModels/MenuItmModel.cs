@@ -2,6 +2,7 @@
 
 public sealed class MenuItmModel
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public MenuItmModel(int menId, string menKey, string menLinkKey, string menName, string? menValue, int menGroupId,
         int sortId, string? menIconName)
     {

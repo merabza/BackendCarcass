@@ -4,6 +4,7 @@ namespace CarcassMasterDataDom.Models;
 
 public sealed class AppRole : IdentityRole<int>
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public AppRole(string name, string roleName, int level) : base(name)
     {
         RoleName = roleName;

@@ -75,6 +75,6 @@ public /*open*/ class Cell
 
     public virtual List<Err> Validate(object? value)
     {
-        return new List<Err>();
+        return [];
     }
 }

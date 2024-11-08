@@ -5,6 +5,7 @@ namespace CarcassDb.QueryModels;
 
 public sealed class MenuGroupModel
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public MenuGroupModel(int mengId, string mengKey, string mengName, short sortId, string? mengIconName, bool hidden)
     {
         MengId = mengId;
@@ -23,5 +24,5 @@ public sealed class MenuGroupModel
     public bool Hidden { get; set; }
 
 
-    [NotMapped] public List<MenuItmModel> Menu { get; set; } = new();
+    [NotMapped] public List<MenuItmModel> Menu { get; set; } = [];
 }
