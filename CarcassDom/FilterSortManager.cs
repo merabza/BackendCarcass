@@ -29,6 +29,6 @@ public class FilterSortManager
     public FilterSortObject? Get(IEnumerable<Claim> claims, int tabWindowId, string tableName)
     {
         FilterSortIdentifier filterSortIdentifier = new(GetSerialNumber(claims), tabWindowId, tableName);
-        return _filterSortObjects.TryGetValue(filterSortIdentifier, out var filterSortObject) ? filterSortObject : null;
+        return _filterSortObjects.GetValueOrDefault(filterSortIdentifier);
     }
 }
