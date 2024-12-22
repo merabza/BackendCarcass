@@ -30,7 +30,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
+    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken = default)
     {
         var users = await _userManager.Users.ToListAsync(cancellationToken);
         return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(users
@@ -39,7 +39,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
     }
 
     public override async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var users = _userManager.Users;
         var (realOffset, count, rows) = await users.UseCustomSortFilterPagination(filterSortRequest,
@@ -48,7 +48,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, rows.Select(s => s.EditFields()).ToList());
     }
 
-    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)
+    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken = default)
     {
         var appUser = await _userManager.FindByIdAsync(id.ToString());
         if (appUser?.UserName is not null && appUser.Email is not null)
@@ -57,7 +57,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
     }
 
     protected override async Task<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var user = (UserCrudData)crudDataForCreate;
         AppUser appUser = new(user.UserName, user.FirstName, user.LastName)
@@ -74,7 +74,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
     }
 
     protected override async Task<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
         if (oldUser is null)
@@ -103,7 +103,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
         return ConvertError(setEmailResult);
     }
 
-    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken)
+    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
         if (oldUser is null)

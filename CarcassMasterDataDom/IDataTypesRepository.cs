@@ -7,7 +7,7 @@ namespace CarcassMasterDataDom;
 
 public interface IDataTypesRepository
 {
-    Task<IEnumerable<MenuToCrudTypeDomModel>> LoadMenuToCrudTypes(CancellationToken cancellationToken);
-    Task<IEnumerable<DataTypeToCrudTypeDomModel>> LoadDataTypesToCrudTypes(CancellationToken cancellationToken);
-    Task<IEnumerable<DataTypeToDataTypeDomModel>> LoadDataTypesToDataTypes(CancellationToken cancellationToken);
+    Task<IEnumerable<MenuToCrudTypeDomModel>> LoadMenuToCrudTypes(CancellationToken cancellationToken = default);
+    Task<IEnumerable<DataTypeToCrudTypeDomModel>> LoadDataTypesToCrudTypes(CancellationToken cancellationToken = default);
+    Task<IEnumerable<DataTypeToDataTypeDomModel>> LoadDataTypesToDataTypes(CancellationToken cancellationToken = default);
 }

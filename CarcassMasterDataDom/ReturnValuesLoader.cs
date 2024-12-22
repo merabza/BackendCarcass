@@ -25,7 +25,7 @@ public class ReturnValuesLoader
     }
 
     public async Task<OneOf<Dictionary<string, IEnumerable<SrvModel>>, IEnumerable<Err>>> Run(
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var resultList = new Dictionary<string, IEnumerable<SrvModel>>();
         var tableDataTypes = await _rvRepo.GetDataTypesByTableNames(_tableNames, cancellationToken);

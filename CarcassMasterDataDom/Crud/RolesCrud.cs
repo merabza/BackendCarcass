@@ -30,7 +30,7 @@ public class RolesCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
+    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken = default)
     {
         var roles = await _roleManager.Roles.ToListAsync(cancellationToken);
         return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(roles.Select(x =>
@@ -38,7 +38,7 @@ public class RolesCrud : CrudBase, IMasterDataLoader
     }
 
     public override async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var roles = _roleManager.Roles;
 
@@ -48,7 +48,7 @@ public class RolesCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, rows.Select(s => s.EditFields()).ToList());
     }
 
-    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)
+    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken = default)
     {
         var appRole = await _roleManager.FindByIdAsync(id.ToString());
         if (appRole?.Name is not null)
@@ -57,7 +57,7 @@ public class RolesCrud : CrudBase, IMasterDataLoader
     }
 
     protected override async Task<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var role = (RoleCrudData)crudDataForCreate;
         AppRole appRole = new(role.RolKey, role.RolName, role.RolLevel);
@@ -70,7 +70,7 @@ public class RolesCrud : CrudBase, IMasterDataLoader
     }
 
     protected override async Task<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
         if (oldRole is null)
@@ -91,7 +91,7 @@ public class RolesCrud : CrudBase, IMasterDataLoader
         return ConvertError(setRoleResult);
     }
 
-    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken)
+    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
         if (oldRole is null)

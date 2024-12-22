@@ -14,7 +14,7 @@ public static class PaginationQuery
 {
     public static async Task<(int, int, List<TResult>)> UseCustomSortFilterPagination<TSource, TResult>(
         this IQueryable<TSource> query, FilterSortRequest filterSortRequest,
-        Expression<Func<TSource, TResult>> selector, CancellationToken cancellationToken) where TSource : class
+        Expression<Func<TSource, TResult>> selector, CancellationToken cancellationToken = default) where TSource : class
     {
         var (realOffset, count, preparedQuery) = query.PrepareSortFilterPagination(filterSortRequest);
         var rowsSel = await preparedQuery.Select(selector).ToListAsync(cancellationToken);

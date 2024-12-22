@@ -18,10 +18,10 @@ public interface ICarcassMasterDataRepository : IAbstractRepository
     MethodInfo? SetMethodInfo();
 
     IEntityType? GetEntityTypeByTableName(string tableName);
-    Task<Option<Err[]>> Create(IDataType newItem, CancellationToken cancellationToken);
+    Task<Option<Err[]>> Create(IDataType newItem, CancellationToken cancellationToken = default);
 
-    Task<GridModel?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken);
+    Task<GridModel?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken = default);
     void Update(IDataType newItem);
     void Delete(IDataType dataType);
-    Task<string?> GetSortFieldNameByTableName(string tableName, CancellationToken cancellationToken);
+    Task<string?> GetSortFieldNameByTableName(string tableName, CancellationToken cancellationToken = default);
 }

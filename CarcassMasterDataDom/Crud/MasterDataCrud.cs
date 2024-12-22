@@ -41,7 +41,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken)
+    public async Task<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken = default)
     {
         var queryResult = Query();
         if (queryResult.IsT1)
@@ -84,7 +84,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         return new MasterDataCrud(tableName, entityType, logger, cmdRepo);
     }
 
-    private async Task<OneOf<bool, Err[]>> IsGridWithSortId(CancellationToken cancellationToken)
+    private async Task<OneOf<bool, Err[]>> IsGridWithSortId(CancellationToken cancellationToken = default)
     {
         var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
         if (gridModel is null)
@@ -119,7 +119,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     }
 
     public override async Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var queryResult = QueryObject();
         if (queryResult.IsT1)
@@ -144,13 +144,13 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //        return new TableRowsData(count, realOffset, rows);
     }
 
-    private async Task<GridModel?> GetDataTypeGridRulesByTableName(CancellationToken cancellationToken)
+    private async Task<GridModel?> GetDataTypeGridRulesByTableName(CancellationToken cancellationToken = default)
     {
         return _gridModel ??= await _cmdRepo.GetDataTypeGridRulesByTableName(_tableName, cancellationToken);
     }
 
     public async Task<TableRowsData> UseCustomSortFilterPagination<T>(object query, FilterSortRequest filterSortRequest,
-        CancellationToken cancellationToken) where T : class, IDataType
+        CancellationToken cancellationToken = default) where T : class, IDataType
     {
         var tQuery = (IQueryable<T>)query;
         //tQuery.Include()
@@ -185,7 +185,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     }
 
 
-    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken)
+    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken = default)
     {
         var getOneRecordResult = await GetOneRecord(id, cancellationToken);
         if (getOneRecordResult.IsT1)
@@ -209,7 +209,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     }
 
 
-    private async Task<OneOf<IDataType, Err[]>> GetOneRecord(int id, CancellationToken cancellationToken)
+    private async Task<OneOf<IDataType, Err[]>> GetOneRecord(int id, CancellationToken cancellationToken = default)
     {
         var errors = new List<Err>();
         var entResult = Query();
@@ -288,7 +288,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     }
 
     protected override async Task<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var masterDataCrudDataForCreate = (MasterDataCrudData)crudDataForCreate;
 
@@ -368,7 +368,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     }
 
     protected override async Task<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var masterDataCrudDataForUpdate = (MasterDataCrudData)crudDataNewVersion;
 
@@ -452,7 +452,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     }
 
 
-    protected override async Task<Option<Err[]>> AfterUpdateData(CancellationToken cancellationToken)
+    protected override async Task<Option<Err[]>> AfterUpdateData(CancellationToken cancellationToken = default)
     {
         if (_sortHelper is null)
             return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
@@ -466,7 +466,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
     }
 
 
-    private async Task<Option<Err[]>> Update(int id, IDataType newItem, CancellationToken cancellationToken)
+    private async Task<Option<Err[]>> Update(int id, IDataType newItem, CancellationToken cancellationToken = default)
     {
         //var q = _cmdRepo.RunGenericMethodForQueryRecords(entityType);
         //var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); //
@@ -486,7 +486,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         }, e => e);
     }
 
-    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken)
+    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         var getOneRecordResult = await GetOneRecord(id, cancellationToken);
 
@@ -523,7 +523,7 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         return null;
     }
 
-    private async Task<Option<Err[]>> Validate(IDataType newItem, CancellationToken cancellationToken)
+    private async Task<Option<Err[]>> Validate(IDataType newItem, CancellationToken cancellationToken = default)
     {
         //var dt = _context.DataTypes.SingleOrDefault(s => s.DtTable == tableName);
         var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);

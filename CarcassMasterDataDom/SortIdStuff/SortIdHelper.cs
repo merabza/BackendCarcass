@@ -19,7 +19,7 @@ public class SortIdHelper<T> : ISortIdHelper where T : class, ISortedDataType
     //3. დავადგინოთ არის თუ არა ისეთი ჩანაწერები, რომლებიც იწვევს SortId-ის ჩავარდნას და გამოვასწოროთ ჩავარდნები.
     //3.1 უნდა ჩავტვირთოთ იდენტიფიკატორები, SortId-ები, RowId-ები დალაგებული SortId-ებით
     //3.2. ისეთი ჩანაწერებისათვის რომლებისთვისაც SortId != RowId, გავაახლოთ SortId, RowId-ის მნიშვნელობით.
-    public async Task ReSortSortIds(object query, CancellationToken cancellationToken)
+    public async Task ReSortSortIds(object query, CancellationToken cancellationToken = default)
     {
         var sortedList = await ((IQueryable<T>)query).OrderBy(x => x.SortId).ToListAsync(cancellationToken);
         foreach (var item in sortedList.Select((s, i) => new { s, i }).Where(x => x.s.SortId != x.i))
@@ -29,7 +29,7 @@ public class SortIdHelper<T> : ISortIdHelper where T : class, ISortedDataType
         }
     }
 
-    //public async Task ReSortSortIds(object query, CancellationToken cancellationToken)
+    //public async Task ReSortSortIds(object query, CancellationToken cancellationToken = default)
     //{
     //    var tQuery = (IQueryable<T>)query;
     //    var forUpdateList = await tQuery.OrderBy(x => x.SortId).ToListAsync(cancellationToken);
@@ -68,7 +68,7 @@ public class SortIdHelper<T> : ISortIdHelper where T : class, ISortedDataType
 
     //ყველა ჩანაწერი, რომლი SortId >= შესანახ SortId-ს, ყველას გავუზარდოთ 1-ით
     public async Task IncreaseSortIds(object query, int fromSortId, int increaseWith, int exceptId,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var tQuery = (IQueryable<T>)query;
         var forUpdateList = await tQuery.Where(x => x.SortId >= fromSortId).OrderBy(x => x.SortId)
