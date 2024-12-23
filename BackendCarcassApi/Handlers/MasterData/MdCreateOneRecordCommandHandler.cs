@@ -28,7 +28,7 @@ public sealed class
     }
 
     public async Task<OneOf<MasterDataCrudLoadedData, IEnumerable<Err>>> Handle(
-        MdCreateOneRecordCommandRequest request, CancellationToken cancellationToken)
+        MdCreateOneRecordCommandRequest request, CancellationToken cancellationToken = default)
     {
         //ამოვიღოთ მოთხოვნის ტანი
         // ReSharper disable once using

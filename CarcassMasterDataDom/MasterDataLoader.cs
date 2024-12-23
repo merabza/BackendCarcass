@@ -20,7 +20,7 @@ public class MasterDataLoader
     }
 
 
-    public async Task<OneOf<Dictionary<string, IEnumerable<dynamic>>, IEnumerable<Err>>> Run(
+    public async ValueTask<OneOf<Dictionary<string, IEnumerable<dynamic>>, IEnumerable<Err>>> Run(
         CancellationToken cancellationToken = default)
     {
         var resultList = new Dictionary<string, IEnumerable<dynamic>>();

@@ -38,14 +38,14 @@ public class UserRightsRepository : IUserRightsRepository
     //        w.PtId == roleDtId && w.PKey == roleName && w.CtId == appClaimDataTypeId && w.CKey == claimName);
     //}
 
-    public async Task<int?> GetDataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey, CancellationToken cancellationToken)
+    public async Task<int?> GetDataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey, CancellationToken cancellationToken = default)
     {
         return await _context.DataTypes.Where(w => w.DtKey == dataTypeKey.ToDtKey()).Select(s => s.DtId)
             .SingleOrDefaultAsync(cancellationToken);
     }
 
     public async Task<bool> CheckRight(int parentDataTypeId, string parentKey, int childDataTypeId, string childKey,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         return await _context.ManyToManyJoins.AnyAsync(
             w => w.PtId == parentDataTypeId && w.PKey == parentKey && w.CtId == childDataTypeId && w.CKey == childKey,
@@ -54,7 +54,7 @@ public class UserRightsRepository : IUserRightsRepository
 
 
     public async Task<bool> CheckMenuRight(int roleDtId, string roleName, int menuGroupsDtId, int menuDtId,
-        string menuItemName, CancellationToken cancellationToken)
+        string menuItemName, CancellationToken cancellationToken = default)
     {
         var res = from m in _context.Menu
             join mg in _context.MenuGroups on m.MenGroupId equals mg.MengId
@@ -67,14 +67,14 @@ public class UserRightsRepository : IUserRightsRepository
         return await res.AnyAsync(cancellationToken);
     }
 
-    public async Task<string?> KeyByTableName(string tableName, CancellationToken cancellationToken)
+    public async Task<string?> KeyByTableName(string tableName, CancellationToken cancellationToken = default)
     {
         return await _context.DataTypes.Where(w => w.DtTable == tableName).Select(s => s.DtKey)
             .SingleOrDefaultAsync(cancellationToken);
     }
 
     public async Task<bool> CheckTableViewRight(int roleDtId, string roleName, int dataTypeDtId, string keyByTableName,
-        int menuDtId, CancellationToken cancellationToken)
+        int menuDtId, CancellationToken cancellationToken = default)
     {
         //აქ GetManyToManyJoinsPccOne გამოყენებულია შემდეგი მიზნებისათვის:
         //უფლებების ცხრილში გვაქვს დარეგისტრირებული თუ მენიუს რომელ ელემენტს რომელი ცხრილები სჭირდება
@@ -91,7 +91,7 @@ public class UserRightsRepository : IUserRightsRepository
 
     public async Task<OneOf<bool, IEnumerable<Err>>> CheckTableCrudRight(int roleDtId, string roleName,
         int dataTypeDtId, string keyByTableName, int dataCrudRightDtId,
-        ECrudOperationType crudType, CancellationToken cancellationToken)
+        ECrudOperationType crudType, CancellationToken cancellationToken = default)
     {
         return await _context.ManyToManyJoins.AnyAsync(w =>
                        w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataTypeDtId && w.CKey == keyByTableName,
@@ -102,7 +102,7 @@ public class UserRightsRepository : IUserRightsRepository
     }
 
     private async Task<bool> GetManyToManyJoinsPccOne(int parentTypeId, string parentKey, int childTypeId,
-        int childTypeId2, string childKey2, CancellationToken cancellationToken)
+        int childTypeId2, string childKey2, CancellationToken cancellationToken = default)
     {
         return await (from r1 in _context.ManyToManyJoins
             join r2 in _context.ManyToManyJoins on new { t = r1.CtId, i = r1.CKey } equals new

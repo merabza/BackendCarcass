@@ -23,7 +23,7 @@ public sealed class MdGetOneRecordQueryHandler : IQueryHandler<MdGetOneRecordQue
     }
 
     public async Task<OneOf<MasterDataCrudLoadedData, IEnumerable<Err>>> Handle(
-        MdGetOneRecordQueryRequest request, CancellationToken cancellationToken)
+        MdGetOneRecordQueryRequest request, CancellationToken cancellationToken = default)
     {
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)

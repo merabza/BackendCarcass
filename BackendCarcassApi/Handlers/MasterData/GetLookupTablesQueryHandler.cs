@@ -28,7 +28,7 @@ public sealed class
     }
 
     public async Task<OneOf<MdGetLookupTablesQueryResponse, IEnumerable<Err>>> Handle(
-        MdGetLookupTablesQueryRequest request, CancellationToken cancellationToken)
+        MdGetLookupTablesQueryRequest request, CancellationToken cancellationToken = default)
     {
         var reqQuery = request.HttpRequest.Query["tables"];
         List<string> tableNames = reqQuery.Where(tableName => tableName is not null).Distinct().ToList()!;

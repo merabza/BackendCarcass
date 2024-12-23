@@ -32,7 +32,7 @@ public sealed class RegistrationCommandHandler : LoginCommandBase,
     }
 
     public async Task<OneOf<LoginResponse, IEnumerable<Err>>> Handle(RegistrationCommandRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         //if (string.IsNullOrWhiteSpace(request.UserName))
         //    return await Task.FromResult(new[]

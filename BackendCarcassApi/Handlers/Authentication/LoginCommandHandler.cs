@@ -35,7 +35,7 @@ public sealed class LoginCommandHandler : LoginCommandBase, ICommandHandler<Logi
     }
 
     public async Task<OneOf<LoginResponse, IEnumerable<Err>>> Handle(LoginCommandRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი
         var user = await _userMgr.FindByNameAsync(request.UserName!);

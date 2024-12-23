@@ -37,7 +37,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         return ConvertError(result);
     }
 
-    public async Task<Option<Err[]>> Update(int id, IDataType newItem)
+    public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
         if (oldUser == null)
@@ -65,7 +65,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         return ConvertError(setEmailResult);
     }
 
-    public async Task<Option<Err[]>> Delete(int id)
+    public async ValueTask<Option<Err[]>> Delete(int id)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
         if (oldUser == null)

@@ -27,7 +27,7 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
     }
 
     public async Task<OneOf<Unit, IEnumerable<Err>>> Handle(MdUpdateOneRecordCommandRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         //ამოვიღოთ მოთხოვნის ტანი
         // ReSharper disable once using

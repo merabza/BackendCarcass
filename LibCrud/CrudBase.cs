@@ -41,7 +41,8 @@ public abstract class CrudBase
         }
     }
 
-    public async Task<OneOf<ICrudData, Err[]>> Create(ICrudData crudDataForCreate, CancellationToken cancellationToken = default)
+    public async Task<OneOf<ICrudData, Err[]>> Create(ICrudData crudDataForCreate,
+        CancellationToken cancellationToken = default)
     {
         const string methodName = nameof(Create);
         try
@@ -78,7 +79,8 @@ public abstract class CrudBase
         }
     }
 
-    public async Task<Option<Err[]>> Update(int id, ICrudData crudDataNewVersion, CancellationToken cancellationToken = default)
+    public async Task<Option<Err[]>> Update(int id, ICrudData crudDataNewVersion,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -148,18 +150,19 @@ public abstract class CrudBase
 
     protected abstract Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken = default);
 
-    protected abstract Task<Option<Err[]>> CreateData(ICrudData crudDataForCreate, CancellationToken cancellationToken = default);
-
-    protected abstract Task<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+    protected abstract ValueTask<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default);
 
-    protected virtual Task<Option<Err[]>> AfterUpdateData(CancellationToken cancellationToken = default)
+    protected abstract ValueTask<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+        CancellationToken cancellationToken = default);
+
+    protected virtual ValueTask<Option<Err[]>> AfterUpdateData(CancellationToken cancellationToken = default)
     {
-        return Task.FromResult<Option<Err[]>>(null);
+        return ValueTask.FromResult<Option<Err[]>>(null);
     }
 
     protected abstract Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default);
 
-    public abstract Task<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+    public abstract ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken = default);
 }

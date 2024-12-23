@@ -25,7 +25,7 @@ public sealed class ChangeProfileCommandHandler : ICommandHandler<ChangeProfileC
     }
 
     public async Task<OneOf<Unit, IEnumerable<Err>>> Handle(ChangeProfileCommandRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         //var userName = request.HttpContext.User.Identity?.Name;
         var currentUserName = request.HttpRequest.HttpContext.User.Identity!.Name!;

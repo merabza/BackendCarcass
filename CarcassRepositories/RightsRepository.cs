@@ -24,7 +24,7 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
     private readonly CarcassDbContext _carcassContext = context;
     private readonly ILogger<RightsRepository> _logger = logger;
 
-    public async Task<int> DataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey, CancellationToken cancellationToken)
+    public async Task<int> DataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey, CancellationToken cancellationToken = default)
     {
         return await _carcassContext.DataTypes.Where(w => w.DtKey == dataTypeKey.ToDtKey()).Select(s => s.DtId)
             .SingleOrDefaultAsync(cancellationToken);
@@ -38,7 +38,7 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
     }
 
     public async Task<List<Tuple<int, int>>> UsersMinLevels(int roleDataId, int userDataId,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         return await (from dr in _carcassContext.ManyToManyJoins
                 join usr in _carcassContext.Users on new { a = dr.PtId, b = dr.PKey } equals
@@ -51,14 +51,14 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<UserModel>> GetUsers(CancellationToken cancellationToken)
+    public async Task<List<UserModel>> GetUsers(CancellationToken cancellationToken = default)
     {
         var users = await _carcassContext.Users.ToListAsync(cancellationToken);
         return users.Select(x => x.AdaptTo()).ToList();
     }
 
 
-    public async Task<List<ReturnValueModel>> GetRoleReturnValues(int minLevel, CancellationToken cancellationToken)
+    public async Task<List<ReturnValueModel>> GetRoleReturnValues(int minLevel, CancellationToken cancellationToken = default)
     {
         return await _carcassContext.Roles.Where(w => w.RolLevel >= minLevel)
             .Select(role => new ReturnValueModel { Id = role.RolId, Key = role.RolKey, Name = role.RolName })
@@ -67,7 +67,7 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
 
     public async Task<List<DataTypeModelForRvs>> ParentsDataTypesNormalView(int dtDataId, string dataTypeKey,
         int userDataId,
-        string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken)
+        string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
     {
         var result = from dt in _carcassContext.DataTypes
             join pc in ManyToManyJoinsPc(dtDataId, dataTypeKey, dtDataId) on dt.DtKey equals pc
@@ -81,7 +81,7 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
 
     public async Task<List<DataTypeModelForRvs>> ParentsDataTypesReverseView(int dtDataId, int userDataId,
         string userName,
-        int roleDataId, int mmjDataId, CancellationToken cancellationToken)
+        int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
     {
         var result = from dt in _carcassContext.DataTypes
             join dr in _carcassContext.ManyToManyJoins on new { a = dt.DtKey, b = dtDataId, c = dtDataId } equals new
@@ -101,7 +101,7 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
     }
 
     public async Task<List<DataTypeModelForRvs>> ChildrenDataTypesNormalView(int dtDataId, string parentTypeKey,
-        int userDataId, string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken)
+        int userDataId, string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
     {
         var result = from dt in _carcassContext.DataTypes
             join pc in ManyToManyJoinsPc(dtDataId, parentTypeKey, dtDataId) on dt.DtKey equals pc
@@ -116,7 +116,7 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
     }
 
     public async Task<List<DataTypeModelForRvs>> ChildrenDataTypesReverseView(int dtDataId, string parentTypeKey,
-        int userDataId, string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken)
+        int userDataId, string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
     {
         var result = from dt in _carcassContext.DataTypes
             join cp in ManyToManyJoinsCp(dtDataId, parentTypeKey, dtDataId) on dt.DtKey equals cp
@@ -131,7 +131,7 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
     }
 
     public async Task<List<TypeDataModel>> HalfChecksNormalView(int userDataId, string userName, int roleDataId,
-        int mmjDataId, int dtDataId, int dataTypeId, string dataKey, CancellationToken cancellationToken)
+        int mmjDataId, int dtDataId, int dataTypeId, string dataKey, CancellationToken cancellationToken = default)
     {
         var normViewResult = (from dr in _carcassContext.ManyToManyJoins
             join dt in _carcassContext.DataTypes on dr.CtId equals dt.DtId
@@ -145,7 +145,7 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
     }
 
     public async Task<List<TypeDataModel>> HalfChecksReverseView(int userDataId, string userName, int roleDataId,
-        int mmjDataId, int dtDataId, int dataTypeId, string dataKey, CancellationToken cancellationToken)
+        int mmjDataId, int dtDataId, int dataTypeId, string dataKey, CancellationToken cancellationToken = default)
     {
         var result = (from dr in _carcassContext.ManyToManyJoins
             join dt in _carcassContext.DataTypes on dr.PtId equals dt.DtId
@@ -157,21 +157,21 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
         return await result.ToListAsync(cancellationToken);
     }
 
-    public async Task<string?> DataTypeKeyById(int dtId, CancellationToken cancellationToken)
+    public async Task<string?> DataTypeKeyById(int dtId, CancellationToken cancellationToken = default)
     {
         return await _carcassContext.DataTypes.Where(w => w.DtId == dtId).Select(s => s.DtKey)
             .SingleOrDefaultAsync(cancellationToken);
     }
 
     public async Task<ManyToManyJoinModel?> GetOneManyToManyJoin(int parentDtId, string parentDKey, int childDtId,
-        string childDKey, CancellationToken cancellationToken)
+        string childDKey, CancellationToken cancellationToken = default)
     {
         var mmj = await ManyToManyJoin(parentDtId, parentDKey, childDtId, childDKey, cancellationToken);
         return mmj?.AdaptTo();
     }
 
     public async Task<bool> RemoveOneManyToManyJoin(ManyToManyJoinModel manyToManyJoinModel,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var mmj = await ManyToManyJoin(manyToManyJoinModel.PtId, manyToManyJoinModel.PKey, manyToManyJoinModel.CtId,
             manyToManyJoinModel.CKey, cancellationToken);
@@ -182,7 +182,7 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
     }
 
     public async Task<bool> CreateAndSaveOneManyToManyJoin(int parentDtId, string parentDKey, int childDtId,
-        string childDKey, CancellationToken cancellationToken)
+        string childDKey, CancellationToken cancellationToken = default)
     {
         var parentDataType =
             await _carcassContext.DataTypes.SingleOrDefaultAsync(x => x.DtId == parentDtId,
@@ -223,7 +223,7 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
     }
 
     public async Task<List<Tuple<string, string>>> ManyToManyJoinsPcc4(int parentTypeId, string parentKey,
-        int childTypeId, int mmjDataId, int childTypeId2, int childTypeId3, CancellationToken cancellationToken)
+        int childTypeId, int mmjDataId, int childTypeId2, int childTypeId3, CancellationToken cancellationToken = default)
     {
         var manyToManyJoins = await _carcassContext.ManyToManyJoins.ToListAsync(cancellationToken);
         return (from r in manyToManyJoins
@@ -237,7 +237,7 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
 
     private async Task<ManyToManyJoin?> ManyToManyJoin(int parentDtId, string parentDKey, int childDtId,
         string childDKey,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var mmj = await _carcassContext.ManyToManyJoins.SingleOrDefaultAsync(c =>
             c.PtId == parentDtId && c.PKey == parentDKey &&

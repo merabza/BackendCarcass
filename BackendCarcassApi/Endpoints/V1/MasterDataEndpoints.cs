@@ -65,7 +65,7 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ ეს უფლება აქვს მიმდინარე მომხმარებელს, მოხდება tableName ცხრილის ჩატვირთვა და გამომძახებლისთვის დაბრუნება
     // GET api/v1/masterdata/{tableName}
     //private static async Task<IResult> AllRecords(HttpRequest request, string tableName, IMediator mediator,
-    //    CancellationToken cancellationToken)
+    //    CancellationToken cancellationToken = default)
     //{
     //    Debug.WriteLine($"Call {nameof(AllRecordsQueryHandler)} from {nameof(AllRecords)}");
     //    var query = new MdGetTableAllRecordsQueryRequest(tableName, request);
@@ -83,7 +83,7 @@ public sealed class MasterDataEndpoints : IInstaller
     //query like this: localhost:3000/api/masterdata/gettables?tables=tableName1&tables=tableName2&tables=tableName3
     //deprecated
     private static async Task<IResult> GetTables(HttpRequest request, IMediator mediator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GetTablesQueryHandler)} from {nameof(GetTables)}");
         var query = new MdGetTablesQueryRequest(request);
@@ -93,7 +93,7 @@ public sealed class MasterDataEndpoints : IInstaller
 
     // GET api/v1/masterdata/getlookuptables?tables=tableName1&tables=tableName2&tables=tableName3
     private static async Task<IResult> GetLookupTables(HttpRequest request, IMediator mediator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GetLookupTablesQueryHandler)} from {nameof(GetTables)}");
         var query = new MdGetLookupTablesQueryRequest(request);
@@ -105,7 +105,7 @@ public sealed class MasterDataEndpoints : IInstaller
     // GET api/v1/masterdata/gettablerowsdata/{tableName}
     private static async Task<IResult> GetTableRowsData(IMediator mediator, HttpContext httpContext,
         [FromRoute] string tableName, [FromQuery] string filterSortRequest,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GetTableRowsDataHandler)} from {nameof(GetTableRowsData)}");
         var queryNotes = new GetTableRowsDataQueryRequest(tableName, filterSortRequest);
@@ -124,7 +124,7 @@ public sealed class MasterDataEndpoints : IInstaller
     //   მოხდება id იდენტიფიკატორით ჩანაწერის ამოღება ბაზიდან და გამომძახებლისთვის დაბრუნება
     // GET api/v1/masterdata/{tableName}/{id}
     private static async Task<IResult> MdGetOneRecord(HttpRequest request, string tableName, int id, IMediator mediator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdGetOneRecordQueryHandler)} from {nameof(MdGetOneRecord)}");
         var query = new MdGetOneRecordQueryRequest(tableName, id, request);
@@ -142,7 +142,7 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ აქვს, მოხდება მოთხოვნის ტანის გაანალიზება და მიღებული ახალი ჩანაწერის ბაზაში დამატება
     // POST api/v1/masterdata/{tableName}
     private static async Task<IResult> MdCreateOneRecord(string tableName, HttpRequest request, IMediator mediator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdCreateOneRecordCommandHandler)} from {nameof(MdCreateOneRecord)}");
         var commandRequest = new MdCreateOneRecordCommandRequest(tableName, request);
@@ -162,7 +162,7 @@ public sealed class MasterDataEndpoints : IInstaller
     // PUT api/<controller>/<tableName>/5
     //[HttpPut("{tableName}/{id}")]
     private static async Task<IResult> MdUpdateOneRecord(string tableName, int id, HttpRequest request,
-        IMediator mediator, CancellationToken cancellationToken)
+        IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdUpdateOneRecordCommandHandler)} from {nameof(MdUpdateOneRecord)}");
         var commandRequest = new MdUpdateOneRecordCommandRequest(tableName, request, id);
@@ -181,7 +181,7 @@ public sealed class MasterDataEndpoints : IInstaller
     // DELETE api/<controller>/<tableName>/5
     //[HttpDelete("{tableName}/{id}")]
     private static async Task<IResult> MdDeleteOneRecord(string tableName, int id, HttpRequest request,
-        IMediator mediator, CancellationToken cancellationToken)
+        IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdDeleteOneRecordCommandHandler)} from {nameof(MdDeleteOneRecord)}");
         var commandRequest = new MdDeleteOneRecordCommandRequest(tableName, request, id);

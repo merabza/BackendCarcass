@@ -23,7 +23,7 @@
 //    }
 
 //    public async Task<OneOf<MdGetTableAllRecordsQueryResponse, IEnumerable<Err>>> Handle(
-//        MdGetTableAllRecordsQueryRequest request, CancellationToken cancellationToken)
+//        MdGetTableAllRecordsQueryRequest request, CancellationToken cancellationToken = default)
 //    {
 //        var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(request.TableName);
 //        var entResult = await loader.GetAllRecords(cancellationToken);

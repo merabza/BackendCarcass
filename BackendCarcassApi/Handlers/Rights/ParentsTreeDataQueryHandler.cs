@@ -25,7 +25,7 @@ internal sealed class ParentsTreeDataQueryHandler : IQueryHandler<ParentsTreeDat
     }
 
     public async Task<OneOf<List<DataTypeModel>, IEnumerable<Err>>> Handle(
-        ParentsTreeDataQueryRequest request, CancellationToken cancellationToken)
+        ParentsTreeDataQueryRequest request, CancellationToken cancellationToken = default)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo);
         var result = await rightsCollector.ParentsTreeData(request.HttpRequest.HttpContext.User.Identity!.Name!,

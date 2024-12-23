@@ -25,7 +25,7 @@ public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurr
     }
 
     public async Task<OneOf<Unit, IEnumerable<Err>>> Handle(DeleteCurrentUserCommandRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var currentUserName = request.HttpRequest.HttpContext.User.Identity!.Name!;
         //ეს ერთგვარი ტესტია. თუ კოდი აქამდე მოვიდა, მიმდინარე მომხმარებელი ვალიდურია

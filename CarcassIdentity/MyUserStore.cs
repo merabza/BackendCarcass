@@ -30,43 +30,44 @@ public sealed class MyUserStore :
         _logger = logger;
     }
 
-    public async Task<IdentityResult> CreateAsync(AppRole role, CancellationToken cancellationToken)
+    public async Task<IdentityResult> CreateAsync(AppRole role, CancellationToken cancellationToken = default)
     {
         return await _repo.CreateRoleAsync(role, cancellationToken);
     }
 
-    public async Task<IdentityResult> DeleteAsync(AppRole role, CancellationToken cancellationToken)
+    public async Task<IdentityResult> DeleteAsync(AppRole role, CancellationToken cancellationToken = default)
     {
         return await _repo.RemoveRoleAsync(role.Id, cancellationToken);
     }
 
-    public async Task<IdentityResult> UpdateAsync(AppRole role, CancellationToken cancellationToken)
+    public async Task<IdentityResult> UpdateAsync(AppRole role, CancellationToken cancellationToken = default)
     {
         return await _repo.UpdateRoleAsync(role.Id, role, cancellationToken);
     }
 
-    public async Task<string> GetRoleIdAsync(AppRole role, CancellationToken cancellationToken)
+    public Task<string> GetRoleIdAsync(AppRole role, CancellationToken cancellationToken = default)
     {
-        return await Task.FromResult(role.Id.ToString());
+        return Task.FromResult(role.Id.ToString());
     }
 
-    public async Task<string?> GetRoleNameAsync(AppRole role, CancellationToken cancellationToken)
+    public Task<string?> GetRoleNameAsync(AppRole role, CancellationToken cancellationToken = default)
     {
-        return await Task.FromResult(role.Name);
+        return Task.FromResult(role.Name);
     }
 
-    public Task SetRoleNameAsync(AppRole role, string? roleName, CancellationToken cancellationToken)
+    public Task SetRoleNameAsync(AppRole role, string? roleName, CancellationToken cancellationToken = default)
     {
         role.Name = roleName;
         return Task.FromResult(true);
     }
 
-    public async Task<string?> GetNormalizedRoleNameAsync(AppRole role, CancellationToken cancellationToken)
+    public Task<string?> GetNormalizedRoleNameAsync(AppRole role, CancellationToken cancellationToken = default)
     {
-        return await Task.FromResult(role.NormalizedName);
+        return Task.FromResult(role.NormalizedName);
     }
 
-    public Task SetNormalizedRoleNameAsync(AppRole role, string? normalizedName, CancellationToken cancellationToken)
+    public Task SetNormalizedRoleNameAsync(AppRole role, string? normalizedName,
+        CancellationToken cancellationToken = default)
     {
         role.NormalizedName = normalizedName;
         return Task.FromResult(true);
@@ -119,28 +120,28 @@ public sealed class MyUserStore :
         }
     }
 
-    public Task SetEmailAsync(AppUser user, string? email, CancellationToken cancellationToken)
+    public Task SetEmailAsync(AppUser user, string? email, CancellationToken cancellationToken = default)
     {
         user.Email = email;
         return Task.FromResult(true);
     }
 
-    public async Task<string?> GetEmailAsync(AppUser user, CancellationToken cancellationToken)
+    public Task<string?> GetEmailAsync(AppUser user, CancellationToken cancellationToken = default)
     {
-        return await Task.FromResult(user.Email);
+        return Task.FromResult(user.Email);
     }
 
-    public Task<bool> GetEmailConfirmedAsync(AppUser user, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task SetEmailConfirmedAsync(AppUser user, bool confirmed, CancellationToken cancellationToken)
+    public Task<bool> GetEmailConfirmedAsync(AppUser user, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<AppUser?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
+    public Task SetEmailConfirmedAsync(AppUser user, bool confirmed, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<AppUser?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default)
     {
         var user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail,
             cancellationToken);
@@ -156,28 +157,29 @@ public sealed class MyUserStore :
             };
     }
 
-    public async Task<string?> GetNormalizedEmailAsync(AppUser user, CancellationToken cancellationToken)
+    public Task<string?> GetNormalizedEmailAsync(AppUser user, CancellationToken cancellationToken = default)
     {
-        return await Task.FromResult(user.NormalizedEmail);
+        return Task.FromResult(user.NormalizedEmail);
     }
 
-    public Task SetNormalizedEmailAsync(AppUser user, string? normalizedEmail, CancellationToken cancellationToken)
+    public Task SetNormalizedEmailAsync(AppUser user, string? normalizedEmail,
+        CancellationToken cancellationToken = default)
     {
         user.NormalizedEmail = normalizedEmail;
         return Task.FromResult(true);
     }
 
-    public async Task<IdentityResult> CreateAsync(AppUser user, CancellationToken cancellationToken)
+    public async Task<IdentityResult> CreateAsync(AppUser user, CancellationToken cancellationToken = default)
     {
         return await _repo.CreateUserAsync(user, cancellationToken);
     }
 
-    public async Task<IdentityResult> DeleteAsync(AppUser appUser, CancellationToken cancellationToken)
+    public Task<IdentityResult> DeleteAsync(AppUser appUser, CancellationToken cancellationToken = default)
     {
-        return await _repo.RemoveUserAsync(appUser.Id, cancellationToken);
+        return _repo.RemoveUserAsync(appUser.Id, cancellationToken);
     }
 
-    public async Task<AppUser?> FindByIdAsync(string userId, CancellationToken cancellationToken)
+    public async Task<AppUser?> FindByIdAsync(string userId, CancellationToken cancellationToken = default)
     {
         var user = await _repo.Users.FirstOrDefaultAsync(u => u.UsrId.ToString() == userId, cancellationToken);
         return user is null
@@ -192,7 +194,8 @@ public sealed class MyUserStore :
             };
     }
 
-    public async Task<AppUser?> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+    public async Task<AppUser?> FindByNameAsync(string normalizedUserName,
+        CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         //ThrowIfDisposed();
@@ -213,34 +216,35 @@ public sealed class MyUserStore :
             };
     }
 
-    public async Task<string?> GetNormalizedUserNameAsync(AppUser user, CancellationToken cancellationToken)
+    public Task<string?> GetNormalizedUserNameAsync(AppUser user, CancellationToken cancellationToken = default)
     {
-        return await Task.FromResult(user.NormalizedUserName);
+        return Task.FromResult(user.NormalizedUserName);
     }
 
-    public async Task<string> GetUserIdAsync(AppUser user, CancellationToken cancellationToken)
+    public Task<string> GetUserIdAsync(AppUser user, CancellationToken cancellationToken = default)
     {
-        return await Task.FromResult(user.Id.ToString());
+        return Task.FromResult(user.Id.ToString());
     }
 
-    public async Task<string?> GetUserNameAsync(AppUser user, CancellationToken cancellationToken)
+    public Task<string?> GetUserNameAsync(AppUser user, CancellationToken cancellationToken = default)
     {
-        return await Task.FromResult(user.UserName);
+        return Task.FromResult(user.UserName);
     }
 
-    public Task SetNormalizedUserNameAsync(AppUser user, string? normalizedName, CancellationToken cancellationToken)
+    public Task SetNormalizedUserNameAsync(AppUser user, string? normalizedName,
+        CancellationToken cancellationToken = default)
     {
         user.NormalizedUserName = normalizedName;
         return Task.FromResult(true);
     }
 
-    public Task SetUserNameAsync(AppUser user, string? userName, CancellationToken cancellationToken)
+    public Task SetUserNameAsync(AppUser user, string? userName, CancellationToken cancellationToken = default)
     {
         user.UserName = userName;
         return Task.FromResult(true);
     }
 
-    public async Task<IdentityResult> UpdateAsync(AppUser appUser, CancellationToken cancellationToken)
+    public async Task<IdentityResult> UpdateAsync(AppUser appUser, CancellationToken cancellationToken = default)
     {
         var user = await _repo.Users.FirstOrDefaultAsync(u => u.UsrId == appUser.Id, cancellationToken);
         if (user == null)
@@ -261,13 +265,13 @@ public sealed class MyUserStore :
         return await _repo.UpdateUserAsync(user.UsrId, user, cancellationToken);
     }
 
-    public Task SetPasswordHashAsync(AppUser user, string? passwordHash, CancellationToken cancellationToken)
+    public Task SetPasswordHashAsync(AppUser user, string? passwordHash, CancellationToken cancellationToken = default)
     {
         user.PasswordHash = passwordHash;
         return Task.FromResult(true);
     }
 
-    public async Task<string?> GetPasswordHashAsync(AppUser appUser, CancellationToken cancellationToken)
+    public async Task<string?> GetPasswordHashAsync(AppUser appUser, CancellationToken cancellationToken = default)
     {
         var user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == appUser.NormalizedUserName,
             cancellationToken);
@@ -275,7 +279,7 @@ public sealed class MyUserStore :
             user?.PasswordHash; // ??throw new Exception($"GetPasswordHashAsync cannot find AppUser NormalizedUserName={appUser.NormalizedUserName}");
     }
 
-    public async Task<bool> HasPasswordAsync(AppUser appUser, CancellationToken cancellationToken)
+    public async Task<bool> HasPasswordAsync(AppUser appUser, CancellationToken cancellationToken = default)
     {
         var user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == appUser.NormalizedUserName,
             cancellationToken);
@@ -295,7 +299,7 @@ public sealed class MyUserStore :
         // GC.SuppressFinalize(this);
     }
 
-    public async Task AddToRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
+    public async Task AddToRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken = default)
     {
         var role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
         if (role == null)
@@ -303,7 +307,7 @@ public sealed class MyUserStore :
         await _repo.UserAddToRoleAsync(user.Id, role.RolId);
     }
 
-    public async Task RemoveFromRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
+    public async Task RemoveFromRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken = default)
     {
         var role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
         if (role == null)
@@ -316,15 +320,13 @@ public sealed class MyUserStore :
         _repo.RemoveUserFromRole(match);
     }
 
-    public async Task<IList<string>> GetRolesAsync(AppUser user, CancellationToken cancellationToken)
+    public async Task<IList<string>> GetRolesAsync(AppUser user, CancellationToken cancellationToken = default)
     {
-        IList<string> rbu = await _repo.RolesByUsers.Where(ru => ru.PKey == user.UserName).Select(s => s.CKey)
-            .ToListAsync();
-
-        return rbu;
+        return await _repo.RolesByUsers.Where(ru => ru.PKey == user.UserName).Select(s => s.CKey)
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> IsInRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
+    public async Task<bool> IsInRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken = default)
     {
         var role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
         if (role == null)
@@ -347,14 +349,9 @@ public sealed class MyUserStore :
 
     private void Dispose(bool disposing)
     {
-        if (!_disposedValue)
-        {
-            if (disposing)
-            {
-            }
+        if (_disposedValue) 
+            return;
 
-
-            _disposedValue = true;
-        }
+        _disposedValue = true;
     }
 }

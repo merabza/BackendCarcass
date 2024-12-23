@@ -21,7 +21,7 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
 
     public async Task<OneOf<List<DataTypeModel>, Err[]>> ParentsTreeData(string userName,
         ERightsEditorViewStyle viewStyle,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var dataTypes =
             (viewStyle == ERightsEditorViewStyle.NormalView
@@ -32,8 +32,8 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
         return await GetTreeData(userName, dataTypes, cancellationToken);
     }
 
-    private async Task<OneOf<List<DataTypeModel>, Err[]>> GetTreeData(string userName,
-        IEnumerable<DataTypeModelForRvs> dataTypes, CancellationToken cancellationToken)
+    private async ValueTask<OneOf<List<DataTypeModel>, Err[]>> GetTreeData(string userName,
+        IEnumerable<DataTypeModelForRvs> dataTypes, CancellationToken cancellationToken = default)
     {
         var dataTypeModels = new List<DataTypeModel>();
         var errors = new List<Err>();
@@ -56,7 +56,7 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
     }
 
     public async Task<OneOf<List<DataTypeModel>, Err[]>> ChildrenTreeData(string userName, string dataTypeKey,
-        ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken)
+        ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
         var dataTypes =
             (viewStyle == ERightsEditorViewStyle.NormalView
@@ -69,7 +69,7 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
     }
 
     private async Task<List<DataTypeModelForRvs>> ParentsDataTypesNormalView(string userName,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var dtDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
         var mmjDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
@@ -83,7 +83,7 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
     }
 
     private async Task<List<DataTypeModelForRvs>> ParentsDataTypesReverseView(string userName,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var dtDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
         var mmjDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
@@ -95,7 +95,7 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
     }
 
     private async Task<List<DataTypeModelForRvs>> ChildrenDataTypesNormalView(string userName, string parentTypeKey,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var dtDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
         var mmjDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
@@ -107,7 +107,7 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
     }
 
     private async Task<List<DataTypeModelForRvs>> ChildrenDataTypesReverseView(string userName, string parentTypeKey,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var dtDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
         var mmjDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
@@ -119,7 +119,7 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
     }
 
     private async Task<OneOf<List<ReturnValueModel>, Err[]>> GetRetValues(DataTypeModelForRvs dt, string userName,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         if (dt.DtKey == ECarcassDataTypeKeys.User.ToDtKey())
         {
@@ -143,7 +143,7 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
         return await _repo.GetRoleReturnValues(minLevel, cancellationToken);
     }
 
-    private async Task<int> UserMinLevel(string userName, CancellationToken cancellationToken)
+    private async Task<int> UserMinLevel(string userName, CancellationToken cancellationToken = default)
     {
         var roleDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
         var userDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
@@ -154,7 +154,7 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
         return _repo.UserMinLevel(drPcs);
     }
 
-    private async Task<List<Tuple<int, int>>> UsersMinLevels(CancellationToken cancellationToken)
+    private async Task<List<Tuple<int, int>>> UsersMinLevels(CancellationToken cancellationToken = default)
     {
         var roleDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
         var userDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
@@ -163,7 +163,7 @@ public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvR
     }
 
     public async Task<List<TypeDataModel>> HalfChecks(string userName, int dataTypeId, string dataKey,
-        ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken)
+        ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
         var dtDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
         var mmjDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);

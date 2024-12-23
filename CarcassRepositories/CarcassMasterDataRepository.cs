@@ -62,14 +62,14 @@ public class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDat
     }
 
 
-    public async Task<Option<Err[]>> Create(IDataType newItem, CancellationToken cancellationToken)
+    public async Task<Option<Err[]>> Create(IDataType newItem, CancellationToken cancellationToken = default)
     {
         await _context.AddAsync(newItem, cancellationToken);
         //await _context.SaveChangesAsync();
         return null;
     }
 
-    public async Task<GridModel?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken)
+    public async Task<GridModel?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken = default)
     {
         var dataType = await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
         var dtGridRulesJson = dataType?.DtGridRulesJson;
@@ -87,7 +87,7 @@ public class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDat
         _context.Remove(itemForDelete);
     }
 
-    public async Task<string?> GetSortFieldNameByTableName(string tableName, CancellationToken cancellationToken)
+    public async Task<string?> GetSortFieldNameByTableName(string tableName, CancellationToken cancellationToken = default)
     {
         var dataType = await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
         return dataType?.DtNameFieldName;

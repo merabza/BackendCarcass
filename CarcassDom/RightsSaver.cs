@@ -22,7 +22,7 @@ public class RightsSaver
     }
 
     public async Task<bool> SaveRightsChanges(string userName, List<RightsChangeModel> changedRights,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         try
         {

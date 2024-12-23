@@ -14,12 +14,12 @@ public interface IIdentityRepository
     IQueryable<ManyToManyJoin> RolesByUsers { get; }
 
 
-    Task<IdentityResult> CreateUserAsync(AppUser user, CancellationToken cancellationToken);
-    Task<IdentityResult> RemoveUserAsync(int userId, CancellationToken cancellationToken);
-    Task<IdentityResult> UpdateUserAsync(int userId, User user, CancellationToken cancellationToken);
-    Task<IdentityResult> CreateRoleAsync(AppRole role, CancellationToken cancellationToken);
-    Task<IdentityResult> RemoveRoleAsync(int roleId, CancellationToken cancellationToken);
+    ValueTask<IdentityResult> CreateUserAsync(AppUser user, CancellationToken cancellationToken = default);
+    Task<IdentityResult> RemoveUserAsync(int userId, CancellationToken cancellationToken = default);
+    ValueTask<IdentityResult> UpdateUserAsync(int userId, User user, CancellationToken cancellationToken = default);
+    ValueTask<IdentityResult> CreateRoleAsync(AppRole role, CancellationToken cancellationToken = default);
+    ValueTask<IdentityResult> RemoveRoleAsync(int roleId, CancellationToken cancellationToken = default);
     Task UserAddToRoleAsync(int userId, int roleRId);
     void RemoveUserFromRole(ManyToManyJoin match);
-    Task<IdentityResult> UpdateRoleAsync(int roleId, AppRole role, CancellationToken cancellationToken);
+    ValueTask<IdentityResult> UpdateRoleAsync(int roleId, AppRole role, CancellationToken cancellationToken = default);
 }

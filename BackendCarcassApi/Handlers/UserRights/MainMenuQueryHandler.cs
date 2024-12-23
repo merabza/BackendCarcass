@@ -22,7 +22,7 @@ public sealed class MainMenuQueryHandler : IQueryHandler<MainMenuQueryRequest, M
     }
 
     public async Task<OneOf<MainMenuModel, IEnumerable<Err>>> Handle(MainMenuQueryRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var currentUserName = request.HttpRequest.HttpContext.User.Identity!.Name!;
 

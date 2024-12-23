@@ -27,7 +27,7 @@ public sealed class ChildrenTreeDataQueryHandler : ICommandHandler<ChildrenTreeD
     }
 
     public async Task<OneOf<List<DataTypeModel>, IEnumerable<Err>>> Handle(
-        ChildrenTreeDataCommandRequest request, CancellationToken cancellationToken)
+        ChildrenTreeDataCommandRequest request, CancellationToken cancellationToken = default)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo);
         var result = await rightsCollector.ChildrenTreeData(request.HttpRequest.HttpContext.User.Identity!.Name!,

@@ -36,7 +36,8 @@ public sealed class IdentityRepository : IIdentityRepository
             w.ChildDataTypeNavigation.DtKey == ECarcassDataTypeKeys.Role.ToDtKey());
 
 
-    public async Task<IdentityResult> CreateUserAsync(AppUser appUser, CancellationToken cancellationToken)
+    public async ValueTask<IdentityResult> CreateUserAsync(AppUser appUser,
+        CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(appUser.UserName) || string.IsNullOrWhiteSpace(appUser.NormalizedUserName) ||
             string.IsNullOrWhiteSpace(appUser.Email) || string.IsNullOrWhiteSpace(appUser.NormalizedEmail) ||
@@ -66,7 +67,7 @@ public sealed class IdentityRepository : IIdentityRepository
         }
     }
 
-    public async Task<IdentityResult> RemoveUserAsync(int userId, CancellationToken cancellationToken)
+    public async Task<IdentityResult> RemoveUserAsync(int userId, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -84,7 +85,8 @@ public sealed class IdentityRepository : IIdentityRepository
         }
     }
 
-    public async Task<IdentityResult> UpdateUserAsync(int userId, User user, CancellationToken cancellationToken)
+    public async ValueTask<IdentityResult> UpdateUserAsync(int userId, User user,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -110,7 +112,8 @@ public sealed class IdentityRepository : IIdentityRepository
         }
     }
 
-    public async Task<IdentityResult> CreateRoleAsync(AppRole appRole, CancellationToken cancellationToken)
+    public async ValueTask<IdentityResult> CreateRoleAsync(AppRole appRole,
+        CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(appRole.Name) || string.IsNullOrWhiteSpace(appRole.NormalizedName))
         {
@@ -137,7 +140,7 @@ public sealed class IdentityRepository : IIdentityRepository
         }
     }
 
-    public async Task<IdentityResult> RemoveRoleAsync(int roleId, CancellationToken cancellationToken)
+    public async ValueTask<IdentityResult> RemoveRoleAsync(int roleId, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -155,7 +158,8 @@ public sealed class IdentityRepository : IIdentityRepository
         }
     }
 
-    public async Task<IdentityResult> UpdateRoleAsync(int roleId, AppRole appRole, CancellationToken cancellationToken)
+    public async ValueTask<IdentityResult> UpdateRoleAsync(int roleId, AppRole appRole,
+        CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(appRole.Name) || string.IsNullOrWhiteSpace(appRole.NormalizedName))
         {

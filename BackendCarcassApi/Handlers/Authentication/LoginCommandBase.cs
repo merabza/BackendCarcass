@@ -11,7 +11,7 @@ public /*open*/ class LoginCommandBase
     //ამ მეთოდით ავტორიზაციის პროცესი გამოტანილია ცალკე
     //და გამოიყენება როგორც ავტორიზაციისას, ისე ახალი მომხმარებლის დარეგისტრირებისას,
     //რომ ავტომატურად მოხდეს რეგისტრაციისას ავტორიზაციაც
-    protected static async Task<AppUser?> DoLogin(SignInManager<AppUser> signinMgr, AppUser? user, string password)
+    protected static async ValueTask<AppUser?> DoLogin(SignInManager<AppUser> signinMgr, AppUser? user, string password)
     {
         if (user == null)
             return null;

@@ -24,7 +24,7 @@ public sealed class DataTypesListQueryHandler(IMenuRightsRepository repository) 
     private readonly IMenuRightsRepository _repository = repository;
 
     public async Task<OneOf<DataTypesResponse[], IEnumerable<Err>>> Handle(DataTypesQueryRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var currentUserName = CurrentUserName(request.HttpRequest);
         if (currentUserName is null)

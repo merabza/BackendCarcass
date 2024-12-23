@@ -24,7 +24,7 @@ public sealed class GetTablesQueryHandler : IQueryHandler<MdGetTablesQueryReques
     }
 
     public async Task<OneOf<MdGetTablesQueryResponse, IEnumerable<Err>>> Handle(MdGetTablesQueryRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var reqQuery = request.HttpRequest.Query["tables"];
         List<string> tableNames = reqQuery.Where(tableName => tableName is not null).Distinct().ToList()!;

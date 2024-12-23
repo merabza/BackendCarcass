@@ -24,7 +24,7 @@ public sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePasswor
     }
 
     public async Task<OneOf<Unit, IEnumerable<Err>>> Handle(ChangePasswordCommandRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით
         var user = await _userMgr.FindByNameAsync(request.UserName!);

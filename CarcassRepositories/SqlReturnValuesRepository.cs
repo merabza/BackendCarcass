@@ -14,8 +14,8 @@ public class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValuesRepos
 {
     private readonly CarcassDbContext _ctx = ctx;
 
-    public override async Task<List<SrvModel>> GetSimpleReturnValues(DataTypeModelForRvs dt,
-        CancellationToken cancellationToken)
+    public override async ValueTask<List<SrvModel>> GetSimpleReturnValues(DataTypeModelForRvs dt,
+        CancellationToken cancellationToken = default)
     {
         string? strSql = null;
         if (IsIdentifier(dt.DtIdFieldName) && (dt.DtKeyFieldName is null || IsIdentifier(dt.DtKeyFieldName)) &&
@@ -30,7 +30,7 @@ public class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValuesRepos
     }
 
     public override async Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         string? strSql = null;
         if (dt.DtManyToManyJoinParentDataTypeId is not null && dt.DtManyToManyJoinChildDataTypeId is not null)

@@ -13,7 +13,7 @@ namespace CarcassRepositories;
 public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValuesRepository
 {
     public async Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string> tableNames,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         return await ctx.DataTypes.Where(x => tableNames.Contains(x.DtTable)).Select(x =>
             new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName,
@@ -23,12 +23,12 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
 
 
     public abstract Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 
-    public abstract Task<List<SrvModel>> GetSimpleReturnValues(DataTypeModelForRvs dt,
-        CancellationToken cancellationToken);
+    public abstract ValueTask<List<SrvModel>> GetSimpleReturnValues(DataTypeModelForRvs dt,
+        CancellationToken cancellationToken = default);
 
-    protected async Task<DataTypeModelForRvs?> GetDataType(int dtId, CancellationToken cancellationToken)
+    protected async Task<DataTypeModelForRvs?> GetDataType(int dtId, CancellationToken cancellationToken = default)
     {
         return await ctx.DataTypes.Where(x => x.DtId == dtId).Select(x => new DataTypeModelForRvs(x.DtId, x.DtKey,
                 x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName, x.DtNameFieldName, x.DtParentDataTypeId,
@@ -41,7 +41,7 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
         return ctx.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
     }
 
-    protected async Task<string?> FindParentFieldName(DataTypeModelForRvs dt, CancellationToken cancellationToken)
+    protected async ValueTask<string?> FindParentFieldName(DataTypeModelForRvs dt, CancellationToken cancellationToken = default)
     {
         if (dt.DtParentDataTypeId is null)
             return null;

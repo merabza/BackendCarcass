@@ -65,7 +65,7 @@ public sealed class RightsEndpoints : IInstaller
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("getparentstreedata/{viewStyle}")]
     private static async Task<IResult> ParentsTreeData(int viewStyle, HttpRequest request, IMediator mediator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ParentsTreeDataQueryHandler)} from {nameof(ParentsTreeData)}");
         var query = new ParentsTreeDataQueryRequest(request, (ERightsEditorViewStyle)viewStyle);
@@ -81,7 +81,7 @@ public sealed class RightsEndpoints : IInstaller
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("getchildrentreedata/{dataTypeKey}/{viewStyle}")]
     private static async Task<IResult> ChildrenTreeData(string dataTypeKey, int viewStyle, HttpRequest request,
-        IMediator mediator, CancellationToken cancellationToken)
+        IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ChildrenTreeDataQueryHandler)} from {nameof(ChildrenTreeData)}");
         var query = new ChildrenTreeDataCommandRequest(request, dataTypeKey, (ERightsEditorViewStyle)viewStyle);
@@ -99,7 +99,7 @@ public sealed class RightsEndpoints : IInstaller
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("halfchecks/{dataTypeId}/{dataKey}/{viewStyle}")]
     private static async Task<IResult> HalfChecks(int dataTypeId, string dataKey, int viewStyle, HttpRequest request,
-        IMediator mediator, CancellationToken cancellationToken)
+        IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(HalfChecksQueryHandler)} from {nameof(HalfChecks)}");
         var query = new HalfChecksCommandRequest(request, dataTypeId, dataKey, (ERightsEditorViewStyle)viewStyle);
@@ -116,8 +116,8 @@ public sealed class RightsEndpoints : IInstaller
     //   რაზეც უფლება აქვს ისინი ინახება.
     //   საბოლოოდ ამ უფლებების შემოწმება ხდება რეპოზიტორიის მხარეს.
     //[HttpPost("savedata")]
-    private static async Task<IResult> SaveData([FromBody] List<RightsChangeModel>? changesForSave, HttpRequest request,
-        IMediator mediator, CancellationToken cancellationToken)
+    private static async ValueTask<IResult> SaveData([FromBody] List<RightsChangeModel>? changesForSave,
+        HttpRequest request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(SaveDataCommandHandler)} from {nameof(SaveData)}");
         if (changesForSave is null)
@@ -137,7 +137,7 @@ public sealed class RightsEndpoints : IInstaller
     //   რადგან შეცდომები, რასაც ეს პროცედურა ასწორებს, ნებისმიერ შემთხვევაში გასასწორებელია
     //[HttpPost("optimize")]
     private static IResult Optimize(HttpRequest request, ILogger<RightsEndpoints> logger,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         //Debug.WriteLine($"Call {nameof(OptimizeCommandHandler)} from {nameof(Optimize)}");
         //if (!HasUserRightRole(mdRepo, request))

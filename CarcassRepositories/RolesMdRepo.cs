@@ -37,7 +37,7 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         return ConvertError(result);
     }
 
-    public async Task<Option<Err[]>> Update(int id, IDataType newItem)
+    public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
         if (oldRole == null)
@@ -58,7 +58,7 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         return ConvertError(setRoleResult);
     }
 
-    public async Task<Option<Err[]>> Delete(int id)
+    public async ValueTask<Option<Err[]>> Delete(int id)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
         if (oldRole == null)

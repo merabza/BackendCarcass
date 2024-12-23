@@ -38,7 +38,7 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
         return null;
     }
 
-    public async Task<Option<Err[]>> Update(int id, IDataType newItem)
+    public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
         var vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
         if (vvv == null)
@@ -60,7 +60,7 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
         return null;
     }
 
-    public async Task<Option<Err[]>> Delete(int id)
+    public async ValueTask<Option<Err[]>> Delete(int id)
     {
         var entResult = Load();
         if (entResult.IsT1)

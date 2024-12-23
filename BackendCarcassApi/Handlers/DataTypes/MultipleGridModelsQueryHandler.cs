@@ -24,7 +24,7 @@ public sealed class
     }
 
     public async Task<OneOf<Dictionary<string, string>, IEnumerable<Err>>> Handle(
-        MultipleGridModelsQueryRequest request, CancellationToken cancellationToken)
+        MultipleGridModelsQueryRequest request, CancellationToken cancellationToken = default)
     {
         Dictionary<string, string> resultList = new();
         //შემოწმდეს მოწოდებული მოთხოვნა

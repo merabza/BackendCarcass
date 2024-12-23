@@ -70,8 +70,8 @@ public sealed class UserRightsEndpoints : IInstaller
     //უფლება -> მხოლოდ ავტორიზაცია
     //მოქმედება -> მოწმდება მიღებული ინფორმაციის ვალიდურობა და ხდება პროფაილში ცვლილებების დაფიქსირება
     // GET api/v1/userrights/changeprofile
-    private static async Task<IResult> ChangeProfile([FromBody] ChangeProfileRequest? request, HttpRequest httpRequest,
-        IMediator mediator, CancellationToken cancellationToken)
+    private static async ValueTask<IResult> ChangeProfile([FromBody] ChangeProfileRequest? request,
+        HttpRequest httpRequest, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ChangeProfileCommandHandler)} from {nameof(ChangeProfile)}");
         if (request is null)
@@ -87,8 +87,8 @@ public sealed class UserRightsEndpoints : IInstaller
     //უფლება -> მხოლოდ ავტორიზაცია
     //მოქმედება -> მოწმდება მიღებული ინფორმაციის ვალიდურობა და ხდება პაროლის ცვლილებების დაფიქსირება
     // PUT api/v1/userrights/changepassword
-    private static async Task<IResult> ChangePassword([FromBody] ChangePasswordRequest? request,
-        HttpRequest httpRequest, IMediator mediator, CancellationToken cancellationToken)
+    private static async ValueTask<IResult> ChangePassword([FromBody] ChangePasswordRequest? request,
+        HttpRequest httpRequest, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ChangePasswordCommandHandler)} from {nameof(ChangePassword)}");
         if (request is null)
@@ -110,7 +110,7 @@ public sealed class UserRightsEndpoints : IInstaller
     //  რის მერეც შესაძლებელი გახდება მომხმარებლის იდენტიფიკატორის გათავისუფლება კავშირებისაგან და წაშლაც მოხერხდება
     // DELETE api/v1/userrights/deletecurrentuser/{userName}
     private static async Task<IResult> DeleteCurrentUser(string userName, HttpRequest httpRequest, IMediator mediator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(DeleteCurrentUserCommandHandler)} from {nameof(DeleteCurrentUser)}");
         var command = new DeleteCurrentUserCommandRequest(httpRequest) { UserName = userName };
@@ -126,7 +126,7 @@ public sealed class UserRightsEndpoints : IInstaller
     //  მისი უფლებების მიხედვით ჩატვირთული მენიუს შესახებ ინფორმაციას უბრუნებს გამომძახებელს
     // GET api/v1/userrights/getmainmenu
     private static async Task<IResult> MainMenu(HttpRequest httpRequest, IMediator mediator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MainMenuQueryHandler)} from {nameof(MainMenu)}");
         var query = new MainMenuQueryRequest(httpRequest);

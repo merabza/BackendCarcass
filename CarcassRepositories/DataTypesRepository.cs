@@ -20,7 +20,7 @@ public class DataTypesRepository : IDataTypesRepository
     }
 
     public async Task<IEnumerable<MenuToCrudTypeDomModel>> LoadMenuToCrudTypes(
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         return await (from mmj in _context.ManyToManyJoins
                 join pt in _context.DataTypes on mmj.PtId equals pt.DtId
@@ -34,7 +34,7 @@ public class DataTypesRepository : IDataTypesRepository
     }
 
     public async Task<IEnumerable<DataTypeToCrudTypeDomModel>> LoadDataTypesToCrudTypes(
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         return await (from mmj in _context.ManyToManyJoins
             join pt in _context.DataTypes on mmj.PtId equals pt.DtId
@@ -48,7 +48,7 @@ public class DataTypesRepository : IDataTypesRepository
     }
 
     public async Task<IEnumerable<DataTypeToDataTypeDomModel>> LoadDataTypesToDataTypes(
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var dataTypeKey = ECarcassDataTypeKeys.DataType.ToDtKey();
         return await (from mmj in _context.ManyToManyJoins
