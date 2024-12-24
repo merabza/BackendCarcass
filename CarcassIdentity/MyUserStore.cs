@@ -82,7 +82,7 @@ public sealed class MyUserStore :
         }
     }
 
-    async Task<AppRole?> IRoleStore<AppRole>.FindByIdAsync(string roleId, CancellationToken cancellationToken = default)
+    async Task<AppRole?> IRoleStore<AppRole>.FindByIdAsync(string roleId, CancellationToken cancellationToken)
     {
         var role = await _repo.Roles.FirstOrDefaultAsync(u => u.RolId.ToString() == roleId, cancellationToken);
         return role == null
@@ -92,7 +92,7 @@ public sealed class MyUserStore :
     }
 
     async Task<AppRole?> IRoleStore<AppRole>.FindByNameAsync(string normalizedRoleName,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var role =
             await _repo.Roles.FirstOrDefaultAsync(u => u.RolNormalizedKey == normalizedRoleName, cancellationToken);
@@ -338,7 +338,7 @@ public sealed class MyUserStore :
     }
 
     async Task<IList<AppUser>> IUserRoleStore<AppUser>.GetUsersInRoleAsync(string roleName,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         IList<AppUser> us = _repo.Users.Select(s =>
                 new AppUser(s.UserName, s.FirstName, s.LastName)
@@ -349,7 +349,7 @@ public sealed class MyUserStore :
 
     private void Dispose(bool disposing)
     {
-        if (_disposedValue) 
+        if (_disposedValue)
             return;
 
         _disposedValue = true;

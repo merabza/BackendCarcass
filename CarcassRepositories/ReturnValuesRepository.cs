@@ -12,13 +12,9 @@ namespace CarcassRepositories;
 
 public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValuesRepository
 {
-    public async Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string> tableNames,
-        CancellationToken cancellationToken = default)
+    public Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string> tableNames, CancellationToken cancellationToken = default)
     {
-        return await ctx.DataTypes.Where(x => tableNames.Contains(x.DtTable)).Select(x =>
-            new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName,
-                x.DtNameFieldName, x.DtParentDataTypeId, x.DtManyToManyJoinParentDataTypeId,
-                x.DtManyToManyJoinChildDataTypeId)).ToListAsync(cancellationToken);
+        return ctx.DataTypes.Where(x => tableNames.Contains(x.DtTable)).Select(x => new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName, x.DtNameFieldName, x.DtParentDataTypeId, x.DtManyToManyJoinParentDataTypeId, x.DtManyToManyJoinChildDataTypeId)).ToListAsync(cancellationToken);
     }
 
 
@@ -28,12 +24,9 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
     public abstract ValueTask<List<SrvModel>> GetSimpleReturnValues(DataTypeModelForRvs dt,
         CancellationToken cancellationToken = default);
 
-    protected async Task<DataTypeModelForRvs?> GetDataType(int dtId, CancellationToken cancellationToken = default)
+    protected Task<DataTypeModelForRvs?> GetDataType(int dtId, CancellationToken cancellationToken = default)
     {
-        return await ctx.DataTypes.Where(x => x.DtId == dtId).Select(x => new DataTypeModelForRvs(x.DtId, x.DtKey,
-                x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName, x.DtNameFieldName, x.DtParentDataTypeId,
-                x.DtManyToManyJoinParentDataTypeId, x.DtManyToManyJoinChildDataTypeId))
-            .SingleOrDefaultAsync(cancellationToken);
+        return ctx.DataTypes.Where(x => x.DtId == dtId).Select(x => new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName, x.DtNameFieldName, x.DtParentDataTypeId, x.DtManyToManyJoinParentDataTypeId, x.DtManyToManyJoinChildDataTypeId)).SingleOrDefaultAsync(cancellationToken);
     }
 
     private IEntityType? GetEntityTypeByTableName(string tableName)

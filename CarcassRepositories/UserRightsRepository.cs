@@ -38,22 +38,23 @@ public class UserRightsRepository : IUserRightsRepository
     //        w.PtId == roleDtId && w.PKey == roleName && w.CtId == appClaimDataTypeId && w.CKey == claimName);
     //}
 
-    public async Task<int?> GetDataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey, CancellationToken cancellationToken = default)
+    public async Task<int?> GetDataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey,
+        CancellationToken cancellationToken = default)
     {
         return await _context.DataTypes.Where(w => w.DtKey == dataTypeKey.ToDtKey()).Select(s => s.DtId)
             .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<bool> CheckRight(int parentDataTypeId, string parentKey, int childDataTypeId, string childKey,
+    public Task<bool> CheckRight(int parentDataTypeId, string parentKey, int childDataTypeId, string childKey,
         CancellationToken cancellationToken = default)
     {
-        return await _context.ManyToManyJoins.AnyAsync(
+        return _context.ManyToManyJoins.AnyAsync(
             w => w.PtId == parentDataTypeId && w.PKey == parentKey && w.CtId == childDataTypeId && w.CKey == childKey,
             cancellationToken);
     }
 
 
-    public async Task<bool> CheckMenuRight(int roleDtId, string roleName, int menuGroupsDtId, int menuDtId,
+    public Task<bool> CheckMenuRight(int roleDtId, string roleName, int menuGroupsDtId, int menuDtId,
         string menuItemName, CancellationToken cancellationToken = default)
     {
         var res = from m in _context.Menu
@@ -64,12 +65,12 @@ public class UserRightsRepository : IUserRightsRepository
                   rmg.PtId == roleDtId && rmg.PKey == roleName && rmg.CtId == menuGroupsDtId
             select rm;
 
-        return await res.AnyAsync(cancellationToken);
+        return res.AnyAsync(cancellationToken);
     }
 
-    public async Task<string?> KeyByTableName(string tableName, CancellationToken cancellationToken = default)
+    public Task<string?> KeyByTableName(string tableName, CancellationToken cancellationToken = default)
     {
-        return await _context.DataTypes.Where(w => w.DtTable == tableName).Select(s => s.DtKey)
+        return _context.DataTypes.Where(w => w.DtTable == tableName).Select(s => s.DtKey)
             .SingleOrDefaultAsync(cancellationToken);
     }
 
@@ -82,11 +83,10 @@ public class UserRightsRepository : IUserRightsRepository
         //რომ მას ასევე უფლება აქვს ნახოს ყველა ის ცხრილი, რომელიც ამ მენიუს ელემენტს სჭირდება.
         //ამიტომ როლისათვის ვარკვევთ მენიუს გავლით რომელ ცხრილზე აქვს უფლებები ამ როლის მომხმარებელს.
 
-        return await _context.ManyToManyJoins.AnyAsync(w =>
-                       w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataTypeDtId && w.CKey == keyByTableName,
-                   cancellationToken) ||
-               await GetManyToManyJoinsPccOne(roleDtId, roleName, menuDtId, dataTypeDtId, keyByTableName,
-                   cancellationToken);
+        return await _context.ManyToManyJoins.AnyAsync(
+            w => w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataTypeDtId && w.CKey == keyByTableName,
+            cancellationToken) || await GetManyToManyJoinsPccOne(roleDtId, roleName, menuDtId, dataTypeDtId,
+            keyByTableName, cancellationToken);
     }
 
     public async Task<OneOf<bool, IEnumerable<Err>>> CheckTableCrudRight(int roleDtId, string roleName,
@@ -101,10 +101,10 @@ public class UserRightsRepository : IUserRightsRepository
                    w.CKey == keyByTableName + '.' + Enum.GetName(typeof(ECrudOperationType), crudType));
     }
 
-    private async Task<bool> GetManyToManyJoinsPccOne(int parentTypeId, string parentKey, int childTypeId,
-        int childTypeId2, string childKey2, CancellationToken cancellationToken = default)
+    private Task<bool> GetManyToManyJoinsPccOne(int parentTypeId, string parentKey, int childTypeId, int childTypeId2,
+        string childKey2, CancellationToken cancellationToken = default)
     {
-        return await (from r1 in _context.ManyToManyJoins
+        return (from r1 in _context.ManyToManyJoins
             join r2 in _context.ManyToManyJoins on new { t = r1.CtId, i = r1.CKey } equals new
                 { t = r2.PtId, i = r2.PKey }
             where r1.PtId == parentTypeId && r1.PKey == parentKey && r1.CtId == childTypeId &&

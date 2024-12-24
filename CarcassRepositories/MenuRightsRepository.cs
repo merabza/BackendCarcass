@@ -81,7 +81,8 @@ public sealed class MenuRightsRepository(CarcassDbContext context) : IMenuRights
         return [.. res2];
     }
 
-    private async Task<IQueryable<MenuGroupModel>> MenuGroups(string userName, CancellationToken cancellationToken = default)
+    private async Task<IQueryable<MenuGroupModel>> MenuGroups(string userName,
+        CancellationToken cancellationToken = default)
     {
         var menuGroupsDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.MenuGroup, cancellationToken);
         var menuDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.MenuItm, cancellationToken);
@@ -103,7 +104,8 @@ public sealed class MenuRightsRepository(CarcassDbContext context) : IMenuRights
             select new MenuGroupModel(mg.MengId, mg.MengKey, mg.MengName, mg.SortId, mg.MengIconName, mg.Hidden);
     }
 
-    private async Task<IQueryable<MenuItmModel>> MenuItems(string userName, CancellationToken cancellationToken = default)
+    private async Task<IQueryable<MenuItmModel>> MenuItems(string userName,
+        CancellationToken cancellationToken = default)
     {
         var menuGroupsDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.MenuGroup, cancellationToken);
         var menuDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.MenuItm, cancellationToken);
@@ -155,9 +157,9 @@ public sealed class MenuRightsRepository(CarcassDbContext context) : IMenuRights
             select new DataTypeToCrudRight(dt.DtId, dt.DtTable, crt.CrtKey);
     }
 
-    private async Task<int> DataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey, CancellationToken cancellationToken = default)
+    private Task<int> DataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey, CancellationToken cancellationToken = default)
     {
-        return await _carcassContext.DataTypes.Where(w => w.DtKey == dataTypeKey.ToDtKey()).Select(s => s.DtId)
+        return _carcassContext.DataTypes.Where(w => w.DtKey == dataTypeKey.ToDtKey()).Select(s => s.DtId)
             .SingleOrDefaultAsync(cancellationToken);
     }
 

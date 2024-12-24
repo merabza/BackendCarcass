@@ -27,11 +27,11 @@ public abstract class CrudBase
     //შესაბამისად შექმნის პროცედურას შეუძლია დააბრუნოს შესანახ ობიექტზე რეფერენსი და როცა უკვე შენახვა მოხდება, ამ რეფერენსიდან შესაძლებელი იქნება იდენტიფიკატორის ამოღება
     protected virtual int JustCreatedId => 0;
 
-    public async Task<OneOf<ICrudData, Err[]>> GetOne(int id, CancellationToken cancellationToken = default)
+    public Task<OneOf<ICrudData, Err[]>> GetOne(int id, CancellationToken cancellationToken = default)
     {
         try
         {
-            return await GetOneData(id, cancellationToken);
+            return GetOneData(id, cancellationToken);
         }
         catch (Exception e)
         {
