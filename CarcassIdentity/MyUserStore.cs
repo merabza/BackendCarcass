@@ -82,7 +82,7 @@ public sealed class MyUserStore :
         }
     }
 
-    async Task<AppRole?> IRoleStore<AppRole>.FindByIdAsync(string roleId, CancellationToken cancellationToken)
+    async Task<AppRole?> IRoleStore<AppRole>.FindByIdAsync(string roleId, CancellationToken cancellationToken = default)
     {
         var role = await _repo.Roles.FirstOrDefaultAsync(u => u.RolId.ToString() == roleId, cancellationToken);
         return role == null
@@ -92,7 +92,7 @@ public sealed class MyUserStore :
     }
 
     async Task<AppRole?> IRoleStore<AppRole>.FindByNameAsync(string normalizedRoleName,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var role =
             await _repo.Roles.FirstOrDefaultAsync(u => u.RolNormalizedKey == normalizedRoleName, cancellationToken);
@@ -338,7 +338,7 @@ public sealed class MyUserStore :
     }
 
     async Task<IList<AppUser>> IUserRoleStore<AppUser>.GetUsersInRoleAsync(string roleName,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         IList<AppUser> us = _repo.Users.Select(s =>
                 new AppUser(s.UserName, s.FirstName, s.LastName)
