@@ -45,7 +45,15 @@ public sealed class MenuGroup : IDataType, IMyEquatable
 
     public dynamic EditFields()
     {
-        return new { MengId, MengKey, MengName, SortId, MengIconName, Hidden };
+        return new
+        {
+            MengId,
+            MengKey,
+            MengName,
+            SortId,
+            MengIconName,
+            Hidden
+        };
     }
 
     public bool EqualsTo(IDataType data)

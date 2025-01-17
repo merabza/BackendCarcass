@@ -8,7 +8,8 @@ namespace CarcassMasterDataDom.Loaders;
 
 public sealed class MenuToCrudTypesMdLoader(IDataTypesRepository dataTypesRepository) : IMasterDataLoader
 {
-    public async ValueTask<OneOf<IEnumerable<IDataType>, IEnumerable<Err>>> GetAllRecords(CancellationToken cancellationToken = default)
+    public async ValueTask<OneOf<IEnumerable<IDataType>, IEnumerable<Err>>> GetAllRecords(
+        CancellationToken cancellationToken = default)
     {
         var result = await dataTypesRepository.LoadMenuToCrudTypes(cancellationToken);
         return OneOf<IEnumerable<IDataType>, IEnumerable<Err>>.FromT0(result);

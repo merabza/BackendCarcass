@@ -21,8 +21,9 @@ public sealed class MenuItm : IDataType, IMyEquatable
 
     public MenuGroup MenGroupNavigation
     {
-        get => _menGroupNavigation ??
-               throw new InvalidOperationException("Uninitialized property: " + nameof(MenGroupNavigation));
+        get =>
+            _menGroupNavigation ??
+            throw new InvalidOperationException("Uninitialized property: " + nameof(MenGroupNavigation));
         set => _menGroupNavigation = value;
     }
 
@@ -55,7 +56,17 @@ public sealed class MenuItm : IDataType, IMyEquatable
 
     public dynamic EditFields()
     {
-        return new { MenId, MenKey, MenLinkKey, MenName, MenValue, MenGroupId, SortId, MenIconName };
+        return new
+        {
+            MenId,
+            MenKey,
+            MenLinkKey,
+            MenName,
+            MenValue,
+            MenGroupId,
+            SortId,
+            MenIconName
+        };
     }
 
     public bool EqualsTo(IDataType data)

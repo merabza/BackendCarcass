@@ -16,15 +16,17 @@ public sealed class ManyToManyJoin
 
     public DataType ParentDataTypeNavigation
     {
-        get => _parentDataTypeNavigation ??
-               throw new InvalidOperationException("Uninitialized property: " + nameof(ParentDataTypeNavigation));
+        get =>
+            _parentDataTypeNavigation ??
+            throw new InvalidOperationException("Uninitialized property: " + nameof(ParentDataTypeNavigation));
         set => _parentDataTypeNavigation = value;
     }
 
     public DataType ChildDataTypeNavigation
     {
-        get => _childDataTypeNavigation ??
-               throw new InvalidOperationException("Uninitialized property: " + nameof(ChildDataTypeNavigation));
+        get =>
+            _childDataTypeNavigation ??
+            throw new InvalidOperationException("Uninitialized property: " + nameof(ChildDataTypeNavigation));
         set => _childDataTypeNavigation = value;
     }
 }

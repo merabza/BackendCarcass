@@ -30,15 +30,16 @@ public class RolesCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async ValueTask<OneOf<IEnumerable<IDataType>, IEnumerable<Err>>> GetAllRecords(CancellationToken cancellationToken = default)
+    public async ValueTask<OneOf<IEnumerable<IDataType>, IEnumerable<Err>>> GetAllRecords(
+        CancellationToken cancellationToken = default)
     {
         var roles = await _roleManager.Roles.ToListAsync(cancellationToken);
         return OneOf<IEnumerable<IDataType>, IEnumerable<Err>>.FromT0(roles.Select(x =>
             new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level)));
     }
 
-    public override async ValueTask<OneOf<TableRowsData, IEnumerable<Err>>> GetTableRowsData(FilterSortRequest filterSortRequest,
-        CancellationToken cancellationToken = default)
+    public override async ValueTask<OneOf<TableRowsData, IEnumerable<Err>>> GetTableRowsData(
+        FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default)
     {
         var roles = _roleManager.Roles;
 
@@ -48,7 +49,8 @@ public class RolesCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, rows.Select(s => s.EditFields()).ToList());
     }
 
-    protected override async Task<OneOf<ICrudData, IEnumerable<Err>>> GetOneData(int id, CancellationToken cancellationToken = default)
+    protected override async Task<OneOf<ICrudData, IEnumerable<Err>>> GetOneData(int id,
+        CancellationToken cancellationToken = default)
     {
         var appRole = await _roleManager.FindByIdAsync(id.ToString());
         if (appRole?.Name is not null)
@@ -91,7 +93,8 @@ public class RolesCrud : CrudBase, IMasterDataLoader
         return ConvertError(setRoleResult);
     }
 
-    protected override async Task<Option<IEnumerable<Err>>> DeleteData(int id, CancellationToken cancellationToken = default)
+    protected override async Task<Option<IEnumerable<Err>>> DeleteData(int id,
+        CancellationToken cancellationToken = default)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
         if (oldRole is null)

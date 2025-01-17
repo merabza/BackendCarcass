@@ -14,7 +14,8 @@ public static class PaginationQuery
 {
     public static async Task<(int, int, List<TResult>)> UseCustomSortFilterPagination<TSource, TResult>(
         this IQueryable<TSource> query, FilterSortRequest filterSortRequest,
-        Expression<Func<TSource, TResult>> selector, CancellationToken cancellationToken = default) where TSource : class
+        Expression<Func<TSource, TResult>> selector, CancellationToken cancellationToken = default)
+        where TSource : class
     {
         var (realOffset, count, preparedQuery) = query.PrepareSortFilterPagination(filterSortRequest);
         var rowsSel = await preparedQuery.Select(selector).ToListAsync(cancellationToken);
@@ -56,8 +57,7 @@ public static class PaginationQuery
         return query;
     }
 
-    private static IQueryable<T> CustomSort<T>(this IQueryable<T> query, SortField[]? sortByFields)
-        where T : class
+    private static IQueryable<T> CustomSort<T>(this IQueryable<T> query, SortField[]? sortByFields) where T : class
     {
         if (sortByFields is not null && sortByFields.Length != 0)
             query = sortByFields.Aggregate(query,

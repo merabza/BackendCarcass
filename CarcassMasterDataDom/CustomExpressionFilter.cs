@@ -92,9 +92,7 @@ public static class CustomExpressionFilter
                 }
 
 
-                filterExpression = filterExpression is null
-                    ? comparison
-                    : Expression.And(filterExpression, comparison);
+                filterExpression = filterExpression is null ? comparison : Expression.And(filterExpression, comparison);
             }
 
             if (filterExpression is null)

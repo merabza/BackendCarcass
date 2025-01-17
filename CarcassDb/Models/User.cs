@@ -42,6 +42,13 @@ public sealed class User : IDataType
 
     public dynamic EditFields()
     {
-        return new { UsrId, UserName, Email, FirstName, LastName };
+        return new
+        {
+            UsrId,
+            UserName,
+            Email,
+            FirstName,
+            LastName
+        };
     }
 }
