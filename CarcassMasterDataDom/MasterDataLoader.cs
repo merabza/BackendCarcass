@@ -31,7 +31,7 @@ public class MasterDataLoader
         {
             var createMasterDataLoaderResult = _masterDataLoaderCreator.CreateMasterDataLoader(tableName);
             if (createMasterDataLoaderResult.IsT1)
-                return createMasterDataLoaderResult.AsT1;
+                return (Err[])createMasterDataLoaderResult.AsT1;
             var loader = createMasterDataLoaderResult.AsT0;
             var tableResult = await loader.GetAllRecords(cancellationToken);
             if (tableResult.IsT1)

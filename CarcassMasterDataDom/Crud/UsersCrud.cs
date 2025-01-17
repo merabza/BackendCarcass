@@ -30,15 +30,15 @@ public class UsersCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async ValueTask<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken = default)
+    public async ValueTask<OneOf<IEnumerable<IDataType>, IEnumerable<Err>>> GetAllRecords(CancellationToken cancellationToken = default)
     {
         var users = await _userManager.Users.ToListAsync(cancellationToken);
-        return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(users
+        return OneOf<IEnumerable<IDataType>, IEnumerable<Err>>.FromT0(users
             .Where(x => x.UserName is not null && x.Email is not null)
             .Select(x => new UserCrudData(x.UserName!, x.FirstName, x.LastName, x.Email!)));
     }
 
-    public override async ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+    public override async ValueTask<OneOf<TableRowsData, IEnumerable<Err>>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken = default)
     {
         var users = _userManager.Users;
@@ -48,7 +48,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, rows.Select(s => s.EditFields()).ToList());
     }
 
-    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken = default)
+    protected override async Task<OneOf<ICrudData, IEnumerable<Err>>> GetOneData(int id, CancellationToken cancellationToken = default)
     {
         var appUser = await _userManager.FindByIdAsync(id.ToString());
         if (appUser?.UserName is not null && appUser.Email is not null)
@@ -56,7 +56,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
         return new[] { MasterDataApiErrors.CannotFindUser };
     }
 
-    protected override async ValueTask<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
+    protected override async ValueTask<Option<IEnumerable<Err>>> CreateData(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default)
     {
         var user = (UserCrudData)crudDataForCreate;
@@ -73,7 +73,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
         return null;
     }
 
-    protected override async ValueTask<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+    protected override async ValueTask<Option<IEnumerable<Err>>> UpdateData(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
@@ -103,7 +103,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
         return ConvertError(setEmailResult);
     }
 
-    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
+    protected override async Task<Option<IEnumerable<Err>>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
         if (oldUser is null)
@@ -112,7 +112,7 @@ public class UsersCrud : CrudBase, IMasterDataLoader
         return ConvertError(deleteResult);
     }
 
-    private static Option<Err[]> ConvertError(IdentityResult result)
+    private static Option<IEnumerable<Err>> ConvertError(IdentityResult result)
     {
         return result.Succeeded
             ? null
