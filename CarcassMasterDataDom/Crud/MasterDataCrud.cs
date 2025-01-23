@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
@@ -216,21 +216,24 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
             errors.AddRange(entResult.AsT1);
         var res = entResult.AsT0;
 
-        var keyResult = GetSingleKeyName();
+        var keyResult = GetSingleKeyPropertyName();
         if (keyResult.IsT1)
             errors.AddRange(keyResult.AsT1);
-        var keyRes = keyResult.AsT0;
+        var keyPropertyName = keyResult.AsT0;
 
-        //var enm = await res.ToListAsync(cancellationToken);
-        //var idt = enm.SingleOrDefault( w => w.Id == id);
-        var idt = await res.Where($"{keyRes} = {id}").SingleOrDefaultAsync(cancellationToken);
+        var parameter = Expression.Parameter(_entityType.ClrType, keyPropertyName);
+        var constant = Expression.Constant(id);
+        var equal = Expression.Equal(parameter, constant);
+        var lambda = Expression.Lambda<Func<IDataType, bool>>(equal, parameter);
+        var idt = await res.Where(lambda).SingleOrDefaultAsync(cancellationToken);
+
         if (idt is not null)
             return OneOf<IDataType, IEnumerable<Err>>.FromT0(idt);
         errors.Add(MasterDataApiErrors.EntryNotFound);
         return errors.ToArray();
     }
 
-    private OneOf<string, IEnumerable<Err>> GetSingleKeyName()
+    private OneOf<string, IEnumerable<Err>> GetSingleKeyPropertyName()
     {
         var singleKey = _entityType.GetKeys().SingleOrDefault();
         if (singleKey is null)
@@ -242,7 +245,8 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
                 MasterDataApiErrors.TableSingleKeyMustHaveOneProperty(_tableName)
             }; //ვერ ვიპოვეთ ერთადერთი გასაღები
 
-        return singleKey.Properties[0].Name;
+        return OneOf<string, IEnumerable<Err>>.FromT0(singleKey.Properties[0].Name);
+        //return OneOf<IProperty, IEnumerable<Err>>.FromT0(singleKey.Properties[0]);
     }
 
     private OneOf<object, IEnumerable<Err>> QueryObject()
