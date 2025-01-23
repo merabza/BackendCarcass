@@ -12,8 +12,7 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class GetTablesQueryHandler : IQueryHandler<MdGetTablesQueryRequest,
-    MdGetTablesQueryResponse>
+public sealed class GetTablesQueryHandler : IQueryHandler<MdGetTablesQueryRequest, MdGetTablesQueryResponse>
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCreator;
 

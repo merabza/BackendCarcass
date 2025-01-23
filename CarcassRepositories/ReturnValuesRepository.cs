@@ -12,9 +12,13 @@ namespace CarcassRepositories;
 
 public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValuesRepository
 {
-    public Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string> tableNames, CancellationToken cancellationToken = default)
+    public Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string> tableNames,
+        CancellationToken cancellationToken = default)
     {
-        return ctx.DataTypes.Where(x => tableNames.Contains(x.DtTable)).Select(x => new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName, x.DtNameFieldName, x.DtParentDataTypeId, x.DtManyToManyJoinParentDataTypeId, x.DtManyToManyJoinChildDataTypeId)).ToListAsync(cancellationToken);
+        return ctx.DataTypes.Where(x => tableNames.Contains(x.DtTable)).Select(x =>
+            new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName,
+                x.DtNameFieldName, x.DtParentDataTypeId, x.DtManyToManyJoinParentDataTypeId,
+                x.DtManyToManyJoinChildDataTypeId)).ToListAsync(cancellationToken);
     }
 
 
@@ -26,7 +30,10 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
 
     protected Task<DataTypeModelForRvs?> GetDataType(int dtId, CancellationToken cancellationToken = default)
     {
-        return ctx.DataTypes.Where(x => x.DtId == dtId).Select(x => new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName, x.DtNameFieldName, x.DtParentDataTypeId, x.DtManyToManyJoinParentDataTypeId, x.DtManyToManyJoinChildDataTypeId)).SingleOrDefaultAsync(cancellationToken);
+        return ctx.DataTypes.Where(x => x.DtId == dtId).Select(x => new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName,
+                x.DtTable, x.DtIdFieldName, x.DtKeyFieldName, x.DtNameFieldName, x.DtParentDataTypeId,
+                x.DtManyToManyJoinParentDataTypeId, x.DtManyToManyJoinChildDataTypeId))
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
     private IEntityType? GetEntityTypeByTableName(string tableName)
@@ -34,7 +41,8 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
         return ctx.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
     }
 
-    protected async ValueTask<string?> FindParentFieldName(DataTypeModelForRvs dt, CancellationToken cancellationToken = default)
+    protected async ValueTask<string?> FindParentFieldName(DataTypeModelForRvs dt,
+        CancellationToken cancellationToken = default)
     {
         if (dt.DtParentDataTypeId is null)
             return null;

@@ -18,19 +18,19 @@
 //        _userManager = userManager;
 //    }
 
-//    //public OneOf<IQueryable<IDataType>, Err[]> EntitiesByTableName(string tableName)
+//    //public OneOf<IQueryable<IDataType>, IEnumerable<Err>> EntitiesByTableName(string tableName)
 //    //{
 //    //    var loaderMdRepo = CreateMdLoaderRepo(tableName);
 //    //    return loaderMdRepo.Load();
 //    //}
 
-//    //public async Task<Option<Err[]>> DeleteEntityByTableNameAndKey(string tableName, int id)
+//    //public async Task<Option<IEnumerable<Err>>> DeleteEntityByTableNameAndKey(string tableName, int id)
 //    //{
 //    //    var crudMdRepo = MdRepoCreator.CreateMdCruderRepo(_context, tableName, _roleManager, _userManager);
 //    //    return await crudMdRepo.Delete(id);
 //    //}
 
-//    //public async Task<Option<Err[]>> UpdateEntityByTableName(string tableName, int id, string json)
+//    //public async Task<Option<IEnumerable<Err>>> UpdateEntityByTableName(string tableName, int id, string json)
 //    //{
 //    //    var vvv = _context.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
 //    //    if (vvv == null)
@@ -100,7 +100,7 @@
 
 //    //}
 
-//    //public async Task<OneOf<IDataType, Err[]>> AddEntityByTableName(string tableName, string json)
+//    //public async Task<OneOf<IDataType, IEnumerable<Err>>> AddEntityByTableName(string tableName, string json)
 //    //{
 //    //    var vvv = _context.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
 //    //    if (vvv == null)
@@ -120,7 +120,7 @@
 
 //    //    var crudMdRepo = MdRepoCreator.CreateMdCruderRepo(_context, tableName, _roleManager, _userManager);
 //    //    var createResult = await crudMdRepo.Create(newItem);
-//    //    return createResult.Match(x => x, () => OneOf<IDataType, Err[]>.FromT0(newItem));
+//    //    return createResult.Match(x => x, () => OneOf<IDataType, IEnumerable<Err>>.FromT0(newItem));
 //    //}
 
 //    //protected virtual IMdLoader CreateMdLoaderRepo(string tableName)
@@ -129,7 +129,7 @@
 //    //}
 
 
-//    //private Option<Err[]> Validate(IDataType newItem, string tableName)
+//    //private Option<IEnumerable<Err>> Validate(IDataType newItem, string tableName)
 //    //{
 //    //    var dt = _context.DataTypes.SingleOrDefault(s => s.DtTable == tableName);
 

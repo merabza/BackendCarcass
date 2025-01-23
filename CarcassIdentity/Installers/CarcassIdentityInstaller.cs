@@ -61,8 +61,10 @@ public sealed class CarcassIdentityInstaller : IInstaller
             x.SaveToken = true;
             x.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true, IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false, ValidateAudience = false
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false
             };
         });
 

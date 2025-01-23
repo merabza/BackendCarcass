@@ -26,8 +26,8 @@ public sealed class HalfChecksQueryHandler : ICommandHandler<HalfChecksCommandRe
         _rvRepo = rvRepo;
     }
 
-    public async Task<OneOf<List<TypeDataModel>, IEnumerable<Err>>> Handle(
-        HalfChecksCommandRequest request, CancellationToken cancellationToken = default)
+    public async Task<OneOf<List<TypeDataModel>, IEnumerable<Err>>> Handle(HalfChecksCommandRequest request,
+        CancellationToken cancellationToken = default)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo);
         var typeDataModels = await rightsCollector.HalfChecks(request.HttpRequest.HttpContext.User.Identity!.Name!,

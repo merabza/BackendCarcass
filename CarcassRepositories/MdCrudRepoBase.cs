@@ -25,10 +25,7 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
 
         var result = setMethod.MakeGenericMethod(vvv.ClrType).Invoke(carcassContext, null);
         return result == null
-            ? new[]
-            {
-                MasterDataApiErrors.SetMethodReturnsNullForTable(tableName)
-            } //ცხრილის Set მეთოდი აბრუნებს null-ს
+            ? new[] { MasterDataApiErrors.SetMethodReturnsNullForTable(tableName) } //ცხრილის Set მეთოდი აბრუნებს null-ს
             : OneOf<IQueryable<IDataType>, IEnumerable<Err>>.FromT0((IQueryable<IDataType>)result);
     }
 
@@ -45,8 +42,7 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
         if (vvv == null)
             return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
 
-        var q = (IQueryable<IDataType>?)carcassContext.GetType().GetMethod("Set")
-            ?.MakeGenericMethod(vvv.ClrType)
+        var q = (IQueryable<IDataType>?)carcassContext.GetType().GetMethod("Set")?.MakeGenericMethod(vvv.ClrType)
             .Invoke(carcassContext, null);
         var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); //
         if (idt == null)

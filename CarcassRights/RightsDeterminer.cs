@@ -231,12 +231,14 @@ public class RightsDeterminer
             cancellationToken);
     }
 
-    public async ValueTask<OneOf<bool, IEnumerable<Err>>> CheckTableListViewRight(IEnumerable<TableKeyName> tableKeysNames,
-        IEnumerable<Claim> userClaims, CancellationToken cancellationToken = default)
+    public async ValueTask<OneOf<bool, IEnumerable<Err>>> CheckTableListViewRight(
+        IEnumerable<TableKeyName> tableKeysNames, IEnumerable<Claim> userClaims,
+        CancellationToken cancellationToken = default)
     {
         var roleNames = GetRoles(userClaims);
-        var tableClaimCombo =
-            from tableKeyName in tableKeysNames from roleName in roleNames select new { tableKeyName, roleName };
+        var tableClaimCombo = from tableKeyName in tableKeysNames
+            from roleName in roleNames
+            select new { tableKeyName, roleName };
         List<Err> errors = [];
 
         foreach (var menuClaim in tableClaimCombo)
@@ -287,7 +289,8 @@ public class RightsDeterminer
     //}
 
     private async ValueTask<OneOf<bool, IEnumerable<Err>>> CheckCrudRightByTableKey(string tableKey,
-        IEnumerable<Claim> userClaims, Option<ECrudOperationType> crudType, CancellationToken cancellationToken = default)
+        IEnumerable<Claim> userClaims, Option<ECrudOperationType> crudType,
+        CancellationToken cancellationToken = default)
     {
         var roleNames = GetRoles(userClaims);
         List<Err> errors = [];

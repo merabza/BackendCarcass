@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using LanguageExt;
 using Microsoft.AspNetCore.Identity;
 using SystemToolsShared.Errors;
@@ -7,7 +8,7 @@ namespace CarcassRepositories;
 
 public class IdentityCrudBase
 {
-    protected static Option<Err[]> ConvertError(IdentityResult result)
+    protected static Option<IEnumerable<Err>> ConvertError(IdentityResult result)
     {
         return result.Succeeded
             ? null

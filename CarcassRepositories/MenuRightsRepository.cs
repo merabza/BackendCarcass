@@ -65,10 +65,9 @@ public sealed class MenuRightsRepository(CarcassDbContext context) : IMenuRights
             select dt.DtId).Distinct().AsEnumerable();
 
         var res = (from dtf in dtIdsDist
-                join dt in _carcassContext.DataTypes on dtf equals dt.DtId
-                select new DataTypesResponse(dt.DtTable, dt.DtName, dt.DtNameNominative, dt.DtNameGenitive,
-                    dt.DtIdFieldName, dt.DtKeyFieldName, dt.DtNameFieldName))
-            .OrderBy(o => o.DtTable);
+            join dt in _carcassContext.DataTypes on dtf equals dt.DtId
+            select new DataTypesResponse(dt.DtTable, dt.DtName, dt.DtNameNominative, dt.DtNameGenitive,
+                dt.DtIdFieldName, dt.DtKeyFieldName, dt.DtNameFieldName)).OrderBy(o => o.DtTable);
 
         var dtCrudRightsRes = await DataTypeCrudRights(userName, cancellationToken);
         ICollection<DataTypeToCrudRight> dtCrudRights = await dtCrudRightsRes.ToListAsync(cancellationToken);
@@ -168,7 +167,9 @@ public sealed class MenuRightsRepository(CarcassDbContext context) : IMenuRights
     {
         return from r1 in _carcassContext.ManyToManyJoins
             join r2 in _carcassContext.ManyToManyJoins on new { t = r1.CtId, i = r1.CKey } equals new
-                { t = r2.PtId, i = r2.PKey }
+            {
+                t = r2.PtId, i = r2.PKey
+            }
             where r1.PtId == parentTypeId && r1.PKey == parentKey && r1.CtId == childTypeId && r2.CtId == childTypeId2
             select r2.CKey;
     }

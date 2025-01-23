@@ -10,7 +10,8 @@ public class TableKeyName
     public string? TableName { get; init; }
 
 
-    public async ValueTask<string?> GetTableKey(IUserRightsRepository repo, CancellationToken cancellationToken = default)
+    public async ValueTask<string?> GetTableKey(IUserRightsRepository repo,
+        CancellationToken cancellationToken = default)
     {
         if (TableKey is not null)
             return TableKey;

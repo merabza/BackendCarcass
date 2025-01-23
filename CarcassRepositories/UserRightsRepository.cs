@@ -90,26 +90,24 @@ public class UserRightsRepository : IUserRightsRepository
     }
 
     public async Task<OneOf<bool, IEnumerable<Err>>> CheckTableCrudRight(int roleDtId, string roleName,
-        int dataTypeDtId, string keyByTableName, int dataCrudRightDtId,
-        ECrudOperationType crudType, CancellationToken cancellationToken = default)
+        int dataTypeDtId, string keyByTableName, int dataCrudRightDtId, ECrudOperationType crudType,
+        CancellationToken cancellationToken = default)
     {
-        return await _context.ManyToManyJoins.AnyAsync(w =>
-                       w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataTypeDtId && w.CKey == keyByTableName,
-                   cancellationToken) &&
-               _context.ManyToManyJoins.Any(w =>
-                   w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataCrudRightDtId &&
-                   w.CKey == keyByTableName + '.' + Enum.GetName(typeof(ECrudOperationType), crudType));
+        return await _context.ManyToManyJoins.AnyAsync(
+            w => w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataTypeDtId && w.CKey == keyByTableName,
+            cancellationToken) && _context.ManyToManyJoins.Any(w =>
+            w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataCrudRightDtId &&
+            w.CKey == keyByTableName + '.' + Enum.GetName(typeof(ECrudOperationType), crudType));
     }
 
     private Task<bool> GetManyToManyJoinsPccOne(int parentTypeId, string parentKey, int childTypeId, int childTypeId2,
         string childKey2, CancellationToken cancellationToken = default)
     {
         return (from r1 in _context.ManyToManyJoins
-            join r2 in _context.ManyToManyJoins on new { t = r1.CtId, i = r1.CKey } equals new
-                { t = r2.PtId, i = r2.PKey }
+            join r2 in _context.ManyToManyJoins on new { t = r1.CtId, i = r1.CKey } equals
+                new { t = r2.PtId, i = r2.PKey }
             where r1.PtId == parentTypeId && r1.PKey == parentKey && r1.CtId == childTypeId &&
-                  r2.CtId == childTypeId2 &&
-                  r2.CKey == childKey2
+                  r2.CtId == childTypeId2 && r2.CKey == childKey2
             select r2.CKey).AnyAsync(cancellationToken);
     }
 }

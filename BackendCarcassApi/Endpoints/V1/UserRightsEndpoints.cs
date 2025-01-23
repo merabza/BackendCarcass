@@ -37,8 +37,7 @@ public sealed class UserRightsEndpoints : IInstaller
 
         var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase)
             //.RequireCors(CorsInstaller.MyAllowSpecificOrigins)
-            .RequireAuthorization()
-            .AddEndpointFilter<UserNameFilter>();
+            .RequireAuthorization().AddEndpointFilter<UserNameFilter>();
 
         group.MapGet(CarcassApiRoutes.UserRights.IsCurrentUserValid, IsCurrentUserValid);
         group.MapPut(CarcassApiRoutes.UserRights.ChangeProfile, ChangeProfile);

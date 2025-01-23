@@ -30,10 +30,10 @@ public sealed class IdentityRepository : IIdentityRepository
     public IQueryable<User> Users => _carcassContext.Users;
     public IQueryable<Role> Roles => _carcassContext.Roles;
 
-    public IQueryable<ManyToManyJoin> RolesByUsers => _carcassContext.ManyToManyJoins
-        .Include(i => i.ParentDataTypeNavigation).Include(i => i.ChildDataTypeNavigation).Where(w =>
-            w.ParentDataTypeNavigation.DtKey == ECarcassDataTypeKeys.User.ToDtKey() &&
-            w.ChildDataTypeNavigation.DtKey == ECarcassDataTypeKeys.Role.ToDtKey());
+    public IQueryable<ManyToManyJoin> RolesByUsers =>
+        _carcassContext.ManyToManyJoins.Include(i => i.ParentDataTypeNavigation).Include(i => i.ChildDataTypeNavigation)
+            .Where(w => w.ParentDataTypeNavigation.DtKey == ECarcassDataTypeKeys.User.ToDtKey() &&
+                        w.ChildDataTypeNavigation.DtKey == ECarcassDataTypeKeys.Role.ToDtKey());
 
 
     public async ValueTask<IdentityResult> CreateUserAsync(AppUser appUser,
@@ -51,9 +51,14 @@ public sealed class IdentityRepository : IIdentityRepository
         {
             var user = new User
             {
-                UserName = appUser.UserName, NormalizedUserName = appUser.NormalizedUserName, Email = appUser.Email,
-                NormalizedEmail = appUser.NormalizedEmail, PasswordHash = appUser.PasswordHash,
-                FullName = appUser.FullName, FirstName = appUser.FirstName, LastName = appUser.LastName
+                UserName = appUser.UserName,
+                NormalizedUserName = appUser.NormalizedUserName,
+                Email = appUser.Email,
+                NormalizedEmail = appUser.NormalizedEmail,
+                PasswordHash = appUser.PasswordHash,
+                FullName = appUser.FullName,
+                FirstName = appUser.FirstName,
+                LastName = appUser.LastName
             };
             _carcassContext.Users.Add(user);
             await _carcassContext.SaveChangesAsync(cancellationToken);
@@ -125,7 +130,9 @@ public sealed class IdentityRepository : IIdentityRepository
         {
             var role = new Role
             {
-                RolKey = appRole.Name, RolName = appRole.RoleName, RolLevel = appRole.Level,
+                RolKey = appRole.Name,
+                RolName = appRole.RoleName,
+                RolLevel = appRole.Level,
                 RolNormalizedKey = appRole.NormalizedName
             };
             _carcassContext.Roles.Add(role);

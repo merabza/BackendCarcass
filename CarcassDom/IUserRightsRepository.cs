@@ -24,5 +24,6 @@ public interface IUserRightsRepository
         CancellationToken cancellationToken = default);
 
     Task<OneOf<bool, IEnumerable<Err>>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
-        string keyByTableName, int dataCrudRightDtId, ECrudOperationType crudType, CancellationToken cancellationToken = default);
+        string keyByTableName, int dataCrudRightDtId, ECrudOperationType crudType,
+        CancellationToken cancellationToken = default);
 }

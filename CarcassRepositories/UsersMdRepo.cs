@@ -25,7 +25,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
 
     public OneOf<IQueryable<IDataType>, IEnumerable<Err>> Load()
     {
-        return OneOf<IQueryable<IDataType>, IEnumerable<Err>>.FromT0(_userManager.Users.Cast<IDataType>()); 
+        return OneOf<IQueryable<IDataType>, IEnumerable<Err>>.FromT0(_userManager.Users.Cast<IDataType>());
     }
 
     public async Task<Option<IEnumerable<Err>>> Create(IDataType newItem)

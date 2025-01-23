@@ -32,12 +32,11 @@ public sealed class MdDeleteOneRecordCommandHandler : ICommandHandler<MdDeleteOn
             return (Err[])createMasterDataCrudResult.AsT1;
         var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.Delete(request.Id, cancellationToken);
-        return result.Match<OneOf<Unit, IEnumerable<Err>>>(
-            y =>
-            {
-                var errors = y.ToList();
-                errors.Add(MasterDataApiErrors.CannotDeleteNewRecord);
-                return errors;
-            }, () => new Unit());
+        return result.Match<OneOf<Unit, IEnumerable<Err>>>(y =>
+        {
+            var errors = y.ToList();
+            errors.Add(MasterDataApiErrors.CannotDeleteNewRecord);
+            return errors;
+        }, () => new Unit());
     }
 }

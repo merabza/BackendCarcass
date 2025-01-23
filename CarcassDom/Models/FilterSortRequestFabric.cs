@@ -13,10 +13,7 @@ public static class FilterSortRequestFabric
         var data = Convert.FromBase64String(strFilterSortRequest);
         var decodedString = Encoding.UTF8.GetString(data);
 
-        var options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
         return JsonSerializer.Deserialize<FilterSortRequest>(HttpUtility.UrlDecode(decodedString), options);
     }

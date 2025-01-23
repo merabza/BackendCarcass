@@ -22,8 +22,8 @@ public sealed class ChangeProfileCommandValidator : AbstractValidator<ChangeProf
             .WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
             .WithMessage(AuthenticationApiErrors.NameIsLongerThenErrMessage);
         RuleFor(x => x.LastName).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
-            .WithMessage(AuthenticationApiErrors.IsEmptyLastNameErrMessage)
-            .MaximumLength(100).WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
+            .WithMessage(AuthenticationApiErrors.IsEmptyLastNameErrMessage).MaximumLength(100)
+            .WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
             .WithMessage(AuthenticationApiErrors.LastNameIsLongerThenErrMessage);
     }
 }

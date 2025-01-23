@@ -40,12 +40,11 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
             return (Err[])createMasterDataCrudResult.AsT1;
         var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
-        return result.Match<OneOf<Unit, IEnumerable<Err>>>(
-            y =>
-            {
-                var errors = y.ToList();
-                errors.Add(MasterDataApiErrors.CannotUpdateNewRecord);
-                return errors;
-            }, () => new Unit());
+        return result.Match<OneOf<Unit, IEnumerable<Err>>>(y =>
+        {
+            var errors = y.ToList();
+            errors.Add(MasterDataApiErrors.CannotUpdateNewRecord);
+            return errors;
+        }, () => new Unit());
     }
 }

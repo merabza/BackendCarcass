@@ -10,12 +10,8 @@ using Microsoft.Extensions.Logging;
 
 namespace CarcassIdentity;
 
-public sealed class MyUserStore :
-    IUserPasswordStore<AppUser>,
-    IUserEmailStore<AppUser>,
-    IUserRoleStore<AppUser>,
-    IQueryableUserStore<AppUser>,
-    IQueryableRoleStore<AppRole>
+public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<AppUser>, IUserRoleStore<AppUser>,
+    IQueryableUserStore<AppUser>, IQueryableRoleStore<AppRole>
 {
     private readonly ILogger<MyUserStore> _logger;
 
@@ -78,7 +74,9 @@ public sealed class MyUserStore :
         get
         {
             return _repo.Roles.Select(s => new AppRole(s.RolKey, s.RolName, s.RolLevel)
-                { NormalizedName = s.RolNormalizedKey, Id = s.RolId });
+            {
+                NormalizedName = s.RolNormalizedKey, Id = s.RolId
+            });
         }
     }
 
@@ -88,33 +86,36 @@ public sealed class MyUserStore :
         return role == null
             ? null // throw new Exception($"Role with by roleId={roleId} does not exists")
             : new AppRole(role.RolKey, role.RolName, role.RolLevel)
-                { NormalizedName = role.RolNormalizedKey, Id = role.RolId };
+            {
+                NormalizedName = role.RolNormalizedKey, Id = role.RolId
+            };
     }
 
     async Task<AppRole?> IRoleStore<AppRole>.FindByNameAsync(string normalizedRoleName,
         CancellationToken cancellationToken)
     {
-        var role =
-            await _repo.Roles.FirstOrDefaultAsync(u => u.RolNormalizedKey == normalizedRoleName, cancellationToken);
+        var role = await _repo.Roles.FirstOrDefaultAsync(u => u.RolNormalizedKey == normalizedRoleName,
+            cancellationToken);
         return role == null
             ? null //throw new Exception($"Role with by normalizedRoleName={normalizedRoleName} does not exists")
             : new AppRole(role.RolKey, role.RolName, role.RolLevel)
-                { NormalizedName = role.RolNormalizedKey, Id = role.RolId };
+            {
+                NormalizedName = role.RolNormalizedKey, Id = role.RolId
+            };
     }
 
     public IQueryable<AppUser> Users
     {
         get
         {
-            var ret = _repo.Users.Select(s =>
-                new AppUser(s.UserName, s.FirstName, s.LastName)
-                {
-                    Id = s.UsrId,
-                    PasswordHash = s.PasswordHash,
-                    NormalizedUserName = s.NormalizedUserName,
-                    Email = s.Email,
-                    NormalizedEmail = s.NormalizedEmail
-                });
+            var ret = _repo.Users.Select(s => new AppUser(s.UserName, s.FirstName, s.LastName)
+            {
+                Id = s.UsrId,
+                PasswordHash = s.PasswordHash,
+                NormalizedUserName = s.NormalizedUserName,
+                Email = s.Email,
+                NormalizedEmail = s.NormalizedEmail
+            });
             _logger.LogInformation(ret.Count().ToString());
             return ret;
         }
@@ -143,8 +144,7 @@ public sealed class MyUserStore :
 
     public async Task<AppUser?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default)
     {
-        var user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail,
-            cancellationToken);
+        var user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail, cancellationToken);
         return user is null
             ? null //throw new Exception($"FindByEmailAsync: AppUser with by normalizedEmail={normalizedEmail} does not exists")
             : new AppUser(user.UserName, user.FirstName, user.LastName)
@@ -202,8 +202,8 @@ public sealed class MyUserStore :
 
         //return await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName, cancellationToken);
 
-        var user =
-            await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName, cancellationToken);
+        var user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName,
+            cancellationToken);
         return user == null
             ? null // throw new Exception($"AppUser with by normalizedUserName={normalizedUserName} does not exists")
             : new AppUser(user.UserName, user.FirstName, user.LastName)
@@ -312,9 +312,8 @@ public sealed class MyUserStore :
         var role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
         if (role == null)
             return;
-        var match =
-            await _repo.RolesByUsers.FirstOrDefaultAsync(ru => ru.PKey == user.UserName && ru.CKey == role.RolKey,
-                cancellationToken);
+        var match = await _repo.RolesByUsers.FirstOrDefaultAsync(
+            ru => ru.PKey == user.UserName && ru.CKey == role.RolKey, cancellationToken);
         if (match == null)
             return;
         _repo.RemoveUserFromRole(match);
@@ -341,9 +340,10 @@ public sealed class MyUserStore :
         CancellationToken cancellationToken)
     {
         IList<AppUser> us = _repo.Users.Select(s =>
-                new AppUser(s.UserName, s.FirstName, s.LastName)
-                    { Id = s.UsrId, NormalizedUserName = s.NormalizedUserName })
-            .ToList();
+            new AppUser(s.UserName, s.FirstName, s.LastName)
+            {
+                Id = s.UsrId, NormalizedUserName = s.NormalizedUserName
+            }).ToList();
         return await Task.FromResult(us);
     }
 

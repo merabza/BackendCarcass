@@ -9,10 +9,10 @@
 
 //public interface IMasterDataRepository
 //{
-//    OneOf<IQueryable<IDataType>, Err[]> EntitiesByTableName(string tableName);
+//    OneOf<IQueryable<IDataType>, IEnumerable<Err>> EntitiesByTableName(string tableName);
 
-//    Task<Option<Err[]>> DeleteEntityByTableNameAndKey(string tableName, int id);
-//    Task<OneOf<IDataType, Err[]>> AddEntityByTableName(string tableName, string json);
-//    Task<Option<Err[]>> UpdateEntityByTableName(string tableName, int id, string json);
+//    Task<Option<IEnumerable<Err>>> DeleteEntityByTableNameAndKey(string tableName, int id);
+//    Task<OneOf<IDataType, IEnumerable<Err>>> AddEntityByTableName(string tableName, string json);
+//    Task<Option<IEnumerable<Err>>> UpdateEntityByTableName(string tableName, int id, string json);
 //}
 

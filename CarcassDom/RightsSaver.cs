@@ -48,8 +48,7 @@ public class RightsSaver
                     continue;
 
                 var mmj = await _repo.GetOneManyToManyJoin(drr.Parent.DtId, drr.Parent.DKey, drr.Child.DtId,
-                    drr.Child.DKey,
-                    cancellationToken);
+                    drr.Child.DKey, cancellationToken);
 
                 if (mmj == null && drr.Checked)
                 {

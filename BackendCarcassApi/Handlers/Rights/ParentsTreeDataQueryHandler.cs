@@ -24,13 +24,13 @@ internal sealed class ParentsTreeDataQueryHandler : IQueryHandler<ParentsTreeDat
         _rvRepo = rvRepo;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, IEnumerable<Err>>> Handle(
-        ParentsTreeDataQueryRequest request, CancellationToken cancellationToken = default)
+    public async Task<OneOf<List<DataTypeModel>, IEnumerable<Err>>> Handle(ParentsTreeDataQueryRequest request,
+        CancellationToken cancellationToken = default)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo);
         var result = await rightsCollector.ParentsTreeData(request.HttpRequest.HttpContext.User.Identity!.Name!,
             request.ViewStyle, cancellationToken);
 
-        return result.Match<OneOf<List<DataTypeModel>, IEnumerable<Err>>>(r => r, e => e);
+        return result.Match<OneOf<List<DataTypeModel>, IEnumerable<Err>>>(r => r, e => (Err[])e);
     }
 }

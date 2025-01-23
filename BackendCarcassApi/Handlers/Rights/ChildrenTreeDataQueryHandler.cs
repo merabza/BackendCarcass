@@ -26,13 +26,13 @@ public sealed class ChildrenTreeDataQueryHandler : ICommandHandler<ChildrenTreeD
         _rvRepo = rvRepo;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, IEnumerable<Err>>> Handle(
-        ChildrenTreeDataCommandRequest request, CancellationToken cancellationToken = default)
+    public async Task<OneOf<List<DataTypeModel>, IEnumerable<Err>>> Handle(ChildrenTreeDataCommandRequest request,
+        CancellationToken cancellationToken = default)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo);
         var result = await rightsCollector.ChildrenTreeData(request.HttpRequest.HttpContext.User.Identity!.Name!,
             request.DataTypeKey, request.ViewStyle, cancellationToken);
-        return result.Match<OneOf<List<DataTypeModel>, IEnumerable<Err>>>(r => r, e => e);
+        return result.Match<OneOf<List<DataTypeModel>, IEnumerable<Err>>>(r => r, e => (Err[])e);
 
         //var dataTypeModels = await _mdRepo.ChildrenTreeData(request.HttpRequest.HttpContext.User.Identity!.Name!,
         //    request.dataTypeKey, request.ViewStyle, cancellationToken);
