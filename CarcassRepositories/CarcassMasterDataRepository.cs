@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,7 +63,7 @@ public class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDat
     }
 
 
-    public async Task<Option<Err[]>> Create(IDataType newItem, CancellationToken cancellationToken = default)
+    public async Task<Option<IEnumerable<Err>>> Create(IDataType newItem, CancellationToken cancellationToken = default)
     {
         await _context.AddAsync(newItem, cancellationToken);
         //await _context.SaveChangesAsync();

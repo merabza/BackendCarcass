@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
 using CarcassDb;
@@ -22,22 +23,22 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         _roleManager = roleManager;
     }
 
-    public OneOf<IQueryable<IDataType>, Err[]> Load()
+    public OneOf<IQueryable<IDataType>, IEnumerable<Err>> Load()
     {
-        return OneOf<IQueryable<IDataType>, Err[]>.FromT0(_roleManager.Roles.Cast<IDataType>());
+        return OneOf<IQueryable<IDataType>, IEnumerable<Err>>.FromT0(_roleManager.Roles.Cast<IDataType>());
     }
 
-    public async Task<Option<Err[]>> Create(IDataType newItem)
+    public async Task<Option<IEnumerable<Err>>> Create(IDataType newItem)
     {
         var role = (Role)newItem;
         AppRole appRole = new(role.RolKey, role.RolName, role.RolLevel);
         //შევქმნათ როლი
         var result = await _roleManager.CreateAsync(appRole);
         role.RolId = appRole.Id;
-        return ConvertError(result);
+        return (Err[])ConvertError(result);
     }
 
-    public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
+    public async ValueTask<Option<IEnumerable<Err>>> Update(int id, IDataType newItem)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
         if (oldRole == null)
@@ -49,21 +50,21 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
 
         var updateResult = await _roleManager.UpdateAsync(oldRole);
         if (!updateResult.Succeeded)
-            return ConvertError(updateResult);
+            return (Err[])ConvertError(updateResult);
 
         if (oldRole.RoleName == role.RolKey)
             return null;
 
         var setRoleResult = await _roleManager.SetRoleNameAsync(oldRole, role.RolKey);
-        return ConvertError(setRoleResult);
+        return (Err[])ConvertError(setRoleResult);
     }
 
-    public async ValueTask<Option<Err[]>> Delete(int id)
+    public async ValueTask<Option<IEnumerable<Err>>> Delete(int id)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
         if (oldRole == null)
             return new[] { MasterDataApiErrors.CannotFindRole };
         var deleteResult = await _roleManager.DeleteAsync(oldRole);
-        return ConvertError(deleteResult);
+        return (Err[])ConvertError(deleteResult);
     }
 }

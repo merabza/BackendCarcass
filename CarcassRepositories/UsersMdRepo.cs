@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
 using CarcassDb;
@@ -22,22 +23,22 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         _userManager = userManager;
     }
 
-    public OneOf<IQueryable<IDataType>, Err[]> Load()
+    public OneOf<IQueryable<IDataType>, IEnumerable<Err>> Load()
     {
-        return OneOf<IQueryable<IDataType>, Err[]>.FromT0(_userManager.Users.Cast<IDataType>());
+        return OneOf<IQueryable<IDataType>, IEnumerable<Err>>.FromT0(_userManager.Users.Cast<IDataType>()); 
     }
 
-    public async Task<Option<Err[]>> Create(IDataType newItem)
+    public async Task<Option<IEnumerable<Err>>> Create(IDataType newItem)
     {
         var user = (User)newItem;
         var appUser = new AppUser(user.UserName, user.FirstName, user.LastName) { Email = user.Email };
         //შევქმნათ მომხმარებელი
         var result = await _userManager.CreateAsync(appUser);
         user.UsrId = appUser.Id;
-        return ConvertError(result);
+        return (Err[])ConvertError(result);
     }
 
-    public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
+    public async ValueTask<Option<IEnumerable<Err>>> Update(int id, IDataType newItem)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
         if (oldUser == null)
@@ -50,27 +51,27 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
 
         var updateResult = await _userManager.UpdateAsync(oldUser);
         if (!updateResult.Succeeded)
-            return ConvertError(updateResult);
+            return (Err[])ConvertError(updateResult);
 
         if (oldUser.UserName != user.UserName)
         {
             var setUserNameResult = await _userManager.SetUserNameAsync(oldUser, user.UserName);
             if (!setUserNameResult.Succeeded)
-                return ConvertError(setUserNameResult);
+                return (Err[])ConvertError(setUserNameResult);
         }
 
         if (oldUser.Email == user.Email)
             return null;
         var setEmailResult = await _userManager.SetEmailAsync(oldUser, user.Email);
-        return ConvertError(setEmailResult);
+        return (Err[])ConvertError(setEmailResult);
     }
 
-    public async ValueTask<Option<Err[]>> Delete(int id)
+    public async ValueTask<Option<IEnumerable<Err>>> Delete(int id)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
         if (oldUser == null)
             return new[] { MasterDataApiErrors.CannotFindUser };
         var deleteResult = await _userManager.DeleteAsync(oldUser);
-        return ConvertError(deleteResult);
+        return (Err[])ConvertError(deleteResult);
     }
 }

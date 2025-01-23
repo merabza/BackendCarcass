@@ -38,10 +38,10 @@ public sealed class GetTableRowsDataHandler : IQueryHandler<GetTableRowsDataQuer
 
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
-            return createMasterDataCrudResult.AsT1;
+            return (Err[])createMasterDataCrudResult.AsT1;
         var masterDataCruder = createMasterDataCrudResult.AsT0;
 
         var result = await masterDataCruder.GetTableRowsData(filterSortRequestObject, cancellationToken);
-        return result.Match<OneOf<TableRowsData, IEnumerable<Err>>>(r => r, e => e);
+        return result.Match<OneOf<TableRowsData, IEnumerable<Err>>>(r => r, e => (Err[])e);
     }
 }
