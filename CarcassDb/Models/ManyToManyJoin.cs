@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace CarcassDb.Models;
 
@@ -10,9 +9,9 @@ public sealed class ManyToManyJoin
 
     public int MmjId { get; set; }
     public int PtId { get; set; }
-    [MaxLength(100)] public required string PKey { get; set; } = null!;
+    public required string PKey { get; set; }
     public int CtId { get; set; }
-    [MaxLength(100)] public required string CKey { get; set; } = null!;
+    public required string CKey { get; set; }
 
     public DataType ParentDataTypeNavigation
     {
