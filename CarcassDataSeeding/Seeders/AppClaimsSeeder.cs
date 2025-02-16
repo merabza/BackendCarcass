@@ -8,8 +8,8 @@ using SystemToolsShared.Errors;
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
-    class AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<AppClaim>(
-    dataSeedFolder, repo)
+    class AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo)
+    : AdvancedDataSeeder<AppClaim>(dataSeedFolder, repo)
 {
     protected override Option<Err[]> CreateByJsonFile()
     {
@@ -20,7 +20,8 @@ public /*open*/
             {
                 new()
                 {
-                    ErrorCode = "AppClaimEntitiesCannotBeCreated", ErrorMessage = "AppClaim entities cannot be created"
+                    ErrorCode = "AppClaimEntitiesCannotBeCreated",
+                    ErrorMessage = "AppClaim entities cannot be created"
                 }
             };
 

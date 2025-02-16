@@ -10,8 +10,7 @@ public /*open*/ class CarcassDataSeeder
     protected readonly DataSeedersFabric DataSeedersFabric;
     protected readonly ILogger<CarcassDataSeeder> Logger;
 
-    protected CarcassDataSeeder(ILogger<CarcassDataSeeder> logger, DataSeedersFabric dataSeedersFabric,
-        bool checkOnly)
+    protected CarcassDataSeeder(ILogger<CarcassDataSeeder> logger, DataSeedersFabric dataSeedersFabric, bool checkOnly)
     {
         Logger = logger;
         DataSeedersFabric = dataSeedersFabric;

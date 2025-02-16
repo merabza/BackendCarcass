@@ -22,8 +22,9 @@ public sealed class UsersSeeder(
         var userToCreate = GetAppUserModels().Select(userModel => new
         {
             userModel,
-            existingUser = existingUsers.SingleOrDefault(sd =>
-                sd.NormalizedUserName == userManager.NormalizeName(userModel.UserName)),
+            existingUser =
+                existingUsers.SingleOrDefault(sd =>
+                    sd.NormalizedUserName == userManager.NormalizeName(userModel.UserName)),
             existingEmail =
                 existingUsers.SingleOrDefault(sd =>
                     sd.NormalizedEmail == userManager.NormalizeEmail(userModel.Email))
@@ -48,7 +49,10 @@ public sealed class UsersSeeder(
         if (!Repo.CreateEntities(CreateListBySeedData(LoadFromJsonFile<UserSeederModel>())))
             return new Err[]
             {
-                new() { ErrorCode = "UserEntitiesCannotBeCreated", ErrorMessage = "User entities cannot be created" }
+                new()
+                {
+                    ErrorCode = "UserEntitiesCannotBeCreated", ErrorMessage = "User entities cannot be created"
+                }
             };
         DataSeederTempData.Instance.SaveIntIdKeys<User>(Repo.GetAll<User>().ToDictionary(k => k.Key, v => v.Id));
         return null;
@@ -58,17 +62,21 @@ public sealed class UsersSeeder(
     {
         return usersSeedData.Select(s => new User
         {
-            UserName = s.UserName, NormalizedUserName = s.NormalizedUserName, Email = s.Email,
-            NormalizedEmail = s.NormalizedEmail, PasswordHash = s.PasswordHash, FullName = s.FullName,
-            FirstName = s.FirstName, LastName = s.LastName
+            UserName = s.UserName,
+            NormalizedUserName = s.NormalizedUserName,
+            Email = s.Email,
+            NormalizedEmail = s.NormalizedEmail,
+            PasswordHash = s.PasswordHash,
+            FullName = s.FullName,
+            FirstName = s.FirstName,
+            LastName = s.LastName
         }).ToList();
     }
 
     private Option<Err[]> CreateUser(UserModel userModel)
     {
         //1. შევქმნათ ახალი მომხმარებელი
-        var user = new AppUser(userModel.UserName, userModel.FirstName, userModel.LastName)
-            { Email = userModel.Email };
+        var user = new AppUser(userModel.UserName, userModel.FirstName, userModel.LastName) { Email = userModel.Email };
         var result = userManager.CreateAsync(user, userModel.Password).Result;
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
         if (result.Succeeded)

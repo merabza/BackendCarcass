@@ -21,7 +21,10 @@ public /*open*/
         if (!Repo.CreateEntities(CreateListBySeedData(LoadFromJsonFile<RoleSeederModel>())))
             return new Err[]
             {
-                new() { ErrorCode = "RoleEntitiesCannotBeCreated", ErrorMessage = "Role entities cannot be created" }
+                new()
+                {
+                    ErrorCode = "RoleEntitiesCannotBeCreated", ErrorMessage = "Role entities cannot be created"
+                }
             };
         DataSeederTempData.Instance.SaveIntIdKeys<Role>(Repo.GetAll<Role>().ToDictionary(k => k.RolKey, v => v.RolId));
         return null;
@@ -33,8 +36,9 @@ public /*open*/
 
         var rolesToCreate = GetRoleModels()
             .Select(roleModel => new
-                { roleModel, existingRole = existingRoles.SingleOrDefault(sd => sd.RolKey == roleModel.RoleKey) })
-            .Where(w => w.existingRole is null && w.roleModel is not null).Select(s => s!.roleModel);
+            {
+                roleModel, existingRole = existingRoles.SingleOrDefault(sd => sd.RolKey == roleModel.RoleKey)
+            }).Where(w => w.existingRole is null && w.roleModel is not null).Select(s => s!.roleModel);
 
         var roleCreateErrors = new List<Err>();
         foreach (var roleModel in rolesToCreate)
@@ -53,25 +57,23 @@ public /*open*/
     private static List<Role> CreateListBySeedData(List<RoleSeederModel> rolesSeedData)
     {
         return rolesSeedData.Select(s => new Role
-            {
-                RolKey = s.RolKey, RolName = s.RolName, RolLevel = s.RolLevel, RolNormalizedKey = s.RolNormalizedKey
-            })
-            .ToList();
+        {
+            RolKey = s.RolKey, RolName = s.RolName, RolLevel = s.RolLevel, RolNormalizedKey = s.RolNormalizedKey
+        }).ToList();
     }
 
     private Option<Err[]> CreateRole(RoleModel roleModel)
     {
         //შევქმნათ როლი
-        var result = roleManager
-            .CreateAsync(new AppRole(roleModel.RoleKey, roleModel.RoleName, roleModel.Level)).Result;
+        var result = roleManager.CreateAsync(new AppRole(roleModel.RoleKey, roleModel.RoleName, roleModel.Level))
+            .Result;
         if (result.Succeeded)
             return null;
         //თუ ახალი როლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
         var errors = result.Errors.Select(s => new Err { ErrorCode = s.Code, ErrorMessage = s.Description }).ToList();
         errors.Add(new Err
         {
-            ErrorCode = "RoleCanNotBeCreated",
-            ErrorMessage = $"Role {roleModel.RoleName} can not be created."
+            ErrorCode = "RoleCanNotBeCreated", ErrorMessage = $"Role {roleModel.RoleName} can not be created."
         });
         return errors.ToArray();
     }

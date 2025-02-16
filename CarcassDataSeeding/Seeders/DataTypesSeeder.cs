@@ -14,13 +14,11 @@ using SystemToolsShared.Errors;
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
-    class DataTypesSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<DataType>(
-    dataSeedFolder, repo)
+    class DataTypesSeeder(string dataSeedFolder, IDataSeederRepository repo)
+    : AdvancedDataSeeder<DataType>(dataSeedFolder, repo)
 {
-    private static JsonSerializerSettings SerializerSettings => new()
-    {
-        ContractResolver = new CamelCasePropertyNamesContractResolver()
-    };
+    private static JsonSerializerSettings SerializerSettings =>
+        new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
 
     protected string SerializeGrid(GridModel gridModel)
@@ -38,7 +36,8 @@ public /*open*/
             {
                 new()
                 {
-                    ErrorCode = "DataTypeEntitiesCannotBeCreated", ErrorMessage = "DataType entities cannot be created"
+                    ErrorCode = "DataTypeEntitiesCannotBeCreated",
+                    ErrorMessage = "DataType entities cannot be created"
                 }
             };
 
@@ -67,7 +66,8 @@ public /*open*/
             {
                 new()
                 {
-                    ErrorCode = "CannotRemoveRedundantDataTypes", ErrorMessage = "Cannot Remove Redundant DataTypes"
+                    ErrorCode = "CannotRemoveRedundantDataTypes",
+                    ErrorMessage = "Cannot Remove Redundant DataTypes"
                 }
             };
         return null;
@@ -170,8 +170,11 @@ public /*open*/
             //AppClaim
             new()
             {
-                DtKey = appClaimDKey, DtName = "სპეციალური უფლებები", DtNameNominative = "სპეციალური უფლება",
-                DtNameGenitive = "სპეციალური უფლების", DtTable = Repo.GetTableName<AppClaim>(),
+                DtKey = appClaimDKey,
+                DtName = "სპეციალური უფლებები",
+                DtNameNominative = "სპეციალური უფლება",
+                DtNameGenitive = "სპეციალური უფლების",
+                DtTable = Repo.GetTableName<AppClaim>(),
                 DtIdFieldName = nameof(AppClaim.AclId).UnCapitalize(),
                 DtKeyFieldName = nameof(AppClaim.AclKey).UnCapitalize(),
                 DtNameFieldName = nameof(AppClaim.AclName).UnCapitalize(),
@@ -180,9 +183,11 @@ public /*open*/
             //DataType
             new()
             {
-                DtKey = ECarcassDataTypeKeys.DataType.ToDtKey(), DtName = "მონაცემთა ტიპები",
+                DtKey = ECarcassDataTypeKeys.DataType.ToDtKey(),
+                DtName = "მონაცემთა ტიპები",
                 DtNameNominative = "მონაცემთა ტიპი",
-                DtNameGenitive = "მონაცემთა ტიპის", DtTable = Repo.GetTableName<DataType>(),
+                DtNameGenitive = "მონაცემთა ტიპის",
+                DtTable = Repo.GetTableName<DataType>(),
                 DtIdFieldName = nameof(DataType.DtId).UnCapitalize(),
                 DtKeyFieldName = nameof(DataType.DtKey).UnCapitalize(),
                 DtNameFieldName = nameof(DataType.DtName).UnCapitalize(),
@@ -194,12 +199,14 @@ public /*open*/
                 DtKey = ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey(),
                 DtName = "მონაცემების ცვლილებაზე უფლებები",
                 DtNameNominative = "მონაცემების ცვლილებაზე უფლება",
-                DtNameGenitive = "მონაცემების ცვლილებაზე უფლების", DtTable = "dataTypesToCrudTypes"
+                DtNameGenitive = "მონაცემების ცვლილებაზე უფლების",
+                DtTable = "dataTypesToCrudTypes"
             },
             //CrudRightType
             new()
             {
-                DtKey = crudRightTypeDKey, DtName = "მონაცემების ცვლილებაზე უფლებების ტიპები",
+                DtKey = crudRightTypeDKey,
+                DtName = "მონაცემების ცვლილებაზე უფლებების ტიპები",
                 DtNameNominative = "მონაცემების ცვლილებაზე უფლების ტიპი",
                 DtNameGenitive = "მონაცემების ცვლილებაზე უფლების ტიპის",
                 DtTable = Repo.GetTableName<CrudRightType>(),
@@ -211,7 +218,8 @@ public /*open*/
             //DataTypeToDataTypeModel
             new()
             {
-                DtKey = ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(), DtName = "უფლებები",
+                DtKey = ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(),
+                DtName = "უფლებები",
                 DtNameNominative = "უფლება",
                 DtNameGenitive = "უფლების",
                 DtTable = "dataTypesToDataTypes"
@@ -219,9 +227,11 @@ public /*open*/
             //MenuGroup
             new()
             {
-                DtKey = ECarcassDataTypeKeys.MenuGroup.ToDtKey(), DtName = "მენიუს ჯგუფები",
+                DtKey = ECarcassDataTypeKeys.MenuGroup.ToDtKey(),
+                DtName = "მენიუს ჯგუფები",
                 DtNameNominative = "მენიუს ჯგუფი",
-                DtNameGenitive = "მენიუს ჯგუფის", DtTable = Repo.GetTableName<MenuGroup>(),
+                DtNameGenitive = "მენიუს ჯგუფის",
+                DtTable = Repo.GetTableName<MenuGroup>(),
                 DtIdFieldName = nameof(MenuGroup.MengId).UnCapitalize(),
                 DtKeyFieldName = nameof(MenuGroup.MengKey).UnCapitalize(),
                 DtNameFieldName = nameof(MenuGroup.MengName).UnCapitalize(),
@@ -230,9 +240,12 @@ public /*open*/
             //MenuItm
             new()
             {
-                DtKey = ECarcassDataTypeKeys.MenuItm.ToDtKey(), DtName = "მენიუ",
-                DtNameNominative = "მენიუ", DtNameGenitive = "მენიუს",
-                DtTable = Repo.GetTableName<MenuItm>(), DtIdFieldName = nameof(MenuItm.MenId).UnCapitalize(),
+                DtKey = ECarcassDataTypeKeys.MenuItm.ToDtKey(),
+                DtName = "მენიუ",
+                DtNameNominative = "მენიუ",
+                DtNameGenitive = "მენიუს",
+                DtTable = Repo.GetTableName<MenuItm>(),
+                DtIdFieldName = nameof(MenuItm.MenId).UnCapitalize(),
                 DtKeyFieldName = nameof(MenuItm.MenKey).UnCapitalize(),
                 DtNameFieldName = nameof(MenuItm.MenName).UnCapitalize(),
                 DtGridRulesJson = SerializeGrid(CreateMenuGridModel())
@@ -240,9 +253,12 @@ public /*open*/
             //Role
             new()
             {
-                DtKey = ECarcassDataTypeKeys.Role.ToDtKey(), DtName = "როლები", DtNameNominative = "როლი",
+                DtKey = ECarcassDataTypeKeys.Role.ToDtKey(),
+                DtName = "როლები",
+                DtNameNominative = "როლი",
                 DtNameGenitive = "როლის",
-                DtTable = Repo.GetTableName<Role>(), DtIdFieldName = nameof(Role.RolId).UnCapitalize(),
+                DtTable = Repo.GetTableName<Role>(),
+                DtIdFieldName = nameof(Role.RolId).UnCapitalize(),
                 DtKeyFieldName = nameof(Role.RolKey).UnCapitalize(),
                 DtNameFieldName = nameof(Role.RolName).UnCapitalize(),
                 DtGridRulesJson = SerializeGrid(CreateRolesGridModel())
@@ -250,9 +266,11 @@ public /*open*/
             //User
             new()
             {
-                DtKey = ECarcassDataTypeKeys.User.ToDtKey(), DtName = "მომხმარებლები",
+                DtKey = ECarcassDataTypeKeys.User.ToDtKey(),
+                DtName = "მომხმარებლები",
                 DtNameNominative = "მომხმარებელი",
-                DtNameGenitive = "მომხმარებლის", DtTable = Repo.GetTableName<User>(),
+                DtNameGenitive = "მომხმარებლის",
+                DtTable = Repo.GetTableName<User>(),
                 DtIdFieldName = nameof(User.UsrId).UnCapitalize(),
                 DtKeyFieldName = nameof(User.NormalizedUserName).UnCapitalize(),
                 DtNameFieldName = nameof(User.FullName).UnCapitalize(),
@@ -336,9 +354,7 @@ public /*open*/
         var gridModel = new GridModel();
         var cells = new[]
         {
-            GetAutoNumberColumn($"{pref}Id"),
-            GetKeyColumn($"{pref}Key"),
-            GetNameColumn($"{pref}Name")
+            GetAutoNumberColumn($"{pref}Id"), GetKeyColumn($"{pref}Key"), GetNameColumn($"{pref}Name")
         };
         gridModel.Cells = [.. cells];
         return gridModel;

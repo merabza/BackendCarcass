@@ -8,8 +8,8 @@ using SystemToolsShared.Errors;
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
-    class MenuGroupsSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<MenuGroup>(
-    dataSeedFolder, repo)
+    class MenuGroupsSeeder(string dataSeedFolder, IDataSeederRepository repo)
+    : AdvancedDataSeeder<MenuGroup>(dataSeedFolder, repo)
 {
     protected override Option<Err[]> CreateByJsonFile()
     {

@@ -64,8 +64,7 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
         if (mustBe == null)
             return (null, null, null);
 
-        var duplicateExistingKeys = existing.GroupBy(x => x.Key)
-            .Where(group => group.Count() > 1)
+        var duplicateExistingKeys = existing.GroupBy(x => x.Key).Where(group => group.Count() > 1)
             .Select(group => group.Key).ToList();
 
         if (duplicateExistingKeys.Count != 0)
@@ -75,8 +74,7 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
             throw new Exception("existing contains duplicate keys");
         }
 
-        var duplicateMustBeKeys = mustBe.GroupBy(x => x.Key)
-            .Where(group => group.Count() > 1)
+        var duplicateMustBeKeys = mustBe.GroupBy(x => x.Key).Where(group => group.Count() > 1)
             .Select(group => group.Key).ToList();
 
         if (duplicateMustBeKeys.Count != 0)

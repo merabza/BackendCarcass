@@ -8,8 +8,8 @@ using SystemToolsShared.Errors;
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
-    class MenuSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<MenuItm>(dataSeedFolder,
-    repo)
+    class MenuSeeder(string dataSeedFolder, IDataSeederRepository repo)
+    : AdvancedDataSeeder<MenuItm>(dataSeedFolder, repo)
 {
     protected override Option<Err[]> CreateByJsonFile()
     {
@@ -18,7 +18,10 @@ public /*open*/
         if (!Repo.CreateEntities(dataList))
             return new Err[]
             {
-                new() { ErrorCode = "MenuEntitiesCannotBeCreated", ErrorMessage = "Menu entities cannot be created" }
+                new()
+                {
+                    ErrorCode = "MenuEntitiesCannotBeCreated", ErrorMessage = "Menu entities cannot be created"
+                }
             };
         DataSeederTempData.Instance.SaveIntIdKeys<MenuItm>(dataList.ToDictionary(k => k.Key, v => v.Id));
         return null;
@@ -48,32 +51,47 @@ public /*open*/
             //carcass master data
             new()
             {
-                MenKey = "DataTypes", MenName = "DataTypes - მონაცემთა ტიპები", MenValue = "dataTypes",
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"), SortId = 7,
+                MenKey = "DataTypes",
+                MenName = "DataTypes - მონაცემთა ტიპები",
+                MenValue = "dataTypes",
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
+                SortId = 7,
                 MenLinkKey = "mdList"
             },
             new()
             {
-                MenKey = "Users", MenName = "მომხმარებლები", MenValue = "users",
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"), SortId = 17,
+                MenKey = "Users",
+                MenName = "მომხმარებლები",
+                MenValue = "users",
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
+                SortId = 17,
                 MenLinkKey = "mdList"
             },
             new()
             {
-                MenKey = "MenuEditor", MenName = "MenuEditor - მენიუს რედაქტორი", MenValue = "menu",
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"), SortId = 4,
+                MenKey = "MenuEditor",
+                MenName = "MenuEditor - მენიუს რედაქტორი",
+                MenValue = "menu",
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
+                SortId = 4,
                 MenLinkKey = "mdList"
             },
             new()
             {
-                MenKey = "MenuGroups", MenName = "MenuGroups - მენიუს ჯგუფები", MenValue = "menuGroups",
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"), SortId = 4,
+                MenKey = "MenuGroups",
+                MenName = "MenuGroups - მენიუს ჯგუფები",
+                MenValue = "menuGroups",
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
+                SortId = 4,
                 MenLinkKey = "mdList"
             },
             new()
             {
-                MenKey = "Roles", MenName = "როლები", MenValue = "roles",
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"), SortId = 0,
+                MenKey = "Roles",
+                MenName = "როლები",
+                MenValue = "roles",
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
+                SortId = 0,
                 MenLinkKey = "mdList"
             },
 
@@ -81,15 +99,20 @@ public /*open*/
             //carcass
             new()
             {
-                MenKey = "Rights", MenName = "უფლებები", MenGroupId = tempData.GetIntIdByKey<MenuGroup>("Main"),
+                MenKey = "Rights",
+                MenName = "უფლებები",
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("Main"),
                 SortId = 0,
-                MenLinkKey = "Rights", MenIconName = "users-cog"
+                MenLinkKey = "Rights",
+                MenIconName = "users-cog"
             },
             new()
             {
-                MenKey = "CrudRightTypes", MenName = "მონაცემების ცვლილებაზე უფლებების ტიპები",
+                MenKey = "CrudRightTypes",
+                MenName = "მონაცემების ცვლილებაზე უფლებების ტიპები",
                 MenValue = "crudRightTypes",
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"), SortId = 0,
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
+                SortId = 0,
                 MenLinkKey = "mdList"
             }
         };

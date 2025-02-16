@@ -9,8 +9,8 @@ using SystemToolsShared.Errors;
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
-    class CrudRightTypesSeeder(string dataSeedFolder, IDataSeederRepository repo) : AdvancedDataSeeder<CrudRightType>(
-    dataSeedFolder, repo)
+    class CrudRightTypesSeeder(string dataSeedFolder, IDataSeederRepository repo)
+    : AdvancedDataSeeder<CrudRightType>(dataSeedFolder, repo)
 {
     protected override Option<Err[]> CreateByJsonFile()
     {
