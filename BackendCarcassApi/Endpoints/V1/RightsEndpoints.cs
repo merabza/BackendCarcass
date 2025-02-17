@@ -136,8 +136,7 @@ public sealed class RightsEndpoints : IInstaller
     //   აქ დამატებით მომხმარებლის მონაცემებზე უფლებების შემოწმება არ ხდება,
     //   რადგან შეცდომები, რასაც ეს პროცედურა ასწორებს, ნებისმიერ შემთხვევაში გასასწორებელია
     //[HttpPost("optimize")]
-    private static IResult Optimize(HttpRequest request, ILogger<RightsEndpoints> logger,
-        CancellationToken cancellationToken = default)
+    private static IResult Optimize(ILogger<RightsEndpoints> logger, CancellationToken cancellationToken = default)
     {
         //Debug.WriteLine($"Call {nameof(OptimizeCommandHandler)} from {nameof(Optimize)}");
         //if (!HasUserRightRole(mdRepo, request))
