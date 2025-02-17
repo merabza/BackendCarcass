@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.UserRights;
 using BackendCarcassContracts.Errors;
+using CarcassIdentity;
 using CarcassMasterDataDom.Models;
 using CarcassRepositories;
 using MediatR;
@@ -16,20 +17,21 @@ namespace BackendCarcassApi.Handlers.UserRights;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurrentUserCommandRequest>
 {
+    private readonly ICurrentUser _currentUser;
     private readonly UserManager<AppUser> _userMgr;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DeleteCurrentUserCommandHandler(UserManager<AppUser> userMgr)
+    public DeleteCurrentUserCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
     {
         _userMgr = userMgr;
+        _currentUser = currentUser;
     }
 
     public async Task<OneOf<Unit, IEnumerable<Err>>> Handle(DeleteCurrentUserCommandRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserName = request.HttpRequest.HttpContext.User.Identity!.Name!;
         //ეს ერთგვარი ტესტია. თუ კოდი აქამდე მოვიდა, მიმდინარე მომხმარებელი ვალიდურია
-        if (currentUserName != request.UserName)
+        if (_currentUser.Name != request.UserName)
             return new[] { UserRightsErrors.BadRequestFailedToDeleteUser };
         UsersMdRepo usersMdRepo = new(_userMgr);
         var user = await _userMgr.FindByNameAsync(request.UserName!);

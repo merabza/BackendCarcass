@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.Rights;
 using CarcassDom;
 using CarcassDom.Models;
+using CarcassIdentity;
 using CarcassMasterDataDom;
 using MessagingAbstractions;
 using OneOf;
@@ -14,27 +15,25 @@ namespace BackendCarcassApi.Handlers.Rights;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class HalfChecksQueryHandler : ICommandHandler<HalfChecksCommandRequest, List<TypeDataModel>>
 {
-    //private readonly IMenuRightsRepository _repository;
+    private readonly ICurrentUser _currentUser;
+
     private readonly IRightsRepository _repo;
     private readonly IReturnValuesRepository _rvRepo;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public HalfChecksQueryHandler(IRightsRepository repo, IReturnValuesRepository rvRepo)
+    public HalfChecksQueryHandler(IRightsRepository repo, IReturnValuesRepository rvRepo, ICurrentUser currentUser)
     {
-        //_repository = repository;
         _repo = repo;
         _rvRepo = rvRepo;
+        _currentUser = currentUser;
     }
 
     public async Task<OneOf<List<TypeDataModel>, IEnumerable<Err>>> Handle(HalfChecksCommandRequest request,
         CancellationToken cancellationToken = default)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo);
-        var typeDataModels = await rightsCollector.HalfChecks(request.HttpRequest.HttpContext.User.Identity!.Name!,
-            request.DataTypeId, request.DataKey, request.ViewStyle, cancellationToken);
-
-        //var typeDataModels = await _repository.HalfChecks(request.HttpRequest.HttpContext.User.Identity!.Name!,
-        //    request.DataTypeId, request.DataKey, request.ViewStyle, cancellationToken);
+        var typeDataModels = await rightsCollector.HalfChecks(_currentUser.Name, request.DataTypeId, request.DataKey,
+            request.ViewStyle, cancellationToken);
         return typeDataModels;
     }
 }

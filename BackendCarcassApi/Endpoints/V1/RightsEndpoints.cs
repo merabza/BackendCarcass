@@ -64,11 +64,11 @@ public sealed class RightsEndpoints : IInstaller
     //   თუ აქვს ხდება მხოლოდ იმ ინფორმაციის ჩატვირთვა და დაბრუნება, რაზეც უფლება აქვს მიმდინარე მომხმარებელს
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("getparentstreedata/{viewStyle}")]
-    private static async Task<IResult> ParentsTreeData(int viewStyle, HttpRequest request, IMediator mediator,
+    private static async Task<IResult> ParentsTreeData(int viewStyle, IMediator mediator,
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ParentsTreeDataQueryHandler)} from {nameof(ParentsTreeData)}");
-        var query = new ParentsTreeDataQueryRequest(request, (ERightsEditorViewStyle)viewStyle);
+        var query = new ParentsTreeDataQueryRequest((ERightsEditorViewStyle)viewStyle);
         var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
@@ -80,11 +80,11 @@ public sealed class RightsEndpoints : IInstaller
     //   თუ აქვს ხდება მხოლოდ იმ ინფორმაციის ჩატვირთვა და დაბრუნება, რაზეც უფლება აქვს მიმდინარე მომხმარებელს
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("getchildrentreedata/{dataTypeKey}/{viewStyle}")]
-    private static async Task<IResult> ChildrenTreeData(string dataTypeKey, int viewStyle, HttpRequest request,
-        IMediator mediator, CancellationToken cancellationToken = default)
+    private static async Task<IResult> ChildrenTreeData(string dataTypeKey, int viewStyle, IMediator mediator,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ChildrenTreeDataQueryHandler)} from {nameof(ChildrenTreeData)}");
-        var query = new ChildrenTreeDataCommandRequest(request, dataTypeKey, (ERightsEditorViewStyle)viewStyle);
+        var query = new ChildrenTreeDataCommandRequest(dataTypeKey, (ERightsEditorViewStyle)viewStyle);
         var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
@@ -98,11 +98,11 @@ public sealed class RightsEndpoints : IInstaller
     //   თუ აქვს ხდება მხოლოდ იმ ინფორმაციის ჩატვირთვა და დაბრუნება, რაზეც უფლება აქვს მიმდინარე მომხმარებელს
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("halfchecks/{dataTypeId}/{dataKey}/{viewStyle}")]
-    private static async Task<IResult> HalfChecks(int dataTypeId, string dataKey, int viewStyle, HttpRequest request,
-        IMediator mediator, CancellationToken cancellationToken = default)
+    private static async Task<IResult> HalfChecks(int dataTypeId, string dataKey, int viewStyle, IMediator mediator,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(HalfChecksQueryHandler)} from {nameof(HalfChecks)}");
-        var query = new HalfChecksCommandRequest(request, dataTypeId, dataKey, (ERightsEditorViewStyle)viewStyle);
+        var query = new HalfChecksCommandRequest(dataTypeId, dataKey, (ERightsEditorViewStyle)viewStyle);
         var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
@@ -117,12 +117,12 @@ public sealed class RightsEndpoints : IInstaller
     //   საბოლოოდ ამ უფლებების შემოწმება ხდება რეპოზიტორიის მხარეს.
     //[HttpPost("savedata")]
     private static async ValueTask<IResult> SaveData([FromBody] List<RightsChangeModel>? changesForSave,
-        HttpRequest request, IMediator mediator, CancellationToken cancellationToken = default)
+        IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(SaveDataCommandHandler)} from {nameof(SaveData)}");
         if (changesForSave is null)
             return Results.BadRequest(CarcassApiErrors.RequestIsEmpty);
-        var commandRequest = new SaveDataCommandRequest(request, changesForSave);
+        var commandRequest = new SaveDataCommandRequest(changesForSave);
         var result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }

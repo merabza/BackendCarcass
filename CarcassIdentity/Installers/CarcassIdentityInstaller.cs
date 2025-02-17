@@ -30,6 +30,8 @@ public sealed class CarcassIdentityInstaller : IInstaller
         builder.Services.AddScoped<IUserEmailStore<AppUser>, MyUserStore>();
         builder.Services.AddScoped<IUserRoleStore<AppUser>, MyUserStore>();
         builder.Services.AddScoped<IRoleStore<AppRole>, MyUserStore>();
+        builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+
 
         builder.Services.AddIdentity<AppUser, AppRole>(options =>
         {

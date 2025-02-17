@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.UserRights;
 using BackendCarcassContracts.Errors;
+using CarcassIdentity;
 using CarcassMasterDataDom.Models;
 using MediatR;
 using MessagingAbstractions;
@@ -15,12 +16,14 @@ namespace BackendCarcassApi.Handlers.UserRights;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePasswordCommandRequest>
 {
+    private readonly ICurrentUser _currentUser;
     private readonly UserManager<AppUser> _userMgr;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ChangePasswordCommandHandler(UserManager<AppUser> userMgr)
+    public ChangePasswordCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
     {
         _userMgr = userMgr;
+        _currentUser = currentUser;
     }
 
     public async Task<OneOf<Unit, IEnumerable<Err>>> Handle(ChangePasswordCommandRequest request,
@@ -32,8 +35,7 @@ public sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePasswor
         if (user == null)
             return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
 
-        var currentUserName = request.HttpRequest.HttpContext.User.Identity!.Name!;
-        if (user.Id != request.Userid || currentUserName != user.UserName || currentUserName != request.UserName)
+        if (user.Id != request.Userid || _currentUser.Name != user.UserName)
             return new[] { UserRightsErrors.UserAuthenticationFailedThePasswordHasNotBeenChanged };
 
         var result = await _userMgr.ChangePasswordAsync(user, request.OldPassword!, request.NewPassword!);

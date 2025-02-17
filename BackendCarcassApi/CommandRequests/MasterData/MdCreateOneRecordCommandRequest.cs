@@ -13,7 +13,7 @@ public sealed class MdCreateOneRecordCommandRequest : ICommand<MasterDataCrudLoa
         HttpRequest = httpRequest;
     }
 
-    public HttpRequest HttpRequest { get; set; }
+    public HttpRequest HttpRequest { get; set; }//++
 
     public string TableName { get; set; }
 }

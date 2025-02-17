@@ -1,15 +1,13 @@
 ﻿using BackendCarcassApi.CommandRequests.UserRights;
 using BackendCarcassContracts.V1.Requests;
-using Microsoft.AspNetCore.Http;
 
 namespace BackendCarcassApi.Mappers;
 
 public static class ChangeProfileCommandRequestMapper
 {
-    public static ChangeProfileCommandRequest AdaptTo(this ChangeProfileRequest changeProfileRequest,
-        HttpRequest httpRequest)
+    public static ChangeProfileCommandRequest AdaptTo(this ChangeProfileRequest changeProfileRequest)
     {
-        return new ChangeProfileCommandRequest(httpRequest)
+        return new ChangeProfileCommandRequest
         {
             Userid = changeProfileRequest.Userid,
             UserName = changeProfileRequest.UserName,

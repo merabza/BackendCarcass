@@ -1,40 +1,35 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.Handlers.Authentication;
 using BackendCarcassApi.QueryRequests.DataTypes;
-using BackendCarcassContracts.Errors;
 using BackendCarcassContracts.V1.Responses;
+using CarcassIdentity;
 using CarcassRepositories;
 using MessagingAbstractions;
-using Microsoft.AspNetCore.Http;
 using OneOf;
 using SystemToolsShared.Errors;
-
-// ReSharper disable ReplaceWithPrimaryConstructorParameter
 
 namespace BackendCarcassApi.Handlers.DataTypes;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class DataTypesListQueryHandler(IMenuRightsRepository repository) : LoginCommandBase,
+public sealed class DataTypesListQueryHandler : LoginCommandBase,
     IQueryHandler<DataTypesQueryRequest, DataTypesResponse[]>
 {
-    private readonly IMenuRightsRepository _repository = repository;
+    private readonly ICurrentUser _currentUser;
+    private readonly IMenuRightsRepository _repository;
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public DataTypesListQueryHandler(IMenuRightsRepository repository, ICurrentUser currentUser)
+    {
+        _repository = repository;
+        _currentUser = currentUser;
+    }
 
     public async Task<OneOf<DataTypesResponse[], IEnumerable<Err>>> Handle(DataTypesQueryRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserName = CurrentUserName(request.HttpRequest);
-        if (currentUserName is null)
-            return new[] { CarcassApiErrors.InvalidUser };
-        var res = await _repository.DataTypes(currentUserName, cancellationToken);
+        var res = await _repository.DataTypes(_currentUser.Name, cancellationToken);
         return res;
-    }
-
-    private static string? CurrentUserName(HttpRequest request)
-    {
-        return request.HttpContext.User.Claims.SingleOrDefault(so => so.Type == ClaimTypes.Name)?.Value;
     }
 }

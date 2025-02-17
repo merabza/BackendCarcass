@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.UserRights;
 using BackendCarcassContracts.Errors;
+using CarcassIdentity;
 using CarcassMasterDataDom.Models;
 using MediatR;
 using MessagingAbstractions;
@@ -16,21 +17,21 @@ namespace BackendCarcassApi.Handlers.UserRights;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class ChangeProfileCommandHandler : ICommandHandler<ChangeProfileCommandRequest>
 {
+    private readonly ICurrentUser _currentUser;
     private readonly UserManager<AppUser> _userMgr;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ChangeProfileCommandHandler(UserManager<AppUser> userMgr)
+    public ChangeProfileCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
     {
         _userMgr = userMgr;
+        _currentUser = currentUser;
     }
 
     public async Task<OneOf<Unit, IEnumerable<Err>>> Handle(ChangeProfileCommandRequest request,
         CancellationToken cancellationToken = default)
     {
-        //var userName = request.HttpContext.User.Identity?.Name;
-        var currentUserName = request.HttpRequest.HttpContext.User.Identity!.Name!;
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით
-        var user = await _userMgr.FindByNameAsync(currentUserName);
+        var user = await _userMgr.FindByNameAsync(_currentUser.Name);
 
         //თუ არ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user == null)

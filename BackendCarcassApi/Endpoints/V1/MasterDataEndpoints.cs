@@ -103,9 +103,8 @@ public sealed class MasterDataEndpoints : IInstaller
 
 
     // GET api/v1/masterdata/gettablerowsdata/{tableName}
-    private static async Task<IResult> GetTableRowsData(IMediator mediator, HttpContext httpContext,
-        [FromRoute] string tableName, [FromQuery] string filterSortRequest,
-        CancellationToken cancellationToken = default)
+    private static async Task<IResult> GetTableRowsData(IMediator mediator, [FromRoute] string tableName,
+        [FromQuery] string filterSortRequest, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GetTableRowsDataHandler)} from {nameof(GetTableRowsData)}");
         var queryNotes = new GetTableRowsDataQueryRequest(tableName, filterSortRequest);
@@ -123,11 +122,11 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ tableName ცხრილის ნახვის უფლება აქვს მიმდინარე მომხმარებელს,
     //   მოხდება id იდენტიფიკატორით ჩანაწერის ამოღება ბაზიდან და გამომძახებლისთვის დაბრუნება
     // GET api/v1/masterdata/{tableName}/{id}
-    private static async Task<IResult> MdGetOneRecord(HttpRequest request, string tableName, int id, IMediator mediator,
+    private static async Task<IResult> MdGetOneRecord(string tableName, int id, IMediator mediator,
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdGetOneRecordQueryHandler)} from {nameof(MdGetOneRecord)}");
-        var query = new MdGetOneRecordQueryRequest(tableName, id, request);
+        var query = new MdGetOneRecordQueryRequest(tableName, id);
         var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
@@ -180,11 +179,11 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ აქვს, მოხდება id იდენტიფიკატორის მიხედვით tableName ცხრილიდან ჩანაწერის წაშლა
     // DELETE api/<controller>/<tableName>/5
     //[HttpDelete("{tableName}/{id}")]
-    private static async Task<IResult> MdDeleteOneRecord(string tableName, int id, HttpRequest request,
-        IMediator mediator, CancellationToken cancellationToken = default)
+    private static async Task<IResult> MdDeleteOneRecord(string tableName, int id, IMediator mediator,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdDeleteOneRecordCommandHandler)} from {nameof(MdDeleteOneRecord)}");
-        var commandRequest = new MdDeleteOneRecordCommandRequest(tableName, request, id);
+        var commandRequest = new MdDeleteOneRecordCommandRequest(tableName, id);
         var result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match(_ => Results.NoContent(), Results.BadRequest);
     }

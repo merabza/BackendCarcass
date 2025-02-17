@@ -58,11 +58,10 @@ public sealed class DataTypesEndpoints : IInstaller
     //მოქმედება -> ხდება DataType ცხრილის ყველა ჩანაწერის ჩატვირთვა, ოღონდ ველი სადაც ინახება ცხრილების მოდელები
     //   არ ჩაიტვირთება. ასე კეთდება სისწრაფისათვის. ცხრილების მოდელების ჩატვირთვა ხდება ცალკე
     //[HttpGet("getdatatypes")]
-    private static async Task<IResult> DataTypesList(HttpRequest request, IMediator mediator,
-        CancellationToken cancellationToken = default)
+    private static async Task<IResult> DataTypesList(IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(DataTypesListQueryHandler)} from {nameof(DataTypesList)}");
-        var query = new DataTypesQueryRequest(request);
+        var query = new DataTypesQueryRequest();
         var result = await mediator.Send(query, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }

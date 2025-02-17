@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using CarcassDom;
+using CarcassIdentity;
 using CarcassRights;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -9,14 +10,17 @@ namespace BackendCarcassApi.Filters;
 
 public class UserTableRightsFilter : IEndpointFilter
 {
+    private readonly ICurrentUser _currentUser;
     private readonly ILogger<UserMenuRightsFilter> _logger;
     private readonly IUserRightsRepository _repo;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public UserTableRightsFilter(IUserRightsRepository repo, ILogger<UserMenuRightsFilter> logger)
+    public UserTableRightsFilter(IUserRightsRepository repo, ILogger<UserMenuRightsFilter> logger,
+        ICurrentUser currentUser)
     {
         _repo = repo;
         _logger = logger;
+        _currentUser = currentUser;
     }
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
@@ -25,15 +29,10 @@ public class UserTableRightsFilter : IEndpointFilter
         routeData.TryGetValue("tableName", out var tableName);
         var strTableName = tableName?.ToString() ?? string.Empty;
 
-        //var tableChecker = new TableChecker(_repo, _logger, context, strTableName);
-
-        RightsDeterminer rightsDeterminer = new(_repo, _logger);
+        RightsDeterminer rightsDeterminer = new(_repo, _logger, _currentUser);
         var result = await rightsDeterminer.CheckTableRights(context.HttpContext.User.Identity?.Name,
-            context.HttpContext.Request.Method, new TableKeyName { TableName = strTableName },
-            context.HttpContext.User.Claims, CancellationToken.None);
+            context.HttpContext.Request.Method, new TableKeyName { TableName = strTableName }, CancellationToken.None);
 
-
-        //var result = await tableChecker.CheckTableRights();
         if (result != null)
             return result;
 

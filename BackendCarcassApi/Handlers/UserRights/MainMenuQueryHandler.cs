@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.UserRights;
+using CarcassIdentity;
 using CarcassRepositories;
 using CarcassRepositories.Models;
 using MessagingAbstractions;
@@ -14,19 +15,19 @@ namespace BackendCarcassApi.Handlers.UserRights;
 public sealed class MainMenuQueryHandler : IQueryHandler<MainMenuQueryRequest, MainMenuModel>
 {
     private readonly IMenuRightsRepository _mdRepo;
+    private readonly ICurrentUser _currentUser;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MainMenuQueryHandler(IMenuRightsRepository mdRepo)
+    public MainMenuQueryHandler(IMenuRightsRepository mdRepo, ICurrentUser currentUser)
     {
         _mdRepo = mdRepo;
+        _currentUser = currentUser;
     }
 
     public async Task<OneOf<MainMenuModel, IEnumerable<Err>>> Handle(MainMenuQueryRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserName = request.HttpRequest.HttpContext.User.Identity!.Name!;
-
-        var mainMenuModel = await _mdRepo.MainMenu(currentUserName, cancellationToken);
+        var mainMenuModel = await _mdRepo.MainMenu(_currentUser.Name, cancellationToken);
 
         return mainMenuModel;
     }

@@ -12,5 +12,5 @@ public sealed class MultipleGridModelsQueryRequest : IQuery<Dictionary<string, s
         HttpRequest = httpRequest;
     }
 
-    public HttpRequest HttpRequest { get; set; }
+    public HttpRequest HttpRequest { get; set; }//+
 }

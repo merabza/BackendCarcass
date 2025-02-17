@@ -1,5 +1,4 @@
 ﻿using MessagingAbstractions;
-using Microsoft.AspNetCore.Http;
 
 namespace BackendCarcassApi.CommandRequests.UserRights;
 
@@ -7,14 +6,13 @@ public sealed class ChangePasswordCommandRequest : ICommand
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public ChangePasswordCommandRequest(int userid, string? userName, string? oldPassword, string? newPassword,
-        string? newPasswordConfirm, HttpRequest httpRequest)
+        string? newPasswordConfirm)
     {
         Userid = userid;
         UserName = userName;
         OldPassword = oldPassword;
         NewPassword = newPassword;
         NewPasswordConfirm = newPasswordConfirm;
-        HttpRequest = httpRequest;
     }
 
     public int Userid { get; set; }
@@ -22,5 +20,4 @@ public sealed class ChangePasswordCommandRequest : ICommand
     public string? OldPassword { get; set; }
     public string? NewPassword { get; set; }
     public string? NewPasswordConfirm { get; set; }
-    public HttpRequest HttpRequest { get; set; }
 }

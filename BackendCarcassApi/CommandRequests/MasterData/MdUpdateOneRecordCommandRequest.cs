@@ -13,7 +13,7 @@ public sealed class MdUpdateOneRecordCommandRequest : ICommand
         Id = id;
     }
 
-    public HttpRequest HttpRequest { get; set; }
+    public HttpRequest HttpRequest { get; set; }//+
 
     public string TableName { get; set; }
     public int Id { get; set; }
