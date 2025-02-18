@@ -28,10 +28,6 @@ public class UserMenuRightsFilter : IEndpointFilter
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-        var userName = context.HttpContext.User.Identity?.Name;
-        if (userName == null)
-            return Results.BadRequest(new[] { RightsApiErrors.UserNotIdentified });
-
         //შემოწმდეს აქვს თუ არა მიმდინარე მომხმარებელს _claimName-ის შესაბამისი სპეციალური უფლება
         RightsDeterminer rightsDeterminer = new(_repo, _logger, _currentUser);
         var result = await rightsDeterminer.HasUserRightRole(_menuNames, CancellationToken.None);

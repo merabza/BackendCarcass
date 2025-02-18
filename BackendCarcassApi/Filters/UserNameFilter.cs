@@ -1,17 +1,23 @@
-﻿using System.Threading.Tasks;
-using BackendCarcassContracts.Errors;
-using Microsoft.AspNetCore.Http;
+﻿//using System.Threading.Tasks;
+//using BackendCarcassContracts.Errors;
+//using CarcassIdentity;
+//using Microsoft.AspNetCore.Http;
 
-namespace BackendCarcassApi.Filters;
+//namespace BackendCarcassApi.Filters;
 
-public class UserNameFilter : IEndpointFilter
-{
-    public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
-    {
-        var userName = context.HttpContext.User.Identity?.Name;
-        if (userName == null)
-            return Results.BadRequest(new[] { RightsApiErrors.UserNotIdentified });
-        //context.Arguments.Add(userName);
-        return await next(context);
-    }
-}
+//public class UserNameFilter : IEndpointFilter
+//{
+//    private readonly ICurrentUser _currentUser;
+
+//    // ReSharper disable once ConvertToPrimaryConstructor
+//    public UserNameFilter(ICurrentUser currentUser)
+//    {
+//        _currentUser = currentUser;
+//    }
+
+//    public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
+//    {
+//        var userName = _currentUser.Name;
+//        return await next(context);
+//    }
+//}
