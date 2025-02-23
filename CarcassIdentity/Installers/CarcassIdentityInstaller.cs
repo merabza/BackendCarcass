@@ -33,7 +33,6 @@ public sealed class CarcassIdentityInstaller : IInstaller
         builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 
-
         builder.Services.AddIdentity<AppUser, AppRole>(options =>
         {
             options.Password.RequiredLength = 3;

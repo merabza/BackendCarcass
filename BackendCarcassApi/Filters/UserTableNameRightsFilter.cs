@@ -35,6 +35,7 @@ public class UserTableNameRightsFilter : IEndpointFilter
             if (result != null)
                 return result;
         }
+
         return await next(context);
     }
 }

@@ -33,7 +33,10 @@ public sealed class AppUser : IdentityUser<int>
         var key = Encoding.ASCII.GetBytes(secret);
         if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Email))
             return null;
-        var claims = new List<Claim> { new(ClaimTypes.Sid, Id.ToString()), new(ClaimTypes.Name, UserName), new(ClaimTypes.Email, Email) };
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.Sid, Id.ToString()), new(ClaimTypes.Name, UserName), new(ClaimTypes.Email, Email)
+        };
         if (roles is not null)
             claims.AddRange(roles.Select(s => new Claim(ClaimTypes.Role, s)));
         claims.Add(new Claim(ClaimTypes.SerialNumber, serialNumber.ToString()));

@@ -6,5 +6,5 @@ namespace BackendCarcassApi.QueryRequests.MasterData;
 
 public sealed class MdGetLookupTablesQueryRequest(HttpRequest httpRequest) : IQuery<MdGetLookupTablesQueryResponse>
 {
-    public HttpRequest HttpRequest { get; init; } = httpRequest;//+
+    public HttpRequest HttpRequest { get; init; } = httpRequest; //+
 }

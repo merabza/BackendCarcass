@@ -12,5 +12,5 @@ public sealed class MdGetTablesQueryRequest : IQuery<MdGetTablesQueryResponse>
         HttpRequest = httpRequest;
     }
 
-    public HttpRequest HttpRequest { get; set; }//+
+    public HttpRequest HttpRequest { get; set; } //+
 }
