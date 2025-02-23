@@ -11,7 +11,7 @@ public /*open*/
     class AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo)
     : AdvancedDataSeeder<AppClaim>(dataSeedFolder, repo)
 {
-    protected override Option<Err[]> CreateByJsonFile()
+    protected override Option<IEnumerable<Err>> CreateByJsonFile()
     {
         var seedData = LoadFromJsonFile<AppClaimSeederModel>();
         var dataList = CreateListBySeedData(seedData);

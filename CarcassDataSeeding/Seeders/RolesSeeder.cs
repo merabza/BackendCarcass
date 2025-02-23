@@ -16,7 +16,7 @@ public /*open*/
         string dataSeedFolder,
         IDataSeederRepository repo) : AdvancedDataSeeder<Role>(dataSeedFolder, repo)
 {
-    protected override Option<Err[]> CreateByJsonFile()
+    protected override Option<IEnumerable<Err>> CreateByJsonFile()
     {
         if (!Repo.CreateEntities(CreateListBySeedData(LoadFromJsonFile<RoleSeederModel>())))
             return new Err[]
@@ -30,7 +30,7 @@ public /*open*/
         return null;
     }
 
-    protected override Option<Err[]> AdditionalCheck()
+    protected override Option<IEnumerable<Err>> AdditionalCheck()
     {
         var existingRoles = Repo.GetAll<Role>();
 
@@ -62,7 +62,7 @@ public /*open*/
         }).ToList();
     }
 
-    private Option<Err[]> CreateRole(RoleModel roleModel)
+    private Option<IEnumerable<Err>> CreateRole(RoleModel roleModel)
     {
         //შევქმნათ როლი
         var result = roleManager.CreateAsync(new AppRole(roleModel.RoleKey, roleModel.RoleName, roleModel.Level))

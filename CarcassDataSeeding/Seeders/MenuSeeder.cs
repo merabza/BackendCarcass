@@ -11,7 +11,7 @@ public /*open*/
     class MenuSeeder(string dataSeedFolder, IDataSeederRepository repo)
     : AdvancedDataSeeder<MenuItm>(dataSeedFolder, repo)
 {
-    protected override Option<Err[]> CreateByJsonFile()
+    protected override Option<IEnumerable<Err>> CreateByJsonFile()
     {
         var seedData = LoadFromJsonFile<MenuItmSeederModel>();
         var dataList = CreateListBySeedData(seedData);

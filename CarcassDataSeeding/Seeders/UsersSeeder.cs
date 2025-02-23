@@ -15,7 +15,7 @@ public sealed class UsersSeeder(
     string dataSeedFolder,
     IDataSeederRepository repo) : DataSeeder<User>(dataSeedFolder, repo)
 {
-    protected override Option<Err[]> AdditionalCheck()
+    protected override Option<IEnumerable<Err>> AdditionalCheck()
     {
         var existingUsers = Repo.GetAll<User>();
 
@@ -44,7 +44,7 @@ public sealed class UsersSeeder(
         return null;
     }
 
-    protected override Option<Err[]> CreateByJsonFile()
+    protected override Option<IEnumerable<Err>> CreateByJsonFile()
     {
         if (!Repo.CreateEntities(CreateListBySeedData(LoadFromJsonFile<UserSeederModel>())))
             return new Err[]
@@ -73,7 +73,7 @@ public sealed class UsersSeeder(
         }).ToList();
     }
 
-    private Option<Err[]> CreateUser(UserModel userModel)
+    private Option<IEnumerable<Err>> CreateUser(UserModel userModel)
     {
         //1. შევქმნათ ახალი მომხმარებელი
         var user = new AppUser(userModel.UserName, userModel.FirstName, userModel.LastName) { Email = userModel.Email };

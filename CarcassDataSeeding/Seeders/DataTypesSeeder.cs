@@ -27,7 +27,7 @@ public /*open*/
     }
 
 
-    protected override Option<Err[]> CreateByJsonFile()
+    protected override Option<IEnumerable<Err>> CreateByJsonFile()
     {
         var seedData = LoadFromJsonFile<DataTypeSeederModel>();
         var dataList = CreateListBySeedData(seedData);
@@ -50,7 +50,7 @@ public /*open*/
         return null;
     }
 
-    protected override Option<Err[]> AdditionalCheck()
+    protected override Option<IEnumerable<Err>> AdditionalCheck()
     {
         var baseAdditionalCheckResult = base.AdditionalCheck();
         if (baseAdditionalCheckResult.IsSome)

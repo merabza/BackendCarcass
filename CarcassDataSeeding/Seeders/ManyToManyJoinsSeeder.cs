@@ -13,7 +13,7 @@ namespace CarcassDataSeeding.Seeders;
 public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string dataSeedFolder, IDataSeederRepository repo)
     : DataSeeder<ManyToManyJoin>(dataSeedFolder, repo)
 {
-    protected override Option<Err[]> CreateByJsonFile()
+    protected override Option<IEnumerable<Err>> CreateByJsonFile()
     {
         //return Repo.CreateEntities(CreateManyToManyJoinsList(LoadFromJsonFile<ManyToManyJoinSeederModel>()));
         if (!Repo.CreateEntities(CreateManyToManyJoinsList(LoadFromJsonFile<ManyToManyJoinSeederModel>())))
@@ -28,7 +28,7 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
         return null;
     }
 
-    protected override Option<Err[]> AdditionalCheck()
+    protected override Option<IEnumerable<Err>> AdditionalCheck()
     {
         var dataTypeDKey = ECarcassDataTypeKeys.DataType.ToDtKey();
         if (Check(CreateMustList()) && Check(GetThirdPartRights(ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(),

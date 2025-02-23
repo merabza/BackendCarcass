@@ -22,7 +22,7 @@ public /*open*/ class DataSeeder<TDst> : IDataSeeder where TDst : class
     }
 
 
-    public Option<Err[]> Create(bool checkOnly)
+    public Option<IEnumerable<Err>> Create(bool checkOnly)
     {
         if (checkOnly)
             return AdditionalCheck();
@@ -68,12 +68,12 @@ public /*open*/ class DataSeeder<TDst> : IDataSeeder where TDst : class
         return Repo.HaveAnyRecord<TDst>();
     }
 
-    protected virtual Option<Err[]> CreateByJsonFile()
+    protected virtual Option<IEnumerable<Err>> CreateByJsonFile()
     {
         return null;
     }
 
-    protected virtual Option<Err[]> AdditionalCheck()
+    protected virtual Option<IEnumerable<Err>> AdditionalCheck()
     {
         return null;
     }

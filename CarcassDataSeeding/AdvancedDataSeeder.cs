@@ -20,7 +20,7 @@ public /*open*/ class AdvancedDataSeeder<TDst> : DataSeeder<TDst> where TDst : c
     //    DataSeederTempData.Instance.SaveIntIdKeys<TDst>(dataList.ToDictionary(k => k.Key, v => v.Id));
     //}
 
-    protected override Option<Err[]> AdditionalCheck()
+    protected override Option<IEnumerable<Err>> AdditionalCheck()
     {
         var (forAdd, forUpdate, forDelete) = CompareLists(Repo.GetAll<TDst>(), CreateMustList());
 

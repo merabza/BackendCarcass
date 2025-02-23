@@ -1,4 +1,5 @@
-﻿using LanguageExt;
+﻿using System.Collections.Generic;
+using LanguageExt;
 using Microsoft.Extensions.Logging;
 using SystemToolsShared.Errors;
 
@@ -17,13 +18,13 @@ public /*open*/ class CarcassDataSeeder
         _checkOnly = checkOnly;
     }
 
-    protected Option<Err[]> Use(IDataSeeder dataSeeder)
+    private Option<IEnumerable<Err>> Use(IDataSeeder dataSeeder)
     {
         return dataSeeder.Create(_checkOnly);
     }
 
 
-    public Option<Err[]> SeedData()
+    public Option<IEnumerable<Err>> SeedData()
     {
         var result = SeedCarcassData();
         if (result.IsSome)
@@ -33,12 +34,12 @@ public /*open*/ class CarcassDataSeeder
     }
 
 
-    protected virtual Option<Err[]> SeedProjectSpecificData()
+    protected virtual Option<IEnumerable<Err>> SeedProjectSpecificData()
     {
         return null;
     }
 
-    private Option<Err[]> SeedCarcassData()
+    private Option<IEnumerable<Err>> SeedCarcassData()
     {
         Logger.LogInformation("Seed Carcass Data Started");
 
