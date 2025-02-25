@@ -1,7 +1,6 @@
 ﻿using CarcassMasterDataDom.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SystemToolsShared;
 
 namespace CarcassDb.Configurations;
 
@@ -11,9 +10,8 @@ public class ReturnValueModelConfiguration : IEntityTypeConfiguration<ReturnValu
     {
         builder.HasNoKey();
         builder.ToView(null);
-        builder.Property(e => e.Id).HasColumnName(nameof(ReturnValueModel.Id).UnCapitalize()).IsRequired();
-        builder.Property(e => e.Key).HasColumnName(nameof(ReturnValueModel.Key).UnCapitalize()).HasMaxLength(512);
-        builder.Property(e => e.Name).HasColumnName(nameof(ReturnValueModel.Name).UnCapitalize()).HasMaxLength(512);
-        builder.Property(e => e.ParentId).HasColumnName(nameof(ReturnValueModel.ParentId).UnCapitalize());
+        builder.Property(e => e.Id).IsRequired();
+        builder.Property(e => e.Key).HasMaxLength(512);
+        builder.Property(e => e.Name).HasMaxLength(512);
     }
 }

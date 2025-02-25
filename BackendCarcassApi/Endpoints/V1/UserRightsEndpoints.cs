@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.UserRights;
-using BackendCarcassApi.Filters;
 using BackendCarcassApi.Handlers.UserRights;
 using BackendCarcassApi.Mappers;
 using BackendCarcassContracts.Errors;

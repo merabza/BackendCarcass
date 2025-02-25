@@ -13,16 +13,10 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
 
         builder.HasKey(e => e.RolId);
         builder.ToTable(tableName.UnCapitalize());
-        builder.HasIndex(e => e.RolKey).HasDatabaseName(tableName.CreateIndexName(true, nameof(Role.RolKey)))
-            .IsUnique();
-        builder.Property(e => e.RolId).HasColumnName(nameof(Role.RolId).UnCapitalize());
-        builder.Property(e => e.RolKey).IsRequired().HasColumnName(nameof(Role.RolKey).UnCapitalize())
-            .HasMaxLength(256);
-        builder.Property(e => e.RolLevel).IsRequired().HasColumnName(nameof(Role.RolLevel).UnCapitalize())
-            .HasDefaultValue(1000);
-        builder.Property(e => e.RolName).IsRequired().HasColumnName(nameof(Role.RolName).UnCapitalize())
-            .HasMaxLength(100);
-        builder.Property(e => e.RolNormalizedKey).IsRequired()
-            .HasColumnName(nameof(Role.RolNormalizedKey).UnCapitalize()).HasMaxLength(256);
+        builder.HasIndex(e => e.RolKey).IsUnique();
+        builder.Property(e => e.RolKey).IsRequired().HasMaxLength(256);
+        builder.Property(e => e.RolLevel).IsRequired().HasDefaultValue(1000);
+        builder.Property(e => e.RolName).IsRequired().HasMaxLength(100);
+        builder.Property(e => e.RolNormalizedKey).IsRequired().HasMaxLength(256);
     }
 }

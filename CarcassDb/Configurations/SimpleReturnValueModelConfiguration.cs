@@ -1,7 +1,6 @@
 ﻿using CarcassMasterDataDom.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SystemToolsShared;
 
 namespace CarcassDb.Configurations;
 
@@ -11,7 +10,7 @@ public class SimpleReturnValueModelConfiguration : IEntityTypeConfiguration<SrvM
     {
         builder.HasNoKey();
         builder.ToView(null);
-        builder.Property(e => e.Id).HasColumnName(nameof(SrvModel.Id).UnCapitalize()).IsRequired();
-        builder.Property(e => e.Name).HasColumnName(nameof(SrvModel.Name).UnCapitalize()).HasMaxLength(512);
+        builder.Property(e => e.Id).IsRequired();
+        builder.Property(e => e.Name).HasMaxLength(512);
     }
 }

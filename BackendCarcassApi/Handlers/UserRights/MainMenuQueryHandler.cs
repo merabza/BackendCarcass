@@ -14,8 +14,8 @@ namespace BackendCarcassApi.Handlers.UserRights;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MainMenuQueryHandler : IQueryHandler<MainMenuQueryRequest, MainMenuModel>
 {
-    private readonly IMenuRightsRepository _mdRepo;
     private readonly ICurrentUser _currentUser;
+    private readonly IMenuRightsRepository _mdRepo;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public MainMenuQueryHandler(IMenuRightsRepository mdRepo, ICurrentUser currentUser)

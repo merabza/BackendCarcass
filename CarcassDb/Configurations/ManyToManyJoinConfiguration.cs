@@ -1,4 +1,5 @@
 ﻿using CarcassDb.Models;
+using DatabaseToolsShared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SystemToolsShared;
@@ -14,16 +15,9 @@ public class ManyToManyJoinConfiguration : IEntityTypeConfiguration<ManyToManyJo
 
         builder.HasKey(e => e.MmjId);
         builder.ToTable(tableName.UnCapitalize());
-        builder.HasIndex(e => new { e.PtId, e.PKey, e.CtId, e.CKey }).HasDatabaseName(tableName.CreateIndexName(true,
-            nameof(ManyToManyJoin.PtId), nameof(ManyToManyJoin.PKey), nameof(ManyToManyJoin.CtId),
-            nameof(ManyToManyJoin.CKey))).IsUnique();
-        builder.Property(e => e.MmjId).HasColumnName(nameof(ManyToManyJoin.MmjId).UnCapitalize());
-        builder.Property(e => e.CKey).HasColumnName(nameof(ManyToManyJoin.CKey).UnCapitalize()).HasMaxLength(100)
-            .IsRequired();
-        builder.Property(e => e.CtId).HasColumnName(nameof(ManyToManyJoin.CtId).UnCapitalize());
-        builder.Property(e => e.PKey).HasColumnName(nameof(ManyToManyJoin.PKey).UnCapitalize()).HasMaxLength(100)
-            .IsRequired();
-        builder.Property(e => e.PtId).HasColumnName(nameof(ManyToManyJoin.PtId).UnCapitalize());
+        builder.HasIndex(e => new { e.PtId, e.PKey, e.CtId, e.CKey }).IsUnique();
+        builder.Property(e => e.CKey).HasMaxLength(100).IsRequired();
+        builder.Property(e => e.PKey).HasMaxLength(100).IsRequired();
         builder.HasOne(d => d.ParentDataTypeNavigation).WithMany(p => p.ManyToManyJoinParentTypes)
             .HasForeignKey(d => d.PtId).OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName($"{dataTypeConstraintName}_Parent");

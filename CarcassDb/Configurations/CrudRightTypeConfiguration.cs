@@ -13,12 +13,8 @@ public class CrudRightTypeConfiguration : IEntityTypeConfiguration<CrudRightType
 
         builder.HasKey(e => e.CrtId);
         builder.ToTable(tableName.UnCapitalize());
-        builder.HasIndex(e => e.CrtKey).HasDatabaseName(tableName.CreateIndexName(true, nameof(CrudRightType.CrtKey)))
-            .IsUnique();
-        builder.Property(e => e.CrtId).HasColumnName(nameof(CrudRightType.CrtId).UnCapitalize());
-        builder.Property(e => e.CrtKey).IsRequired().HasColumnName(nameof(CrudRightType.CrtKey).UnCapitalize())
-            .HasMaxLength(50);
-        builder.Property(e => e.CrtName).IsRequired().HasColumnName(nameof(CrudRightType.CrtName).UnCapitalize())
-            .HasMaxLength(50);
+        builder.HasIndex(e => e.CrtKey).IsUnique();
+        builder.Property(e => e.CrtKey).IsRequired().HasMaxLength(50);
+        builder.Property(e => e.CrtName).IsRequired().HasMaxLength(50);
     }
 }
