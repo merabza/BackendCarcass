@@ -17,6 +17,7 @@ public class MenuItmConfiguration : IEntityTypeConfiguration<MenuItm>
         builder.Property(e => e.MenLinkKey).HasMaxLength(72);
         builder.Property(e => e.MenName).IsRequired().HasMaxLength(200);
         builder.Property(e => e.MenValue).HasMaxLength(72);
+
         builder.HasOne(d => d.MenGroupNavigation).WithMany(p => p.Menu).HasForeignKey(d => d.MenGroupId)
             .OnDelete(DeleteBehavior.ClientSetNull);
     }
