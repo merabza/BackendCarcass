@@ -17,7 +17,7 @@ public sealed class MenuItm : IDataType, IMyEquatable
     public required string MenLinkKey { get; set; }
     public int MenGroupId { get; set; }
     public int SortId { get; set; }
-    [MaxLength(50)] public string? MenIconName { get; set; }
+    public string? MenIconName { get; set; }
 
     public MenuGroup MenGroupNavigation
     {

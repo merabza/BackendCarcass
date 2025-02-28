@@ -8,8 +8,12 @@ namespace CarcassDb.Configurations;
 
 public class ManyToManyJoinConfiguration : IEntityTypeConfiguration<ManyToManyJoin>
 {
+    public const int CKeyMaxLength = 100;
+    public const int PKeyMaxLength = 100;
+
     public void Configure(EntityTypeBuilder<ManyToManyJoin> builder)
     {
+
         var tableName = nameof(ManyToManyJoin).Pluralize();
         builder.ToTable(tableName.UnCapitalize());
 
@@ -18,8 +22,8 @@ public class ManyToManyJoinConfiguration : IEntityTypeConfiguration<ManyToManyJo
         builder.HasKey(e => e.MmjId);
         builder.HasIndex(e => new { e.PtId, e.PKey, e.CtId, e.CKey }).IsUnique();
 
-        builder.Property(e => e.CKey).HasMaxLength(100).IsRequired();
-        builder.Property(e => e.PKey).HasMaxLength(100).IsRequired();
+        builder.Property(e => e.CKey).HasMaxLength(CKeyMaxLength).IsRequired();
+        builder.Property(e => e.PKey).HasMaxLength(PKeyMaxLength).IsRequired();
 
         builder.HasOne(d => d.ParentDataTypeNavigation).WithMany(p => p.ManyToManyJoinParentTypes)
             .HasForeignKey(d => d.PtId).OnDelete(DeleteBehavior.ClientSetNull)

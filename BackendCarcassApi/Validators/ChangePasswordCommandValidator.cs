@@ -7,12 +7,13 @@ namespace BackendCarcassApi.Validators;
 // ReSharper disable once UnusedType.Global
 public sealed class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommandRequest>
 {
+    private const int UserNameMaxLength = 255;
     public ChangePasswordCommandValidator()
     {
         RuleFor(x => x.UserName).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
-            .WithMessage(AuthenticationApiErrors.IsEmptyUserNameErrMessage).MaximumLength(255)
+            .WithMessage(AuthenticationApiErrors.IsEmptyUserNameErrMessage).MaximumLength(UserNameMaxLength)
             .WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
-            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr.ErrorMessage);
+            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr(UserNameMaxLength).ErrorMessage);
         RuleFor(x => x.OldPassword).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
             .WithMessage(AuthenticationApiErrors.IsEmptyOldPasswordErrMessage);
         RuleFor(x => x.NewPassword).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)

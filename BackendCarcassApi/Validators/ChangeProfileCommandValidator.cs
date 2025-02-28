@@ -7,12 +7,13 @@ namespace BackendCarcassApi.Validators;
 // ReSharper disable once UnusedType.Global
 public sealed class ChangeProfileCommandValidator : AbstractValidator<ChangeProfileCommandRequest>
 {
+    private const int UserNameMaxLength = 255;
     public ChangeProfileCommandValidator()
     {
         RuleFor(x => x.UserName).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
-            .WithMessage(AuthenticationApiErrors.IsEmptyUserNameErrMessage).MaximumLength(255)
+            .WithMessage(AuthenticationApiErrors.IsEmptyUserNameErrMessage).MaximumLength(UserNameMaxLength)
             .WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
-            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr.ErrorCode);
+            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr(UserNameMaxLength).ErrorCode);
         RuleFor(x => x.Email).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
             .WithMessage(AuthenticationApiErrors.IsEmptyEmailErrMessage).EmailAddress()
             .WithErrorCode(AuthenticationApiErrors.InvalidEmailAddressErrCode)

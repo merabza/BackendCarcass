@@ -7,6 +7,7 @@ namespace BackendCarcassApi.Validators;
 // ReSharper disable once UnusedType.Global
 public sealed class RegistrationCommandValidator : AbstractValidator<RegistrationCommandRequest>
 {
+    private const int UserNameMaxLength = 255;
     public RegistrationCommandValidator()
     {
         RuleFor(x => x.Email).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
@@ -22,9 +23,9 @@ public sealed class RegistrationCommandValidator : AbstractValidator<Registratio
             .WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
             .WithMessage(AuthenticationApiErrors.LastNameIsLongerThenErrMessage);
         RuleFor(x => x.UserName).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
-            .WithMessage(AuthenticationApiErrors.IsEmptyUserNameErrMessage).MaximumLength(255)
+            .WithMessage(AuthenticationApiErrors.IsEmptyUserNameErrMessage).MaximumLength(UserNameMaxLength)
             .WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
-            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr.ErrorCode);
+            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr(UserNameMaxLength).ErrorCode);
         RuleFor(x => x.Password).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
             .WithMessage(AuthenticationApiErrors.IsEmptyPasswordErrMessage);
         RuleFor(x => x.ConfirmPassword).Equal(x => x.Password)
