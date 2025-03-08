@@ -8,6 +8,7 @@ namespace BackendCarcassApi.Validators;
 public sealed class RegistrationCommandValidator : AbstractValidator<RegistrationCommandRequest>
 {
     private const int UserNameMaxLength = 255;
+
     public RegistrationCommandValidator()
     {
         RuleFor(x => x.Email).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)

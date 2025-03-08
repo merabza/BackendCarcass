@@ -8,6 +8,7 @@ namespace BackendCarcassApi.Validators;
 public sealed class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommandRequest>
 {
     private const int UserNameMaxLength = 255;
+
     public ChangePasswordCommandValidator()
     {
         RuleFor(x => x.UserName).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)

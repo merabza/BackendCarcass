@@ -8,6 +8,7 @@ namespace BackendCarcassApi.Validators;
 public sealed class ChangeProfileCommandValidator : AbstractValidator<ChangeProfileCommandRequest>
 {
     private const int UserNameMaxLength = 255;
+
     public ChangeProfileCommandValidator()
     {
         RuleFor(x => x.UserName).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
