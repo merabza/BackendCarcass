@@ -18,7 +18,7 @@ public /*open*/ class CarcassDataSeeder
         _checkOnly = checkOnly;
     }
 
-    private Option<IEnumerable<Err>> Use(IDataSeeder dataSeeder)
+    protected Option<IEnumerable<Err>> Use(IDataSeeder dataSeeder)
     {
         return dataSeeder.Create(_checkOnly);
     }
