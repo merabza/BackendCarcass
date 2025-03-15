@@ -1,6 +1,7 @@
 ﻿using CarcassDb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SystemToolsShared;
 
 namespace CarcassDb.Configurations;
 
@@ -12,6 +13,9 @@ public class MenuGroupConfiguration : IEntityTypeConfiguration<MenuGroup>
 
     public void Configure(EntityTypeBuilder<MenuGroup> builder)
     {
+        var tableName = nameof(MenuGroup).Pluralize();
+        builder.ToTable(tableName.UnCapitalize());
+
         builder.HasKey(e => e.MengId);
         builder.HasIndex(e => e.MengKey).IsUnique();
 

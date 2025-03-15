@@ -1,6 +1,7 @@
 ﻿using CarcassDb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SystemToolsShared;
 
 namespace CarcassDb.Configurations;
 
@@ -17,6 +18,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        var tableName = nameof(User).Pluralize();
+        builder.ToTable(tableName.UnCapitalize());
+
         builder.HasKey(e => e.UsrId);
         builder.HasIndex(e => e.NormalizedUserName).IsUnique();
         builder.HasIndex(e => e.NormalizedEmail).IsUnique();
