@@ -18,8 +18,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        var tableName = nameof(User).Pluralize();
-        builder.ToTable(tableName.UnCapitalize());
+        //var tableName = nameof(User).Pluralize();
+        //builder.ToTable(tableName.UnCapitalize());
 
         builder.HasKey(e => e.UsrId);
         builder.HasIndex(e => e.NormalizedUserName).IsUnique();

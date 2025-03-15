@@ -19,8 +19,8 @@ public class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
 
     public void Configure(EntityTypeBuilder<DataType> builder)
     {
-        var tableName = nameof(DataType).Pluralize();
-        builder.ToTable(tableName.UnCapitalize());
+        //var tableName = nameof(DataType).Pluralize();
+        //builder.ToTable(tableName.UnCapitalize());
 
         builder.HasKey(e => e.DtId);
         builder.HasIndex(e => e.DtKey).IsUnique();

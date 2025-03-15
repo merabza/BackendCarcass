@@ -12,8 +12,8 @@ public class AppClaimConfiguration : IEntityTypeConfiguration<AppClaim>
 
     public void Configure(EntityTypeBuilder<AppClaim> builder)
     {
-        var tableName = nameof(AppClaim).Pluralize();
-        builder.ToTable(tableName.UnCapitalize());
+        //var tableName = nameof(AppClaim).Pluralize();
+        //builder.ToTable(tableName.UnCapitalize());
 
         builder.HasKey(e => e.AclId);
         builder.HasIndex(e => e.AclKey).IsUnique();

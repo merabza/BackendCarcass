@@ -14,7 +14,7 @@ public class ManyToManyJoinConfiguration : IEntityTypeConfiguration<ManyToManyJo
     public void Configure(EntityTypeBuilder<ManyToManyJoin> builder)
     {
         var tableName = nameof(ManyToManyJoin).Pluralize();
-        builder.ToTable(tableName.UnCapitalize());
+        builder.ToTable(tableName);
 
         var dataTypeConstraintName = tableName.CreateConstraintName(nameof(DataType));
 

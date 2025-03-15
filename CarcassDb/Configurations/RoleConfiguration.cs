@@ -14,8 +14,8 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
 
     public void Configure(EntityTypeBuilder<Role> builder)
     {
-        var tableName = nameof(Role).Pluralize();
-        builder.ToTable(tableName.UnCapitalize());
+        //var tableName = nameof(Role).Pluralize();
+        //builder.ToTable(tableName.UnCapitalize());
 
         builder.HasKey(e => e.RolId);
         builder.HasIndex(e => e.RolKey).IsUnique();

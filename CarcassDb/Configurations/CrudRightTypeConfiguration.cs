@@ -12,8 +12,8 @@ public class CrudRightTypeConfiguration : IEntityTypeConfiguration<CrudRightType
 
     public void Configure(EntityTypeBuilder<CrudRightType> builder)
     {
-        var tableName = nameof(CrudRightType).Pluralize();
-        builder.ToTable(tableName.UnCapitalize());
+        //var tableName = nameof(CrudRightType).Pluralize();
+        //builder.ToTable(tableName.UnCapitalize());
 
         builder.HasKey(e => e.CrtId);
         builder.HasIndex(e => e.CrtKey).IsUnique();

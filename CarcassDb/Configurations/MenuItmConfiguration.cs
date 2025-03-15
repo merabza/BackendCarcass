@@ -15,7 +15,7 @@ public class MenuItmConfiguration : IEntityTypeConfiguration<MenuItm>
     public void Configure(EntityTypeBuilder<MenuItm> builder)
     {
         builder.HasKey(e => e.MenId);
-        builder.ToTable("menu");
+        builder.ToTable("Menu");
         builder.HasIndex(e => e.MenKey).IsUnique();
 
         builder.Property(e => e.MenIconName).HasMaxLength(MenIconNameMaxLength);
