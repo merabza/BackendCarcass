@@ -2,7 +2,6 @@
 using DatabaseToolsShared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SystemToolsShared;
 
 namespace CarcassDb.Configurations;
 
