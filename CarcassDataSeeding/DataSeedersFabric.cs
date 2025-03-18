@@ -22,42 +22,42 @@ public /*open*/ class DataSeedersFabric
         MyRoleManager = roleManager;
     }
 
-    public virtual DataTypesSeeder CreateDataTypesSeeder()
+    public virtual IDataSeeder CreateDataTypesSeeder()
     {
         return new DataTypesSeeder(DataSeedFolder, _repo);
     }
 
-    public virtual AppClaimsSeeder CreateAppClaimsSeeder()
+    public virtual IDataSeeder CreateAppClaimsSeeder()
     {
         return new AppClaimsSeeder(DataSeedFolder, _repo);
     }
 
-    public virtual CrudRightTypesSeeder CreateCrudRightTypesSeeder()
+    public virtual IDataSeeder CreateCrudRightTypesSeeder()
     {
         return new CrudRightTypesSeeder(DataSeedFolder, _repo);
     }
 
-    public virtual ManyToManyJoinsSeeder CreateManyToManyJoinsSeeder()
+    public virtual IDataSeeder CreateManyToManyJoinsSeeder()
     {
         return new ManyToManyJoinsSeeder(SecretDataFolder, DataSeedFolder, _repo);
     }
 
-    public virtual MenuGroupsSeeder CreateMenuGroupsSeeder()
+    public virtual IDataSeeder CreateMenuGroupsSeeder()
     {
         return new MenuGroupsSeeder(DataSeedFolder, _repo);
     }
 
-    public virtual MenuSeeder CreateMenuSeeder()
+    public virtual IDataSeeder CreateMenuSeeder()
     {
         return new MenuSeeder(DataSeedFolder, _repo);
     }
 
-    public virtual RolesSeeder CreateRolesSeeder()
+    public virtual IDataSeeder CreateRolesSeeder()
     {
         return new RolesSeeder(MyRoleManager, SecretDataFolder, DataSeedFolder, _repo);
     }
 
-    public virtual UsersSeeder CreateUsersSeeder()
+    public virtual IDataSeeder CreateUsersSeeder()
     {
         return new UsersSeeder(_myUserManager, SecretDataFolder, DataSeedFolder, _repo);
     }
