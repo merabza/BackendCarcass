@@ -32,7 +32,6 @@ public static class PaginationQuery
 
         var count = query.Count();
 
-
         var realOffset = filterSortRequest.Offset;
         if (realOffset >= count)
             realOffset = (count - filterSortRequest.RowsCount) / filterSortRequest.RowsCount *

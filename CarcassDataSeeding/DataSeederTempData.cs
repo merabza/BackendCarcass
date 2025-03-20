@@ -49,7 +49,6 @@ public sealed class DataSeederTempData
         }
     }
 
-
     public void SaveIntIdKeys<T>(Dictionary<Tuple<int, int, int, int, int>, int> dict)
     {
         if (_keyInt5IdIntDictionary.ContainsKey(typeof(T)))
@@ -65,7 +64,6 @@ public sealed class DataSeederTempData
         else
             _keyInt4IdIntDictionary.Add(typeof(T), dict);
     }
-
 
     public int GetIntIdByKey<T>(int key1, int key2, int key3, int key4)
     {
@@ -87,7 +85,6 @@ public sealed class DataSeederTempData
         throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
-
     public void SaveIntIdKeys<T>(Dictionary<Tuple<int, int, short>, int> dict)
     {
         if (_keyInt3IdIntDictionary.ContainsKey(typeof(T)))
@@ -103,7 +100,6 @@ public sealed class DataSeederTempData
         else
             _keyInt3IdIntDictionary.Add(typeof(T), dict);
     }
-
 
     public int GetIntIdByKey<T>(int key1, int key2, int key3)
     {
@@ -125,7 +121,6 @@ public sealed class DataSeederTempData
         throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
-
     public void SaveIntIdKeys<T>(Dictionary<Tuple<string, short>, int> dict)
     {
         if (_keyStringShortIdIntDictionary.ContainsKey(typeof(T)))
@@ -143,7 +138,6 @@ public sealed class DataSeederTempData
             return value;
         throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
-
 
     public void SaveIntIdKeys<T>(Dictionary<Tuple<string, int>, int> dict)
     {
@@ -165,7 +159,6 @@ public sealed class DataSeederTempData
         throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
-
     public void SaveIntIdKeys<T>(Dictionary<Tuple<int, string>, int> dict)
     {
         if (_keyIntStringIdIntDictionary.ContainsKey(typeof(T)))
@@ -173,7 +166,6 @@ public sealed class DataSeederTempData
         else
             _keyIntStringIdIntDictionary.Add(typeof(T), dict);
     }
-
 
     public int GetIntIdByKey<T>(int key1, string key2)
     {
@@ -185,7 +177,6 @@ public sealed class DataSeederTempData
         throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
-
     public void SaveIntIdKeys<T>(Dictionary<Tuple<int, int>, int> dict)
     {
         if (_keyIntIntIdIntDictionary.ContainsKey(typeof(T)))
@@ -193,7 +184,6 @@ public sealed class DataSeederTempData
         else
             _keyIntIntIdIntDictionary.Add(typeof(T), dict);
     }
-
 
     // ReSharper disable once MemberCanBePrivate.Global
     public int GetIntIdByKey<T>(int key1, int key2)
@@ -205,7 +195,6 @@ public sealed class DataSeederTempData
             return value;
         throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
-
 
     public int? GetIntNullableIdByKey<T>(string key1, int? key2)
     {
@@ -235,7 +224,6 @@ public sealed class DataSeederTempData
         return GetIntIdByKey<T>(key);
     }
 
-
     public void SaveIntIdKeys<T>(Dictionary<int, int> dict)
     {
         if (_keyIntIdIntDictionary.ContainsKey(typeof(T)))
@@ -243,7 +231,6 @@ public sealed class DataSeederTempData
         else
             _keyIntIdIntDictionary.Add(typeof(T), dict);
     }
-
 
     public int GetIntIdByKey<T>(int key)
     {

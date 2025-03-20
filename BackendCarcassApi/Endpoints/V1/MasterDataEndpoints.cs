@@ -101,7 +101,6 @@ public sealed class MasterDataEndpoints : IInstaller
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
-
     // GET api/v1/masterdata/gettablerowsdata/{tableName}
     private static async Task<IResult> GetTableRowsData(IMediator mediator, [FromRoute] string tableName,
         [FromQuery] string filterSortRequest, CancellationToken cancellationToken = default)

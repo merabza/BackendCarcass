@@ -16,7 +16,6 @@
 //{
 //    private readonly IMasterDataLoaderCrudCreator _masterDataLoaderCrudCreator;
 
-
 //    public AllRecordsQueryHandler(IMasterDataLoaderCrudCreator masterDataLoaderCrudCreator)
 //    {
 //        _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;

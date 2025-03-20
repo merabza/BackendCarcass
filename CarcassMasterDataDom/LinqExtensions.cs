@@ -76,7 +76,6 @@ public static class LinqExtensions
             expr = GetOrderExpression(typeof(T), propInfo);
         }
 
-
         var methodName = ascending ? nameof(Queryable.OrderBy) : nameof(Queryable.OrderByDescending);
         var method =
             typeof(Queryable).GetMethods().FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == 2) ??

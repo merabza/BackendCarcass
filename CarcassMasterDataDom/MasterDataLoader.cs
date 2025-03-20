@@ -19,7 +19,6 @@ public class MasterDataLoader
         _tableNames = tableNames;
     }
 
-
     public async ValueTask<OneOf<Dictionary<string, IEnumerable<dynamic>>, IEnumerable<Err>>> Run(
         CancellationToken cancellationToken = default)
     {
@@ -44,7 +43,6 @@ public class MasterDataLoader
                 resultList.Add(tableName, res);
             }
         }
-
 
         if (errors.Count > 0)
             return errors;

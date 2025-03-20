@@ -13,7 +13,6 @@ public interface IIdentityRepository
     IQueryable<Role> Roles { get; }
     IQueryable<ManyToManyJoin> RolesByUsers { get; }
 
-
     ValueTask<IdentityResult> CreateUserAsync(AppUser user, CancellationToken cancellationToken = default);
     Task<IdentityResult> RemoveUserAsync(int userId, CancellationToken cancellationToken = default);
     ValueTask<IdentityResult> UpdateUserAsync(int userId, User user, CancellationToken cancellationToken = default);

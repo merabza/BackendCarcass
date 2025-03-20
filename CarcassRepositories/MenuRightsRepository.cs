@@ -88,14 +88,12 @@ public sealed class MenuRightsRepository(CarcassDbContext context) : IMenuRights
         var roleDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
         var userDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
 
-
         var mngIdsDist = (from m in _carcassContext.Menu
             join mg in _carcassContext.MenuGroups on m.MenGroupId equals mg.MengId
             //join f in CarcassContext.Forms on m.MenFormId equals f.FrmId
             join pccMg in ManyToManyJoinsPcc(userDtId, userName, roleDtId, menuGroupsDtId) on mg.MengKey equals pccMg
             join pccM in ManyToManyJoinsPcc(userDtId, userName, roleDtId, menuDtId) on m.MenKey equals pccM
             select mg.MengId).Distinct();
-
 
         return from mgf in mngIdsDist
             join mg in _carcassContext.MenuGroups on mgf equals mg.MengId
@@ -110,7 +108,6 @@ public sealed class MenuRightsRepository(CarcassDbContext context) : IMenuRights
         var menuDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.MenuItm, cancellationToken);
         var roleDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
         var userDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
-
 
         return from m in _carcassContext.Menu
             join mg in _carcassContext.MenuGroups on m.MenGroupId equals mg.MengId
@@ -147,7 +144,6 @@ public sealed class MenuRightsRepository(CarcassDbContext context) : IMenuRights
         var userDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
         var roleDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
         var dataTypeToCrudTypeDtId = await DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToCrudType, cancellationToken);
-
 
         return from dt in _carcassContext.DataTypes
             from crt in _carcassContext.CrudRightTypes

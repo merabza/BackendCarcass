@@ -13,6 +13,5 @@ public sealed class ParentsTreeDataQueryRequest : IQuery<List<DataTypeModel>>
         ViewStyle = viewStyle;
     }
 
-
     public ERightsEditorViewStyle ViewStyle { get; }
 }

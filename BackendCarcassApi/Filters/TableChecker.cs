@@ -35,7 +35,6 @@
 //        if (userName == null)
 //            return Results.BadRequest(new[] { RightsApiErrors.UserNotIdentified });
 
-
 //        if (_tableKey == string.Empty)
 //            return Results.BadRequest(new[] { RightsApiErrors.TableNameNotIdentified });
 

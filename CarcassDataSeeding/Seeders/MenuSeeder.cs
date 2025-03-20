@@ -95,7 +95,6 @@ public /*open*/
                 MenLinkKey = "mdList"
             },
 
-
             //carcass
             new()
             {

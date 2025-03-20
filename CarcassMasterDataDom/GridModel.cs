@@ -10,7 +10,6 @@ public sealed class GridModel
 {
     public List<Cell> Cells { get; set; } = [];
 
-
     public static GridModel? DeserializeGridModel(string dtGridRulesJson)
     {
         var jo = JObject.Parse(dtGridRulesJson);

@@ -11,7 +11,6 @@ public sealed class MdDeleteOneRecordCommandRequest : ICommand
         Id = id;
     }
 
-
     public string TableName { get; set; }
     public int Id { get; set; }
 }

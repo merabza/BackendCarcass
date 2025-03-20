@@ -44,7 +44,6 @@ public sealed class RegistrationCommandHandler : LoginCommandBase,
         if (user != null)
             return new[] { AuthenticationApiErrors.UserAlreadyExists };
 
-
         //if (request.Email == null)
         //    return await Task.FromResult(new[]
         //        { CarcassApiErrors.IsEmpty(nameof(request.Email), "ელექტრონული ფოსტის მისამართი") });
@@ -85,7 +84,6 @@ public sealed class RegistrationCommandHandler : LoginCommandBase,
 
         if (token is null)
             return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
-
 
         LastSequentialNumber++;
         LoginResponse appUserModel = new(user.Id, LastSequentialNumber, user.UserName, user.Email, token,

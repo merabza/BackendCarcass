@@ -83,7 +83,6 @@ public sealed class DataTypesEndpoints : IInstaller
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
-
     //შესასვლელი წერტილი (endpoint)
     //დანიშნულება -> DataType ცხრილში არსებული ცხრილის მოდელების ჩატვირთვა მოწოდებული ცხრილებისათვის და დაბრუნება
     //შემავალი ინფორმაცია -> grids ცხრილების ჩამონათვალი, რომლების მოდელებიც უნდა ჩაიტვირთოს

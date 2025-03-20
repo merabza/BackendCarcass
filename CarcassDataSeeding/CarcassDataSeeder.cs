@@ -23,7 +23,6 @@ public /*open*/ class CarcassDataSeeder
         return dataSeeder.Create(_checkOnly);
     }
 
-
     public Option<IEnumerable<Err>> SeedData()
     {
         var result = SeedCarcassData();
@@ -32,7 +31,6 @@ public /*open*/ class CarcassDataSeeder
 
         return SeedProjectSpecificData();
     }
-
 
     protected virtual Option<IEnumerable<Err>> SeedProjectSpecificData()
     {

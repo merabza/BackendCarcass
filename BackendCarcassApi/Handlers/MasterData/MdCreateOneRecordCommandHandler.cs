@@ -21,7 +21,6 @@ public sealed class
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
 
-
     public MdCreateOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
     {
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;

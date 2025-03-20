@@ -30,7 +30,6 @@ public class CurrentUser : ICurrentUser
             : throw new UnauthorizedAccessException($"{type} claim not found");
     }
 
-
     private List<string> GetClaimValues(string type)
     {
         return _httpContext.HttpContext is null

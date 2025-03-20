@@ -55,7 +55,6 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
         return users.Select(x => x.AdaptTo()).ToList();
     }
 
-
     public Task<List<ReturnValueModel>> GetRoleReturnValues(int minLevel, CancellationToken cancellationToken = default)
     {
         return _carcassContext.Roles.Where(w => w.RolLevel >= minLevel)
@@ -224,7 +223,6 @@ public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDb
             c => c.PtId == parentDtId && c.PKey == parentDKey && c.CtId == childDtId && c.CKey == childDKey,
             cancellationToken);
     }
-
 
     private IEnumerable<string> ManyToManyJoinsCp(int childTypeId, string childKey, int parentTypeId)
     {

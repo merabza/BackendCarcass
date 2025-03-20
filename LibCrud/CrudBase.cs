@@ -16,7 +16,6 @@ public abstract class CrudBase
     private readonly IAbstractRepository _absRepo;
     private readonly ILogger _logger;
 
-
     // ReSharper disable once ConvertToPrimaryConstructor
     protected CrudBase(ILogger logger, IAbstractRepository absRepo)
     {

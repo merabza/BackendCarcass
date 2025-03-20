@@ -15,7 +15,6 @@ public class SortIdHelper<T> : ISortIdHelper where T : class, ISortedDataType
         _cmdRepo = cmdRepo;
     }
 
-
     //3. დავადგინოთ არის თუ არა ისეთი ჩანაწერები, რომლებიც იწვევს SortId-ის ჩავარდნას და გამოვასწოროთ ჩავარდნები.
     //3.1 უნდა ჩავტვირთოთ იდენტიფიკატორები, SortId-ები, RowId-ები დალაგებული SortId-ებით
     //3.2. ისეთი ჩანაწერებისათვის რომლებისთვისაც SortId != RowId, გავაახლოთ SortId, RowId-ის მნიშვნელობით.
@@ -43,7 +42,6 @@ public class SortIdHelper<T> : ISortIdHelper where T : class, ISortedDataType
     //    }
     //}
 
-
     //არსებული SortId-ების მაქსიმუმის დათვლა
     public int CountSortIdMax(object query)
     {
@@ -56,7 +54,6 @@ public class SortIdHelper<T> : ISortIdHelper where T : class, ISortedDataType
         var tQuery = (IQueryable<T>)query;
         return tQuery.Count();
     }
-
 
     //ვიპოვოთ SortId-ის შესაბამისი ჩანაწერი არსებობს თუ არა ცხრილში. (ოღონდ ეს ჩანაწერი უნდა იყოს დასარედაქტირებელი ჩანაწერისგან განსხვავებული)
     public async Task<bool> IsSortIdExists(object query, int sortId, int exceptId)

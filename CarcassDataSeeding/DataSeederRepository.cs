@@ -32,12 +32,10 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
         return [.. _context.Set<T>()];
     }
 
-
     public List<ManyToManyJoin> GetManyToManyJoins(int parentDataTypeId, int childDataTypeId)
     {
         return [.. _context.ManyToManyJoins.Where(w => w.PtId == parentDataTypeId && w.CtId == childDataTypeId)];
     }
-
 
     public bool HaveAnyRecord<T>() where T : class
     {

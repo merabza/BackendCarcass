@@ -19,7 +19,6 @@ public /*open*/ class Cell
     public string? Caption { get; set; }
     public bool Visible { get; set; }
 
-
     public static string CellTypeNameForSave(string sourceCellTypeName)
     {
         if (!sourceCellTypeName.EndsWith(nameof(Cell)) || sourceCellTypeName.Length <= nameof(Cell).Length)

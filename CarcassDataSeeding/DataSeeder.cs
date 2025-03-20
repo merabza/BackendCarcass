@@ -21,7 +21,6 @@ public /*open*/ class DataSeeder<TDst> : IDataSeeder where TDst : class
         _tableName = Repo.GetTableName<TDst>();
     }
 
-
     public Option<IEnumerable<Err>> Create(bool checkOnly)
     {
         if (checkOnly)
@@ -50,7 +49,6 @@ public /*open*/ class DataSeeder<TDst> : IDataSeeder where TDst : class
         //მაშინ ისინიც ჩაემატება. ან თუ არასწორად არის რომელიმე ჩანაწერი, შეიცვლება. ან თუ ზედმეტია წაიშლება
         return AdditionalCheck();
     }
-
 
     protected List<T> LoadFromJsonFile<T>(string folderName = null, string fileName = null)
     {

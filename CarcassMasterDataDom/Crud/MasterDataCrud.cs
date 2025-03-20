@@ -90,7 +90,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         if (gridModel is null)
             return new[] { MasterDataCrudErrors.GridModelIsNull(_tableName) };
 
-
         IntegerCell? sortIdCell = null;
         foreach (var cell in gridModel.Cells.Where(x => x.TypeName == "Integer"))
         {
@@ -181,7 +180,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, rows);
     }
 
-
     protected override async Task<OneOf<ICrudData, IEnumerable<Err>>> GetOneData(int id,
         CancellationToken cancellationToken = default)
     {
@@ -205,7 +203,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //return getOneRecordResult.Match<OneOf<ICrudData, IEnumerable<Err>>>(t0 => new MasterDataCrudLoadedData(t0.EditFields()),
         //    t1 => t1);
     }
-
 
     private async Task<OneOf<IDataType, IEnumerable<Err>>> GetOneRecord(int id,
         CancellationToken cancellationToken = default)
@@ -254,7 +251,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //var q = _cmdRepo.RunGenericMethodForQueryRecords(entityType);
         //var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); //
 
-
         //return _cmdRepo.LoadByTableName(_tableName);
 
         var setMethod = _cmdRepo.SetMethodInfo();
@@ -270,12 +266,10 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
             : OneOf<object, IEnumerable<Err>>.FromT0(result);
     }
 
-
     private OneOf<IQueryable<IDataType>, IEnumerable<Err>> Query()
     {
         //var q = _cmdRepo.RunGenericMethodForQueryRecords(entityType);
         //var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); //
-
 
         //return _cmdRepo.LoadByTableName(_tableName);
 
@@ -308,7 +302,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         var validateResult = await Validate(newItem, cancellationToken);
         if (validateResult.IsSome)
             return (Err[])validateResult;
-
 
         var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
         if (isGridWithSortIdResult.IsT1)
@@ -448,14 +441,12 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
 
         return await Update(id, newItem, cancellationToken);
 
-
         //3. დავადგინოთ არის თუ არა ისეთი ჩანაწერები, რომლებიც იწვევს SortId-ის ჩავარდნას და გამოვასწოროთ ჩავარდნები.
         //3.1 უნდა ჩავტვირთოთ იდენტიფიკატორები, SortId-ები, RowId-ები დალაგებული SortId-ებით
         //3.2. ისეთი ჩანაწერებისათვის რომლებისთვისაც SortId != RowId, გავაახლოთ SortId, RowId-ის მნიშვნელობით.
 
         //sortHelper.ReSortSortIds(queryResult.AsT0);
     }
-
 
     protected override async ValueTask<Option<IEnumerable<Err>>> AfterUpdateData(
         CancellationToken cancellationToken = default)
@@ -471,7 +462,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         return null;
     }
 
-
     private async Task<Option<IEnumerable<Err>>> Update(int id, IDataType newItem,
         CancellationToken cancellationToken = default)
     {
@@ -482,7 +472,6 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         //    {
         //        MasterDataApiErrors.RecordNotFound(_tableName, id)
         //    }; //ბაზაში ვერ ვიპოვეთ მოწოდებული იდენტიფიკატორის შესაბამისი ჩანაწერი. RecordNotFound
-
 
         var result = await GetOneRecord(id, cancellationToken);
         return result.Match<Option<IEnumerable<Err>>>(r =>
@@ -512,11 +501,9 @@ public class MasterDataCrud : CrudBase, IMasterDataLoader
         if (!isGridWithSortId)
             return null;
 
-
         //3. დავადგინოთ არის თუ არა ისეთი ჩანაწერები, რომლებიც იწვევს SortId-ის ჩავარდნას და გამოვასწოროთ ჩავარდნები.
         //3.1 უნდა ჩავტვირთოთ იდენტიფიკატორები, SortId-ები, RowId-ები დალაგებული SortId-ებით
         //3.2. ისეთი ჩანაწერებისათვის რომლებისთვისაც SortId != RowId, გავაახლოთ SortId, RowId-ის მნიშვნელობით.
-
 
         var sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
         if (Activator.CreateInstance(sortIdHelperType, _cmdRepo) is not ISortIdHelper sortHelper)

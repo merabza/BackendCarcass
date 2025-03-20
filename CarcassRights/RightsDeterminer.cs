@@ -107,7 +107,6 @@ public class RightsDeterminer
         if (menuDtId is null) _logger.LogError($"{nameof(CheckMenuRight)} {nameof(menuDtId)} is null");
         if (roleDtId is null) _logger.LogError($"{nameof(CheckMenuRight)} {nameof(roleDtId)} is null");
 
-
         if (menuGroupsDtId is null || menuDtId is null || roleDtId is null)
             return new[] { RightsApiErrors.ErrorWhenDeterminingRights };
 
@@ -192,7 +191,6 @@ public class RightsDeterminer
             _logger.LogError($"{nameof(CheckViewRightByTableKey)} {nameof(dataTypeDtId)} is null");
         if (menuDtId is null) _logger.LogError($"{nameof(CheckViewRightByTableKey)} {nameof(menuDtId)} is null");
 
-
         if (roleDtId is null || dataTypeDtId is null || menuDtId is null)
             return new[] { RightsApiErrors.ErrorWhenDeterminingRights };
 
@@ -269,7 +267,6 @@ public class RightsDeterminer
         if (dataCrudRightDtId is null)
             _logger.LogError($"{nameof(CheckCrudRightByTableKey)} {nameof(dataCrudRightDtId)} is null");
         //if (keyByTableName is null) _logger.LogError($"{nameof(CheckTableViewRight)} {nameof(keyByTableName)} is null");
-
 
         if (roleDtId is null || dataTypeDtId is null || dataCrudRightDtId is null)
             return new[] { RightsApiErrors.ErrorWhenDeterminingRights };

@@ -54,7 +54,6 @@
 //    //    if (validateResult.IsSome)
 //    //        return validateResult;
 
-
 //    //    var crudMdRepo = MdRepoCreator.CreateMdCruderRepo(_context, tableName, _roleManager, _userManager);
 //    //    return await crudMdRepo.Update(id, newItem);
 //    //}
@@ -82,7 +81,6 @@
 //    //{
 //    //    //CarcassContext.ManyToManyJoins.
 
-
 //    //    int menuGroupsDtId = GetDataTypeIdByKey(ECarcassDataTypeKeys.MenuGroup);
 //    //    int menuDtId = GetDataTypeIdByKey(ECarcassDataTypeKeys.MenuItm);
 //    //    int roleDtId = GetDataTypeIdByKey(ECarcassDataTypeKeys.Role);
@@ -96,7 +94,6 @@
 //    //        select rm;
 
 //    //    return res.Any();
-
 
 //    //}
 
@@ -127,7 +124,6 @@
 //    //{
 //    //    return MdRepoCreator.CreateMdLoaderRepo(_context, tableName, _roleManager, _userManager);
 //    //}
-
 
 //    //private Option<IEnumerable<Err>> Validate(IDataType newItem, string tableName)
 //    //{

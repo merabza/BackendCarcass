@@ -33,7 +33,6 @@ public sealed class CarcassDataTypeKeys
     private static CarcassDataTypeKeys? _instance;
     private static readonly object SyncRoot = new();
 
-
     private readonly Dictionary<string, string> _dtKeys;
 
     private CarcassDataTypeKeys()

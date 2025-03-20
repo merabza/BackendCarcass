@@ -46,7 +46,6 @@ public sealed class AuthenticationEndpoints : IInstaller
         return true;
     }
 
-
     //შესასვლელი წერტილი (endpoint)
     //დანიშნულება -> დაარეგისტრიროს ახალი მომხმარებელი ბაზაში
     //შემავალი ინფორმაცია -> RegistrationModel კლასის ობიექტი, რომელიც მოდის ვებიდან
@@ -66,7 +65,6 @@ public sealed class AuthenticationEndpoints : IInstaller
         var result = await mediator.Send(command, cancellationToken);
         return result.Match(Results.Ok, Results.BadRequest);
     }
-
 
     //შესასვლელი წერტილი (endpoint)
     //დანიშნულება -> არსებული მომხმარებლის ავტორიზაცია პაროლის გამოყენებით

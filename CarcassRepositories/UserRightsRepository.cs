@@ -53,7 +53,6 @@ public class UserRightsRepository : IUserRightsRepository
             cancellationToken);
     }
 
-
     public Task<bool> CheckMenuRight(int roleDtId, string roleName, int menuGroupsDtId, int menuDtId,
         string menuItemName, CancellationToken cancellationToken = default)
     {

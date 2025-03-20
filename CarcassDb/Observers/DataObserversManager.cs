@@ -33,13 +33,11 @@
 //            kvp.Value.Notify();
 //    }
 
-
 //    public void NotifyList(List<Type> mayChangeTables)
 //    {
 //        foreach (var mayChangeTable in mayChangeTables)
 //            Notify(mayChangeTable);
 //    }
-
 
 //    public void Notify(Type? dataTableType)
 //    {

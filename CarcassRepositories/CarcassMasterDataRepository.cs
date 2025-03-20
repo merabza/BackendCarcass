@@ -62,7 +62,6 @@ public class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDat
         return _context.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
     }
 
-
     public async Task<Option<IEnumerable<Err>>> Create(IDataType newItem, CancellationToken cancellationToken = default)
     {
         await _context.AddAsync(newItem, cancellationToken);

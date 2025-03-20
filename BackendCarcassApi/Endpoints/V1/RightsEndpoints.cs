@@ -127,7 +127,6 @@ public sealed class RightsEndpoints : IInstaller
         return result.Match(Results.Ok, Results.BadRequest);
     }
 
-
     //შესასვლელი წერტილი (endpoint)
     //დანიშნულება -> უფლებების ინფორმაციაში ბაზაში არსებული აცდენებისა და შეცდომების გასწორება.
     //შემავალი ინფორმაცია -> არ არის

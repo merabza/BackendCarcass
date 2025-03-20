@@ -18,7 +18,6 @@ public /*open*/ class MixedCell : Cell
     {
     }
 
-
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
     public Err? IsRequiredErr { get; set; }
 
@@ -50,7 +49,6 @@ public /*open*/ class MixedCell : Cell
 
         return errors;
     }
-
 
     protected List<Err> ValidateByType<T>(List<Err> errors, object? value, string typeName)
     {

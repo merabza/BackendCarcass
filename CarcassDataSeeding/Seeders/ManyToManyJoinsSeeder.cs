@@ -175,7 +175,6 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
             CKey = userByRoleModel.RoleName
         }));
 
-
         //admin meng
         string[] menGroupKeys = ["Main", "MasterData"]; //, "ProgramConstructor"
         lst.AddRange(menGroupKeys.Select(s => new ManyToManyJoin
@@ -225,7 +224,6 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
 
         var existingDataTypes = Repo.GetAll<DataType>();
 
-
         return existingDataTypes.Select(s => new ManyToManyJoin
         {
             PtId = dataTypeRol, PKey = adminRoleKey, CtId = dataTypeDt, CKey = s.DtKey
@@ -242,7 +240,6 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
         const string adminRoleKey = "Admin";
 
         var existingMenuGroups = Repo.GetAll<MenuGroup>();
-
 
         return existingMenuGroups.Select(s => new ManyToManyJoin
         {
@@ -309,7 +306,6 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
 
         return res;
     }
-
 
     private List<ManyToManyJoin> GetMenuToDataTypesNeedLess()
     {

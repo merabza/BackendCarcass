@@ -72,7 +72,6 @@ public class ReturnValuesLoader
             }
         }
 
-
         if (errors.Count > 0)
             return errors;
         return resultList;

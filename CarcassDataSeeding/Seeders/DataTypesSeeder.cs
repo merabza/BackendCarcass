@@ -20,12 +20,10 @@ public /*open*/
     private static JsonSerializerSettings SerializerSettings =>
         new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
-
     protected string SerializeGrid(GridModel gridModel)
     {
         return JsonConvert.SerializeObject(gridModel, SerializerSettings);
     }
-
 
     protected override Option<IEnumerable<Err>> CreateByJsonFile()
     {
@@ -158,7 +156,6 @@ public /*open*/
 
         return Repo.SetDtParentDataTypes(dtdt) && Repo.SetManyToManyJoinParentChildDataTypes(dtdtdt);
     }
-
 
     protected override List<DataType> CreateMustList()
     {
@@ -340,7 +337,6 @@ public /*open*/
         gridModel.Cells = [.. cells];
         return gridModel;
     }
-
 
     protected static GridModel GetKeyNameSortIdGridModel(string pref)
     {

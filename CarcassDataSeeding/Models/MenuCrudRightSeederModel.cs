@@ -7,6 +7,5 @@
 //    public string CrudRightTypeIdCrtKey { get; set; }
 //  }
 
-
 //}
 

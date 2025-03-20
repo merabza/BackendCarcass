@@ -23,6 +23,5 @@ public sealed class MenuGroupModel
     public string? MengIconName { get; set; }
     public bool Hidden { get; set; }
 
-
     [NotMapped] public List<MenuItmModel> Menu { get; set; } = [];
 }

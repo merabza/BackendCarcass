@@ -35,7 +35,6 @@ public sealed class IdentityRepository : IIdentityRepository
             .Where(w => w.ParentDataTypeNavigation.DtKey == ECarcassDataTypeKeys.User.ToDtKey() &&
                         w.ChildDataTypeNavigation.DtKey == ECarcassDataTypeKeys.Role.ToDtKey());
 
-
     public async ValueTask<IdentityResult> CreateUserAsync(AppUser appUser,
         CancellationToken cancellationToken = default)
     {

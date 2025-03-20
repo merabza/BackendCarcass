@@ -91,7 +91,6 @@ public static class CustomExpressionFilter
                     comparison = Expression.Equal(property, constant);
                 }
 
-
                 filterExpression = filterExpression is null ? comparison : Expression.And(filterExpression, comparison);
             }
 
@@ -107,7 +106,6 @@ public static class CustomExpressionFilter
 
         return filters;
     }
-
 
     private static int? ToNullableInt(this string s)
     {

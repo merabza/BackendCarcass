@@ -21,7 +21,6 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
                 x.DtManyToManyJoinChildDataTypeId)).ToListAsync(cancellationToken);
     }
 
-
     public abstract Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt,
         CancellationToken cancellationToken = default);
 
@@ -64,7 +63,6 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
             return null;
 
         var parentPrimaryKeyFieldName = parentPrimaryKey.Properties[0].Name;
-
 
         var entType = GetEntityTypeByTableName(dt.DtTable);
 
