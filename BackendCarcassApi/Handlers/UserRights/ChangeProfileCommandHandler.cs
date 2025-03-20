@@ -6,7 +6,7 @@ using BackendCarcassContracts.Errors;
 using CarcassIdentity;
 using CarcassMasterDataDom.Models;
 using MediatR;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using Microsoft.AspNetCore.Identity;
 using OneOf;
 using SystemToolsShared.Errors;

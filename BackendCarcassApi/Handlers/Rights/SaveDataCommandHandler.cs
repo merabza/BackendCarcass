@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.Rights;
 using CarcassDom;
 using CarcassIdentity;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using SystemToolsShared.Errors;

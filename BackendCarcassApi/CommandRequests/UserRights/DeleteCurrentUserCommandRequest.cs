@@ -1,4 +1,4 @@
-﻿using MessagingAbstractions;
+﻿using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.CommandRequests.UserRights;
 

@@ -6,7 +6,7 @@ using BackendCarcassApi.QueryRequests.DataTypes;
 using BackendCarcassContracts.V1.Responses;
 using CarcassIdentity;
 using CarcassRepositories;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using OneOf;
 using SystemToolsShared.Errors;
 

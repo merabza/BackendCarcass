@@ -6,7 +6,7 @@ using BackendCarcassContracts.Errors;
 using CarcassDom.Models;
 using CarcassMasterDataDom;
 using LibCrud.Models;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using OneOf;
 using SystemToolsShared.Errors;
 

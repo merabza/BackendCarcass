@@ -8,7 +8,7 @@ using BackendCarcassContracts.Errors;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.Models;
 using MediatR;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using OneOf;
 using SystemToolsShared.Errors;
 

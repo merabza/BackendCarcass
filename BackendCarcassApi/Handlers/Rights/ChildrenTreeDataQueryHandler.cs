@@ -6,7 +6,7 @@ using CarcassDom;
 using CarcassDom.Models;
 using CarcassIdentity;
 using CarcassMasterDataDom;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using OneOf;
 using SystemToolsShared.Errors;
 

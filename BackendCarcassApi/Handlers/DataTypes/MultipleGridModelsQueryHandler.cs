@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BackendCarcassApi.QueryRequests.DataTypes;
 using BackendCarcassContracts.Errors;
 using CarcassRepositories;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using OneOf;
 using SystemToolsShared.Errors;
 

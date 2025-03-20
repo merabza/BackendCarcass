@@ -1,5 +1,5 @@
 ﻿using CarcassMasterDataDom.Models;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.QueryRequests.MasterData;
 

@@ -8,7 +8,7 @@ using BackendCarcassContracts.V1.Responses;
 using CarcassIdentity.Models;
 using CarcassMasterDataDom.Models;
 using CarcassRepositories;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using OneOf;

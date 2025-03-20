@@ -1,5 +1,5 @@
 ﻿using BackendCarcassContracts.V1.Responses;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.CommandRequests.Authentication;
 

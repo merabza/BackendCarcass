@@ -6,7 +6,7 @@ using BackendCarcassApi.CommandRequests.MasterData;
 using BackendCarcassContracts.Errors;
 using CarcassMasterDataDom;
 using MediatR;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using OneOf;
 using SystemToolsShared.Errors;
 

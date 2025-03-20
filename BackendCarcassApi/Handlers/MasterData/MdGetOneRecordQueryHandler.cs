@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BackendCarcassApi.QueryRequests.MasterData;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.Models;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using OneOf;
 using SystemToolsShared.Errors;
 

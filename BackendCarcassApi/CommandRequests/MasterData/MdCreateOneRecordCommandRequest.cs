@@ -1,5 +1,5 @@
 ﻿using CarcassMasterDataDom.Models;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using Microsoft.AspNetCore.Http;
 
 namespace BackendCarcassApi.CommandRequests.MasterData;

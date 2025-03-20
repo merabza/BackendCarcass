@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using CarcassDom.Models;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.CommandRequests.Rights;
 

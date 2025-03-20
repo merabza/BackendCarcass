@@ -5,7 +5,7 @@ using BackendCarcassApi.CommandRequests.UserRights;
 using CarcassIdentity;
 using CarcassRepositories;
 using CarcassRepositories.Models;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using OneOf;
 using SystemToolsShared.Errors;
 

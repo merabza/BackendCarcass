@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using Microsoft.AspNetCore.Http;
 
 namespace BackendCarcassApi.QueryRequests.DataTypes;

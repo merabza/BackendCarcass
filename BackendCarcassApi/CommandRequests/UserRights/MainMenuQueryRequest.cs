@@ -1,5 +1,5 @@
 ﻿using CarcassRepositories.Models;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.CommandRequests.UserRights;
 

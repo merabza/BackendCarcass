@@ -1,5 +1,5 @@
 ﻿using BackendCarcassApi.QueryResponses;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 using Microsoft.AspNetCore.Http;
 
 namespace BackendCarcassApi.QueryRequests.MasterData;

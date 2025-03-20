@@ -1,5 +1,5 @@
 ﻿using LibCrud.Models;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.QueryRequests.MasterData;
 

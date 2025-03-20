@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CarcassDom;
 using CarcassDom.Models;
-using MessagingAbstractions;
+using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.QueryRequests.Rights;
 
