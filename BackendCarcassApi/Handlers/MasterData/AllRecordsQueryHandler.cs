@@ -4,7 +4,7 @@
 //using BackendCarcassApi.QueryRequests.MasterData;
 //using BackendCarcassApi.QueryResponses;
 //using CarcassMasterDataDom;
-//using MessagingAbstractions;
+//using MediatRMessagingAbstractions;
 //using OneOf;
 //using SystemToolsShared;
 
