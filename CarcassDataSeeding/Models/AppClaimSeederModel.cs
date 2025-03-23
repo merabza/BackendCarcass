@@ -2,6 +2,6 @@
 
 public sealed class AppClaimSeederModel
 {
-    public string AclKey { get; set; }
-    public string AclName { get; set; }
+    public required string AclKey { get; set; }
+    public required string AclName { get; set; }
 }

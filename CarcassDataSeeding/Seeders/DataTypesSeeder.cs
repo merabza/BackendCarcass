@@ -5,17 +5,15 @@ using CarcassDataSeeding.Models;
 using CarcassDb.Models;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.CellModels;
-using LanguageExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SystemToolsShared;
-using SystemToolsShared.Errors;
 
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
     class DataTypesSeeder(string dataSeedFolder, IDataSeederRepository repo)
-    : AdvancedDataSeeder<DataType>(dataSeedFolder, repo)
+    : DataSeeder<DataType, DataTypeSeederModel>(dataSeedFolder, repo, ESeedDataType.OnlyRules)
 {
     private static JsonSerializerSettings SerializerSettings =>
         new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
@@ -25,65 +23,26 @@ public /*open*/
         return JsonConvert.SerializeObject(gridModel, SerializerSettings);
     }
 
-    protected override Option<IEnumerable<Err>> CreateByJsonFile()
+    protected override bool AdditionalCheck(List<DataTypeSeederModel> seedData)
     {
-        var seedData = LoadFromJsonFile<DataTypeSeederModel>();
-        var dataList = CreateListBySeedData(seedData);
-        if (!Repo.CreateEntities(dataList))
-            return new Err[]
-            {
-                new()
-                {
-                    ErrorCode = "DataTypeEntitiesCannotBeCreated",
-                    ErrorMessage = "DataType entities cannot be created"
-                }
-            };
-
+        var dataList = Repo.GetAll<DataType>();
         DataSeederTempData.Instance.SaveIntIdKeys<DataType>(dataList.ToDictionary(k => k.Key, v => v.Id));
-        if (!SetParents(seedData, dataList))
-            return new Err[]
-            {
-                new() { ErrorCode = "DataTypeCannotSetParents", ErrorMessage = "Cannot Set Parents For DataType" }
-            };
-        return null;
+        return SetParents(seedData, dataList) && SetParentDataTypes() && RemoveRedundantDataTypes();
     }
 
-    protected override Option<IEnumerable<Err>> AdditionalCheck()
-    {
-        var baseAdditionalCheckResult = base.AdditionalCheck();
-        if (baseAdditionalCheckResult.IsSome)
-            return (Err[])baseAdditionalCheckResult;
-
-        if (!SetParentDataTypes())
-            return new Err[]
-            {
-                new() { ErrorCode = "DataTypeCannotSetParents", ErrorMessage = "Cannot Set Parents For DataType" }
-            };
-        if (!RemoveRedundantDataTypes())
-            return new Err[]
-            {
-                new()
-                {
-                    ErrorCode = "CannotRemoveRedundantDataTypes",
-                    ErrorMessage = "Cannot Remove Redundant DataTypes"
-                }
-            };
-        return null;
-    }
-
-    private static List<DataType> CreateListBySeedData(IEnumerable<DataTypeSeederModel> dataTypesSeedData)
+    protected override List<DataType> Adapt(List<DataTypeSeederModel> dataTypesSeedData)
     {
         return dataTypesSeedData.Select(s => new DataType
         {
-            DtGridRulesJson = s.DtGridRulesJson,
-            DtIdFieldName = s.DtIdFieldName,
             DtKey = s.DtKey,
-            DtKeyFieldName = s.DtKeyFieldName,
             DtName = s.DtName,
-            DtNameFieldName = s.DtNameFieldName,
-            DtNameGenitive = s.DtNameGenitive,
             DtNameNominative = s.DtNameNominative,
-            DtTable = s.DtTable
+            DtNameGenitive = s.DtNameGenitive,
+            DtTable = s.DtTable,
+            DtIdFieldName = s.DtIdFieldName,
+            DtKeyFieldName = s.DtKeyFieldName,
+            DtNameFieldName = s.DtNameFieldName,
+            DtGridRulesJson = s.DtGridRulesJson
         }).ToList();
     }
 
@@ -99,7 +58,7 @@ public /*open*/
             var oneRec = dataTypesList.SingleOrDefault(s => s.DtKey == dataTypeSeederModel.DtKey);
             if (oneRec == null) continue;
 
-            oneRec.DtParentDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtParentDataTypeIdDtKey);
+            oneRec.DtParentDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtParentDataTypeIdDtKey!);
             forUpdate.Add(oneRec);
         }
 
@@ -110,7 +69,7 @@ public /*open*/
             if (oneRec == null) continue;
 
             oneRec.DtManyToManyJoinParentDataTypeId =
-                tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinParentDataTypeKey);
+                tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinParentDataTypeKey!);
             forUpdate.Add(oneRec);
         }
 
@@ -121,7 +80,7 @@ public /*open*/
             if (oneRec == null) continue;
 
             oneRec.DtManyToManyJoinChildDataTypeId =
-                tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinChildDataTypeKey);
+                tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinChildDataTypeKey!);
             forUpdate.Add(oneRec);
         }
 
@@ -157,7 +116,7 @@ public /*open*/
         return Repo.SetDtParentDataTypes(dtdt) && Repo.SetManyToManyJoinParentChildDataTypes(dtdtdt);
     }
 
-    protected override List<DataType> CreateMustList()
+    protected override List<DataType> CreateListByRules()
     {
         var appClaimDKey = ECarcassDataTypeKeys.AppClaim.ToDtKey();
         var crudRightTypeDKey = ECarcassDataTypeKeys.CrudRightType.ToDtKey();
@@ -392,15 +351,6 @@ public /*open*/
         return Cell.Integer("sortId", "რიგითი ნომერი").Required("რიგითი ნომერი შევსებული უნდა იყოს").Default(-1).Min(-1)
             .SortId();
     }
-
-    //protected static Cell GetComboCell(string fieldName, string caption, string dataMember, string valueMember,
-    //    string displayMember, bool allowNull = false)
-    //{
-    //    var cell = Cell.Lookup(fieldName, caption, dataMember, valueMember, displayMember).Default();
-    //    return allowNull
-    //        ? cell.Nullable()
-    //        : cell.Positive($"{caption} არჩეული უნდა იყოს").Required($"{caption} არჩეული უნდა იყოს");
-    //}
 
     protected static Cell GetMdComboCell(string fieldName, string caption, string dtTable, bool allowNull = false)
     {

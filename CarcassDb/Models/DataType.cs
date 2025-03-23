@@ -26,11 +26,11 @@ public sealed class DataType : IDataType, IMyEquatable
     public DataType? DtParentDataTypeNavigation { get; set; }
     public DataType? DtManyToManyJoinParentDataTypeNavigation { get; set; }
     public DataType? DtManyToManyJoinChildDataTypeNavigation { get; set; }
-    public ICollection<ManyToManyJoin> ManyToManyJoinParentTypes { get; set; } = new HashSet<ManyToManyJoin>();
-    public ICollection<ManyToManyJoin> ManyToManyJoinChildTypes { get; set; } = new HashSet<ManyToManyJoin>();
-    public ICollection<DataType> ChildrenDataTypes { get; set; } = new HashSet<DataType>();
-    public ICollection<DataType> ManyJoinParentDataTypes { get; set; } = new HashSet<DataType>();
-    public ICollection<DataType> ManyToManyJoinChildrenDataTypes { get; set; } = new HashSet<DataType>();
+    public ICollection<ManyToManyJoin> ManyToManyJoinParentTypes { get; set; } = new List<ManyToManyJoin>();
+    public ICollection<ManyToManyJoin> ManyToManyJoinChildTypes { get; set; } = new List<ManyToManyJoin>();
+    public ICollection<DataType> ChildrenDataTypes { get; set; } = new List<DataType>();
+    public ICollection<DataType> ManyJoinParentDataTypes { get; set; } = new List<DataType>();
+    public ICollection<DataType> ManyToManyJoinChildrenDataTypes { get; set; } = new List<DataType>();
 
     [NotMapped]
     public int Id

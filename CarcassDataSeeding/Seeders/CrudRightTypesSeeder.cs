@@ -1,43 +1,23 @@
-﻿using CarcassDataSeeding.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using CarcassDataSeeding.Models;
 using CarcassDb.Models;
 using CarcassDom;
-using LanguageExt;
-using System.Collections.Generic;
-using System.Linq;
-using SystemToolsShared.Errors;
 
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
     class CrudRightTypesSeeder(string dataSeedFolder, IDataSeederRepository repo)
-    : AdvancedDataSeeder<CrudRightType>(dataSeedFolder, repo)
+    : DataSeeder<CrudRightType, CrudRightTypeSeederModel>(dataSeedFolder, repo, ESeedDataType.OnlyRules)
 {
-    protected override Option<IEnumerable<Err>> CreateByJsonFile()
+    protected override bool AdditionalCheck(List<CrudRightTypeSeederModel> seedData)
     {
-        var seedData = LoadFromJsonFile<CrudRightTypeSeederModel>();
-        var dataList = CreateListBySeedData(seedData);
-        if (!Repo.CreateEntities(dataList))
-            return new Err[]
-            {
-                new()
-                {
-                    ErrorCode = "CrudRightTypeSEntitiesCannotBeCreated",
-                    ErrorMessage = "CrudRightTypeS entities cannot be created"
-                }
-            };
-
+        var dataList = Repo.GetAll<CrudRightType>();
         DataSeederTempData.Instance.SaveIntIdKeys<CrudRightType>(dataList.ToDictionary(k => k.Key, v => v.Id));
-        return null;
+        return true;
     }
 
-    private static List<CrudRightType> CreateListBySeedData(
-        IEnumerable<CrudRightTypeSeederModel> crudRightTypesSeedData)
-    {
-        return crudRightTypesSeedData.Select(s => new CrudRightType { CrtKey = s.CrtKey, CrtName = s.CrtName })
-            .ToList();
-    }
-
-    protected override List<CrudRightType> CreateMustList()
+    protected override List<CrudRightType> CreateListByRules()
     {
         CrudRightType[] crudRightTypes =
         [

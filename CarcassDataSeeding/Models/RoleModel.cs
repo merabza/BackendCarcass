@@ -2,7 +2,7 @@
 
 public sealed class RoleModel
 {
-    public string RoleKey { get; set; }
-    public string RoleName { get; set; }
+    public required string RoleKey { get; set; }
+    public required string RoleName { get; set; }
     public int Level { get; set; }
 }

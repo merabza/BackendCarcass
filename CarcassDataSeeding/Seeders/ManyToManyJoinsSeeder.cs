@@ -5,57 +5,41 @@ using CarcassDb.Domain;
 using CarcassDb.Models;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.CellModels;
-using LanguageExt;
-using SystemToolsShared.Errors;
 
 namespace CarcassDataSeeding.Seeders;
 
-public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string dataSeedFolder, IDataSeederRepository repo)
-    : DataSeeder<ManyToManyJoin>(dataSeedFolder, repo)
+public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToManyJoinSeederModel>
 {
-    protected override Option<IEnumerable<Err>> CreateByJsonFile()
+    private readonly string _secretDataFolder;
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public ManyToManyJoinsSeeder(string secretDataFolder, string dataSeedFolder, IDataSeederRepository repo) : base(
+        dataSeedFolder, repo)
     {
-        //return Repo.CreateEntities(CreateManyToManyJoinsList(LoadFromJsonFile<ManyToManyJoinSeederModel>()));
-        if (!Repo.CreateEntities(CreateManyToManyJoinsList(LoadFromJsonFile<ManyToManyJoinSeederModel>())))
-            return new Err[]
-            {
-                new()
-                {
-                    ErrorCode = "ManyToManyJoinEntitiesCannotBeCreated",
-                    ErrorMessage = "ManyToManyJoin entities cannot be created"
-                }
-            };
-        return null;
+        _secretDataFolder = secretDataFolder;
     }
 
-    protected override Option<IEnumerable<Err>> AdditionalCheck()
+    protected override bool AdditionalCheck(List<ManyToManyJoinSeederModel> jMos)
     {
         var dataTypeDKey = ECarcassDataTypeKeys.DataType.ToDtKey();
-        if (Check(CreateMustList()) && Check(GetThirdPartRights(ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(),
-                                        dataTypeDKey, dataTypeDKey)) //rol admin mmj(dt,dt) all
-                                    && Check(GetThirdPartRights(ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey(),
-                                        dataTypeDKey,
-                                        ECarcassDataTypeKeys.CrudRightType.ToDtKey())) //rol admin DataCrudRights all
-                                    //&& Check(GetThirdPartRights(MenuToCrudTypeModel.DKey, MenuItm.DKey, CrudRightType.DKey)) //rol admin MenuCrudRights all
-                                    && Check(GetAdminRoleToDataTypes()) //rol admin DataTypes all
-                                    && Check(GetAdminRoleToMenuGroups()) //rol admin MenuGroups all
-                                    && Check(GetAdminRoleToMenuItems()) //rol admin MenuItems all
-                                    && Check(GetMenuToDataTypes()) //men -> DataTypes
-                                    && Repo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess()))
-            return null;
-        return new Err[]
-        {
-            new()
-            {
-                ErrorCode = "ManyToManyJoinEntitiesCannotBeChecked",
-                ErrorMessage = "ManyToManyJoin entities cannot be Checked"
-            }
-        };
+        return Check(CreateMustListByRules()) && Check(GetThirdPartRights(
+                                                  ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(), dataTypeDKey,
+                                                  dataTypeDKey)) //rol admin mmj(dt,dt) all
+                                              && Check(GetThirdPartRights(
+                                                  ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey(), dataTypeDKey,
+                                                  ECarcassDataTypeKeys.CrudRightType
+                                                      .ToDtKey())) //rol admin DataCrudRights all
+                                              //&& Check(GetThirdPartRights(MenuToCrudTypeModel.DKey, MenuItm.DKey, CrudRightType.DKey)) //rol admin MenuCrudRights all
+                                              && Check(GetAdminRoleToDataTypes()) //rol admin DataTypes all
+                                              && Check(GetAdminRoleToMenuGroups()) //rol admin MenuGroups all
+                                              && Check(GetAdminRoleToMenuItems()) //rol admin MenuItems all
+                                              && Check(GetMenuToDataTypes()) //men -> DataTypes
+                                              && Repo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
     }
 
-    private bool Check(IReadOnlyCollection<ManyToManyJoin> mustBeDataTypes)
+    private bool Check(List<ManyToManyJoin> mustBeDataTypes)
     {
-        if (mustBeDataTypes == null)
+        if (mustBeDataTypes.Count == 0)
             return true;
         var existingManyToManyJoins = Repo.GetAll<ManyToManyJoin>()
             .Select(s => new ManyToManyJoinDomain(s.PtId, s.PKey, s.CtId, s.CKey)).ToList();
@@ -67,8 +51,7 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
         }).ToList());
     }
 
-    private static List<ManyToManyJoin> CreateManyToManyJoinsList(
-        IEnumerable<ManyToManyJoinSeederModel> manyToManyJoinsSeedData)
+    protected override List<ManyToManyJoin> Adapt(List<ManyToManyJoinSeederModel> manyToManyJoinsSeedData)
     {
         var tempData = DataSeederTempData.Instance;
         return manyToManyJoinsSeedData.Select(s => new ManyToManyJoin
@@ -80,7 +63,7 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
         }).ToList();
     }
 
-    protected override List<ManyToManyJoin> CreateMustList()
+    protected virtual List<ManyToManyJoin> CreateMustListByRules()
     {
         var dataTypeDKey = ECarcassDataTypeKeys.DataType.ToDtKey();
         var userDKey = ECarcassDataTypeKeys.User.ToDtKey();
@@ -164,7 +147,7 @@ public /*open*/ class ManyToManyJoinsSeeder(string secretDataFolder, string data
                 CKey = crudRightType.CrtKey
             });
 
-        var userByRoles = LoadFromJsonFile<UserByRole>(secretDataFolder, "UsersByRoles.json");
+        var userByRoles = LoadFromJsonFile<UserByRole>(_secretDataFolder, "UsersByRoles.json");
 
         //users by roles
         lst.AddRange(userByRoles.Select(userByRoleModel => new ManyToManyJoin

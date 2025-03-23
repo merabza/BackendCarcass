@@ -2,6 +2,6 @@
 
 public sealed class DataCrudRightSeederModel
 {
-    public string DataTypeIdDtKey { get; set; }
-    public string CrudRightTypeIdCrtKey { get; set; }
+    public required string DataTypeIdDtKey { get; set; }
+    public required string CrudRightTypeIdCrtKey { get; set; }
 }

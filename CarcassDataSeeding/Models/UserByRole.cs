@@ -2,6 +2,6 @@
 
 public sealed class UserByRole
 {
-    public string UserName { get; set; }
-    public string RoleName { get; set; }
+    public required string UserName { get; set; }
+    public required string RoleName { get; set; }
 }

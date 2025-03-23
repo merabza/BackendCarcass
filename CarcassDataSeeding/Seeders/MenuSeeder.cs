@@ -1,33 +1,22 @@
-﻿using CarcassDataSeeding.Models;
-using CarcassDb.Models;
-using LanguageExt;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using SystemToolsShared.Errors;
+using CarcassDataSeeding.Models;
+using CarcassDb.Models;
 
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
     class MenuSeeder(string dataSeedFolder, IDataSeederRepository repo)
-    : AdvancedDataSeeder<MenuItm>(dataSeedFolder, repo)
+    : DataSeeder<MenuItm, MenuItmSeederModel>(dataSeedFolder, repo, ESeedDataType.OnlyRules)
 {
-    protected override Option<IEnumerable<Err>> CreateByJsonFile()
+    protected override bool AdditionalCheck(List<MenuItmSeederModel> jMos)
     {
-        var seedData = LoadFromJsonFile<MenuItmSeederModel>();
-        var dataList = CreateListBySeedData(seedData);
-        if (!Repo.CreateEntities(dataList))
-            return new Err[]
-            {
-                new()
-                {
-                    ErrorCode = "MenuEntitiesCannotBeCreated", ErrorMessage = "Menu entities cannot be created"
-                }
-            };
+        var dataList = Repo.GetAll<MenuItm>();
         DataSeederTempData.Instance.SaveIntIdKeys<MenuItm>(dataList.ToDictionary(k => k.Key, v => v.Id));
-        return null;
+        return true;
     }
 
-    private static List<MenuItm> CreateListBySeedData(List<MenuItmSeederModel> menuSeedData)
+    protected override List<MenuItm> Adapt(List<MenuItmSeederModel> menuSeedData)
     {
         var tempData = DataSeederTempData.Instance;
         return menuSeedData.Select(s => new MenuItm
@@ -42,7 +31,7 @@ public /*open*/
         }).ToList();
     }
 
-    protected override List<MenuItm> CreateMustList()
+    protected override List<MenuItm> CreateListByRules()
     {
         var tempData = DataSeederTempData.Instance;
 

@@ -2,8 +2,8 @@
 
 public sealed class ManyToManyJoinSeederModel
 {
-    public string PtIdDtKey { get; set; }
-    public string PKey { get; set; }
-    public string CtIdDtKey { get; set; }
-    public string CKey { get; set; }
+    public required string PtIdDtKey { get; set; }
+    public required string PKey { get; set; }
+    public required string CtIdDtKey { get; set; }
+    public required string CKey { get; set; }
 }

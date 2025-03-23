@@ -23,12 +23,6 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
 
     public List<T> GetAll<T>() where T : class
     {
-        //IMdLoaderCreator creator = MasterDataRepoManager.Instance.GetLoaderCreator(typeof(T));
-        //ICustomMdLoader loader = creator?.Create(_context);
-
-        //if (loader != null && typeof(T) is IDataType)
-        //  return loader.GetEntity().Cast<T>();
-
         return [.. _context.Set<T>()];
     }
 
@@ -42,21 +36,20 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
         return _context.Set<T>().Any();
     }
 
-    public string GetTableName<T>()
+    public string GetTableName<T>() where T : class
     {
         var entType = _context.Model.GetEntityTypes().SingleOrDefault(s => s.ClrType == typeof(T));
-        return entType?.GetTableName();
+        return entType?.GetTableName() ?? throw new Exception($"Table Name is null for {typeof(T).Name}");
     }
 
-    public bool CreateEntities<T>(List<T> entities)
+    public bool CreateEntities<T>(List<T> entities) where T : class
     {
-        if (entities == null || entities.Count == 0)
+        if (entities.Count == 0)
             return true;
 
         try
         {
-            foreach (var entity in entities)
-                _context.Add(entity);
+            _context.AddRange(entities);
             return SaveChanges();
         }
         catch (Exception e)
@@ -66,9 +59,9 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
         }
     }
 
-    public bool DeleteEntities<T>(List<T> entities)
+    public bool DeleteEntities<T>(List<T> entities) where T : class
     {
-        if (entities == null || entities.Count == 0)
+        if (entities.Count == 0)
             return true;
 
         try
@@ -141,9 +134,9 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
         }
     }
 
-    public bool SetUpdates<T>(List<T> forUpdate)
+    public bool SetUpdates<T>(List<T> forUpdate) where T : class
     {
-        if (forUpdate == null || forUpdate.Count == 0)
+        if (forUpdate.Count == 0)
             return true;
         try
         {
@@ -172,9 +165,9 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
         }
     }
 
-    public bool RemoveNeedlessRecords<TDst>(List<TDst> needLessList) where TDst : class
+    public bool RemoveNeedlessRecords<T>(List<T> needLessList) where T : class
     {
-        if (needLessList == null || needLessList.Count == 0)
+        if (needLessList.Count == 0)
             return true;
 
         try
@@ -184,7 +177,7 @@ public /*open*/ class DataSeederRepository : IDataSeederRepository
         }
         catch (Exception e)
         {
-            StShared.WriteException(e, $"Error when RemoveNeedlessRecords type: {typeof(TDst)}", true, _logger, false);
+            StShared.WriteException(e, $"Error when RemoveNeedlessRecords type: {typeof(T)}", true, _logger, false);
             return false;
         }
     }

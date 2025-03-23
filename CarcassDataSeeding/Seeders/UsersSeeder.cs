@@ -1,11 +1,10 @@
-﻿using CarcassDataSeeding.Models;
-using CarcassDb.Models;
-using CarcassMasterDataDom.Models;
-using LanguageExt;
-using Microsoft.AspNetCore.Identity;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SystemToolsShared.Errors;
+using CarcassDataSeeding.Models;
+using CarcassDb.Models;
+using CarcassMasterDataDom.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace CarcassDataSeeding.Seeders;
 
@@ -13,9 +12,9 @@ public sealed class UsersSeeder(
     UserManager<AppUser> userManager,
     string secretDataFolder,
     string dataSeedFolder,
-    IDataSeederRepository repo) : DataSeeder<User>(dataSeedFolder, repo)
+    IDataSeederRepository repo) : DataSeeder<User, UserSeederModel>(dataSeedFolder, repo)
 {
-    protected override Option<IEnumerable<Err>> AdditionalCheck()
+    protected override bool AdditionalCheck(List<UserSeederModel> jMos)
     {
         var existingUsers = Repo.GetAll<User>();
 
@@ -28,37 +27,16 @@ public sealed class UsersSeeder(
             existingEmail =
                 existingUsers.SingleOrDefault(sd =>
                     sd.NormalizedEmail == userManager.NormalizeEmail(userModel.Email))
-        }).Where(w => w.existingUser == null && w.existingEmail == null).Select(s => s!.userModel);
+        }).Where(w => w.existingUser == null && w.existingEmail == null).Select(s => s.userModel);
 
-        var userCreateErrors = new List<Err>();
-        foreach (var userModel in userToCreate)
-        {
-            var result = CreateUser(userModel);
-            if (result.IsSome) userCreateErrors.AddRange((Err[])result);
-        }
-
-        if (userCreateErrors.Count > 0)
-            return userCreateErrors.ToArray();
+        if (userToCreate.Any(userModel => !CreateUser(userModel)))
+            return false;
 
         DataSeederTempData.Instance.SaveIntIdKeys<User>(Repo.GetAll<User>().ToDictionary(k => k.Key, v => v.Id));
-        return null;
+        return true;
     }
 
-    protected override Option<IEnumerable<Err>> CreateByJsonFile()
-    {
-        if (!Repo.CreateEntities(CreateListBySeedData(LoadFromJsonFile<UserSeederModel>())))
-            return new Err[]
-            {
-                new()
-                {
-                    ErrorCode = "UserEntitiesCannotBeCreated", ErrorMessage = "User entities cannot be created"
-                }
-            };
-        DataSeederTempData.Instance.SaveIntIdKeys<User>(Repo.GetAll<User>().ToDictionary(k => k.Key, v => v.Id));
-        return null;
-    }
-
-    private static List<User> CreateListBySeedData(List<UserSeederModel> usersSeedData)
+    protected override List<User> Adapt(List<UserSeederModel> usersSeedData)
     {
         return usersSeedData.Select(s => new User
         {
@@ -73,22 +51,16 @@ public sealed class UsersSeeder(
         }).ToList();
     }
 
-    private Option<IEnumerable<Err>> CreateUser(UserModel userModel)
+    private bool CreateUser(UserModel userModel)
     {
         //1. შევქმნათ ახალი მომხმარებელი
         var user = new AppUser(userModel.UserName, userModel.FirstName, userModel.LastName) { Email = userModel.Email };
         var result = userManager.CreateAsync(user, userModel.Password).Result;
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
         if (result.Succeeded)
-            return null;
+            return true;
 
-        var errors = result.Errors.Select(s => new Err { ErrorCode = s.Code, ErrorMessage = s.Description }).ToList();
-        errors.Add(new Err
-        {
-            ErrorCode = "UserWithThisEmailCanNotBeCreated",
-            ErrorMessage = $"User {userModel.UserName} with email {userModel.Email} can not be created."
-        });
-        return errors.ToArray();
+        throw new Exception($"User {userModel.UserName} with email {userModel.Email} can not be created.");
     }
 
     private List<UserModel> GetAppUserModels()

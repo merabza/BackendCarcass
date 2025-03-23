@@ -1,41 +1,22 @@
-﻿using CarcassDataSeeding.Models;
-using CarcassDb.Models;
-using LanguageExt;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using SystemToolsShared.Errors;
+using CarcassDataSeeding.Models;
+using CarcassDb.Models;
 
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
     class MenuGroupsSeeder(string dataSeedFolder, IDataSeederRepository repo)
-    : AdvancedDataSeeder<MenuGroup>(dataSeedFolder, repo)
+    : DataSeeder<MenuGroup, MenuGroupSeederModel>(dataSeedFolder, repo, ESeedDataType.OnlyRules)
 {
-    protected override Option<IEnumerable<Err>> CreateByJsonFile()
+    protected override bool AdditionalCheck(List<MenuGroupSeederModel> jMos)
     {
-        var seedData = LoadFromJsonFile<MenuGroupSeederModel>();
-        var dataList = CreateListBySeedData(seedData);
-        if (!Repo.CreateEntities(dataList))
-            return new Err[]
-            {
-                new()
-                {
-                    ErrorCode = "MenuGroupEntitiesCannotBeCreated",
-                    ErrorMessage = "MenuGroup entities cannot be created"
-                }
-            };
-
+        var dataList = Repo.GetAll<MenuGroup>();
         DataSeederTempData.Instance.SaveIntIdKeys<MenuGroup>(dataList.ToDictionary(k => k.Key, v => v.Id));
-        return null;
+        return true;
     }
 
-    private static List<MenuGroup> CreateListBySeedData(List<MenuGroupSeederModel> menuGroupsSeedData)
-    {
-        return menuGroupsSeedData
-            .Select(s => new MenuGroup { MengKey = s.MengKey, MengName = s.MengName, SortId = s.SortId }).ToList();
-    }
-
-    protected override List<MenuGroup> CreateMustList()
+    protected override List<MenuGroup> CreateListByRules()
     {
         var menuGroups = new MenuGroup[]
         {

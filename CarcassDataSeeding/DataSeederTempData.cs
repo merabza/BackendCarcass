@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace CarcassDataSeeding;
 
 public sealed class DataSeederTempData
 {
-    private static DataSeederTempData _instance;
-    private static readonly object SyncRoot = new();
+    private static DataSeederTempData? _instance;
+    private static readonly Lock SyncRoot = new();
 
     private readonly Dictionary<Type, Dictionary<string, int>> _keyIdIntDictionary = [];
 
@@ -196,14 +197,14 @@ public sealed class DataSeederTempData
         throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
-    public int? GetIntNullableIdByKey<T>(string key1, int? key2)
+    public int? GetIntNullableIdByKey<T>(string? key1, int? key2)
     {
         if (key1 == null || key2 == null)
             return null;
         return GetIntIdByKey<T>(key1, key2.Value);
     }
 
-    public int? GetIntNullableIdByKey<T>(string key1, short? key2)
+    public int? GetIntNullableIdByKey<T>(string? key1, short? key2)
     {
         if (key1 == null || key2 == null)
             return null;
@@ -217,7 +218,7 @@ public sealed class DataSeederTempData
         return GetIntIdByKey<T>(key1.Value, key2.Value);
     }
 
-    public int? GetIntNullableIdByKey<T>(string key)
+    public int? GetIntNullableIdByKey<T>(string? key)
     {
         if (key == null)
             return null;
