@@ -8,8 +8,8 @@ namespace CarcassDb.Configurations;
 
 public class ManyToManyJoinConfiguration : IEntityTypeConfiguration<ManyToManyJoin>
 {
-    public const int CKeyMaxLength = 100;
-    public const int PKeyMaxLength = 100;
+    private const int CKeyMaxLength = 100;
+    private const int PKeyMaxLength = 100;
 
     public void Configure(EntityTypeBuilder<ManyToManyJoin> builder)
     {

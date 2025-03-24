@@ -7,20 +7,17 @@ namespace CarcassDb.Configurations;
 
 public class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
 {
-    public const int DtKeyMaxLength = 36;
-    public const int DtNameMaxLength = 100;
-    public const int DtNameNominativeMaxLength = 100;
-    public const int DtNameGenitiveMaxLength = 100;
-    public const int DtTableMaxLength = 100;
-    public const int DtIdFieldNameMaxLength = 50;
-    public const int DtKeyFieldNameMaxLength = 50;
-    public const int DtNameFieldNameMaxLength = 50;
+    private const int DtKeyMaxLength = 36;
+    private const int DtNameMaxLength = 100;
+    private const int DtNameNominativeMaxLength = 100;
+    private const int DtNameGenitiveMaxLength = 100;
+    private const int DtTableMaxLength = 100;
+    private const int DtIdFieldNameMaxLength = 50;
+    private const int DtKeyFieldNameMaxLength = 50;
+    private const int DtNameFieldNameMaxLength = 50;
 
     public void Configure(EntityTypeBuilder<DataType> builder)
     {
-        //var tableName = nameof(DataType).Pluralize();
-        //builder.ToTable(tableName.UnCapitalize());
-
         builder.HasKey(e => e.DtId);
         builder.HasIndex(e => e.DtKey).IsUnique();
         builder.HasIndex(e => e.DtTable).IsUnique();

@@ -6,8 +6,8 @@ namespace CarcassDb.Configurations;
 
 public class AppClaimConfiguration : IEntityTypeConfiguration<AppClaim>
 {
-    public const int AclKeyMaxLength = 50;
-    public const int AclNameMaxLength = 50;
+    private const int AclKeyMaxLength = 50;
+    private const int AclNameMaxLength = 50;
 
     public void Configure(EntityTypeBuilder<AppClaim> builder)
     {

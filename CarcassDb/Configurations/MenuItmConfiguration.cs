@@ -6,11 +6,11 @@ namespace CarcassDb.Configurations;
 
 public class MenuItmConfiguration : IEntityTypeConfiguration<MenuItm>
 {
-    public const int MenIconNameMaxLength = 50;
-    public const int MenKeyMaxLength = 72;
-    public const int MenLinkKeyMaxLength = 72;
-    public const int MenNameMaxLength = 200;
-    public const int MenValueMaxLength = 72;
+    private const int MenIconNameMaxLength = 50;
+    private const int MenKeyMaxLength = 72;
+    private const int MenLinkKeyMaxLength = 72;
+    private const int MenNameMaxLength = 200;
+    private const int MenValueMaxLength = 72;
 
     public void Configure(EntityTypeBuilder<MenuItm> builder)
     {

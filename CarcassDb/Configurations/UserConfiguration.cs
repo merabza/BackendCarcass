@@ -6,20 +6,17 @@ namespace CarcassDb.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-    public const int UserNameMaxLength = 256;
-    public const int NormalizedUserNameMaxLength = 256;
-    public const int EmailMaxLength = 256;
-    public const int NormalizedEmailMaxLength = 256;
-    public const int PasswordHashMaxLength = 256;
-    public const int FirstNameMaxLength = 50;
-    public const int LastNameMaxLength = 100;
-    public const int FullNameMaxLength = 100;
+    private const int UserNameMaxLength = 256;
+    private const int NormalizedUserNameMaxLength = 256;
+    private const int EmailMaxLength = 256;
+    private const int NormalizedEmailMaxLength = 256;
+    private const int PasswordHashMaxLength = 256;
+    private const int FirstNameMaxLength = 50;
+    private const int LastNameMaxLength = 100;
+    private const int FullNameMaxLength = 100;
 
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        //var tableName = nameof(User).Pluralize();
-        //builder.ToTable(tableName.UnCapitalize());
-
         builder.HasKey(e => e.UsrId);
         builder.HasIndex(e => e.NormalizedUserName).IsUnique();
         builder.HasIndex(e => e.NormalizedEmail).IsUnique();
