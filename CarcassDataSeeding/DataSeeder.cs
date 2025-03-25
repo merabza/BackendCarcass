@@ -8,10 +8,10 @@ namespace CarcassDataSeeding;
 
 public /*open*/ class DataSeeder<TDst, TJMo> : IDataSeeder where TDst : class where TJMo : class
 {
+    private readonly string _dataSeedFolder;
     private readonly ESeedDataType _seedDataType;
     private readonly string? _stringKeyFieldName;
     private readonly string _tableName;
-    private readonly string _dataSeedFolder;
     protected readonly IDataSeederRepository Repo;
 
     protected DataSeeder(string dataSeedFolder, IDataSeederRepository repo,
