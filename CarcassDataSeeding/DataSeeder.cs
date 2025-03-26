@@ -28,7 +28,9 @@ public /*open*/ class DataSeeder<TDst, TJMo> : IDataSeeder where TDst : class wh
 
     //ამ ვირტუალური მეთოდის დანიშნულებაა ბაზაში შენახვის მერე გადაამოწმოს შენახული ინფორმაცია,
     //ან თუ შენახვის მერე რაიმე დამატებით არის გასაკეთებელი, რომ გააკეთოს
-    protected virtual bool AdditionalCheck(List<TJMo> jMos)
+    //List<TJMo> seedData საჭიროა შესადარებლად.
+    //თუ ბაზიდან საჭიროა ინფორმაცია, გადატვირთულმა მეთოდმა თვითონ უნდა ჩატვირთოს
+    protected virtual bool AdditionalCheck(List<TJMo> seedData)
     {
         return true;
     }
