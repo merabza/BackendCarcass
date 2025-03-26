@@ -17,14 +17,14 @@
 //        _seedDataType = seedDataType;
 //    }
 
-//    protected virtual List<TDst> CreateMustList()
+//    protected virtual List<TDst> CreateListByRules()
 //    {
 //        return null;
 //    }
 
 //    protected override Option<IEnumerable<Err>> AdditionalCheck()
 //    {
-//        var (forAdd, forUpdate, forDelete) = CompareLists(Repo.GetAll<TDst>(), CreateMustList());
+//        var (forAdd, forUpdate, forDelete) = CompareLists(Repo.GetAll<TDst>(), CreateListByRules());
 
 //        if (!Repo.CreateEntities(forAdd))
 //            return new Err[]
