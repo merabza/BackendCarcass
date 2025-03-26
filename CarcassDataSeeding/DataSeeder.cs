@@ -24,6 +24,64 @@ public /*open*/ class DataSeeder<TDst, TJMo> : IDataSeeder where TDst : class wh
         _tableName = Repo.GetTableName<TDst>();
     }
 
+    //virtual methods
+
+    //ამ ვირტუალური მეთოდის დანიშნულებაა ბაზაში შენახვის მერე გადაამოწმოს შენახული ინფორმაცია,
+    //ან თუ შენახვის მერე რაიმე დამატებით არის გასაკეთებელი, რომ გააკეთოს
+    protected virtual bool AdditionalCheck(List<TJMo> jMos)
+    {
+        return true;
+    }
+
+    //ამ ვირტუალური მეთოდის დანიშნულებაა შექმნას სპეციალური წესების მიხედვით. 
+    //როცა ასეთი წესები გვაქვს.
+    protected virtual List<TDst> CreateListByRules()
+    {
+        return [];
+    }
+
+    //ამ ვირტუალური მეთიდის დანიშნულებაა ჯეისონიდან ჩატვირთული ინფორმაცია აქციოს ბაზის ინფორმაციად
+    //ეს რეალიზაცია გამოდგება მხოლოდ იმ შემთხვევებისთვის, როცა მოდელები ერთი ერთში გადადიან ერთმანეთში
+    //დანარჩენ შემთხვევაში საჭიროა გადატვირთვა
+    protected virtual List<TDst> Adapt(List<TJMo> appClaimsSeedData)
+    {
+        var jsonModelType = typeof(TJMo);
+        var jsonModelTypeProperties = jsonModelType.GetProperties();
+
+        var tableDataType = typeof(TDst);
+        var tableDataTypeProperties = tableDataType.GetProperties();
+
+        // Find the intersection of property names between jsonModelTypeProperties and tableDataTypeProperties
+        var commonProperties = jsonModelTypeProperties.Select(p => p.Name)
+            .Intersect(tableDataTypeProperties.Select(p => p.Name)).ToList();
+
+        return appClaimsSeedData.Select(s =>
+        {
+            var instance = Activator.CreateInstance<TDst>();
+            foreach (var propName in commonProperties)
+            {
+                var jsonProp = jsonModelType.GetProperty(propName);
+                var tableProp = tableDataType.GetProperty(propName);
+                if (jsonProp == null || tableProp == null)
+                    continue;
+                var value = jsonProp.GetValue(s);
+                tableProp.SetValue(instance, value);
+            }
+
+            return instance;
+        }).ToList();
+    }
+
+    //ამ მეთოდის დანიშნულებაა ჯეისონიდან ჩატვირთოს ინფორმაცია და აქციოს მოდელების სიად
+    protected static List<T> LoadFromJsonFile<T>(string folderName, string fileName)
+    {
+        var jsonFullFileName = Path.Combine(folderName, fileName);
+        return File.Exists(jsonFullFileName)
+            ? FileLoader.LoadDeserializeResolve<List<T>>(jsonFullFileName, true) ?? []
+            : [];
+    }
+
+    //ეს არის ძირითადი მეთოდი, რომლის საშუალებითაც ხდება ერთი ცხრილის შესაბამისი ინფორმაციის ჩატვირთვა ბაზაში
     public bool Create(bool checkOnly)
     {
         if (checkOnly)
@@ -84,80 +142,19 @@ public /*open*/ class DataSeeder<TDst, TJMo> : IDataSeeder where TDst : class wh
         return AdditionalCheck(seedData);
     }
 
-    protected virtual List<TDst> CreateListByRules()
-    {
-        return [];
-    }
-
-    protected virtual List<TDst> Adapt(List<TJMo> appClaimsSeedData)
-    {
-        var jsonModelType = typeof(TJMo);
-        var jsonModelTypeProperties = jsonModelType.GetProperties();
-
-        var tableDataType = typeof(TDst);
-        var tableDataTypeProperties = tableDataType.GetProperties();
-
-        // Find the intersection of property names between jsonModelTypeProperties and tableDataTypeProperties
-        var commonProperties = jsonModelTypeProperties.Select(p => p.Name)
-            .Intersect(tableDataTypeProperties.Select(p => p.Name)).ToList();
-
-        return appClaimsSeedData.Select(s =>
-        {
-            var instance = Activator.CreateInstance<TDst>();
-            foreach (var propName in commonProperties)
-            {
-                var jsonProp = jsonModelType.GetProperty(propName);
-                var tableProp = tableDataType.GetProperty(propName);
-                if (jsonProp == null || tableProp == null)
-                    continue;
-                var value = jsonProp.GetValue(s);
-                tableProp.SetValue(instance, value);
-            }
-
-            return instance;
-        }).ToList();
-    }
-
-    //private List<TDst> CreateListByJson()
-    //{
-    //    var seedData = LoadFromJsonFile();
-    //    return Adapt(seedData);
-    //}
-
-    //public List<TJMo> LoadFromJsonFile(string? folderName = null, string? fileName = null)
-    //{
-    //    var folName = folderName ?? DataSeedFolder;
-    //    var jsonFullFileName = Path.Combine(folName, fileName ?? $"{_tableName.Capitalize()}.json");
-    //    return File.Exists(jsonFullFileName)
-    //        ? FileLoader.LoadDeserializeResolve<List<TJMo>>(jsonFullFileName, true) ?? []
-    //        : [];
-    //}
-
+    //ამ მეთოდის დანიშნულებაა ჯეისონიდან ჩატვირთოს ინფორმაცია კონკრეტული მოდელისათვის
     private List<TJMo> LoadFromJsonFile()
     {
         return LoadFromJsonFile<TJMo>(_dataSeedFolder, $"{_tableName.Capitalize()}.json");
     }
 
-    protected static List<T> LoadFromJsonFile<T>(string folderName, string fileName)
-    {
-        var jsonFullFileName = Path.Combine(folderName, fileName);
-        return File.Exists(jsonFullFileName)
-            ? FileLoader.LoadDeserializeResolve<List<T>>(jsonFullFileName, true) ?? []
-            : [];
-    }
-
+    //მეთოდი ამოწმებს ბაზაში უკვე არის თუ არა შეასაბამის ცხრილში ჩანაწერები
     private bool CheckRecordsExists()
     {
-        //აქ true ბრუნდება იმ მიზნით, რომ თუ ეს მეთოდი კლასში არ გადააწერეს, ითვლებოდეს, რომ ჩანაწერები არსებობს
-        //return true;
         return Repo.HaveAnyRecord<TDst>();
     }
 
-    protected virtual bool AdditionalCheck(List<TJMo> jMos)
-    {
-        return true;
-    }
-
+    //ამ მეთოდის დანიშნულებაა ბაზაში ჩასაწერი სია მიიყვანოს უპირატესი სიის მიხედვით
     private List<TDst> Adjust(List<TDst> listWithMorePriority, List<TDst> listWithLessPriority)
     {
         if (_stringKeyFieldName is null)
