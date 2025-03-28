@@ -13,7 +13,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassContracts\BackendCarcassContracts.csproj" />
         <ProjectReference Include="..\..\SystemTools\MediatRMessagingAbstractions\MediatRMessagingAbstractions.csproj" />
-        <ProjectReference Include="..\..\SystemTools\MessagingAbstractions\MessagingAbstractions.csproj" />
         <ProjectReference Include="..\..\WebSystemTools\CorsTools\CorsTools.csproj" />
         <ProjectReference Include="..\CarcassDom\CarcassDom.csproj" />
         <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
