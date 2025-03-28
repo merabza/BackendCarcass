@@ -12,9 +12,15 @@ using SystemToolsShared;
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
-    class DataTypesSeeder(string dataSeedFolder, IDataSeederRepository repo)
-    : DataSeeder<DataType, DataTypeSeederModel>(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+    class DataTypesSeeder : DataSeeder<DataType, DataTypeSeederModel>
 {
+    protected readonly ICarcassDataSeederRepository CarcassRepo;
+
+    public DataTypesSeeder(string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, IDataSeederRepository repo) : base(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+    {
+        CarcassRepo = carcassRepo;
+    }
+
     private static JsonSerializerSettings SerializerSettings =>
         new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
@@ -90,7 +96,7 @@ public /*open*/
     protected virtual bool RemoveRedundantDataTypes()
     {
         var toRemoveTableNames = new[] { "dataRights", "dataRightTypes", "forms" };
-        return Repo.RemoveRedundantDataTypesByTableNames(toRemoveTableNames);
+        return CarcassRepo.RemoveRedundantDataTypesByTableNames(toRemoveTableNames);
     }
 
     protected virtual bool SetParentDataTypes()
@@ -113,7 +119,7 @@ public /*open*/
                 tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.CrudRightType.ToDtKey()))
         };
 
-        return Repo.SetDtParentDataTypes(dtdt) && Repo.SetManyToManyJoinParentChildDataTypes(dtdtdt);
+        return CarcassRepo.SetDtParentDataTypes(dtdt) && CarcassRepo.SetManyToManyJoinParentChildDataTypes(dtdtdt);
     }
 
     protected override List<DataType> CreateListByRules()

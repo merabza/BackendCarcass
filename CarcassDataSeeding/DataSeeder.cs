@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DatabaseToolsShared;
 using SystemToolsShared;
 
 namespace CarcassDataSeeding;
 
-public /*open*/ class DataSeeder<TDst, TJMo> : IDataSeeder where TDst : class where TJMo : class
+public /*open*/ class DataSeeder<TDst, TJMo> : ITableDataSeeder where TDst : class where TJMo : class
 {
     private readonly string _dataSeedFolder;
     private readonly ESeedDataType _seedDataType;

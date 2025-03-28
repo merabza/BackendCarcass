@@ -1,33 +1,23 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DatabaseToolsShared;
+using Microsoft.Extensions.Logging;
 
 namespace CarcassDataSeeding;
 
-public /*open*/ class CarcassDataSeeder
+public /*open*/ class CarcassDataSeeder : DataSeeder
 {
-    private readonly bool _checkOnly;
-    protected readonly DataSeedersFabric DataSeedersFabric;
+    protected readonly CarcassDataSeedersFabric DataSeedersFabric;
     protected readonly ILogger<CarcassDataSeeder> Logger;
 
-    protected CarcassDataSeeder(ILogger<CarcassDataSeeder> logger, DataSeedersFabric dataSeedersFabric, bool checkOnly)
+    protected CarcassDataSeeder(ILogger<CarcassDataSeeder> logger, CarcassDataSeedersFabric dataSeedersFabric, bool checkOnly)
+        : base(checkOnly)
     {
         Logger = logger;
         DataSeedersFabric = dataSeedersFabric;
-        _checkOnly = checkOnly;
     }
 
-    protected bool Use(IDataSeeder dataSeeder)
+    public override bool SeedData()
     {
-        return dataSeeder.Create(_checkOnly);
-    }
-
-    public bool SeedData()
-    {
-        return SeedCarcassData() && SeedProjectSpecificData();
-    }
-
-    protected virtual bool SeedProjectSpecificData()
-    {
-        return true;
+        return SeedCarcassData();
     }
 
     private bool SeedCarcassData()
