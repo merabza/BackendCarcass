@@ -4,17 +4,25 @@ using System.Linq;
 using CarcassDataSeeding.Models;
 using CarcassDb.Models;
 using CarcassMasterDataDom.Models;
+using DatabaseToolsShared;
 using Microsoft.AspNetCore.Identity;
 
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
-    class RolesSeeder(
-        RoleManager<AppRole> roleManager,
-        string secretDataFolder,
-        string dataSeedFolder,
-        IDataSeederRepository repo) : DataSeeder<Role, RoleSeederModel>(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+    class RolesSeeder : DataSeeder<Role, RoleSeederModel>
 {
+    private readonly RoleManager<AppRole> _roleManager;
+    private readonly string _secretDataFolder;
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public RolesSeeder(RoleManager<AppRole> roleManager, string secretDataFolder, string dataSeedFolder,
+        IDataSeederRepository repo) : base(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+    {
+        _roleManager = roleManager;
+        _secretDataFolder = secretDataFolder;
+    }
+
     protected override bool AdditionalCheck(List<RoleSeederModel> jMos)
     {
         var dataList = Repo.GetAll<Role>();
@@ -46,7 +54,7 @@ public /*open*/
     private bool CreateRole(RoleModel roleModel)
     {
         //შევქმნათ როლი
-        var result = roleManager.CreateAsync(new AppRole(roleModel.RoleKey, roleModel.RoleName, roleModel.Level))
+        var result = _roleManager.CreateAsync(new AppRole(roleModel.RoleKey, roleModel.RoleName, roleModel.Level))
             .Result;
         if (result.Succeeded)
             return true;
@@ -56,6 +64,6 @@ public /*open*/
 
     private List<RoleModel> GetRoleModels()
     {
-        return LoadFromJsonFile<RoleModel>(secretDataFolder, "Roles.json").ToList();
+        return LoadFromJsonFile<RoleModel>(_secretDataFolder, "Roles.json").ToList();
     }
 }

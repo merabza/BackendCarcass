@@ -5,6 +5,7 @@ using CarcassDataSeeding.Models;
 using CarcassDb.Models;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.CellModels;
+using DatabaseToolsShared;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SystemToolsShared;
@@ -14,17 +15,19 @@ namespace CarcassDataSeeding.Seeders;
 public /*open*/
     class DataTypesSeeder : DataSeeder<DataType, DataTypeSeederModel>
 {
-    protected readonly ICarcassDataSeederRepository CarcassRepo;
+    private readonly ICarcassDataSeederRepository _carcassRepo;
 
-    public DataTypesSeeder(string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, IDataSeederRepository repo) : base(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public DataTypesSeeder(string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, IDataSeederRepository repo)
+        : base(dataSeedFolder, repo, ESeedDataType.OnlyRules)
     {
-        CarcassRepo = carcassRepo;
+        _carcassRepo = carcassRepo;
     }
 
     private static JsonSerializerSettings SerializerSettings =>
         new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
-    protected string SerializeGrid(GridModel gridModel)
+    protected static string SerializeGrid(GridModel gridModel)
     {
         return JsonConvert.SerializeObject(gridModel, SerializerSettings);
     }
@@ -96,7 +99,7 @@ public /*open*/
     protected virtual bool RemoveRedundantDataTypes()
     {
         var toRemoveTableNames = new[] { "dataRights", "dataRightTypes", "forms" };
-        return CarcassRepo.RemoveRedundantDataTypesByTableNames(toRemoveTableNames);
+        return _carcassRepo.RemoveRedundantDataTypesByTableNames(toRemoveTableNames);
     }
 
     protected virtual bool SetParentDataTypes()
@@ -119,7 +122,7 @@ public /*open*/
                 tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.CrudRightType.ToDtKey()))
         };
 
-        return CarcassRepo.SetDtParentDataTypes(dtdt) && CarcassRepo.SetManyToManyJoinParentChildDataTypes(dtdtdt);
+        return _carcassRepo.SetDtParentDataTypes(dtdt) && _carcassRepo.SetManyToManyJoinParentChildDataTypes(dtdtdt);
     }
 
     protected override List<DataType> CreateListByRules()

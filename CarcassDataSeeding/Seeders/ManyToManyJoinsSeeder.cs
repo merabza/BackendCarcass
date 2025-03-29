@@ -5,6 +5,7 @@ using CarcassDb.Domain;
 using CarcassDb.Models;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.CellModels;
+using DatabaseToolsShared;
 
 namespace CarcassDataSeeding.Seeders;
 
@@ -14,8 +15,8 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
     private readonly ICarcassDataSeederRepository _carcassRepo;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ManyToManyJoinsSeeder(string secretDataFolder, string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, IDataSeederRepository repo) : base(
-        dataSeedFolder, repo)
+    public ManyToManyJoinsSeeder(string secretDataFolder, string dataSeedFolder,
+        ICarcassDataSeederRepository carcassRepo, IDataSeederRepository repo) : base(dataSeedFolder, repo)
     {
         _secretDataFolder = secretDataFolder;
         _carcassRepo = carcassRepo;

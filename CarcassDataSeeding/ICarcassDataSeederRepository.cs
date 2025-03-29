@@ -10,5 +10,4 @@ public interface ICarcassDataSeederRepository
     bool SetDtParentDataTypes(Tuple<int, int>[] dtdt);
     bool SetManyToManyJoinParentChildDataTypes(Tuple<int, int, int>[] dtdtdt);
     bool RemoveRedundantDataTypesByTableNames(string[] toRemoveTableNames);
-
 }

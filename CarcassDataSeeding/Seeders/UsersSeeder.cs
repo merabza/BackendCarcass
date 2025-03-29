@@ -4,16 +4,24 @@ using System.Linq;
 using CarcassDataSeeding.Models;
 using CarcassDb.Models;
 using CarcassMasterDataDom.Models;
+using DatabaseToolsShared;
 using Microsoft.AspNetCore.Identity;
 
 namespace CarcassDataSeeding.Seeders;
 
-public sealed class UsersSeeder(
-    UserManager<AppUser> userManager,
-    string secretDataFolder,
-    string dataSeedFolder,
-    IDataSeederRepository repo) : DataSeeder<User, UserSeederModel>(dataSeedFolder, repo)
+public sealed class UsersSeeder : DataSeeder<User, UserSeederModel>
 {
+    private readonly string _secretDataFolder;
+    private readonly UserManager<AppUser> _userManager;
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public UsersSeeder(UserManager<AppUser> userManager, string secretDataFolder, string dataSeedFolder,
+        IDataSeederRepository repo) : base(dataSeedFolder, repo)
+    {
+        _userManager = userManager;
+        _secretDataFolder = secretDataFolder;
+    }
+
     protected override bool AdditionalCheck(List<UserSeederModel> jMos)
     {
         var existingUsers = Repo.GetAll<User>();
@@ -23,10 +31,10 @@ public sealed class UsersSeeder(
             userModel,
             existingUser =
                 existingUsers.SingleOrDefault(sd =>
-                    sd.NormalizedUserName == userManager.NormalizeName(userModel.UserName)),
+                    sd.NormalizedUserName == _userManager.NormalizeName(userModel.UserName)),
             existingEmail =
                 existingUsers.SingleOrDefault(sd =>
-                    sd.NormalizedEmail == userManager.NormalizeEmail(userModel.Email))
+                    sd.NormalizedEmail == _userManager.NormalizeEmail(userModel.Email))
         }).Where(w => w.existingUser == null && w.existingEmail == null).Select(s => s.userModel);
 
         if (userToCreate.Any(userModel => !CreateUser(userModel)))
@@ -55,7 +63,7 @@ public sealed class UsersSeeder(
     {
         //1. შევქმნათ ახალი მომხმარებელი
         var user = new AppUser(userModel.UserName, userModel.FirstName, userModel.LastName) { Email = userModel.Email };
-        var result = userManager.CreateAsync(user, userModel.Password).Result;
+        var result = _userManager.CreateAsync(user, userModel.Password).Result;
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
         if (result.Succeeded)
             return true;
@@ -65,6 +73,6 @@ public sealed class UsersSeeder(
 
     private List<UserModel> GetAppUserModels()
     {
-        return [.. LoadFromJsonFile<UserModel>(secretDataFolder, "Users.json")];
+        return [.. LoadFromJsonFile<UserModel>(_secretDataFolder, "Users.json")];
     }
 }

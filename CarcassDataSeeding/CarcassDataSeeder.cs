@@ -8,8 +8,8 @@ public /*open*/ class CarcassDataSeeder : DataSeeder
     protected readonly CarcassDataSeedersFabric DataSeedersFabric;
     protected readonly ILogger<CarcassDataSeeder> Logger;
 
-    protected CarcassDataSeeder(ILogger<CarcassDataSeeder> logger, CarcassDataSeedersFabric dataSeedersFabric, bool checkOnly)
-        : base(checkOnly)
+    protected CarcassDataSeeder(ILogger<CarcassDataSeeder> logger, CarcassDataSeedersFabric dataSeedersFabric,
+        bool checkOnly) : base(checkOnly)
     {
         Logger = logger;
         DataSeedersFabric = dataSeedersFabric;
