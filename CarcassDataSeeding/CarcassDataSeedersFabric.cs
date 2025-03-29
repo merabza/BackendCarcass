@@ -8,7 +8,7 @@ namespace CarcassDataSeeding;
 public /*open*/ class CarcassDataSeedersFabric
 {
     private readonly ICarcassDataSeederRepository _carcassRepo;
-    private readonly string _dataSeedFolder;
+    protected readonly string DataSeedFolder;
     private readonly RoleManager<AppRole> _myRoleManager;
     private readonly UserManager<AppUser> _myUserManager;
     private readonly IDataSeederRepository _repo;
@@ -19,7 +19,7 @@ public /*open*/ class CarcassDataSeedersFabric
         IDataSeederRepository repo)
     {
         _secretDataFolder = secretDataFolder;
-        _dataSeedFolder = dataSeedFolder;
+        DataSeedFolder = dataSeedFolder;
         _carcassRepo = carcassRepo;
         _repo = repo;
         _myUserManager = userManager;
@@ -28,41 +28,41 @@ public /*open*/ class CarcassDataSeedersFabric
 
     public virtual ITableDataSeeder CreateDataTypesSeeder()
     {
-        return new DataTypesSeeder(_dataSeedFolder, _carcassRepo, _repo);
+        return new DataTypesSeeder(DataSeedFolder, _carcassRepo, _repo);
     }
 
     public virtual ITableDataSeeder CreateAppClaimsSeeder()
     {
-        return new AppClaimsSeeder(_dataSeedFolder, _repo);
+        return new AppClaimsSeeder(DataSeedFolder, _repo);
     }
 
     public virtual ITableDataSeeder CreateCrudRightTypesSeeder()
     {
-        return new CrudRightTypesSeeder(_dataSeedFolder, _repo);
+        return new CrudRightTypesSeeder(DataSeedFolder, _repo);
     }
 
     public virtual ITableDataSeeder CreateManyToManyJoinsSeeder()
     {
-        return new ManyToManyJoinsSeeder(_secretDataFolder, _dataSeedFolder, _carcassRepo, _repo);
+        return new ManyToManyJoinsSeeder(_secretDataFolder, DataSeedFolder, _carcassRepo, _repo);
     }
 
     public virtual ITableDataSeeder CreateMenuGroupsSeeder()
     {
-        return new MenuGroupsSeeder(_dataSeedFolder, _repo);
+        return new MenuGroupsSeeder(DataSeedFolder, _repo);
     }
 
     public virtual ITableDataSeeder CreateMenuSeeder()
     {
-        return new MenuSeeder(_dataSeedFolder, _repo);
+        return new MenuSeeder(DataSeedFolder, _repo);
     }
 
     public virtual ITableDataSeeder CreateRolesSeeder()
     {
-        return new RolesSeeder(_myRoleManager, _secretDataFolder, _dataSeedFolder, _repo);
+        return new RolesSeeder(_myRoleManager, _secretDataFolder, DataSeedFolder, _repo);
     }
 
     public virtual ITableDataSeeder CreateUsersSeeder()
     {
-        return new UsersSeeder(_myUserManager, _secretDataFolder, _dataSeedFolder, _repo);
+        return new UsersSeeder(_myUserManager, _secretDataFolder, DataSeedFolder, _repo);
     }
 }

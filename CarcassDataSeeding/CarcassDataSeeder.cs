@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CarcassDataSeeding;
 
-public /*open*/ class CarcassDataSeeder : DataSeeder
+public /*open*/ class CarcassDataSeeder : DataSeederBase
 {
     protected readonly CarcassDataSeedersFabric DataSeedersFabric;
     protected readonly ILogger<CarcassDataSeeder> Logger;
