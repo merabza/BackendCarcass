@@ -12,13 +12,13 @@ public /*open*/ class CarcassDataSeedersFabric
     private readonly RoleManager<AppRole> _myRoleManager;
     private readonly UserManager<AppUser> _myUserManager;
     private readonly IDataSeederRepository _repo;
-    private readonly string _secretDataFolder;
+    protected readonly string SecretDataFolder;
 
     protected CarcassDataSeedersFabric(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager,
         string secretDataFolder, string dataSeedFolder, ICarcassDataSeederRepository carcassRepo,
         IDataSeederRepository repo)
     {
-        _secretDataFolder = secretDataFolder;
+        SecretDataFolder = secretDataFolder;
         DataSeedFolder = dataSeedFolder;
         _carcassRepo = carcassRepo;
         _repo = repo;
@@ -43,7 +43,7 @@ public /*open*/ class CarcassDataSeedersFabric
 
     public virtual ITableDataSeeder CreateManyToManyJoinsSeeder()
     {
-        return new ManyToManyJoinsSeeder(_secretDataFolder, DataSeedFolder, _carcassRepo, _repo);
+        return new ManyToManyJoinsSeeder(SecretDataFolder, DataSeedFolder, _carcassRepo, _repo);
     }
 
     public virtual ITableDataSeeder CreateMenuGroupsSeeder()
@@ -58,11 +58,11 @@ public /*open*/ class CarcassDataSeedersFabric
 
     public virtual ITableDataSeeder CreateRolesSeeder()
     {
-        return new RolesSeeder(_myRoleManager, _secretDataFolder, DataSeedFolder, _repo);
+        return new RolesSeeder(_myRoleManager, SecretDataFolder, DataSeedFolder, _repo);
     }
 
     public virtual ITableDataSeeder CreateUsersSeeder()
     {
-        return new UsersSeeder(_myUserManager, _secretDataFolder, DataSeedFolder, _repo);
+        return new UsersSeeder(_myUserManager, SecretDataFolder, DataSeedFolder, _repo);
     }
 }
