@@ -7,9 +7,13 @@ using DatabaseToolsShared;
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
-    class MenuGroupsSeeder(string dataSeedFolder, IDataSeederRepository repo)
-    : DataSeeder<MenuGroup, MenuGroupSeederModel>(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+    class MenuGroupsSeeder : DataSeeder<MenuGroup, MenuGroupSeederModel>
 {
+    public MenuGroupsSeeder(string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, IDataSeederRepository repo)
+        : base(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+    {
+    }
+
     protected override bool AdditionalCheck(List<MenuGroupSeederModel> jMos)
     {
         var dataList = Repo.GetAll<MenuGroup>();

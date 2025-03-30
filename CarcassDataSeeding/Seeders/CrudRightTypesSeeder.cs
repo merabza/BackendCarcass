@@ -8,9 +8,13 @@ using DatabaseToolsShared;
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
-    class CrudRightTypesSeeder(string dataSeedFolder, IDataSeederRepository repo)
-    : DataSeeder<CrudRightType, CrudRightTypeSeederModel>(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+    class CrudRightTypesSeeder : DataSeeder<CrudRightType, CrudRightTypeSeederModel>
 {
+    public CrudRightTypesSeeder(string dataSeedFolder, ICarcassDataSeederRepository carcassRepo,
+        IDataSeederRepository repo) : base(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+    {
+    }
+
     protected override bool AdditionalCheck(List<CrudRightTypeSeederModel> seedData)
     {
         var dataList = Repo.GetAll<CrudRightType>();

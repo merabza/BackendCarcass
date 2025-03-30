@@ -7,9 +7,13 @@ using DatabaseToolsShared;
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/
-    class AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo)
-    : DataSeeder<AppClaim, AppClaimSeederModel>(dataSeedFolder, repo, ESeedDataType.RulesHasMorePriority)
+    class AppClaimsSeeder : DataSeeder<AppClaim, AppClaimSeederModel>
 {
+    public AppClaimsSeeder(string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, IDataSeederRepository repo)
+        : base(dataSeedFolder, repo, ESeedDataType.RulesHasMorePriority)
+    {
+    }
+
     protected override bool AdditionalCheck(List<AppClaimSeederModel> seedData)
     {
         var dataList = Repo.GetAll<DataType>();
