@@ -15,13 +15,13 @@ namespace CarcassDataSeeding.Seeders;
 public /*open*/
     class DataTypesSeeder : DataSeeder<DataType, DataTypeSeederModel>
 {
-    private readonly ICarcassDataSeederRepository _carcassRepo;
+    protected readonly ICarcassDataSeederRepository CarcassRepo;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public DataTypesSeeder(string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, IDataSeederRepository repo)
         : base(dataSeedFolder, repo, ESeedDataType.OnlyRules)
     {
-        _carcassRepo = carcassRepo;
+        CarcassRepo = carcassRepo;
     }
 
     private static JsonSerializerSettings SerializerSettings =>
@@ -99,7 +99,7 @@ public /*open*/
     protected virtual bool RemoveRedundantDataTypes()
     {
         var toRemoveTableNames = new[] { "dataRights", "dataRightTypes", "forms" };
-        return _carcassRepo.RemoveRedundantDataTypesByTableNames(toRemoveTableNames);
+        return CarcassRepo.RemoveRedundantDataTypesByTableNames(toRemoveTableNames);
     }
 
     protected virtual bool SetParentDataTypes()
@@ -122,7 +122,7 @@ public /*open*/
                 tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.CrudRightType.ToDtKey()))
         };
 
-        return _carcassRepo.SetDtParentDataTypes(dtdt) && _carcassRepo.SetManyToManyJoinParentChildDataTypes(dtdtdt);
+        return CarcassRepo.SetDtParentDataTypes(dtdt) && CarcassRepo.SetManyToManyJoinParentChildDataTypes(dtdtdt);
     }
 
     protected override List<DataType> CreateListByRules()
