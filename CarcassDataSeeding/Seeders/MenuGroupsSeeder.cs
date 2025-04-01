@@ -9,8 +9,9 @@ namespace CarcassDataSeeding.Seeders;
 public /*open*/
     class MenuGroupsSeeder : DataSeeder<MenuGroup, MenuGroupSeederModel>
 {
-    public MenuGroupsSeeder(string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, IDataSeederRepository repo)
-        : base(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public MenuGroupsSeeder(string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo,
+        ESeedDataType.OnlyRules)
     {
     }
 

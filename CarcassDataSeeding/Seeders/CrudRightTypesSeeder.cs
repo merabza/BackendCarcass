@@ -10,8 +10,9 @@ namespace CarcassDataSeeding.Seeders;
 public /*open*/
     class CrudRightTypesSeeder : DataSeeder<CrudRightType, CrudRightTypeSeederModel>
 {
-    public CrudRightTypesSeeder(string dataSeedFolder, ICarcassDataSeederRepository carcassRepo,
-        IDataSeederRepository repo) : base(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public CrudRightTypesSeeder(string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo,
+        ESeedDataType.OnlyRules)
     {
     }
 

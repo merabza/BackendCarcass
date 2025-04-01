@@ -9,8 +9,9 @@ namespace CarcassDataSeeding.Seeders;
 public /*open*/
     class AppClaimsSeeder : DataSeeder<AppClaim, AppClaimSeederModel>
 {
-    public AppClaimsSeeder(string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, IDataSeederRepository repo)
-        : base(dataSeedFolder, repo, ESeedDataType.RulesHasMorePriority)
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo,
+        ESeedDataType.RulesHasMorePriority)
     {
     }
 
