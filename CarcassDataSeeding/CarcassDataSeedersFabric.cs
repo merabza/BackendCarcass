@@ -7,7 +7,7 @@ namespace CarcassDataSeeding;
 
 public /*open*/ class CarcassDataSeedersFabric
 {
-    private readonly ICarcassDataSeederRepository _carcassRepo;
+    protected readonly ICarcassDataSeederRepository CarcassRepo;
     protected readonly string DataSeedFolder;
     private readonly RoleManager<AppRole> _myRoleManager;
     private readonly UserManager<AppUser> _myUserManager;
@@ -20,7 +20,7 @@ public /*open*/ class CarcassDataSeedersFabric
     {
         SecretDataFolder = secretDataFolder;
         DataSeedFolder = dataSeedFolder;
-        _carcassRepo = carcassRepo;
+        CarcassRepo = carcassRepo;
         _repo = repo;
         _myUserManager = userManager;
         _myRoleManager = roleManager;
@@ -28,7 +28,7 @@ public /*open*/ class CarcassDataSeedersFabric
 
     public virtual ITableDataSeeder CreateDataTypesSeeder()
     {
-        return new DataTypesSeeder(DataSeedFolder, _carcassRepo, _repo);
+        return new DataTypesSeeder(DataSeedFolder, CarcassRepo, _repo);
     }
 
     public virtual ITableDataSeeder CreateAppClaimsSeeder()
@@ -43,7 +43,7 @@ public /*open*/ class CarcassDataSeedersFabric
 
     public virtual ITableDataSeeder CreateManyToManyJoinsSeeder()
     {
-        return new ManyToManyJoinsSeeder(SecretDataFolder, DataSeedFolder, _carcassRepo, _repo);
+        return new ManyToManyJoinsSeeder(SecretDataFolder, DataSeedFolder, CarcassRepo, _repo);
     }
 
     public virtual ITableDataSeeder CreateMenuGroupsSeeder()
