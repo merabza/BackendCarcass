@@ -15,8 +15,8 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
     protected readonly ICarcassDataSeederRepository CarcassRepo;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ManyToManyJoinsSeeder(string secretDataFolder, string dataSeedFolder,
-        ICarcassDataSeederRepository carcassRepo, IDataSeederRepository repo) : base(dataSeedFolder, repo)
+    public ManyToManyJoinsSeeder(string secretDataFolder, ICarcassDataSeederRepository carcassRepo,
+        string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo)
     {
         _secretDataFolder = secretDataFolder;
         CarcassRepo = carcassRepo;

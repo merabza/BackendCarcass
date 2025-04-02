@@ -18,7 +18,7 @@ public /*open*/
     protected readonly ICarcassDataSeederRepository CarcassRepo;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DataTypesSeeder(string dataSeedFolder, ICarcassDataSeederRepository carcassRepo, IDataSeederRepository repo)
+    public DataTypesSeeder(ICarcassDataSeederRepository carcassRepo, string dataSeedFolder, IDataSeederRepository repo)
         : base(dataSeedFolder, repo, ESeedDataType.OnlyRules)
     {
         CarcassRepo = carcassRepo;
@@ -27,7 +27,7 @@ public /*open*/
     private static JsonSerializerSettings SerializerSettings =>
         new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
-    protected static string SerializeGrid(GridModel gridModel)
+    private static string SerializeGrid(GridModel gridModel)
     {
         return JsonConvert.SerializeObject(gridModel, SerializerSettings);
     }
