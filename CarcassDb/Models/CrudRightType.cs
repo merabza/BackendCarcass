@@ -11,8 +11,10 @@ namespace CarcassDb.Models;
 public sealed class CrudRightType : IDataType, IMyEquatable
 {
     public int CrtId { get; set; } //იდენტიფიკატორი
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string CrtKey { get; set; } //კოდი
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string CrtName { get; set; } //სახელი
 

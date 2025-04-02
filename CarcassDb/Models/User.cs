@@ -10,18 +10,25 @@ public sealed class User : IDataType
 
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string UserName { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string NormalizedUserName { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string Email { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string NormalizedEmail { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string PasswordHash { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string FullName { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string FirstName { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string LastName { get; set; }
 

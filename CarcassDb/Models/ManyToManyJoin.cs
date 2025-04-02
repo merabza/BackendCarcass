@@ -9,9 +9,11 @@ public sealed class ManyToManyJoin
 
     public int MmjId { get; set; }
     public int PtId { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string PKey { get; set; }
     public int CtId { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string CKey { get; set; }
 

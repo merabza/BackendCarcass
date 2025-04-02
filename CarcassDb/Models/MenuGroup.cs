@@ -8,11 +8,14 @@ namespace CarcassDb.Models;
 public sealed class MenuGroup : IDataType, IMyEquatable
 {
     public int MengId { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string MengKey { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string MengName { get; set; }
     public short SortId { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public string? MengIconName { get; set; }
     public bool Hidden { get; set; }

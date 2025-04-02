@@ -8,20 +8,28 @@ namespace CarcassDb.Models;
 public sealed class DataType : IDataType, IMyEquatable
 {
     public int DtId { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string DtKey { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string DtName { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string DtNameNominative { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string DtNameGenitive { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string DtTable { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public string? DtIdFieldName { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public string? DtKeyFieldName { get; set; }
+
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public string? DtNameFieldName { get; set; }
     public int? DtParentDataTypeId { get; set; }
@@ -34,14 +42,19 @@ public sealed class DataType : IDataType, IMyEquatable
     public DataType? DtParentDataTypeNavigation { get; set; }
     public DataType? DtManyToManyJoinParentDataTypeNavigation { get; set; }
     public DataType? DtManyToManyJoinChildDataTypeNavigation { get; set; }
+
     // ReSharper disable once CollectionNeverUpdated.Global
     public ICollection<ManyToManyJoin> ManyToManyJoinParentTypes { get; set; } = new List<ManyToManyJoin>();
+
     // ReSharper disable once CollectionNeverUpdated.Global
     public ICollection<ManyToManyJoin> ManyToManyJoinChildTypes { get; set; } = new List<ManyToManyJoin>();
+
     // ReSharper disable once CollectionNeverUpdated.Global
     public ICollection<DataType> ChildrenDataTypes { get; set; } = new List<DataType>();
+
     // ReSharper disable once CollectionNeverUpdated.Global
     public ICollection<DataType> ManyJoinParentDataTypes { get; set; } = new List<DataType>();
+
     // ReSharper disable once CollectionNeverUpdated.Global
     public ICollection<DataType> ManyToManyJoinChildrenDataTypes { get; set; } = new List<DataType>();
 
