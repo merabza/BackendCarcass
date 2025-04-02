@@ -347,6 +347,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
         return await Task.FromResult(us);
     }
 
+    // ReSharper disable once UnusedParameter.Local
     private void Dispose(bool disposing)
     {
         if (_disposedValue)

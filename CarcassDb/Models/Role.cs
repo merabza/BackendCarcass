@@ -7,9 +7,12 @@ namespace CarcassDb.Models;
 public sealed class Role : IDataType, IMyEquatable
 {
     public int RolId { get; set; }
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string RolKey { get; set; }
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string RolName { get; set; }
     public int RolLevel { get; set; }
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string RolNormalizedKey { get; set; }
 
     [NotMapped]

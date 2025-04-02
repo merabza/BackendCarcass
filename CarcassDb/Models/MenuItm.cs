@@ -10,12 +10,17 @@ public sealed class MenuItm : IDataType, IMyEquatable
     private MenuGroup? _menGroupNavigation;
 
     public int MenId { get; set; }
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string MenKey { get; set; }
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string MenName { get; set; }
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public string? MenValue { get; set; }
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string MenLinkKey { get; set; }
     public int MenGroupId { get; set; }
     public int SortId { get; set; }
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public string? MenIconName { get; set; }
 
     public MenuGroup MenGroupNavigation
