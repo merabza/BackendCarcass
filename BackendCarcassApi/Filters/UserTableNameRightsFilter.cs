@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BackendCarcassApi.Filters;
 
-public class UserTableNameRightsFilter : IEndpointFilter
+public sealed class UserTableNameRightsFilter : IEndpointFilter
 {
     private readonly ICurrentUser _currentUser;
     private readonly ILogger<UserMenuRightsFilter> _logger;

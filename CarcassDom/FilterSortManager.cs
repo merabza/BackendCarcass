@@ -4,7 +4,7 @@ using CarcassIdentity;
 
 namespace CarcassDom;
 
-public class FilterSortManager
+public sealed class FilterSortManager
 {
     private readonly Dictionary<FilterSortIdentifier, FilterSortObject> _filterSortObjects = new();
 

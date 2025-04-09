@@ -5,7 +5,7 @@
 
 //namespace BackendCarcassApi.Filters;
 
-//public class UserNameFilter : IEndpointFilter
+//public sealed class UserNameFilter : IEndpointFilter
 //{
 //    private readonly ICurrentUser _currentUser;
 

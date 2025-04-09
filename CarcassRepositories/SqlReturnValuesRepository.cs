@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarcassRepositories;
 
-public class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValuesRepository(ctx)
+public sealed class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValuesRepository(ctx)
 {
     private readonly CarcassDbContext _ctx = ctx;
 

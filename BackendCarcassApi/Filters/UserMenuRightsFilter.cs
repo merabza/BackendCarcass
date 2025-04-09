@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BackendCarcassApi.Filters;
 
-public class UserMenuRightsFilter : IEndpointFilter
+public /*open*/ class UserMenuRightsFilter : IEndpointFilter
 {
     private readonly ICurrentUser _currentUser;
     private readonly ILogger<UserMenuRightsFilter> _logger;

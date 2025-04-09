@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace CarcassIdentity;
 
-public class CurrentUser : ICurrentUser
+public sealed class CurrentUser : ICurrentUser
 {
     private readonly IHttpContextAccessor _httpContext;
 

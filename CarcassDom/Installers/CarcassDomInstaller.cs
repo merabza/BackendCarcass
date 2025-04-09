@@ -6,7 +6,7 @@ using WebInstallers;
 
 namespace CarcassDom.Installers;
 
-public class CarcassDomInstaller : IInstaller
+public sealed class CarcassDomInstaller : IInstaller
 {
     public int InstallPriority => 30;
     public int ServiceUsePriority => 30;

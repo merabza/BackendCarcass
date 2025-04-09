@@ -16,7 +16,7 @@ using SystemToolsShared.Errors;
 
 namespace CarcassRights;
 
-public class RightsDeterminer
+public sealed class RightsDeterminer
 {
     private readonly ICurrentUser _currentUser;
     private readonly ILogger _logger;

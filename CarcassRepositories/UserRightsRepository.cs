@@ -12,7 +12,7 @@ using SystemToolsShared.Errors;
 
 namespace CarcassRepositories;
 
-public class UserRightsRepository : IUserRightsRepository
+public sealed class UserRightsRepository : IUserRightsRepository
 {
     private readonly CarcassDbContext _context;
     //private readonly IDataTypeKeys _dataTypeKeys;

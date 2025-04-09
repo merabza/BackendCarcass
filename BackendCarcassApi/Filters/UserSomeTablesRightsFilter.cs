@@ -15,7 +15,7 @@
 ////შემოწმდეს, ყველა მოწოდებულ ცხრილზე ნახვის უფლება აქვს თუ არა მომხმარებელს
 ////თუ რომელიმეზე არ აქვს, დაბრუნდეს შეცდომა
 
-//public class UserSomeTablesRightsFilter : IEndpointFilter
+//public sealed class UserSomeTablesRightsFilter : IEndpointFilter
 //{
 //    private readonly ICurrentUser _currentUser;
 //    private readonly ILogger<UserMenuRightsFilter> _logger;

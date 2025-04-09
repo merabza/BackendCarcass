@@ -3,7 +3,7 @@
 
 //namespace CarcassRepositories.Models;
 
-//public class RightsTreeDataModel
+//public sealed class RightsTreeDataModel
 //{
 //    public List<DataTypeModel> DataTypes = new();
 //}

@@ -13,7 +13,7 @@ using SystemToolsShared.Errors;
 
 namespace CarcassRepositories;
 
-public class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDataRepository
+public /*open*/ class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDataRepository
 {
     private readonly CarcassDbContext _context;
 

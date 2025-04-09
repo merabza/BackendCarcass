@@ -14,7 +14,7 @@ using SystemToolsShared.Errors;
 
 namespace CarcassDom;
 
-public class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvRepo)
+public sealed class RightsCollector(IRightsRepository repo, IReturnValuesRepository rvRepo)
 {
     private readonly IRightsRepository _repo = repo;
     private readonly IReturnValuesRepository _rvRepo = rvRepo;

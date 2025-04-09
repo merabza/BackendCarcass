@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CarcassDom;
 
-public class RightsSaver
+public sealed class RightsSaver
 {
     private readonly ILogger _logger;
     private readonly IRightsRepository _repo;

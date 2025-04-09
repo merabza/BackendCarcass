@@ -8,7 +8,7 @@
 
 //namespace ServerCarcassMini.Filters;
 
-//public class TableChecker
+//public sealed class TableChecker
 //{
 //    private readonly IUserRightsRepository _repo;
 //    private readonly ILogger _logger;

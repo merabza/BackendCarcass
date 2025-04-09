@@ -1,3 +1,3 @@
 ﻿namespace CarcassDom;
 
-public class FilterSortIdentifierEqualityComparer;
+public sealed class FilterSortIdentifierEqualityComparer;

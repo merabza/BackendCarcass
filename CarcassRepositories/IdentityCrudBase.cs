@@ -6,7 +6,7 @@ using SystemToolsShared.Errors;
 
 namespace CarcassRepositories;
 
-public class IdentityCrudBase
+public /*open*/ class IdentityCrudBase
 {
     protected static Option<IEnumerable<Err>> ConvertError(IdentityResult result)
     {

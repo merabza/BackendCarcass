@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarcassRepositories;
 
-public class DataTypesRepository : IDataTypesRepository
+public sealed class DataTypesRepository : IDataTypesRepository
 {
     private readonly CarcassDbContext _context;
 
