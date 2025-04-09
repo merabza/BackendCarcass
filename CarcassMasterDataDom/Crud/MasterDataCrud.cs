@@ -21,7 +21,7 @@ using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom.Crud;
 
-public class MasterDataCrud : CrudBase, IMasterDataLoader
+public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 {
     private readonly ICarcassMasterDataRepository _cmdRepo;
     private readonly IEntityType _entityType;

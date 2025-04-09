@@ -1,6 +1,6 @@
 ﻿namespace CarcassMasterDataDom.Models;
 
-public class ExpressionFilter
+public sealed class ExpressionFilter
 {
     public string? ColumnName { get; set; }
     public string? Value { get; set; }

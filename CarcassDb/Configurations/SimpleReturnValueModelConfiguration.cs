@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarcassDb.Configurations;
 
-public class SimpleReturnValueModelConfiguration : IEntityTypeConfiguration<SrvModel>
+public sealed class SimpleReturnValueModelConfiguration : IEntityTypeConfiguration<SrvModel>
 {
     private const int NameMaxLength = 512;
 

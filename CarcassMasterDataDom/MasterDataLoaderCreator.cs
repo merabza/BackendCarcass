@@ -11,7 +11,7 @@ using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom;
 
-public class MasterDataLoaderCreator : IMasterDataLoaderCreator
+public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
 {
     private readonly ILogger<MasterDataLoaderCreator> _logger;
     protected readonly IServiceProvider Services;

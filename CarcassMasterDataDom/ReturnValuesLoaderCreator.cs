@@ -2,7 +2,7 @@
 
 namespace CarcassMasterDataDom;
 
-public class ReturnValuesLoaderCreator : IReturnValuesLoaderCreator
+public /*open*/ class ReturnValuesLoaderCreator : IReturnValuesLoaderCreator
 {
     protected readonly IServiceProvider Services;
 

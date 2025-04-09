@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarcassDb.Configurations;
 
-public class UserConfiguration : IEntityTypeConfiguration<User>
+public sealed class UserConfiguration : IEntityTypeConfiguration<User>
 {
     private const int UserNameMaxLength = 256;
     private const int NormalizedUserNameMaxLength = 256;

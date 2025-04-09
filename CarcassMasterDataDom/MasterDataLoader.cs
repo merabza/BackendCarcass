@@ -7,7 +7,7 @@ using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom;
 
-public class MasterDataLoader
+public sealed class MasterDataLoader
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCreator;
     private readonly List<string> _tableNames;

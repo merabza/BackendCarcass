@@ -3,7 +3,7 @@ using LibCrud;
 
 namespace CarcassMasterDataDom.Models;
 
-public class UserCrudData : ICrudData, IDataType
+public sealed class UserCrudData : ICrudData, IDataType
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public UserCrudData(string userName, string firstName, string lastName, string email)

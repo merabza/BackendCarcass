@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarcassDb.Configurations;
 
-public class CrudRightTypeConfiguration : IEntityTypeConfiguration<CrudRightType>
+public sealed class CrudRightTypeConfiguration : IEntityTypeConfiguration<CrudRightType>
 {
     private const int CrtKeyMaxLength = 50;
     private const int CrtNameMaxLength = 50;

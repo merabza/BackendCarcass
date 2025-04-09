@@ -16,7 +16,7 @@ using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom.Crud;
 
-public class UsersCrud : CrudBase, IMasterDataLoader
+public sealed class UsersCrud : CrudBase, IMasterDataLoader
 {
     private readonly UserManager<AppUser> _userManager;
     private AppUser? _justCreated;

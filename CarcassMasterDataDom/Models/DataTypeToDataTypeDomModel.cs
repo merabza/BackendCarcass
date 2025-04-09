@@ -2,7 +2,7 @@
 
 namespace CarcassMasterDataDom.Models;
 
-public class DataTypeToDataTypeDomModel : IDataType
+public sealed class DataTypeToDataTypeDomModel : IDataType
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public DataTypeToDataTypeDomModel(int dtdtId, string dtdtKey, string dtdtName, string pKey)

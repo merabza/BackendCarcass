@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarcassDb.Configurations;
 
-public class MenuItmConfiguration : IEntityTypeConfiguration<MenuItm>
+public sealed class MenuItmConfiguration : IEntityTypeConfiguration<MenuItm>
 {
     private const int MenIconNameMaxLength = 50;
     private const int MenKeyMaxLength = 72;

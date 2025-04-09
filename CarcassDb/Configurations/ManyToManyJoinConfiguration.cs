@@ -6,7 +6,7 @@ using SystemToolsShared;
 
 namespace CarcassDb.Configurations;
 
-public class ManyToManyJoinConfiguration : IEntityTypeConfiguration<ManyToManyJoin>
+public sealed class ManyToManyJoinConfiguration : IEntityTypeConfiguration<ManyToManyJoin>
 {
     private const int CKeyMaxLength = 100;
     private const int PKeyMaxLength = 100;

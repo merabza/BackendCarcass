@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarcassDb.Configurations;
 
-public class AppClaimConfiguration : IEntityTypeConfiguration<AppClaim>
+public sealed class AppClaimConfiguration : IEntityTypeConfiguration<AppClaim>
 {
     private const int AclKeyMaxLength = 50;
     private const int AclNameMaxLength = 50;

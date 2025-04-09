@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarcassMasterDataDom.SortIdStuff;
 
-public class SortIdHelper<T> : ISortIdHelper where T : class, ISortedDataType
+public sealed class SortIdHelper<T> : ISortIdHelper where T : class, ISortedDataType
 {
     private readonly ICarcassMasterDataRepository _cmdRepo;
 

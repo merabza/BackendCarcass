@@ -9,7 +9,7 @@ using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom;
 
-public class ReturnValuesLoader
+public sealed class ReturnValuesLoader
 {
     private readonly IReturnValuesLoaderCreator _returnValuesLoaderCreator;
     private readonly IReturnValuesRepository _rvRepo;

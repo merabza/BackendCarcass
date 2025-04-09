@@ -2,7 +2,7 @@
 
 namespace CarcassMasterDataDom.Models;
 
-public class MasterDataCrudData : ICrudData
+public sealed class MasterDataCrudData : ICrudData
 {
     public readonly string Json;
 

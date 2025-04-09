@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarcassDb.Configurations;
 
-public class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
+public sealed class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
 {
     private const int DtKeyMaxLength = 36;
     private const int DtNameMaxLength = 100;

@@ -16,7 +16,7 @@ using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom.Crud;
 
-public class RolesCrud : CrudBase, IMasterDataLoader
+public sealed class RolesCrud : CrudBase, IMasterDataLoader
 {
     private readonly RoleManager<AppRole> _roleManager;
     private AppRole? _justCreated;

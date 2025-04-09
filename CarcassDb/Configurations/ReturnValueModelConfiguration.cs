@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarcassDb.Configurations;
 
-public class ReturnValueModelConfiguration : IEntityTypeConfiguration<ReturnValueModel>
+public sealed class ReturnValueModelConfiguration : IEntityTypeConfiguration<ReturnValueModel>
 {
     private const int KeyMaxLength = 512;
     private const int NameMaxLength = 512;

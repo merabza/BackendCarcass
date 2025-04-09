@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarcassDb.Configurations;
 
-public class MenuGroupConfiguration : IEntityTypeConfiguration<MenuGroup>
+public sealed class MenuGroupConfiguration : IEntityTypeConfiguration<MenuGroup>
 {
     private const int MengKeyMaxLength = 36;
     private const int MengNameMaxLength = 100;
