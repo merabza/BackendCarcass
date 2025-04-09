@@ -27,7 +27,8 @@ public /*open*/
     private static JsonSerializerSettings SerializerSettings =>
         new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
-    private static string SerializeGrid(GridModel gridModel)
+    //protected საჭიროა XxxNewDataTypesSeeder-ში
+    protected static string SerializeGrid(GridModel gridModel)
     {
         return JsonConvert.SerializeObject(gridModel, SerializerSettings);
     }
