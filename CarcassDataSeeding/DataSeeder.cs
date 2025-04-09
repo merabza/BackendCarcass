@@ -124,9 +124,6 @@ public /*open*/ class DataSeeder<TDst, TJMo> : ITableDataSeeder where TDst : cla
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        if (_stringKeyFieldName is null)
-            throw new Exception($"String key field name is not set for {_tableName}");
-
         var dataList = _seedDataType switch
         {
             ESeedDataType.OnlyJson => dataListByJson,

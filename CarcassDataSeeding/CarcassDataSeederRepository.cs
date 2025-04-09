@@ -14,7 +14,7 @@ public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
     private readonly ILogger<CarcassDataSeederRepository> _logger;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    protected CarcassDataSeederRepository(CarcassDbContext ctx, ILogger<CarcassDataSeederRepository> logger)
+    public CarcassDataSeederRepository(CarcassDbContext ctx, ILogger<CarcassDataSeederRepository> logger)
     {
         _context = ctx;
         _logger = logger;

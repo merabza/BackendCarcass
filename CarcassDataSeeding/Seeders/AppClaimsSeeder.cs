@@ -11,7 +11,7 @@ public /*open*/
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo,
-        ESeedDataType.RulesHasMorePriority)
+        ESeedDataType.RulesHasMorePriority, nameof(AppClaim.AclKey))
     {
     }
 
