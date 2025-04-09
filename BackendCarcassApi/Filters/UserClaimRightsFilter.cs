@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BackendCarcassApi.Filters;
 
-public sealed class UserClaimRightsFilter : IEndpointFilter
+public /*open*/ class UserClaimRightsFilter : IEndpointFilter
 {
     private readonly string _claimName;
     private readonly ICurrentUser _currentUser;
