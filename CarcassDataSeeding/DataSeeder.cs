@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using DatabaseToolsShared;
 using SystemToolsShared;
 
@@ -10,19 +11,77 @@ namespace CarcassDataSeeding;
 public /*open*/ class DataSeeder<TDst, TJMo> : ITableDataSeeder where TDst : class where TJMo : class
 {
     private readonly string _dataSeedFolder;
+    private readonly List<string> _keyFieldNamesList;
     private readonly ESeedDataType _seedDataType;
-    private readonly string? _stringKeyFieldName;
     private readonly string _tableName;
     protected readonly IDataSeederRepository Repo;
 
     protected DataSeeder(string dataSeedFolder, IDataSeederRepository repo,
-        ESeedDataType seedDataType = ESeedDataType.OnlyJson, string? stringKeyFieldName = null)
+        ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null)
     {
         _dataSeedFolder = dataSeedFolder;
         Repo = repo;
         _seedDataType = seedDataType;
-        _stringKeyFieldName = stringKeyFieldName;
+        _keyFieldNamesList = keyFieldNamesList ?? [];
         _tableName = Repo.GetTableName<TDst>();
+    }
+
+    //ეს არის ძირითადი მეთოდი, რომლის საშუალებითაც ხდება ერთი ცხრილის შესაბამისი ინფორმაციის ჩატვირთვა ბაზაში
+    public bool Create(bool checkOnly)
+    {
+        if (checkOnly)
+            return AdditionalCheck(LoadFromJsonFile());
+
+        //ეს ის ვარიანტია, როცა არც არსებულ ჩანაწერებს ვამოწმებთ და არც Json-დან შემოგვაქვს
+        if (CheckRecordsExists())
+            return false;
+
+        if (_seedDataType == ESeedDataType.None)
+            return true;
+
+        var seedData = _seedDataType switch
+        {
+            ESeedDataType.OnlyRules => [],
+            ESeedDataType.OnlyJson or ESeedDataType.RulesHasMorePriority or ESeedDataType.JsonHasMorePriority =>
+                LoadFromJsonFile(),
+            ESeedDataType.None => throw new ArgumentOutOfRangeException(),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        var dataListByJson = _seedDataType switch
+        {
+            ESeedDataType.OnlyRules => [],
+            ESeedDataType.OnlyJson or ESeedDataType.RulesHasMorePriority or ESeedDataType.JsonHasMorePriority =>
+                Adapt(seedData),
+            ESeedDataType.None => throw new ArgumentOutOfRangeException(),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        var dataListByRules = _seedDataType switch
+        {
+            ESeedDataType.OnlyJson => [],
+            ESeedDataType.OnlyRules or ESeedDataType.RulesHasMorePriority or ESeedDataType.JsonHasMorePriority =>
+                CreateListByRules(),
+            ESeedDataType.None => throw new ArgumentOutOfRangeException(),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        var dataList = _seedDataType switch
+        {
+            ESeedDataType.OnlyJson => dataListByJson,
+            ESeedDataType.OnlyRules => dataListByRules,
+            ESeedDataType.RulesHasMorePriority => Adjust(dataListByRules, dataListByJson),
+            ESeedDataType.JsonHasMorePriority => Adjust(dataListByJson, dataListByRules),
+            ESeedDataType.None => throw new ArgumentOutOfRangeException(),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        if (!Repo.CreateEntities(dataList))
+            throw new Exception($"{_tableName} entities cannot be created");
+
+        //აქ დამატებით ვუშვებ მონაცემების შემოწმებას და თუ რომელიმე აუცილებელი ჩანაწერი აკლია, რაც ლოგიკით განისაზღვრება,
+        //მაშინ ისინიც ჩაემატება. ან თუ არასწორად არის რომელიმე ჩანაწერი, შეიცვლება. ან თუ ზედმეტია წაიშლება
+        return AdditionalCheck(seedData);
     }
 
     //virtual methods
@@ -84,64 +143,6 @@ public /*open*/ class DataSeeder<TDst, TJMo> : ITableDataSeeder where TDst : cla
             : [];
     }
 
-    //ეს არის ძირითადი მეთოდი, რომლის საშუალებითაც ხდება ერთი ცხრილის შესაბამისი ინფორმაციის ჩატვირთვა ბაზაში
-    public bool Create(bool checkOnly)
-    {
-        if (checkOnly)
-            return AdditionalCheck(LoadFromJsonFile());
-
-        //ეს ის ვარიანტია, როცა არც არსებულ ჩანაწერებს ვამოწმებთ და არც Json-დან შემოგვაქვს
-        if (CheckRecordsExists())
-            return false;
-
-        if (_seedDataType == ESeedDataType.None)
-            return true;
-
-        var seedData = _seedDataType switch
-        {
-            ESeedDataType.OnlyRules => [],
-            ESeedDataType.OnlyJson or ESeedDataType.RulesHasMorePriority or ESeedDataType.JsonHasMorePriority =>
-                LoadFromJsonFile(),
-            ESeedDataType.None => throw new ArgumentOutOfRangeException(),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-
-        var dataListByJson = _seedDataType switch
-        {
-            ESeedDataType.OnlyRules => [],
-            ESeedDataType.OnlyJson or ESeedDataType.RulesHasMorePriority or ESeedDataType.JsonHasMorePriority =>
-                Adapt(seedData),
-            ESeedDataType.None => throw new ArgumentOutOfRangeException(),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-
-        var dataListByRules = _seedDataType switch
-        {
-            ESeedDataType.OnlyJson => [],
-            ESeedDataType.OnlyRules or ESeedDataType.RulesHasMorePriority or ESeedDataType.JsonHasMorePriority =>
-                CreateListByRules(),
-            ESeedDataType.None => throw new ArgumentOutOfRangeException(),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-
-        var dataList = _seedDataType switch
-        {
-            ESeedDataType.OnlyJson => dataListByJson,
-            ESeedDataType.OnlyRules => dataListByRules,
-            ESeedDataType.RulesHasMorePriority => Adjust(dataListByRules, dataListByJson),
-            ESeedDataType.JsonHasMorePriority => Adjust(dataListByJson, dataListByRules),
-            ESeedDataType.None => throw new ArgumentOutOfRangeException(),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-
-        if (!Repo.CreateEntities(dataList))
-            throw new Exception($"{_tableName} entities cannot be created");
-
-        //აქ დამატებით ვუშვებ მონაცემების შემოწმებას და თუ რომელიმე აუცილებელი ჩანაწერი აკლია, რაც ლოგიკით განისაზღვრება,
-        //მაშინ ისინიც ჩაემატება. ან თუ არასწორად არის რომელიმე ჩანაწერი, შეიცვლება. ან თუ ზედმეტია წაიშლება
-        return AdditionalCheck(seedData);
-    }
-
     //ამ მეთოდის დანიშნულებაა ჯეისონიდან ჩატვირთოს ინფორმაცია კონკრეტული მოდელისათვის
     private List<TJMo> LoadFromJsonFile()
     {
@@ -157,14 +158,20 @@ public /*open*/ class DataSeeder<TDst, TJMo> : ITableDataSeeder where TDst : cla
     //ამ მეთოდის დანიშნულებაა ბაზაში ჩასაწერი სია მიიყვანოს უპირატესი სიის მიხედვით
     private List<TDst> Adjust(List<TDst> listWithMorePriority, List<TDst> listWithLessPriority)
     {
-        if (_stringKeyFieldName is null)
-            throw new Exception($"String key field name is not set for {_tableName}");
+        if (_keyFieldNamesList is null || _keyFieldNamesList.Count == 0)
+            throw new Exception($"key field name List is not set for {_tableName}");
 
         var tableDataType = typeof(TDst);
-        var keyProperty = tableDataType.GetProperty(_stringKeyFieldName);
 
-        if (keyProperty is null)
-            throw new Exception($"KeyProperty {_stringKeyFieldName} does not exists {_tableName}");
+        var keyPropertiesList = new List<PropertyInfo>();
+
+        foreach (var keyFieldName in _keyFieldNamesList)
+        {
+            var keyProperty = tableDataType.GetProperty(keyFieldName);
+            if (keyProperty is null)
+                throw new Exception($"KeyProperty {keyFieldName} does not exists {_tableName}");
+            keyPropertiesList.Add(keyProperty);
+        }
 
         var duplicatePriorityKeys = listWithMorePriority.GroupBy(KeySelector).Where(group => group.Count() > 1)
             .Select(group => group.Key).ToList();
@@ -188,9 +195,7 @@ public /*open*/ class DataSeeder<TDst, TJMo> : ITableDataSeeder where TDst : cla
 
         var priorDictionary = listWithMorePriority.ToDictionary(KeySelector, v => v);
 
-        var secondDictionary = listWithLessPriority.ToDictionary(
-            item => keyProperty.GetValue(item)?.ToString()?.ToLower() ??
-                    throw new InvalidOperationException("Key property value cannot be null"), v => v);
+        var secondDictionary = listWithLessPriority.ToDictionary(KeySelector, v => v);
 
         var retList = new List<TDst>();
         retList.AddRange(priorDictionary.Values);
@@ -202,8 +207,16 @@ public /*open*/ class DataSeeder<TDst, TJMo> : ITableDataSeeder where TDst : cla
 
         string KeySelector(TDst item)
         {
-            return keyProperty.GetValue(item)?.ToString()?.ToLower() ??
-                   throw new InvalidOperationException("Key property value cannot be null");
+            return string.Join('_', keyPropertiesList.Select(s =>
+            {
+                var val = s.GetValue(item)?.ToString()?.ToLower();
+                if (val is null)
+                    throw new InvalidOperationException("Key property value cannot be null");
+                return val;
+            }));
+
+            //return keyProperty.GetValue(item)?.ToString()?.ToLower() ??
+            //       throw new InvalidOperationException("Key property value cannot be null");
         }
     }
 }
