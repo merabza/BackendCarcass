@@ -18,11 +18,17 @@ using RepositoriesDom;
 
 namespace CarcassRepositories;
 
-public sealed class RightsRepository(ILogger<RightsRepository> logger, CarcassDbContext context)
-    : AbstractRepository(context), IRightsRepository
+public sealed class RightsRepository : AbstractRepository, IRightsRepository
 {
-    private readonly CarcassDbContext _carcassContext = context;
-    private readonly ILogger<RightsRepository> _logger = logger;
+    private readonly CarcassDbContext _carcassContext;
+    private readonly ILogger<RightsRepository> _logger;
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public RightsRepository(ILogger<RightsRepository> logger, CarcassDbContext context) : base(context)
+    {
+        _carcassContext = context;
+        _logger = logger;
+    }
 
     public Task<int> DataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey, CancellationToken cancellationToken = default)
     {
