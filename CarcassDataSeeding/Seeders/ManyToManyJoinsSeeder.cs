@@ -12,15 +12,18 @@ namespace CarcassDataSeeding.Seeders;
 public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToManyJoinSeederModel>
 {
     private readonly string _secretDataFolder;
-    protected readonly ICarcassDataSeederRepository CarcassRepo;
+    private readonly ICarcassDataSeederRepository _carcassRepo;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ManyToManyJoinsSeeder(string secretDataFolder, ICarcassDataSeederRepository carcassRepo,
         string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo,
-        ESeedDataType.RulesHasMorePriority)
+        ESeedDataType.RulesHasMorePriority, [
+            nameof(ManyToManyJoin.PtId), nameof(ManyToManyJoin.PKey), nameof(ManyToManyJoin.CtId),
+            nameof(ManyToManyJoin.CKey)
+        ])
     {
         _secretDataFolder = secretDataFolder;
-        CarcassRepo = carcassRepo;
+        _carcassRepo = carcassRepo;
     }
 
     protected override bool AdditionalCheck(List<ManyToManyJoinSeederModel> jMos)
@@ -192,7 +195,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
         const string adminRoleKey = "Admin";
 
-        var existingDataTypesToCrudTypes = CarcassRepo.GetManyToManyJoins(firstDataTypeId, secondDataTypeId);
+        var existingDataTypesToCrudTypes = _carcassRepo.GetManyToManyJoins(firstDataTypeId, secondDataTypeId);
 
         return existingDataTypesToCrudTypes.Select(s => new ManyToManyJoin
         {
