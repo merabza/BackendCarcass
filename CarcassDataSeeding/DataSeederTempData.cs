@@ -10,25 +10,20 @@ public sealed class DataSeederTempData
     private static readonly Lock SyncRoot = new();
 
     private readonly Dictionary<Type, Dictionary<string, int>> _keyIdIntDictionary = [];
-
     private readonly Dictionary<Type, Dictionary<Tuple<int, int, short>, int>> _keyInt2ShortIdIntDictionary = [];
-
     private readonly Dictionary<Type, Dictionary<Tuple<int, int, int>, int>> _keyInt3IdIntDictionary = [];
-
     private readonly Dictionary<Type, Dictionary<Tuple<int, int, int, int>, int>> _keyInt4IdIntDictionary = [];
-
     private readonly Dictionary<Type, Dictionary<Tuple<int, int, int, int, int>, int>> _keyInt5IdIntDictionary = [];
 
+    private readonly Dictionary<Type, Dictionary<Tuple<int, int, int, int, int, int>, int>>
+        _keyInt6IdIntDictionary = [];
+
     private readonly Dictionary<Type, Dictionary<int, int>> _keyIntIdIntDictionary = [];
-
     private readonly Dictionary<Type, Dictionary<Tuple<int, int>, int>> _keyIntIntIdIntDictionary = [];
-
+    private readonly Dictionary<Type, Dictionary<Tuple<int, short>, int>> _keyIntShortIdIntDictionary = [];
     private readonly Dictionary<Type, Dictionary<Tuple<int, string>, int>> _keyIntStringIdIntDictionary = [];
-
     private readonly Dictionary<Type, Dictionary<Tuple<string, int>, int>> _keyStringIntIdIntDictionary = [];
-
     private readonly Dictionary<Type, Dictionary<Tuple<string, short>, int>> _keyStringShortIdIntDictionary = [];
-
     private readonly Dictionary<Type, Dictionary<int, int>> _oldIntIdsDictToIntIds = [];
 
     private DataSeederTempData()
@@ -48,6 +43,14 @@ public sealed class DataSeederTempData
 
             return _instance;
         }
+    }
+
+    public void SaveIntIdKeys<T>(Dictionary<Tuple<int, int, int, int, int, int>, int> dict)
+    {
+        if (_keyInt6IdIntDictionary.ContainsKey(typeof(T)))
+            _keyInt6IdIntDictionary[typeof(T)] = dict;
+        else
+            _keyInt6IdIntDictionary.Add(typeof(T), dict);
     }
 
     public void SaveIntIdKeys<T>(Dictionary<Tuple<int, int, int, int, int>, int> dict)
@@ -72,6 +75,16 @@ public sealed class DataSeederTempData
         if (!_keyInt4IdIntDictionary.ContainsKey(typeof(T)))
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         if (_keyInt4IdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+            return value;
+        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+    }
+
+    public int GetIntIdByKey<T>(int key1, int key2, int key3, int key4, int key5, int key6)
+    {
+        var key = new Tuple<int, int, int, int, int, int>(key1, key2, key3, key4, key5, key6);
+        if (!_keyInt6IdIntDictionary.ContainsKey(typeof(T)))
+            throw new Exception($"Cannot get Keys for key {typeof(T)}");
+        if (_keyInt6IdIntDictionary[typeof(T)].TryGetValue(key, out var value))
             return value;
         throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
@@ -186,6 +199,14 @@ public sealed class DataSeederTempData
             _keyIntIntIdIntDictionary.Add(typeof(T), dict);
     }
 
+    public void SaveIntIdKeys<T>(Dictionary<Tuple<int, short>, int> dict)
+    {
+        if (_keyIntShortIdIntDictionary.ContainsKey(typeof(T)))
+            _keyIntShortIdIntDictionary[typeof(T)] = dict;
+        else
+            _keyIntShortIdIntDictionary.Add(typeof(T), dict);
+    }
+
     // ReSharper disable once MemberCanBePrivate.Global
     public int GetIntIdByKey<T>(int key1, int key2)
     {
@@ -193,6 +214,16 @@ public sealed class DataSeederTempData
         if (!_keyIntIntIdIntDictionary.ContainsKey(typeof(T)))
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         if (_keyIntIntIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+            return value;
+        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+    }
+
+    public int GetIntIdByKey<T>(int key1, short key2)
+    {
+        var key = new Tuple<int, short>(key1, key2);
+        if (!_keyIntShortIdIntDictionary.ContainsKey(typeof(T)))
+            throw new Exception($"Cannot get Keys for key {typeof(T)}");
+        if (_keyIntShortIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
             return value;
         throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
