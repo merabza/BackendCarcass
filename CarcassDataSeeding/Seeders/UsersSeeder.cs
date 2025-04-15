@@ -22,19 +22,16 @@ public sealed class UsersSeeder : DataSeeder<User, UserSeederModel>
         _secretDataFolder = secretDataFolder;
     }
 
-    protected override bool AdditionalCheck(List<UserSeederModel> jMos)
+    protected override bool AdditionalCheck(List<UserSeederModel> jsonData, List<User> savedData)
     {
-        var existingUsers = Repo.GetAll<User>();
-
         var userToCreate = GetAppUserModels().Select(userModel => new
         {
             userModel,
             existingUser =
-                existingUsers.SingleOrDefault(sd =>
+                savedData.SingleOrDefault(sd =>
                     sd.NormalizedUserName == _userManager.NormalizeName(userModel.UserName)),
             existingEmail =
-                existingUsers.SingleOrDefault(sd =>
-                    sd.NormalizedEmail == _userManager.NormalizeEmail(userModel.Email))
+                savedData.SingleOrDefault(sd => sd.NormalizedEmail == _userManager.NormalizeEmail(userModel.Email))
         }).Where(w => w.existingUser == null && w.existingEmail == null).Select(s => s.userModel);
 
         if (userToCreate.Any(userModel => !CreateUser(userModel)))

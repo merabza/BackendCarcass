@@ -23,10 +23,9 @@ public /*open*/
         _secretDataFolder = secretDataFolder;
     }
 
-    protected override bool AdditionalCheck(List<RoleSeederModel> jMos)
+    protected override bool AdditionalCheck(List<RoleSeederModel> jsonData, List<Role> savedData)
     {
-        var dataList = Repo.GetAll<Role>();
-        DataSeederTempData.Instance.SaveIntIdKeys<Role>(dataList.ToDictionary(k => k.RolKey, v => v.RolId));
+        DataSeederTempData.Instance.SaveIntIdKeys<Role>(savedData.ToDictionary(k => k.RolKey, v => v.RolId));
 
         var existingRoles = Repo.GetAll<Role>();
 

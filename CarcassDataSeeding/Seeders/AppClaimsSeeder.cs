@@ -15,10 +15,9 @@ public /*open*/
     {
     }
 
-    protected override bool AdditionalCheck(List<AppClaimSeederModel> seedData)
+    protected override bool AdditionalCheck(List<AppClaimSeederModel> jsonData, List<AppClaim> savedData)
     {
-        var dataList = Repo.GetAll<DataType>();
-        DataSeederTempData.Instance.SaveIntIdKeys<AppClaim>(dataList.ToDictionary(k => k.Key, v => v.Id));
+        DataSeederTempData.Instance.SaveIntIdKeys<AppClaim>(savedData.ToDictionary(k => k.Key, v => v.Id));
         return true;
     }
 }

@@ -15,10 +15,9 @@ public /*open*/
     {
     }
 
-    protected override bool AdditionalCheck(List<MenuGroupSeederModel> jMos)
+    protected override bool AdditionalCheck(List<MenuGroupSeederModel> jsonData, List<MenuGroup> savedData)
     {
-        var dataList = Repo.GetAll<MenuGroup>();
-        DataSeederTempData.Instance.SaveIntIdKeys<MenuGroup>(dataList.ToDictionary(k => k.Key, v => v.Id));
+        DataSeederTempData.Instance.SaveIntIdKeys<MenuGroup>(savedData.ToDictionary(k => k.Key, v => v.Id));
         return true;
     }
 

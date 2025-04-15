@@ -16,10 +16,9 @@ public /*open*/
     {
     }
 
-    protected override bool AdditionalCheck(List<CrudRightTypeSeederModel> seedData)
+    protected override bool AdditionalCheck(List<CrudRightTypeSeederModel> jsonData, List<CrudRightType> savedData)
     {
-        var dataList = Repo.GetAll<CrudRightType>();
-        DataSeederTempData.Instance.SaveIntIdKeys<CrudRightType>(dataList.ToDictionary(k => k.Key, v => v.Id));
+        DataSeederTempData.Instance.SaveIntIdKeys<CrudRightType>(savedData.ToDictionary(k => k.Key, v => v.Id));
         return true;
     }
 

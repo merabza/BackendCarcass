@@ -6,6 +6,7 @@ using CarcassDb.Models;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.CellModels;
 using DatabaseToolsShared;
+using LanguageExt.ClassInstances;
 
 namespace CarcassDataSeeding.Seeders;
 
@@ -26,7 +27,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         _carcassRepo = carcassRepo;
     }
 
-    protected override bool AdditionalCheck(List<ManyToManyJoinSeederModel> jMos)
+    protected override bool AdditionalCheck(List<ManyToManyJoinSeederModel> jsonData, List<ManyToManyJoin> savedData)
     {
         var dataTypeDKey = ECarcassDataTypeKeys.DataType.ToDtKey();
         return Check(CreateMustListByRules()) && Check(GetThirdPartRights(

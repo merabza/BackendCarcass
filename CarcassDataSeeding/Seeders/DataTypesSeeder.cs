@@ -33,11 +33,10 @@ public /*open*/
         return JsonConvert.SerializeObject(gridModel, SerializerSettings);
     }
 
-    protected override bool AdditionalCheck(List<DataTypeSeederModel> seedData)
+    protected override bool AdditionalCheck(List<DataTypeSeederModel> jsonData, List<DataType> savedData)
     {
-        var dataList = Repo.GetAll<DataType>();
-        DataSeederTempData.Instance.SaveIntIdKeys<DataType>(dataList.ToDictionary(k => k.Key, v => v.Id));
-        return SetParents(seedData, dataList) && SetParentDataTypes() && RemoveRedundantDataTypes();
+        DataSeederTempData.Instance.SaveIntIdKeys<DataType>(savedData.ToDictionary(k => k.Key, v => v.Id));
+        return SetParents(jsonData, savedData) && SetParentDataTypes() && RemoveRedundantDataTypes();
     }
 
     protected override List<DataType> Adapt(List<DataTypeSeederModel> dataTypesSeedData)
