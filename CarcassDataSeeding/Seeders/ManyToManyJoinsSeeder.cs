@@ -265,8 +265,8 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         var existingMenu = Repo.GetAll<MenuItm>();
         var existingDataTypes = Repo.GetAll<DataType>();
 
-        foreach (var miItm in existingMenu.Where(
-                     w => w.MenLinkKey == "mdList" && !string.IsNullOrWhiteSpace(w.MenValue)))
+        foreach (var miItm in existingMenu.Where(w =>
+                     w.MenLinkKey == "mdList" && !string.IsNullOrWhiteSpace(w.MenValue)))
         {
             var dataType = existingDataTypes.SingleOrDefault(s => s.DtTable == miItm.MenValue);
             if (dataType == null)
