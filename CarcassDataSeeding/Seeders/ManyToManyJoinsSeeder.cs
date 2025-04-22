@@ -6,22 +6,18 @@ using CarcassDb.Models;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.CellModels;
 using DatabaseToolsShared;
-using LanguageExt.ClassInstances;
 
 namespace CarcassDataSeeding.Seeders;
 
 public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToManyJoinSeederModel>
 {
-    private readonly string _secretDataFolder;
     private readonly ICarcassDataSeederRepository _carcassRepo;
+    private readonly string _secretDataFolder;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ManyToManyJoinsSeeder(string secretDataFolder, ICarcassDataSeederRepository carcassRepo,
-        string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo,
-        ESeedDataType.RulesHasMorePriority, [
-            nameof(ManyToManyJoin.PtId), nameof(ManyToManyJoin.PKey), nameof(ManyToManyJoin.CtId),
-            nameof(ManyToManyJoin.CKey)
-        ])
+        string dataSeedFolder, IDataSeederRepository repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson,
+        List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, seedDataType, keyFieldNamesList)
     {
         _secretDataFolder = secretDataFolder;
         _carcassRepo = carcassRepo;

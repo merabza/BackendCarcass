@@ -17,7 +17,8 @@ public /*open*/
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public RolesSeeder(RoleManager<AppRole> roleManager, string secretDataFolder, string dataSeedFolder,
-        IDataSeederRepository repo) : base(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+        IDataSeederRepository repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson,
+        List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, seedDataType, keyFieldNamesList)
     {
         _roleManager = roleManager;
         _secretDataFolder = secretDataFolder;

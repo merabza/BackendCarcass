@@ -11,8 +11,9 @@ public /*open*/
     class CrudRightTypesSeeder : DataSeeder<CrudRightType, CrudRightTypeSeederModel>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CrudRightTypesSeeder(string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo,
-        ESeedDataType.OnlyRules)
+    public CrudRightTypesSeeder(string dataSeedFolder, IDataSeederRepository repo,
+        ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
+        dataSeedFolder, repo, seedDataType, keyFieldNamesList)
     {
     }
 

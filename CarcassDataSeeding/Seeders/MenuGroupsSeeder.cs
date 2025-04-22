@@ -10,8 +10,9 @@ public /*open*/
     class MenuGroupsSeeder : DataSeeder<MenuGroup, MenuGroupSeederModel>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MenuGroupsSeeder(string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo,
-        ESeedDataType.OnlyRules)
+    public MenuGroupsSeeder(string dataSeedFolder, IDataSeederRepository repo,
+        ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
+        dataSeedFolder, repo, seedDataType, keyFieldNamesList)
     {
     }
 

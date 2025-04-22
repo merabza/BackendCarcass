@@ -10,8 +10,9 @@ public /*open*/
     class AppClaimsSeeder : DataSeeder<AppClaim, AppClaimSeederModel>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo) : base(dataSeedFolder, repo,
-        ESeedDataType.RulesHasMorePriority, [nameof(AppClaim.AclKey)])
+    public AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo,
+        ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
+        dataSeedFolder, repo, seedDataType, keyFieldNamesList)
     {
     }
 

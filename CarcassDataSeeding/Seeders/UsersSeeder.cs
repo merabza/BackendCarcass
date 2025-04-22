@@ -9,14 +9,15 @@ using Microsoft.AspNetCore.Identity;
 
 namespace CarcassDataSeeding.Seeders;
 
-public sealed class UsersSeeder : DataSeeder<User, UserSeederModel>
+public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
 {
     private readonly string _secretDataFolder;
     private readonly UserManager<AppUser> _userManager;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public UsersSeeder(UserManager<AppUser> userManager, string secretDataFolder, string dataSeedFolder,
-        IDataSeederRepository repo) : base(dataSeedFolder, repo)
+        IDataSeederRepository repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson,
+        List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, seedDataType, keyFieldNamesList)
     {
         _userManager = userManager;
         _secretDataFolder = secretDataFolder;

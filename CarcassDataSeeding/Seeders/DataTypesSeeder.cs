@@ -18,8 +18,9 @@ public /*open*/
     protected readonly ICarcassDataSeederRepository CarcassRepo;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DataTypesSeeder(ICarcassDataSeederRepository carcassRepo, string dataSeedFolder, IDataSeederRepository repo)
-        : base(dataSeedFolder, repo, ESeedDataType.OnlyRules)
+    public DataTypesSeeder(ICarcassDataSeederRepository carcassRepo, string dataSeedFolder, IDataSeederRepository repo,
+        ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
+        dataSeedFolder, repo, seedDataType, keyFieldNamesList)
     {
         CarcassRepo = carcassRepo;
     }
@@ -28,6 +29,7 @@ public /*open*/
         new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
     //protected საჭიროა XxxNewDataTypesSeeder-ში
+    // ReSharper disable once MemberCanBePrivate.Global
     protected static string SerializeGrid(GridModel gridModel)
     {
         return JsonConvert.SerializeObject(gridModel, SerializerSettings);
