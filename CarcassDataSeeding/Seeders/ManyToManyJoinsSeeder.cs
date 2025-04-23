@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CarcassDataSeeding.Models;
-using CarcassDb.Domain;
 using CarcassDb.Models;
 using CarcassMasterDataDom;
 using CarcassMasterDataDom.CellModels;
@@ -25,35 +24,37 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
     protected override bool AdditionalCheck(List<ManyToManyJoinSeederModel> jsonData, List<ManyToManyJoin> savedData)
     {
-        var dataTypeDKey = ECarcassDataTypeKeys.DataType.ToDtKey();
-        return Check(CreateMustListByRules()) && Check(GetThirdPartRights(
-                                                  ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(), dataTypeDKey,
-                                                  dataTypeDKey)) //rol admin mmj(dt,dt) all
-                                              && Check(GetThirdPartRights(
-                                                  ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey(), dataTypeDKey,
-                                                  ECarcassDataTypeKeys.CrudRightType
-                                                      .ToDtKey())) //rol admin DataCrudRights all
-                                              //&& Check(GetThirdPartRights(MenuToCrudTypeModel.DKey, MenuItm.DKey, CrudRightType.DKey)) //rol admin MenuCrudRights all
-                                              && Check(GetAdminRoleToDataTypes()) //rol admin DataTypes all
-                                              && Check(GetAdminRoleToMenuGroups()) //rol admin MenuGroups all
-                                              && Check(GetAdminRoleToMenuItems()) //rol admin MenuItems all
-                                              && Check(GetMenuToDataTypes()) //men -> DataTypes
-                                              && Repo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
+        //var dataTypeDKey = ECarcassDataTypeKeys.DataType.ToDtKey();
+        //return Check(CreateMustListByRules()) && Check(GetThirdPartRights(
+        //                                          ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(), dataTypeDKey,
+        //                                          dataTypeDKey)) //rol admin mmj(dt,dt) all
+        //                                      && Check(GetThirdPartRights(
+        //                                          ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey(), dataTypeDKey,
+        //                                          ECarcassDataTypeKeys.CrudRightType
+        //                                              .ToDtKey())) //rol admin DataCrudRights all
+        //                                      //&& Check(GetThirdPartRights(MenuToCrudTypeModel.DKey, MenuItm.DKey, CrudRightType.DKey)) //rol admin MenuCrudRights all
+        //                                      && Check(GetAdminRoleToDataTypes()) //rol admin DataTypes all
+        //                                      && Check(GetAdminRoleToMenuGroups()) //rol admin MenuGroups all
+        //                                      && Check(GetAdminRoleToMenuItems()) //rol admin MenuItems all
+        //                                      && Check(GetMenuToDataTypes()) //men -> DataTypes
+        //                                      && Repo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
+
+        return Repo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
     }
 
-    private bool Check(List<ManyToManyJoin> mustBeDataTypes)
-    {
-        if (mustBeDataTypes.Count == 0)
-            return true;
-        var existingManyToManyJoins = Repo.GetAll<ManyToManyJoin>()
-            .Select(s => new ManyToManyJoinDomain(s.PtId, s.PKey, s.CtId, s.CKey)).ToList();
-        var forAdd = mustBeDataTypes.Select(s => new ManyToManyJoinDomain(s.PtId, s.PKey, s.CtId, s.CKey))
-            .Except(existingManyToManyJoins).ToList();
-        return Repo.CreateEntities(forAdd.Select(s => new ManyToManyJoin
-        {
-            PtId = s.PtId, PKey = s.PKey, CtId = s.CtId, CKey = s.CKey
-        }).ToList());
-    }
+    //private bool Check(List<ManyToManyJoin> mustBeDataTypes)
+    //{
+    //    if (mustBeDataTypes.Count == 0)
+    //        return true;
+    //    var existingManyToManyJoins = Repo.GetAll<ManyToManyJoin>()
+    //        .Select(s => new ManyToManyJoinDomain(s.PtId, s.PKey, s.CtId, s.CKey)).ToList();
+    //    var forAdd = mustBeDataTypes.Select(s => new ManyToManyJoinDomain(s.PtId, s.PKey, s.CtId, s.CKey))
+    //        .Except(existingManyToManyJoins).ToList();
+    //    return Repo.CreateEntities(forAdd.Select(s => new ManyToManyJoin
+    //    {
+    //        PtId = s.PtId, PKey = s.PKey, CtId = s.CtId, CKey = s.CKey
+    //    }).ToList());
+    //}
 
     protected override List<ManyToManyJoin> Adapt(List<ManyToManyJoinSeederModel> manyToManyJoinsSeedData)
     {
@@ -65,6 +66,25 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
             CtId = tempData.GetIntIdByKey<DataType>(s.CtIdDtKey),
             CKey = s.CKey
         }).ToList();
+    }
+
+    protected override List<ManyToManyJoin> CreateListByRules()
+    {
+        var manyToManyJoinsList = CreateMustListByRules();
+
+        var dataTypeDKey = ECarcassDataTypeKeys.DataType.ToDtKey();
+        manyToManyJoinsList.AddRange(GetThirdPartRights(ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(), dataTypeDKey,
+            dataTypeDKey));
+
+        manyToManyJoinsList.AddRange(GetThirdPartRights(ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey(), dataTypeDKey,
+            ECarcassDataTypeKeys.CrudRightType.ToDtKey()));
+
+        manyToManyJoinsList.AddRange(GetAdminRoleToDataTypes());
+        manyToManyJoinsList.AddRange(GetAdminRoleToMenuGroups());
+        manyToManyJoinsList.AddRange(GetAdminRoleToMenuItems());
+        manyToManyJoinsList.AddRange(GetMenuToDataTypes());
+
+        return manyToManyJoinsList.Distinct().ToList();
     }
 
     protected virtual List<ManyToManyJoin> CreateMustListByRules()
