@@ -6,7 +6,7 @@ namespace CarcassDb.Configurations;
 
 public sealed class UserConfiguration : IEntityTypeConfiguration<User>
 {
-    private const int UserNameMaxLength = 256;
+    public const int UserNameMaxLength = 256;
     private const int NormalizedUserNameMaxLength = 256;
     private const int EmailMaxLength = 256;
     private const int NormalizedEmailMaxLength = 256;
