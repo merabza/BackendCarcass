@@ -95,7 +95,7 @@ public /*open*/
             forUpdate.Add(oneRec);
         }
 
-        return Repo.SetUpdates(forUpdate);
+        return DataSeederRepo.SetUpdates(forUpdate);
     }
 
     protected virtual bool RemoveRedundantDataTypes()
@@ -141,7 +141,7 @@ public /*open*/
                 DtName = "სპეციალური უფლებები",
                 DtNameNominative = "სპეციალური უფლება",
                 DtNameGenitive = "სპეციალური უფლების",
-                DtTable = Repo.GetTableName<AppClaim>(),
+                DtTable = DataSeederRepo.GetTableName<AppClaim>(),
                 DtIdFieldName = nameof(AppClaim.AclId).UnCapitalize(),
                 DtKeyFieldName = nameof(AppClaim.AclKey).UnCapitalize(),
                 DtNameFieldName = nameof(AppClaim.AclName).UnCapitalize(),
@@ -154,7 +154,7 @@ public /*open*/
                 DtName = "მონაცემთა ტიპები",
                 DtNameNominative = "მონაცემთა ტიპი",
                 DtNameGenitive = "მონაცემთა ტიპის",
-                DtTable = Repo.GetTableName<DataType>(),
+                DtTable = DataSeederRepo.GetTableName<DataType>(),
                 DtIdFieldName = nameof(DataType.DtId).UnCapitalize(),
                 DtKeyFieldName = nameof(DataType.DtKey).UnCapitalize(),
                 DtNameFieldName = nameof(DataType.DtName).UnCapitalize(),
@@ -176,7 +176,7 @@ public /*open*/
                 DtName = "მონაცემების ცვლილებაზე უფლებების ტიპები",
                 DtNameNominative = "მონაცემების ცვლილებაზე უფლების ტიპი",
                 DtNameGenitive = "მონაცემების ცვლილებაზე უფლების ტიპის",
-                DtTable = Repo.GetTableName<CrudRightType>(),
+                DtTable = DataSeederRepo.GetTableName<CrudRightType>(),
                 DtIdFieldName = nameof(CrudRightType.CrtId).UnCapitalize(),
                 DtKeyFieldName = nameof(CrudRightType.CrtKey).UnCapitalize(),
                 DtNameFieldName = nameof(CrudRightType.CrtName).UnCapitalize(),
@@ -198,7 +198,7 @@ public /*open*/
                 DtName = "მენიუს ჯგუფები",
                 DtNameNominative = "მენიუს ჯგუფი",
                 DtNameGenitive = "მენიუს ჯგუფის",
-                DtTable = Repo.GetTableName<MenuGroup>(),
+                DtTable = DataSeederRepo.GetTableName<MenuGroup>(),
                 DtIdFieldName = nameof(MenuGroup.MengId).UnCapitalize(),
                 DtKeyFieldName = nameof(MenuGroup.MengKey).UnCapitalize(),
                 DtNameFieldName = nameof(MenuGroup.MengName).UnCapitalize(),
@@ -211,7 +211,7 @@ public /*open*/
                 DtName = "მენიუ",
                 DtNameNominative = "მენიუ",
                 DtNameGenitive = "მენიუს",
-                DtTable = Repo.GetTableName<MenuItm>(),
+                DtTable = DataSeederRepo.GetTableName<MenuItm>(),
                 DtIdFieldName = nameof(MenuItm.MenId).UnCapitalize(),
                 DtKeyFieldName = nameof(MenuItm.MenKey).UnCapitalize(),
                 DtNameFieldName = nameof(MenuItm.MenName).UnCapitalize(),
@@ -224,7 +224,7 @@ public /*open*/
                 DtName = "როლები",
                 DtNameNominative = "როლი",
                 DtNameGenitive = "როლის",
-                DtTable = Repo.GetTableName<Role>(),
+                DtTable = DataSeederRepo.GetTableName<Role>(),
                 DtIdFieldName = nameof(Role.RolId).UnCapitalize(),
                 DtKeyFieldName = nameof(Role.RolKey).UnCapitalize(),
                 DtNameFieldName = nameof(Role.RolName).UnCapitalize(),
@@ -237,7 +237,7 @@ public /*open*/
                 DtName = "მომხმარებლები",
                 DtNameNominative = "მომხმარებელი",
                 DtNameGenitive = "მომხმარებლის",
-                DtTable = Repo.GetTableName<User>(),
+                DtTable = DataSeederRepo.GetTableName<User>(),
                 DtIdFieldName = nameof(User.UsrId).UnCapitalize(),
                 DtKeyFieldName = nameof(User.NormalizedUserName).UnCapitalize(),
                 DtNameFieldName = nameof(User.FullName).UnCapitalize(),
@@ -248,7 +248,7 @@ public /*open*/
         return [.. newDataTypes];
     }
 
-    private static GridModel CreateDataTypesGridModel()
+    private GridModel CreateDataTypesGridModel()
     {
         var gridModel = GetKeyNameGridModel(ECarcassDataTypeKeys.DataType.ToDtKey());
         var cells = new[]
@@ -259,19 +259,19 @@ public /*open*/
             GetTextBoxCell(nameof(DataType.DtIdFieldName).UnCapitalize(), "იდენტიფიკატორი ველის სახელი"),
             GetTextBoxCell(nameof(DataType.DtKeyFieldName).UnCapitalize(), "კოდი ველის სახელი"),
             GetTextBoxCell(nameof(DataType.DtNameFieldName).UnCapitalize(), "სახელი ველის სახელი"),
-            GetMdComboCell(nameof(DataType.DtParentDataTypeId).UnCapitalize(), "უფლებების მშობელი", "dataTypes")
+            GetMdComboCell(nameof(DataType.DtParentDataTypeId).UnCapitalize(), "უფლებების მშობელი", DataSeederRepo.GetTableName<DataType>())
         };
         gridModel.Cells.AddRange(cells);
         return gridModel;
     }
 
-    private static GridModel CreateMenuGridModel()
+    private GridModel CreateMenuGridModel()
     {
         var gridModel = GetKeyNameSortIdGridModel(ECarcassDataTypeKeys.MenuItm.ToDtKey());
         var cells = new[]
         {
             GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
-            GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი", "menuGroups"),
+            GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი", DataSeederRepo.GetTableName<MenuGroup>()),
             GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
             GetTextBoxCell(nameof(MenuItm.MenIconName).UnCapitalize(), "ხატულა")
         };
