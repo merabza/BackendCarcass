@@ -12,4 +12,8 @@
         <ProjectReference Include="..\CarcassMasterDataDom\CarcassMasterDataDom.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Comparers\" />
+    </ItemGroup>
+
 </Project>

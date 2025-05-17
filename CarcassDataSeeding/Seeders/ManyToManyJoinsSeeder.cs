@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using CarcassDataSeeding.Comparers;
 using CarcassDataSeeding.Models;
 using CarcassDb.Models;
 using CarcassMasterDataDom;
@@ -39,6 +41,26 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         //                                      && Check(GetMenuToDataTypes()) //men -> DataTypes
         //                                      && Repo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
 
+        var manyToManyJoinsList = new List<ManyToManyJoin>();
+        var dataTypeDKey = ECarcassDataTypeKeys.DataType.ToDtKey();
+        manyToManyJoinsList.AddRange(GetThirdPartRights(ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(), dataTypeDKey,
+            dataTypeDKey));
+
+        manyToManyJoinsList.AddRange(GetThirdPartRights(ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey(), dataTypeDKey,
+            ECarcassDataTypeKeys.CrudRightType.ToDtKey()));
+
+        manyToManyJoinsList.AddRange(GetAdminRoleToDataTypes());
+        manyToManyJoinsList.AddRange(GetAdminRoleToMenuGroups());
+        manyToManyJoinsList.AddRange(GetAdminRoleToMenuItems());
+        manyToManyJoinsList.AddRange(GetMenuToDataTypes());
+
+        var existingManyToManyJoins = DataSeederRepo.GetAll<ManyToManyJoin>();
+
+        if (!DataSeederRepo.CreateEntities(manyToManyJoinsList
+                .Except(existingManyToManyJoins, new ManyToManyJoinComparer()).Distinct(new ManyToManyJoinComparer())
+                .ToList()))
+            throw new Exception("manyToManyJoinsList entities cannot be created");
+
         return DataSeederRepo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
     }
 
@@ -70,21 +92,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
     protected override List<ManyToManyJoin> CreateListByRules()
     {
-        var manyToManyJoinsList = CreateMustListByRules();
-
-        var dataTypeDKey = ECarcassDataTypeKeys.DataType.ToDtKey();
-        manyToManyJoinsList.AddRange(GetThirdPartRights(ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(), dataTypeDKey,
-            dataTypeDKey));
-
-        manyToManyJoinsList.AddRange(GetThirdPartRights(ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey(), dataTypeDKey,
-            ECarcassDataTypeKeys.CrudRightType.ToDtKey()));
-
-        manyToManyJoinsList.AddRange(GetAdminRoleToDataTypes());
-        manyToManyJoinsList.AddRange(GetAdminRoleToMenuGroups());
-        manyToManyJoinsList.AddRange(GetAdminRoleToMenuItems());
-        manyToManyJoinsList.AddRange(GetMenuToDataTypes());
-
-        return manyToManyJoinsList.Distinct().ToList();
+        return CreateMustListByRules().Distinct(new ManyToManyJoinComparer()).ToList();
     }
 
     protected virtual List<ManyToManyJoin> CreateMustListByRules()

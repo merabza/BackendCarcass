@@ -38,7 +38,8 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
         if (userToCreate.Any(userModel => !CreateUser(userModel)))
             return false;
 
-        DataSeederTempData.Instance.SaveIntIdKeys<User>(DataSeederRepo.GetAll<User>().ToDictionary(k => k.Key, v => v.Id));
+        DataSeederTempData.Instance.SaveIntIdKeys<User>(DataSeederRepo.GetAll<User>()
+            .ToDictionary(k => k.Key, v => v.Id));
         return true;
     }
 

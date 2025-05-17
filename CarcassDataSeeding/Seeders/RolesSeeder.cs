@@ -39,7 +39,8 @@ public /*open*/
         if (rolesToCreate.Any(roleModel => !CreateRole(roleModel)))
             return false;
 
-        DataSeederTempData.Instance.SaveIntIdKeys<Role>(DataSeederRepo.GetAll<Role>().ToDictionary(k => k.Key, v => v.Id));
+        DataSeederTempData.Instance.SaveIntIdKeys<Role>(DataSeederRepo.GetAll<Role>()
+            .ToDictionary(k => k.Key, v => v.Id));
         return true;
     }
 

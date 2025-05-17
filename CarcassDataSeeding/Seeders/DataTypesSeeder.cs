@@ -259,7 +259,8 @@ public /*open*/
             GetTextBoxCell(nameof(DataType.DtIdFieldName).UnCapitalize(), "იდენტიფიკატორი ველის სახელი"),
             GetTextBoxCell(nameof(DataType.DtKeyFieldName).UnCapitalize(), "კოდი ველის სახელი"),
             GetTextBoxCell(nameof(DataType.DtNameFieldName).UnCapitalize(), "სახელი ველის სახელი"),
-            GetMdComboCell(nameof(DataType.DtParentDataTypeId).UnCapitalize(), "უფლებების მშობელი", DataSeederRepo.GetTableName<DataType>())
+            GetMdComboCell(nameof(DataType.DtParentDataTypeId).UnCapitalize(), "უფლებების მშობელი",
+                DataSeederRepo.GetTableName<DataType>())
         };
         gridModel.Cells.AddRange(cells);
         return gridModel;
@@ -271,7 +272,8 @@ public /*open*/
         var cells = new[]
         {
             GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
-            GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი", DataSeederRepo.GetTableName<MenuGroup>()),
+            GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი",
+                DataSeederRepo.GetTableName<MenuGroup>()),
             GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
             GetTextBoxCell(nameof(MenuItm.MenIconName).UnCapitalize(), "ხატულა")
         };
