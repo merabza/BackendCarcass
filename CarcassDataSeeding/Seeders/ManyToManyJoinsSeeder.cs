@@ -39,7 +39,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         //                                      && Check(GetMenuToDataTypes()) //men -> DataTypes
         //                                      && Repo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
 
-        return Repo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
+        return DataSeederRepo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
     }
 
     //private bool Check(List<ManyToManyJoin> mustBeDataTypes)
@@ -148,9 +148,9 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         var lst = newManyToManyJoins.ToList();
 
         //DataTypes by CrudRightTypes
-        lst.AddRange(from dataType in Repo.GetAll<DataType>()
+        lst.AddRange(from dataType in DataSeederRepo.GetAll<DataType>()
             from crudRightType in
-                Repo.GetAll<CrudRightType>() //.Where(w=>w.CrtKey != nameof(ECrudOperationType.Confirm))
+                DataSeederRepo.GetAll<CrudRightType>() //.Where(w=>w.CrtKey != nameof(ECrudOperationType.Confirm))
             select new ManyToManyJoin
             {
                 PtId = dataTypeDataTypeId,
@@ -160,9 +160,9 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
             });
 
         //Menu by CrudRightTypes
-        lst.AddRange(from mnu in Repo.GetAll<MenuItm>().Where(w => w.MenLinkKey != "mdList")
+        lst.AddRange(from mnu in DataSeederRepo.GetAll<MenuItm>().Where(w => w.MenLinkKey != "mdList")
             from crudRightType in
-                Repo.GetAll<CrudRightType>() //.Where(w=>w.CrtKey != nameof(ECrudOperationType.Confirm))
+                DataSeederRepo.GetAll<CrudRightType>() //.Where(w=>w.CrtKey != nameof(ECrudOperationType.Confirm))
             select new ManyToManyJoin
             {
                 PtId = dataTypeDataTypeId,
@@ -229,7 +229,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
         const string adminRoleKey = "Admin";
 
-        var existingDataTypes = Repo.GetAll<DataType>();
+        var existingDataTypes = DataSeederRepo.GetAll<DataType>();
 
         return existingDataTypes.Select(s => new ManyToManyJoin
         {
@@ -246,7 +246,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
         const string adminRoleKey = "Admin";
 
-        var existingMenuGroups = Repo.GetAll<MenuGroup>();
+        var existingMenuGroups = DataSeederRepo.GetAll<MenuGroup>();
 
         return existingMenuGroups.Select(s => new ManyToManyJoin
         {
@@ -263,7 +263,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
         const string adminRoleKey = "Admin";
 
-        var existingMenuItems = Repo.GetAll<MenuItm>();
+        var existingMenuItems = DataSeederRepo.GetAll<MenuItm>();
 
         return existingMenuItems.Select(s => new ManyToManyJoin
         {
@@ -278,8 +278,8 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         var dtDt = tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataType.ToDtKey());
 
         var res = new List<ManyToManyJoin>();
-        var existingMenu = Repo.GetAll<MenuItm>();
-        var existingDataTypes = Repo.GetAll<DataType>();
+        var existingMenu = DataSeederRepo.GetAll<MenuItm>();
+        var existingDataTypes = DataSeederRepo.GetAll<DataType>();
 
         foreach (var miItm in existingMenu.Where(w =>
                      w.MenLinkKey == "mdList" && !string.IsNullOrWhiteSpace(w.MenValue)))
@@ -324,7 +324,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         var dtDt = tempData.GetIntIdByKey<DataType>(dataTypeDKey);
 
         var res = new List<ManyToManyJoin>();
-        var existingManyToManyJoins = Repo.GetAll<ManyToManyJoin>();
+        var existingManyToManyJoins = DataSeederRepo.GetAll<ManyToManyJoin>();
 
         res.AddRange(existingManyToManyJoins.Where(s => s.PtId == dtMen && s.CtId == dtDt));
         res.AddRange(existingManyToManyJoins.Where(s =>

@@ -48,7 +48,7 @@ public /*open*/
             {
                 MenKey = "DataTypes",
                 MenName = "DataTypes - მონაცემთა ტიპები",
-                MenValue = "dataTypes",
+                MenValue = DataSeederRepo.GetTableName<DataType>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
                 SortId = 7,
                 MenLinkKey = "mdList"
@@ -57,7 +57,7 @@ public /*open*/
             {
                 MenKey = "Users",
                 MenName = "მომხმარებლები",
-                MenValue = "users",
+                MenValue = DataSeederRepo.GetTableName<User>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
                 SortId = 17,
                 MenLinkKey = "mdList"
@@ -66,7 +66,7 @@ public /*open*/
             {
                 MenKey = "MenuEditor",
                 MenName = "MenuEditor - მენიუს რედაქტორი",
-                MenValue = "menu",
+                MenValue = DataSeederRepo.GetTableName<MenuItm>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
                 SortId = 4,
                 MenLinkKey = "mdList"
@@ -75,7 +75,7 @@ public /*open*/
             {
                 MenKey = "MenuGroups",
                 MenName = "MenuGroups - მენიუს ჯგუფები",
-                MenValue = "menuGroups",
+                MenValue = DataSeederRepo.GetTableName<MenuGroup>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
                 SortId = 4,
                 MenLinkKey = "mdList"
@@ -84,7 +84,7 @@ public /*open*/
             {
                 MenKey = "Roles",
                 MenName = "როლები",
-                MenValue = "roles",
+                MenValue = DataSeederRepo.GetTableName<Role>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
                 SortId = 0,
                 MenLinkKey = "mdList"
@@ -104,7 +104,7 @@ public /*open*/
             {
                 MenKey = "CrudRightTypes",
                 MenName = "მონაცემების ცვლილებაზე უფლებების ტიპები",
-                MenValue = "crudRightTypes",
+                MenValue = DataSeederRepo.GetTableName<CrudRightType>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
                 SortId = 0,
                 MenLinkKey = "mdList"
