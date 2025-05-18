@@ -145,8 +145,8 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         return _gridModel ??= await _cmdRepo.GetDataTypeGridRulesByTableName(_tableName, cancellationToken);
     }
 
-    public async Task<TableRowsData> UseCustomSortFilterPagination<T>(object query,
-        FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default) where T : class, IDataType
+    public async Task<TableRowsData> UseCustomSortFilterPagination<T>(object query, FilterSortRequest filterSortRequest,
+        CancellationToken cancellationToken = default) where T : class, IDataType
     {
         var tQuery = (IQueryable<T>)query;
         //tQuery.Include()

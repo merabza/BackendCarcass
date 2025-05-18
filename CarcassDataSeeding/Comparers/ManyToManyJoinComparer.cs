@@ -13,10 +13,7 @@ public class ManyToManyJoinComparer : IEqualityComparer<ManyToManyJoin>
             return false;
         }
 
-        return x.PtId == y.PtId &&
-               x.PKey == y.PKey &&
-               x.CtId == y.CtId &&
-               x.CKey == y.CKey;
+        return x.PtId == y.PtId && x.PKey == y.PKey && x.CtId == y.CtId && x.CKey == y.CKey;
     }
 
     public int GetHashCode(ManyToManyJoin obj)
