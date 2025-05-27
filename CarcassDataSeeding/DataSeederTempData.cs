@@ -336,7 +336,7 @@ public sealed class DataSeederTempData
             _oldDateTimeIdsDictToDateTimeIds.Add(typeof(T), dict);
     }
 
-    public DateTime GetDatetimeIdByOldDatetimeId<T>(DateTime oldId)
+    public DateTime GetDatetimeIdByOldId<T>(DateTime oldId)
     {
         if (!_oldDateTimeIdsDictToDateTimeIds.ContainsKey(typeof(T)))
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
