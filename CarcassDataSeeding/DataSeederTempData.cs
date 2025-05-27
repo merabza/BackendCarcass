@@ -28,6 +28,7 @@ public sealed class DataSeederTempData
     private readonly Dictionary<Type, Dictionary<Tuple<string, short>, int>> _keyStringShortIdIntDictionary = [];
     private readonly Dictionary<Type, Dictionary<DateTime, DateTime>> _oldDateTimeIdsDictToDateTimeIds = [];
     private readonly Dictionary<Type, Dictionary<int, int>> _oldIntIdsDictToIntIds = [];
+    private readonly Dictionary<Type, Dictionary<short, short>> _oldShortIdsDictToShortIds = [];
 
     private DataSeederTempData()
     {
@@ -324,6 +325,23 @@ public sealed class DataSeederTempData
         if (!_oldIntIdsDictToIntIds.ContainsKey(typeof(T)))
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         if (_oldIntIdsDictToIntIds[typeof(T)].TryGetValue(oldId, out var value))
+            return value;
+        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {oldId}");
+    }
+
+    public void SaveOldShortIdsDictToShortIds<T>(Dictionary<short, short> dict)
+    {
+        if (_oldShortIdsDictToShortIds.ContainsKey(typeof(T)))
+            _oldShortIdsDictToShortIds[typeof(T)] = dict;
+        else
+            _oldShortIdsDictToShortIds.Add(typeof(T), dict);
+    }
+
+    public short GetShortIdByOldId<T>(short oldId)
+    {
+        if (!_oldShortIdsDictToShortIds.ContainsKey(typeof(T)))
+            throw new Exception($"Cannot get Keys for key {typeof(T)}");
+        if (_oldShortIdsDictToShortIds[typeof(T)].TryGetValue(oldId, out var value))
             return value;
         throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {oldId}");
     }
