@@ -369,4 +369,11 @@ public sealed class DataSeederTempData
             return null;
         return GetIntIdByOldId<T>(oldId.Value);
     }
+
+    public short? GetShortNullableIdByOldId<T>(short? oldId)
+    {
+        if (oldId == null)
+            return null;
+        return GetShortIdByOldId<T>(oldId.Value);
+    }
 }
