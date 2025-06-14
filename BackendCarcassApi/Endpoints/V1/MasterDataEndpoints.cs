@@ -98,8 +98,8 @@ public sealed class MasterDataEndpoints : IInstaller
     }
 
     // GET api/v1/masterdata/getlookuptables?tables=tableName1&tables=tableName2&tables=tableName3
-    public static async Task<Results<Ok<MdGetLookupTablesQueryResponse>, BadRequest<IEnumerable<Err>>>> GetLookupTables(HttpRequest request, IMediator mediator,
-        CancellationToken cancellationToken = default)
+    public static async Task<Results<Ok<MdGetLookupTablesQueryResponse>, BadRequest<IEnumerable<Err>>>> GetLookupTables(
+        HttpRequest request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GetLookupTablesQueryHandler)} from {nameof(GetTables)}");
         var query = new MdGetLookupTablesQueryRequest(request);
