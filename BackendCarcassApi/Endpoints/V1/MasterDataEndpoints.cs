@@ -7,11 +7,14 @@ using BackendCarcassApi.CommandRequests.MasterData;
 using BackendCarcassApi.Filters;
 using BackendCarcassApi.Handlers.MasterData;
 using BackendCarcassApi.QueryRequests.MasterData;
+using BackendCarcassApi.QueryResponses;
 using BackendCarcassContracts.V1.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using SystemToolsShared.Errors;
 using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;
@@ -82,27 +85,31 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ ეს ყველა ცხრილზე ნახვის უფლება აქვს მიმდინარე მომხმარებელს, მოხდება ყველა ცხრილის ჩატვირთვა და გამომძახებლისთვის დაბრუნება
     //query like this: localhost:3000/api/masterdata/gettables?tables=tableName1&tables=tableName2&tables=tableName3
     //deprecated
-    private static async Task<IResult> GetTables(HttpRequest request, IMediator mediator,
-        CancellationToken cancellationToken = default)
+    public static async Task<Results<Ok<MdGetTablesQueryResponse>, BadRequest<IEnumerable<Err>>>> GetTables(
+        HttpRequest request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GetTablesQueryHandler)} from {nameof(GetTables)}");
         var query = new MdGetTablesQueryRequest(request);
         var result = await mediator.Send(query, cancellationToken);
-        return result.Match(Results.Ok, Results.BadRequest);
+
+        // Explicitly specify the type arguments for the Match method to resolve CS0411
+        return result.Match<Results<Ok<MdGetTablesQueryResponse>, BadRequest<IEnumerable<Err>>>>(
+            res => TypedResults.Ok(res), errors => TypedResults.BadRequest(errors));
     }
 
     // GET api/v1/masterdata/getlookuptables?tables=tableName1&tables=tableName2&tables=tableName3
-    private static async Task<IResult> GetLookupTables(HttpRequest request, IMediator mediator,
+    public static async Task<Results<Ok<MdGetLookupTablesQueryResponse>, BadRequest<IEnumerable<Err>>>> GetLookupTables(HttpRequest request, IMediator mediator,
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GetLookupTablesQueryHandler)} from {nameof(GetTables)}");
         var query = new MdGetLookupTablesQueryRequest(request);
         var result = await mediator.Send(query, cancellationToken);
-        return result.Match(Results.Ok, Results.BadRequest);
+        return result.Match<Results<Ok<MdGetLookupTablesQueryResponse>, BadRequest<IEnumerable<Err>>>>(
+            res => TypedResults.Ok(res), errors => TypedResults.BadRequest(errors));
     }
 
     // GET api/v1/masterdata/gettablerowsdata/{tableName}
-    private static async Task<IResult> GetTableRowsData(IMediator mediator, [FromRoute] string tableName,
+    public static async Task<IResult> GetTableRowsData(IMediator mediator, [FromRoute] string tableName,
         [FromQuery] string filterSortRequest, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GetTableRowsDataHandler)} from {nameof(GetTableRowsData)}");
@@ -121,7 +128,7 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ tableName ცხრილის ნახვის უფლება აქვს მიმდინარე მომხმარებელს,
     //   მოხდება id იდენტიფიკატორით ჩანაწერის ამოღება ბაზიდან და გამომძახებლისთვის დაბრუნება
     // GET api/v1/masterdata/{tableName}/{id}
-    private static async Task<IResult> MdGetOneRecord(string tableName, int id, IMediator mediator,
+    public static async Task<IResult> MdGetOneRecord(string tableName, int id, IMediator mediator,
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdGetOneRecordQueryHandler)} from {nameof(MdGetOneRecord)}");
@@ -139,7 +146,7 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ ეს არ აქვს მიმდინარე მომხმარებელს, ბრუნდება შეცდომა
     //  თუ აქვს, მოხდება მოთხოვნის ტანის გაანალიზება და მიღებული ახალი ჩანაწერის ბაზაში დამატება
     // POST api/v1/masterdata/{tableName}
-    private static async Task<IResult> MdCreateOneRecord(string tableName, HttpRequest request, IMediator mediator,
+    public static async Task<IResult> MdCreateOneRecord(string tableName, HttpRequest request, IMediator mediator,
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdCreateOneRecordCommandHandler)} from {nameof(MdCreateOneRecord)}");
@@ -159,7 +166,7 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ აქვს, მოხდება მოთხოვნის ტანის გაანალიზება და მიღებული შეცვლილი ჩანაწერის ბაზაში დაფიქსირება
     // PUT api/<controller>/<tableName>/5
     //[HttpPut("{tableName}/{id}")]
-    private static async Task<IResult> MdUpdateOneRecord(string tableName, int id, HttpRequest request,
+    public static async Task<IResult> MdUpdateOneRecord(string tableName, int id, HttpRequest request,
         IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdUpdateOneRecordCommandHandler)} from {nameof(MdUpdateOneRecord)}");
@@ -178,7 +185,7 @@ public sealed class MasterDataEndpoints : IInstaller
     //  თუ აქვს, მოხდება id იდენტიფიკატორის მიხედვით tableName ცხრილიდან ჩანაწერის წაშლა
     // DELETE api/<controller>/<tableName>/5
     //[HttpDelete("{tableName}/{id}")]
-    private static async Task<IResult> MdDeleteOneRecord(string tableName, int id, IMediator mediator,
+    public static async Task<IResult> MdDeleteOneRecord(string tableName, int id, IMediator mediator,
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdDeleteOneRecordCommandHandler)} from {nameof(MdDeleteOneRecord)}");
