@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using CarcassDb.Models;
 using CarcassDom.Models;
-using CarcassMasterDataDom;
 using Microsoft.Extensions.Logging;
 
 // ReSharper disable ConvertToPrimaryConstructor
@@ -26,10 +26,12 @@ public sealed class RightsSaver
     {
         try
         {
-            var dtDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataType, cancellationToken);
-            var mmjDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.DataTypeToDataType, cancellationToken);
-            var roleDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.Role, cancellationToken);
-            var userDataId = await _repo.DataTypeIdByKey(ECarcassDataTypeKeys.User, cancellationToken);
+            var dataTypeTableName = _repo.GetTableName<DataType>();
+            var dtDataId = await _repo.DataTypeIdByTableName(dataTypeTableName, cancellationToken);
+            var mmjDataId =
+                await _repo.DataTypeIdByTableName($"{dataTypeTableName}{dataTypeTableName}", cancellationToken);
+            var roleDataId = await _repo.DataTypeIdByTableName(_repo.GetTableName<Role>(), cancellationToken);
+            var userDataId = await _repo.DataTypeIdByTableName(_repo.GetTableName<User>(), cancellationToken);
             var allowPairs = await _repo.ManyToManyJoinsPcc4(userDataId, userName, roleDataId, mmjDataId, dtDataId,
                 dtDataId, cancellationToken);
 

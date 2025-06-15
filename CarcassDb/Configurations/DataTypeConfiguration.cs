@@ -7,7 +7,7 @@ namespace CarcassDb.Configurations;
 
 public sealed class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
 {
-    private const int DtKeyMaxLength = 36;
+    //private const int DtKeyMaxLength = 36;
     private const int DtNameMaxLength = 100;
     private const int DtNameNominativeMaxLength = 100;
     private const int DtNameGenitiveMaxLength = 100;
@@ -19,14 +19,12 @@ public sealed class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
     public void Configure(EntityTypeBuilder<DataType> builder)
     {
         builder.HasKey(e => e.DtId);
-        builder.HasIndex(e => e.DtKey).IsUnique();
         builder.HasIndex(e => e.DtTable).IsUnique();
 
-        builder.Property(e => e.DtKey).IsRequired().HasMaxLength(DtKeyMaxLength);
+        builder.Property(e => e.DtTable).IsRequired().HasMaxLength(DtTableMaxLength);
         builder.Property(e => e.DtName).IsRequired().HasMaxLength(DtNameMaxLength);
         builder.Property(e => e.DtNameNominative).IsRequired().HasMaxLength(DtNameNominativeMaxLength);
         builder.Property(e => e.DtNameGenitive).IsRequired().HasMaxLength(DtNameGenitiveMaxLength);
-        builder.Property(e => e.DtTable).IsRequired().HasMaxLength(DtTableMaxLength);
         builder.Property(e => e.DtIdFieldName).HasMaxLength(DtIdFieldNameMaxLength);
         builder.Property(e => e.DtKeyFieldName).HasMaxLength(DtKeyFieldNameMaxLength);
         builder.Property(e => e.DtNameFieldName).HasMaxLength(DtNameFieldNameMaxLength);

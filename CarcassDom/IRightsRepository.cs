@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CarcassDom.Models;
-using CarcassMasterDataDom;
 using CarcassMasterDataDom.Models;
 using RepositoriesDom;
 
@@ -12,7 +11,7 @@ namespace CarcassDom;
 
 public interface IRightsRepository : IAbstractRepository
 {
-    Task<int> DataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey, CancellationToken cancellationToken = default);
+    Task<int> DataTypeIdByTableName(string tableName, CancellationToken cancellationToken = default);
     int UserMinLevel(IEnumerable<string> drPcs);
 
     Task<List<Tuple<int, int>>> UsersMinLevels(int roleDataId, int userDataId,

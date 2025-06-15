@@ -5,44 +5,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using CarcassDb;
 using CarcassDom;
-using CarcassMasterDataDom;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
+using RepositoriesDom;
 using SystemToolsShared.Errors;
 
 namespace CarcassRepositories;
 
-public sealed class UserRightsRepository : IUserRightsRepository
+public sealed class UserRightsRepository : AbstractRepository, IUserRightsRepository
 {
     private readonly CarcassDbContext _context;
     //private readonly IDataTypeKeys _dataTypeKeys;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public UserRightsRepository(CarcassDbContext context)
+    public UserRightsRepository(CarcassDbContext context) : base(context)
     {
         _context = context;
         //_dataTypeKeys = dataTypeKeys;
-    }
-
-    //public bool CheckUserRightToClaim(IEnumerable<Claim> userClaims, string claimName)
-    //{
-    //    return GetRoles(userClaims).Any(roleName => CheckRoleRightToClaim(roleName, claimName));
-    //}
-
-    //private bool CheckRoleRightToClaim(string roleName, string claimName)
-    //{
-    //    var roleDtId = GetDataTypeIdByKey(ECarcassDataTypeKeys.Role);
-    //    var appClaimDataTypeId = GetDataTypeIdByKey(ECarcassDataTypeKeys.AppClaim);
-
-    //    return _context.ManyToManyJoins.Any(w =>
-    //        w.PtId == roleDtId && w.PKey == roleName && w.CtId == appClaimDataTypeId && w.CKey == claimName);
-    //}
-
-    public async Task<int?> GetDataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey,
-        CancellationToken cancellationToken = default)
-    {
-        return await _context.DataTypes.Where(w => w.DtKey == dataTypeKey.ToDtKey()).Select(s => s.DtId)
-            .SingleOrDefaultAsync(cancellationToken);
     }
 
     public Task<bool> CheckRight(int parentDataTypeId, string parentKey, int childDataTypeId, string childKey,
@@ -69,7 +48,7 @@ public sealed class UserRightsRepository : IUserRightsRepository
 
     public Task<string?> KeyByTableName(string tableName, CancellationToken cancellationToken = default)
     {
-        return _context.DataTypes.Where(w => w.DtTable == tableName).Select(s => s.DtKey)
+        return _context.DataTypes.Where(w => w.DtTable == tableName).Select(s => s.DtTable)
             .SingleOrDefaultAsync(cancellationToken);
     }
 
@@ -97,6 +76,26 @@ public sealed class UserRightsRepository : IUserRightsRepository
             cancellationToken) && _context.ManyToManyJoins.Any(w =>
             w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataCrudRightDtId &&
             w.CKey == keyByTableName + '.' + Enum.GetName(typeof(ECrudOperationType), crudType));
+    }
+
+    //public bool CheckUserRightToClaim(IEnumerable<Claim> userClaims, string claimName)
+    //{
+    //    return GetRoles(userClaims).Any(roleName => CheckRoleRightToClaim(roleName, claimName));
+    //}
+
+    //private bool CheckRoleRightToClaim(string roleName, string claimName)
+    //{
+    //    var roleDtId = GetDataTypeIdByKey(ECarcassDataTypeKeys.Role);
+    //    var appClaimDataTypeId = GetDataTypeIdByKey(ECarcassDataTypeKeys.AppClaim);
+
+    //    return _context.ManyToManyJoins.Any(w =>
+    //        w.PtId == roleDtId && w.PKey == roleName && w.CtId == appClaimDataTypeId && w.CKey == claimName);
+    //}
+
+    public async Task<int?> GetDataTypeIdByKey(string? tableName, CancellationToken cancellationToken = default)
+    {
+        return await _context.DataTypes.Where(w => w.DtTable == tableName).Select(s => s.DtId)
+            .SingleOrDefaultAsync(cancellationToken);
     }
 
     private Task<bool> GetManyToManyJoinsPccOne(int parentTypeId, string parentKey, int childTypeId, int childTypeId2,

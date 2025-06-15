@@ -16,9 +16,10 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
         CancellationToken cancellationToken = default)
     {
         return ctx.DataTypes.Where(x => tableNames.Contains(x.DtTable)).Select(x =>
-            new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName, x.DtTable, x.DtIdFieldName, x.DtKeyFieldName,
-                x.DtNameFieldName, x.DtParentDataTypeId, x.DtManyToManyJoinParentDataTypeId,
-                x.DtManyToManyJoinChildDataTypeId)).ToListAsync(cancellationToken);
+                new DataTypeModelForRvs(x.DtId, x.DtTable, x.DtName, x.DtIdFieldName, x.DtKeyFieldName,
+                    x.DtNameFieldName,
+                    x.DtParentDataTypeId, x.DtManyToManyJoinParentDataTypeId, x.DtManyToManyJoinChildDataTypeId))
+            .ToListAsync(cancellationToken);
     }
 
     public abstract Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt,
@@ -29,8 +30,8 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
 
     protected Task<DataTypeModelForRvs?> GetDataType(int dtId, CancellationToken cancellationToken = default)
     {
-        return ctx.DataTypes.Where(x => x.DtId == dtId).Select(x => new DataTypeModelForRvs(x.DtId, x.DtKey, x.DtName,
-                x.DtTable, x.DtIdFieldName, x.DtKeyFieldName, x.DtNameFieldName, x.DtParentDataTypeId,
+        return ctx.DataTypes.Where(x => x.DtId == dtId).Select(x => new DataTypeModelForRvs(x.DtId, x.DtTable, x.DtName,
+                x.DtIdFieldName, x.DtKeyFieldName, x.DtNameFieldName, x.DtParentDataTypeId,
                 x.DtManyToManyJoinParentDataTypeId, x.DtManyToManyJoinChildDataTypeId))
             .SingleOrDefaultAsync(cancellationToken);
     }

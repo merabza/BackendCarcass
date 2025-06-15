@@ -4,15 +4,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using CarcassDb;
 using CarcassDb.Models;
-using CarcassMasterDataDom;
 using CarcassMasterDataDom.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RepositoriesDom;
 
 namespace CarcassIdentity;
 
-public sealed class IdentityRepository : IIdentityRepository
+public sealed class IdentityRepository : AbstractRepository, IIdentityRepository
 {
     private readonly CarcassDbContext _carcassContext;
 
@@ -20,7 +20,7 @@ public sealed class IdentityRepository : IIdentityRepository
     private readonly ILogger<IdentityRepository> _logger;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public IdentityRepository(CarcassDbContext ctx, ILogger<IdentityRepository> logger)
+    public IdentityRepository(CarcassDbContext ctx, ILogger<IdentityRepository> logger) : base(ctx)
     {
         _carcassContext = ctx;
         _logger = logger;
@@ -32,8 +32,8 @@ public sealed class IdentityRepository : IIdentityRepository
 
     public IQueryable<ManyToManyJoin> RolesByUsers =>
         _carcassContext.ManyToManyJoins.Include(i => i.ParentDataTypeNavigation).Include(i => i.ChildDataTypeNavigation)
-            .Where(w => w.ParentDataTypeNavigation.DtKey == ECarcassDataTypeKeys.User.ToDtKey() &&
-                        w.ChildDataTypeNavigation.DtKey == ECarcassDataTypeKeys.Role.ToDtKey());
+            .Where(w => w.ParentDataTypeNavigation.DtTable == GetTableName<User>() &&
+                        w.ChildDataTypeNavigation.DtTable == GetTableName<Role>());
 
     public async ValueTask<IdentityResult> CreateUserAsync(AppUser appUser,
         CancellationToken cancellationToken = default)

@@ -2,9 +2,8 @@
 
 public record DataTypeModelForRvs(
     int DtId,
-    string DtKey,
-    string DtName,
     string DtTable,
+    string DtName,
     string? DtIdFieldName,
     string? DtKeyFieldName,
     string? DtNameFieldName,

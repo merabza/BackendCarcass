@@ -8,7 +8,6 @@ using CarcassDb.Models;
 using CarcassDom;
 using CarcassDom.Models;
 using CarcassMappers;
-using CarcassMasterDataDom;
 using CarcassMasterDataDom.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -30,9 +29,9 @@ public sealed class RightsRepository : AbstractRepository, IRightsRepository
         _logger = logger;
     }
 
-    public Task<int> DataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey, CancellationToken cancellationToken = default)
+    public Task<int> DataTypeIdByTableName(string? tableName, CancellationToken cancellationToken = default)
     {
-        return _carcassContext.DataTypes.Where(w => w.DtKey == dataTypeKey.ToDtKey()).Select(s => s.DtId)
+        return _carcassContext.DataTypes.Where(w => w.DtTable == tableName).Select(s => s.DtId)
             .SingleOrDefaultAsync(cancellationToken);
     }
 
@@ -72,11 +71,11 @@ public sealed class RightsRepository : AbstractRepository, IRightsRepository
         string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
     {
         var result = from dt in _carcassContext.DataTypes
-            join pc in ManyToManyJoinsPc(dtDataId, dataTypeKey, dtDataId) on dt.DtKey equals pc
+            join pc in ManyToManyJoinsPc(dtDataId, dataTypeKey, dtDataId) on dt.DtTable equals pc
             join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtKey equals pcc2
-            select new DataTypeModelForRvs(dt.DtId, dt.DtKey, dt.DtName, dt.DtTable, dt.DtIdFieldName,
-                dt.DtKeyFieldName, dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
+                dt.DtTable equals pcc2
+            select new DataTypeModelForRvs(dt.DtId, dt.DtTable, dt.DtName, dt.DtIdFieldName, dt.DtKeyFieldName,
+                dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
                 dt.DtManyToManyJoinChildDataTypeId);
         return result.ToListAsync(cancellationToken);
     }
@@ -85,12 +84,12 @@ public sealed class RightsRepository : AbstractRepository, IRightsRepository
         int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
     {
         var result = from dt in _carcassContext.DataTypes
-            join dr in _carcassContext.ManyToManyJoins on new { a = dt.DtKey, b = dtDataId, c = dtDataId } equals
+            join dr in _carcassContext.ManyToManyJoins on new { a = dt.DtTable, b = dtDataId, c = dtDataId } equals
                 new { a = dr.CKey, b = dr.PtId, c = dr.CtId }
             join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtKey equals pcc3
-            select new DataTypeModelForRvs(dt.DtId, dt.DtKey, dt.DtName, dt.DtTable, dt.DtIdFieldName,
-                dt.DtKeyFieldName, dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
+                dt.DtTable equals pcc3
+            select new DataTypeModelForRvs(dt.DtId, dt.DtTable, dt.DtName, dt.DtIdFieldName, dt.DtKeyFieldName,
+                dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
                 dt.DtManyToManyJoinChildDataTypeId);
         return result.ToListAsync(cancellationToken);
     }
@@ -99,11 +98,11 @@ public sealed class RightsRepository : AbstractRepository, IRightsRepository
         int userDataId, string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
     {
         var result = from dt in _carcassContext.DataTypes
-            join pc in ManyToManyJoinsPc(dtDataId, parentTypeKey, dtDataId) on dt.DtKey equals pc
+            join pc in ManyToManyJoinsPc(dtDataId, parentTypeKey, dtDataId) on dt.DtTable equals pc
             join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtKey equals pcc3
-            select new DataTypeModelForRvs(dt.DtId, dt.DtKey, dt.DtName, dt.DtTable, dt.DtIdFieldName,
-                dt.DtKeyFieldName, dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
+                dt.DtTable equals pcc3
+            select new DataTypeModelForRvs(dt.DtId, dt.DtTable, dt.DtName, dt.DtIdFieldName, dt.DtKeyFieldName,
+                dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
                 dt.DtManyToManyJoinChildDataTypeId);
         return result.ToListAsync(cancellationToken);
     }
@@ -112,11 +111,11 @@ public sealed class RightsRepository : AbstractRepository, IRightsRepository
         int userDataId, string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
     {
         var result = from dt in _carcassContext.DataTypes
-            join cp in ManyToManyJoinsCp(dtDataId, parentTypeKey, dtDataId) on dt.DtKey equals cp
+            join cp in ManyToManyJoinsCp(dtDataId, parentTypeKey, dtDataId) on dt.DtTable equals cp
             join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtKey equals pcc2
-            select new DataTypeModelForRvs(dt.DtId, dt.DtKey, dt.DtName, dt.DtTable, dt.DtIdFieldName,
-                dt.DtKeyFieldName, dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
+                dt.DtTable equals pcc2
+            select new DataTypeModelForRvs(dt.DtId, dt.DtTable, dt.DtName, dt.DtIdFieldName, dt.DtKeyFieldName,
+                dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
                 dt.DtManyToManyJoinChildDataTypeId);
         return result.ToListAsync(cancellationToken);
     }
@@ -127,7 +126,7 @@ public sealed class RightsRepository : AbstractRepository, IRightsRepository
         var normViewResult = (from dr in _carcassContext.ManyToManyJoins
             join dt in _carcassContext.DataTypes on dr.CtId equals dt.DtId
             join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtKey equals pcc3
+                dt.DtTable equals pcc3
             where dr.PtId == dataTypeId && dr.PKey == dataKey
             select new TypeDataModel(dr.CtId, dr.CKey)).Distinct();
         return normViewResult.ToListAsync(cancellationToken);
@@ -139,7 +138,7 @@ public sealed class RightsRepository : AbstractRepository, IRightsRepository
         var result = (from dr in _carcassContext.ManyToManyJoins
             join dt in _carcassContext.DataTypes on dr.PtId equals dt.DtId
             join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtKey equals pcc2
+                dt.DtTable equals pcc2
             where dr.CtId == dataTypeId && dr.CKey == dataKey
             select new TypeDataModel(dr.PtId, dr.PKey)).Distinct();
         return result.ToListAsync(cancellationToken);
@@ -147,7 +146,7 @@ public sealed class RightsRepository : AbstractRepository, IRightsRepository
 
     public Task<string?> DataTypeKeyById(int dtId, CancellationToken cancellationToken = default)
     {
-        return _carcassContext.DataTypes.Where(w => w.DtId == dtId).Select(s => s.DtKey)
+        return _carcassContext.DataTypes.Where(w => w.DtId == dtId).Select(s => s.DtTable)
             .SingleOrDefaultAsync(cancellationToken);
     }
 

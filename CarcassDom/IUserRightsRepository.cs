@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassMasterDataDom;
 using OneOf;
+using RepositoriesDom;
 using SystemToolsShared.Errors;
 
 namespace CarcassDom;
 
-public interface IUserRightsRepository
+public interface IUserRightsRepository : IAbstractRepository
 {
     //Task<bool> CheckUserRightToClaim(IEnumerable<Claim> userClaims, string claimName);
-    Task<int?> GetDataTypeIdByKey(ECarcassDataTypeKeys dataTypeKey, CancellationToken cancellationToken = default);
+    Task<int?> GetDataTypeIdByKey(string? tableName, CancellationToken cancellationToken = default);
 
     Task<bool> CheckRight(int parentDataTypeId, string parentKey, int childDataTypeId, string childKey,
         CancellationToken cancellationToken = default);

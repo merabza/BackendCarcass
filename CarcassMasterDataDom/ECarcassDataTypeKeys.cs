@@ -1,14 +1,14 @@
-﻿namespace CarcassMasterDataDom;
+﻿//namespace CarcassMasterDataDom;
 
-public enum ECarcassDataTypeKeys
-{
-    AppClaim,
-    CrudRightType,
-    DataType,
-    DataTypeToDataType,
-    DataTypeToCrudType,
-    MenuGroup,
-    MenuItm,
-    Role,
-    User
-}
+//public enum ECarcassDataTypeKeys
+//{
+//    AppClaim,
+//    CrudRightType,
+//    DataType,
+//    DataTypeToDataType,
+//    DataTypeToCrudType,
+//    MenuGroup,
+//    MenuItm,
+//    Role,
+//    User
+//}
