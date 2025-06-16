@@ -23,16 +23,6 @@ public /*open*/
         CarcassRepo = carcassRepo;
     }
 
-    //private static JsonSerializerSettings SerializerSettings =>
-    //    new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-
-    //protected საჭიროა XxxNewDataTypesSeeder-ში
-    // ReSharper disable once MemberCanBePrivate.Global
-    //protected static string SerializeGrid(GridModel gridModel)
-    //{
-    //    return JsonConvert.SerializeObject(gridModel, SerializerSettings);
-    //}
-
     protected override bool AdditionalCheck(List<DataTypeSeederModel> jsonData, List<DataType> savedData)
     {
         DataSeederTempData.Instance.SaveIntIdKeys<DataType>(savedData.ToDictionary(k => k.Key, v => v.Id));
@@ -198,103 +188,6 @@ public /*open*/
         };
 
         return [.. newDataTypes];
-    }
-
-    //private GridModel CreateDataTypesGridModel()
-    //{
-    //    var gridModel = GetKeyNameGridModel(nameof(DataType.DtId), nameof(DataType.DtTable), nameof(DataType.DtName));
-    //    var cells = new[]
-    //    {
-    //        GetTextBoxCell(nameof(DataType.DtNameNominative).UnCapitalize(), "სახელობითი"),
-    //        GetTextBoxCell(nameof(DataType.DtNameGenitive).UnCapitalize(), "მიცემითი"),
-    //        GetTextBoxCell(nameof(DataType.DtTable).UnCapitalize(), "ცხრილი"),
-    //        GetTextBoxCell(nameof(DataType.DtIdFieldName).UnCapitalize(), "იდენტიფიკატორი ველის სახელი"),
-    //        GetTextBoxCell(nameof(DataType.DtKeyFieldName).UnCapitalize(), "კოდი ველის სახელი"),
-    //        GetTextBoxCell(nameof(DataType.DtNameFieldName).UnCapitalize(), "სახელი ველის სახელი"),
-    //        GetMdComboCell(nameof(DataType.DtParentDataTypeId).UnCapitalize(), "უფლებების მშობელი",
-    //            CarcassRepo.GetTableName<DataType>())
-    //    };
-    //    gridModel.Cells.AddRange(cells);
-    //    return gridModel;
-    //}
-
-    //private GridModel CreateMenuGridModel()
-    //{
-    //    var gridModel =
-    //        GetKeyNameSortIdGridModel(nameof(MenuItm.MenId), nameof(MenuItm.MenKey), nameof(MenuItm.MenName));
-    //    var cells = new[]
-    //    {
-    //        GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
-    //        GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი",
-    //            CarcassRepo.GetTableName<MenuGroup>()),
-    //        GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
-    //        GetTextBoxCell(nameof(MenuItm.MenIconName).UnCapitalize(), "ხატულა")
-    //    };
-    //    gridModel.Cells.AddRange(cells);
-    //    return gridModel;
-    //}
-
-    //private static GridModel CreateMenuGroupsGridModel()
-    //{
-    //    var gridModel = GetKeyNameSortIdGridModel(nameof(MenuGroup.MengId), nameof(MenuGroup.MengKey),
-    //        nameof(MenuGroup.MengName));
-    //    gridModel.Cells.Add(GetTextBoxCell(nameof(MenuGroup.MengIconName).UnCapitalize(), "ხატულა"));
-    //    return gridModel;
-    //}
-
-    //private static GridModel CreateRolesGridModel()
-    //{
-    //    var gridModel = GetKeyNameGridModel(nameof(Role.RolId), nameof(Role.RolKey), nameof(Role.RolName));
-    //    gridModel.Cells.Add(GetIntegerCell(nameof(Role.RolLevel).UnCapitalize(), "დონე"));
-    //    return gridModel;
-    //}
-
-    //private static GridModel CreateUsersGridModel()
-    //{
-    //    var gridModel = new GridModel();
-    //    var cells = new[]
-    //    {
-    //        GetAutoNumberColumn("usrId"),
-    //        GetTextBoxCell(nameof(User.UserName).UnCapitalize(), "მომხმარებლის სახელი"),
-    //        GetTextBoxCell(nameof(User.Email).UnCapitalize(), "ელექტრონული ფოსტის მისამართი"),
-    //        GetTextBoxCell(nameof(User.FirstName).UnCapitalize(), "სახელი"),
-    //        GetTextBoxCell(nameof(User.LastName).UnCapitalize(), "გვარი")
-    //    };
-    //    gridModel.Cells = [.. cells];
-    //    return gridModel;
-    //}
-
-    //protected static GridModel GetKeyNameSortIdGridModel(string idFieldName, string keyFieldName, string nameFieldName)
-    //{
-    //    var gridModel = GetKeyNameGridModel(idFieldName, keyFieldName, nameFieldName);
-    //    gridModel.Cells.Add(GetSortIdCell());
-    //    return gridModel;
-    //}
-
-    //protected static GridModel GetKeyNameGridModel(string idFieldName, string keyFieldName, string nameFieldName)
-    //{
-    //    var gridModel = new GridModel();
-    //    var cells = new[]
-    //    {
-    //        GetAutoNumberColumn(idFieldName), GetKeyColumn(keyFieldName), GetNameColumn(nameFieldName)
-    //    };
-    //    gridModel.Cells = [.. cells];
-    //    return gridModel;
-    //}
-
-    protected static Cell GetAutoNumberColumn(string fieldName)
-    {
-        return Cell.Integer(fieldName, null, "", "", false).Default();
-    }
-
-    protected static Cell GetKeyColumn(string fieldName)
-    {
-        return GetTextBoxCell(fieldName, "კოდი");
-    }
-
-    protected static Cell GetNameColumn(string fieldName)
-    {
-        return GetTextBoxCell(fieldName, "სახელი");
     }
 
     protected static Cell GetTextBoxCell(string fieldName, string caption, bool allowNull = false)
