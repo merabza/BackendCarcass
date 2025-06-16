@@ -7,7 +7,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace CarcassDb.Fabrics;
 
-public static class DataTypeFabric
+public static class DataTypeFactory
 {
     public static DataType CreatePseudo(string dtName, string dtNameNominative, string dtNameGenitive,
         string table1Name, string table2Name)
