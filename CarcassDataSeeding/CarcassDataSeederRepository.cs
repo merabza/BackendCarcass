@@ -4,17 +4,18 @@ using System.Linq;
 using CarcassDb;
 using CarcassDb.Models;
 using Microsoft.Extensions.Logging;
+using RepositoriesDom;
 using SystemToolsShared;
 
 namespace CarcassDataSeeding;
 
-public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
+public /*open*/ class CarcassDataSeederRepository : AbstractRepository, ICarcassDataSeederRepository
 {
     private readonly CarcassDbContext _context;
     private readonly ILogger<CarcassDataSeederRepository> _logger;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CarcassDataSeederRepository(CarcassDbContext ctx, ILogger<CarcassDataSeederRepository> logger)
+    public CarcassDataSeederRepository(CarcassDbContext ctx, ILogger<CarcassDataSeederRepository> logger) : base(ctx)
     {
         _context = ctx;
         _logger = logger;
@@ -23,20 +24,6 @@ public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
     public List<ManyToManyJoin> GetManyToManyJoins(int parentDataTypeId, int childDataTypeId)
     {
         return [.. _context.ManyToManyJoins.Where(w => w.PtId == parentDataTypeId && w.CtId == childDataTypeId)];
-    }
-
-    private bool SaveChanges()
-    {
-        try
-        {
-            _context.SaveChanges();
-            return true;
-        }
-        catch (Exception e)
-        {
-            StShared.WriteException(e, "Error when saving changes", true, _logger, false);
-            return false;
-        }
     }
 
     public bool SetDtParentDataTypes(Tuple<int, int>[] dtdt)
@@ -92,6 +79,20 @@ public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
         catch (Exception e)
         {
             StShared.WriteException(e, "Error when RemoveRedundantDataTypesByTableNames", true, _logger, false);
+            return false;
+        }
+    }
+
+    private bool SaveChanges()
+    {
+        try
+        {
+            _context.SaveChanges();
+            return true;
+        }
+        catch (Exception e)
+        {
+            StShared.WriteException(e, "Error when saving changes", true, _logger, false);
             return false;
         }
     }

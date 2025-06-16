@@ -40,6 +40,7 @@ public /*open*/
     protected override List<MenuItm> CreateListByRules()
     {
         var tempData = DataSeederTempData.Instance;
+        const string mdList = nameof(mdList);
 
         var menuItems = new MenuItm[]
         {
@@ -49,45 +50,45 @@ public /*open*/
                 MenKey = "DataTypes",
                 MenName = "DataTypes - მონაცემთა ტიპები",
                 MenValue = DataSeederRepo.GetTableName<DataType>(),
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 7,
-                MenLinkKey = "mdList"
+                MenLinkKey = mdList
             },
             new()
             {
                 MenKey = "Users",
                 MenName = "მომხმარებლები",
                 MenValue = DataSeederRepo.GetTableName<User>(),
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 17,
-                MenLinkKey = "mdList"
+                MenLinkKey = mdList
             },
             new()
             {
                 MenKey = "MenuEditor",
                 MenName = "MenuEditor - მენიუს რედაქტორი",
                 MenValue = DataSeederRepo.GetTableName<MenuItm>(),
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 4,
-                MenLinkKey = "mdList"
+                MenLinkKey = mdList
             },
             new()
             {
                 MenKey = "MenuGroups",
                 MenName = "MenuGroups - მენიუს ჯგუფები",
                 MenValue = DataSeederRepo.GetTableName<MenuGroup>(),
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 4,
-                MenLinkKey = "mdList"
+                MenLinkKey = mdList
             },
             new()
             {
                 MenKey = "Roles",
                 MenName = "როლები",
                 MenValue = DataSeederRepo.GetTableName<Role>(),
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 0,
-                MenLinkKey = "mdList"
+                MenLinkKey = mdList
             },
 
             //carcass
@@ -95,7 +96,7 @@ public /*open*/
             {
                 MenKey = "Rights",
                 MenName = "უფლებები",
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("Main"),
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.Main),
                 SortId = 0,
                 MenLinkKey = "Rights",
                 MenIconName = "users-cog"
@@ -105,9 +106,9 @@ public /*open*/
                 MenKey = "CrudRightTypes",
                 MenName = "მონაცემების ცვლილებაზე უფლებების ტიპები",
                 MenValue = DataSeederRepo.GetTableName<CrudRightType>(),
-                MenGroupId = tempData.GetIntIdByKey<MenuGroup>("MasterData"),
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 0,
-                MenLinkKey = "mdList"
+                MenLinkKey = mdList
             }
         };
         return menuItems.ToList();

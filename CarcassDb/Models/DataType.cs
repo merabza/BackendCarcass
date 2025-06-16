@@ -1,6 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using CarcassMasterDataDom;
+using DatabaseToolsShared;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using CarcassMasterDataDom;
+using CarcassMasterDataDom.CellModels;
+using SystemToolsShared;
 
 namespace CarcassDb.Models;
 
@@ -115,4 +120,5 @@ public sealed class DataType : IDataType, IMyEquatable
                Equals(DtNameFieldName, other.DtNameFieldName) && Equals(DtParentDataTypeId, other.DtParentDataTypeId) &&
                Equals(DtGridRulesJson, other.DtGridRulesJson);
     }
+
 }

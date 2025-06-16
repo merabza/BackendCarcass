@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using CarcassDataSeeding.Models;
+using CarcassDb.Fabrics;
 using CarcassDb.Models;
-using CarcassMasterDataDom;
 using CarcassMasterDataDom.CellModels;
 using DatabaseToolsShared;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using SystemToolsShared;
 
 namespace CarcassDataSeeding.Seeders;
@@ -25,15 +23,15 @@ public /*open*/
         CarcassRepo = carcassRepo;
     }
 
-    private static JsonSerializerSettings SerializerSettings =>
-        new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    //private static JsonSerializerSettings SerializerSettings =>
+    //    new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
     //protected საჭიროა XxxNewDataTypesSeeder-ში
     // ReSharper disable once MemberCanBePrivate.Global
-    protected static string SerializeGrid(GridModel gridModel)
-    {
-        return JsonConvert.SerializeObject(gridModel, SerializerSettings);
-    }
+    //protected static string SerializeGrid(GridModel gridModel)
+    //{
+    //    return JsonConvert.SerializeObject(gridModel, SerializerSettings);
+    //}
 
     protected override bool AdditionalCheck(List<DataTypeSeederModel> jsonData, List<DataType> savedData)
     {
@@ -45,11 +43,10 @@ public /*open*/
     {
         return dataTypesSeedData.Select(s => new DataType
         {
-            DtKey = s.DtKey,
+            DtTable = s.DtTable,
             DtName = s.DtName,
             DtNameNominative = s.DtNameNominative,
             DtNameGenitive = s.DtNameGenitive,
-            DtTable = s.DtTable,
             DtIdFieldName = s.DtIdFieldName,
             DtKeyFieldName = s.DtKeyFieldName,
             DtNameFieldName = s.DtNameFieldName,
@@ -66,7 +63,7 @@ public /*open*/
         //DtParentDataTypeIdDtKey => DtParentDataTypeId
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtParentDataTypeIdDtKey != null))
         {
-            var oneRec = dataTypesList.SingleOrDefault(s => s.DtKey == dataTypeSeederModel.DtKey);
+            var oneRec = dataTypesList.SingleOrDefault(s => s.DtTable == dataTypeSeederModel.DtTable);
             if (oneRec == null) continue;
 
             oneRec.DtParentDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtParentDataTypeIdDtKey!);
@@ -76,7 +73,7 @@ public /*open*/
         //DtManyToManyJoinParentDataTypeKey => DtManyToManyJoinParentDataTypeId
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtManyToManyJoinParentDataTypeKey != null))
         {
-            var oneRec = dataTypesList.SingleOrDefault(s => s.DtKey == dataTypeSeederModel.DtKey);
+            var oneRec = dataTypesList.SingleOrDefault(s => s.DtTable == dataTypeSeederModel.DtTable);
             if (oneRec == null) continue;
 
             oneRec.DtManyToManyJoinParentDataTypeId =
@@ -87,7 +84,7 @@ public /*open*/
         //DtManyToManyJoinChildDataTypeKey => DtManyToManyJoinChildDataTypeId
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtManyToManyJoinChildDataTypeKey != null))
         {
-            var oneRec = dataTypesList.SingleOrDefault(s => s.DtKey == dataTypeSeederModel.DtKey);
+            var oneRec = dataTypesList.SingleOrDefault(s => s.DtTable == dataTypeSeederModel.DtTable);
             if (oneRec == null) continue;
 
             oneRec.DtManyToManyJoinChildDataTypeId =
@@ -107,21 +104,22 @@ public /*open*/
     protected virtual bool SetParentDataTypes()
     {
         var tempData = DataSeederTempData.Instance;
-
-        var dataTypeId = tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataType.ToDtKey());
+        var dataTypeTableName = CarcassRepo.GetTableName<DataType>();
+        var crudRightTypeTableName = CarcassRepo.GetTableName<CrudRightType>();
+        var dataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeTableName);
 
         var dtdt = new Tuple<int, int>[]
         {
-            new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuItm.ToDtKey()),
-                tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.MenuGroup.ToDtKey()))
+            new(tempData.GetIntIdByKey<DataType>(CarcassRepo.GetTableName<MenuItm>()),
+                tempData.GetIntIdByKey<DataType>(CarcassRepo.GetTableName<MenuGroup>()))
         };
 
         var dtdtdt = new Tuple<int, int, int>[]
         {
-            new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey()), dataTypeId,
+            new(tempData.GetIntIdByKey<DataType>($"{dataTypeTableName}{dataTypeTableName}"), dataTypeId,
                 dataTypeId),
-            new(tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey()), dataTypeId,
-                tempData.GetIntIdByKey<DataType>(ECarcassDataTypeKeys.CrudRightType.ToDtKey()))
+            new(tempData.GetIntIdByKey<DataType>($"{dataTypeTableName}{crudRightTypeTableName}"), dataTypeId,
+                tempData.GetIntIdByKey<DataType>(crudRightTypeTableName))
         };
 
         return CarcassRepo.SetDtParentDataTypes(dtdt) && CarcassRepo.SetManyToManyJoinParentChildDataTypes(dtdtdt);
@@ -129,204 +127,160 @@ public /*open*/
 
     protected override List<DataType> CreateListByRules()
     {
-        var appClaimDKey = ECarcassDataTypeKeys.AppClaim.ToDtKey();
-        var crudRightTypeDKey = ECarcassDataTypeKeys.CrudRightType.ToDtKey();
-        var newDataTypes = new DataType[]
+        //var appClaimDKey = ECarcassDataTypeKeys.AppClaim.ToDtKey();
+        //var crudRightTypeDKey = ECarcassDataTypeKeys.CrudRightType.ToDtKey();
+        var newDataTypes = new[]
         {
             //carcass used
+
             //AppClaim
-            new()
-            {
-                DtKey = appClaimDKey,
-                DtName = "სპეციალური უფლებები",
-                DtNameNominative = "სპეციალური უფლება",
-                DtNameGenitive = "სპეციალური უფლების",
-                DtTable = DataSeederRepo.GetTableName<AppClaim>(),
-                DtIdFieldName = nameof(AppClaim.AclId).UnCapitalize(),
-                DtKeyFieldName = nameof(AppClaim.AclKey).UnCapitalize(),
-                DtNameFieldName = nameof(AppClaim.AclName).UnCapitalize(),
-                DtGridRulesJson = SerializeGrid(GetKeyNameGridModel(appClaimDKey))
-            },
+            DataTypeFabric.Create("სპეციალური უფლებები", "სპეციალური უფლება", "სპეციალური უფლების",
+                CarcassRepo.GetTableName<AppClaim>(), nameof(AppClaim.AclId).UnCapitalize(),
+                nameof(AppClaim.AclKey).UnCapitalize(), nameof(AppClaim.AclName).UnCapitalize()),
+
             //DataType
-            new()
-            {
-                DtKey = ECarcassDataTypeKeys.DataType.ToDtKey(),
-                DtName = "მონაცემთა ტიპები",
-                DtNameNominative = "მონაცემთა ტიპი",
-                DtNameGenitive = "მონაცემთა ტიპის",
-                DtTable = DataSeederRepo.GetTableName<DataType>(),
-                DtIdFieldName = nameof(DataType.DtId).UnCapitalize(),
-                DtKeyFieldName = nameof(DataType.DtKey).UnCapitalize(),
-                DtNameFieldName = nameof(DataType.DtName).UnCapitalize(),
-                DtGridRulesJson = SerializeGrid(CreateDataTypesGridModel())
-            },
+            DataTypeFabric.Create("მონაცემთა ტიპები", "მონაცემთა ტიპი", "მონაცემთა ტიპის",
+                CarcassRepo.GetTableName<DataType>(), nameof(DataType.DtId).UnCapitalize(),
+                nameof(DataType.DtTable).UnCapitalize(), nameof(DataType.DtName).UnCapitalize(),
+                GetTextBoxCell(nameof(DataType.DtNameNominative).UnCapitalize(), "სახელობითი"),
+                GetTextBoxCell(nameof(DataType.DtNameGenitive).UnCapitalize(), "მიცემითი"),
+                GetTextBoxCell(nameof(DataType.DtTable).UnCapitalize(), "ცხრილი"),
+                GetTextBoxCell(nameof(DataType.DtIdFieldName).UnCapitalize(), "იდენტიფიკატორი ველის სახელი"),
+                GetTextBoxCell(nameof(DataType.DtKeyFieldName).UnCapitalize(), "კოდი ველის სახელი"),
+                GetTextBoxCell(nameof(DataType.DtNameFieldName).UnCapitalize(), "სახელი ველის სახელი"),
+                GetMdComboCell(nameof(DataType.DtParentDataTypeId).UnCapitalize(), "უფლებების მშობელი",
+                    CarcassRepo.GetTableName<DataType>())),
+
             //dataTypeToCrudTypeModel
-            new()
-            {
-                DtKey = ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey(),
-                DtName = "მონაცემების ცვლილებაზე უფლებები",
-                DtNameNominative = "მონაცემების ცვლილებაზე უფლება",
-                DtNameGenitive = "მონაცემების ცვლილებაზე უფლების",
-                DtTable = "dataTypesToCrudTypes"
-            },
+            DataTypeFabric.CreatePseudo("მონაცემების ცვლილებაზე უფლებები", "მონაცემების ცვლილებაზე უფლება",
+                "მონაცემების ცვლილებაზე უფლების", CarcassRepo.GetTableName<DataType>(),
+                CarcassRepo.GetTableName<CrudRightType>()),
+
             //CrudRightType
-            new()
-            {
-                DtKey = crudRightTypeDKey,
-                DtName = "მონაცემების ცვლილებაზე უფლებების ტიპები",
-                DtNameNominative = "მონაცემების ცვლილებაზე უფლების ტიპი",
-                DtNameGenitive = "მონაცემების ცვლილებაზე უფლების ტიპის",
-                DtTable = DataSeederRepo.GetTableName<CrudRightType>(),
-                DtIdFieldName = nameof(CrudRightType.CrtId).UnCapitalize(),
-                DtKeyFieldName = nameof(CrudRightType.CrtKey).UnCapitalize(),
-                DtNameFieldName = nameof(CrudRightType.CrtName).UnCapitalize(),
-                DtGridRulesJson = SerializeGrid(GetKeyNameGridModel(crudRightTypeDKey))
-            },
+            DataTypeFabric.Create("მონაცემების ცვლილებაზე უფლებების ტიპები", "მონაცემების ცვლილებაზე უფლების ტიპი",
+                "მონაცემების ცვლილებაზე უფლების ტიპის", CarcassRepo.GetTableName<CrudRightType>(),
+                nameof(CrudRightType.CrtId).UnCapitalize(), nameof(CrudRightType.CrtKey).UnCapitalize(),
+                nameof(CrudRightType.CrtName).UnCapitalize()),
+
             //DataTypeToDataTypeModel
-            new()
-            {
-                DtKey = ECarcassDataTypeKeys.DataTypeToDataType.ToDtKey(),
-                DtName = "უფლებები",
-                DtNameNominative = "უფლება",
-                DtNameGenitive = "უფლების",
-                DtTable = "dataTypesToDataTypes"
-            },
+            DataTypeFabric.CreatePseudo("უფლებები", "უფლება", "უფლების", CarcassRepo.GetTableName<DataType>(),
+                CarcassRepo.GetTableName<DataType>()),
+
             //MenuGroup
-            new()
-            {
-                DtKey = ECarcassDataTypeKeys.MenuGroup.ToDtKey(),
-                DtName = "მენიუს ჯგუფები",
-                DtNameNominative = "მენიუს ჯგუფი",
-                DtNameGenitive = "მენიუს ჯგუფის",
-                DtTable = DataSeederRepo.GetTableName<MenuGroup>(),
-                DtIdFieldName = nameof(MenuGroup.MengId).UnCapitalize(),
-                DtKeyFieldName = nameof(MenuGroup.MengKey).UnCapitalize(),
-                DtNameFieldName = nameof(MenuGroup.MengName).UnCapitalize(),
-                DtGridRulesJson = SerializeGrid(CreateMenuGroupsGridModel())
-            },
+            DataTypeFabric.Create("მენიუს ჯგუფები", "მენიუს ჯგუფი", "მენიუს ჯგუფის",
+                CarcassRepo.GetTableName<MenuGroup>(), nameof(MenuGroup.MengId).UnCapitalize(),
+                nameof(MenuGroup.MengKey).UnCapitalize(), nameof(MenuGroup.MengName).UnCapitalize(), GetSortIdCell(),
+                GetTextBoxCell(nameof(MenuGroup.MengIconName).UnCapitalize(), "ხატულა")),
+
             //MenuItm
-            new()
-            {
-                DtKey = ECarcassDataTypeKeys.MenuItm.ToDtKey(),
-                DtName = "მენიუ",
-                DtNameNominative = "მენიუ",
-                DtNameGenitive = "მენიუს",
-                DtTable = DataSeederRepo.GetTableName<MenuItm>(),
-                DtIdFieldName = nameof(MenuItm.MenId).UnCapitalize(),
-                DtKeyFieldName = nameof(MenuItm.MenKey).UnCapitalize(),
-                DtNameFieldName = nameof(MenuItm.MenName).UnCapitalize(),
-                DtGridRulesJson = SerializeGrid(CreateMenuGridModel())
-            },
+            DataTypeFabric.Create("მენიუ", "მენიუ", "მენიუს", CarcassRepo.GetTableName<MenuItm>(),
+                nameof(MenuItm.MenId).UnCapitalize(), nameof(MenuItm.MenKey).UnCapitalize(),
+                nameof(MenuItm.MenName).UnCapitalize(), GetSortIdCell(),
+                GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
+                GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი",
+                    CarcassRepo.GetTableName<MenuGroup>()),
+                GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
+                GetTextBoxCell(nameof(MenuItm.MenIconName).UnCapitalize(), "ხატულა")),
+
             //Role
-            new()
-            {
-                DtKey = ECarcassDataTypeKeys.Role.ToDtKey(),
-                DtName = "როლები",
-                DtNameNominative = "როლი",
-                DtNameGenitive = "როლის",
-                DtTable = DataSeederRepo.GetTableName<Role>(),
-                DtIdFieldName = nameof(Role.RolId).UnCapitalize(),
-                DtKeyFieldName = nameof(Role.RolKey).UnCapitalize(),
-                DtNameFieldName = nameof(Role.RolName).UnCapitalize(),
-                DtGridRulesJson = SerializeGrid(CreateRolesGridModel())
-            },
+            DataTypeFabric.Create("როლები", "როლი", "როლის", CarcassRepo.GetTableName<Role>(),
+                nameof(Role.RolId).UnCapitalize(), nameof(Role.RolKey).UnCapitalize(),
+                nameof(Role.RolName).UnCapitalize(), GetIntegerCell(nameof(Role.RolLevel).UnCapitalize(), "დონე")),
+
             //User
-            new()
-            {
-                DtKey = ECarcassDataTypeKeys.User.ToDtKey(),
-                DtName = "მომხმარებლები",
-                DtNameNominative = "მომხმარებელი",
-                DtNameGenitive = "მომხმარებლის",
-                DtTable = DataSeederRepo.GetTableName<User>(),
-                DtIdFieldName = nameof(User.UsrId).UnCapitalize(),
-                DtKeyFieldName = nameof(User.NormalizedUserName).UnCapitalize(),
-                DtNameFieldName = nameof(User.FullName).UnCapitalize(),
-                DtGridRulesJson = SerializeGrid(CreateUsersGridModel())
-            }
+            DataTypeFabric.Create("მომხმარებლები", "მომხმარებელი", "მომხმარებლის", CarcassRepo.GetTableName<User>(),
+                nameof(User.UsrId).UnCapitalize(), nameof(User.NormalizedUserName).UnCapitalize(),
+                nameof(User.FullName).UnCapitalize(),
+                GetTextBoxCell(nameof(User.UserName).UnCapitalize(), "მომხმარებლის სახელი"),
+                GetTextBoxCell(nameof(User.Email).UnCapitalize(), "ელექტრონული ფოსტის მისამართი"),
+                GetTextBoxCell(nameof(User.FirstName).UnCapitalize(), "სახელი"),
+                GetTextBoxCell(nameof(User.LastName).UnCapitalize(), "გვარი"))
         };
 
         return [.. newDataTypes];
     }
 
-    private GridModel CreateDataTypesGridModel()
-    {
-        var gridModel = GetKeyNameGridModel(ECarcassDataTypeKeys.DataType.ToDtKey());
-        var cells = new[]
-        {
-            GetTextBoxCell(nameof(DataType.DtNameNominative).UnCapitalize(), "სახელობითი"),
-            GetTextBoxCell(nameof(DataType.DtNameGenitive).UnCapitalize(), "მიცემითი"),
-            GetTextBoxCell(nameof(DataType.DtTable).UnCapitalize(), "ცხრილი"),
-            GetTextBoxCell(nameof(DataType.DtIdFieldName).UnCapitalize(), "იდენტიფიკატორი ველის სახელი"),
-            GetTextBoxCell(nameof(DataType.DtKeyFieldName).UnCapitalize(), "კოდი ველის სახელი"),
-            GetTextBoxCell(nameof(DataType.DtNameFieldName).UnCapitalize(), "სახელი ველის სახელი"),
-            GetMdComboCell(nameof(DataType.DtParentDataTypeId).UnCapitalize(), "უფლებების მშობელი",
-                DataSeederRepo.GetTableName<DataType>())
-        };
-        gridModel.Cells.AddRange(cells);
-        return gridModel;
-    }
+    //private GridModel CreateDataTypesGridModel()
+    //{
+    //    var gridModel = GetKeyNameGridModel(nameof(DataType.DtId), nameof(DataType.DtTable), nameof(DataType.DtName));
+    //    var cells = new[]
+    //    {
+    //        GetTextBoxCell(nameof(DataType.DtNameNominative).UnCapitalize(), "სახელობითი"),
+    //        GetTextBoxCell(nameof(DataType.DtNameGenitive).UnCapitalize(), "მიცემითი"),
+    //        GetTextBoxCell(nameof(DataType.DtTable).UnCapitalize(), "ცხრილი"),
+    //        GetTextBoxCell(nameof(DataType.DtIdFieldName).UnCapitalize(), "იდენტიფიკატორი ველის სახელი"),
+    //        GetTextBoxCell(nameof(DataType.DtKeyFieldName).UnCapitalize(), "კოდი ველის სახელი"),
+    //        GetTextBoxCell(nameof(DataType.DtNameFieldName).UnCapitalize(), "სახელი ველის სახელი"),
+    //        GetMdComboCell(nameof(DataType.DtParentDataTypeId).UnCapitalize(), "უფლებების მშობელი",
+    //            CarcassRepo.GetTableName<DataType>())
+    //    };
+    //    gridModel.Cells.AddRange(cells);
+    //    return gridModel;
+    //}
 
-    private GridModel CreateMenuGridModel()
-    {
-        var gridModel = GetKeyNameSortIdGridModel(ECarcassDataTypeKeys.MenuItm.ToDtKey());
-        var cells = new[]
-        {
-            GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
-            GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი",
-                DataSeederRepo.GetTableName<MenuGroup>()),
-            GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
-            GetTextBoxCell(nameof(MenuItm.MenIconName).UnCapitalize(), "ხატულა")
-        };
-        gridModel.Cells.AddRange(cells);
-        return gridModel;
-    }
+    //private GridModel CreateMenuGridModel()
+    //{
+    //    var gridModel =
+    //        GetKeyNameSortIdGridModel(nameof(MenuItm.MenId), nameof(MenuItm.MenKey), nameof(MenuItm.MenName));
+    //    var cells = new[]
+    //    {
+    //        GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
+    //        GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი",
+    //            CarcassRepo.GetTableName<MenuGroup>()),
+    //        GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
+    //        GetTextBoxCell(nameof(MenuItm.MenIconName).UnCapitalize(), "ხატულა")
+    //    };
+    //    gridModel.Cells.AddRange(cells);
+    //    return gridModel;
+    //}
 
-    private static GridModel CreateMenuGroupsGridModel()
-    {
-        var gridModel = GetKeyNameSortIdGridModel(ECarcassDataTypeKeys.MenuGroup.ToDtKey());
-        gridModel.Cells.Add(GetTextBoxCell(nameof(MenuGroup.MengIconName).UnCapitalize(), "ხატულა"));
-        return gridModel;
-    }
+    //private static GridModel CreateMenuGroupsGridModel()
+    //{
+    //    var gridModel = GetKeyNameSortIdGridModel(nameof(MenuGroup.MengId), nameof(MenuGroup.MengKey),
+    //        nameof(MenuGroup.MengName));
+    //    gridModel.Cells.Add(GetTextBoxCell(nameof(MenuGroup.MengIconName).UnCapitalize(), "ხატულა"));
+    //    return gridModel;
+    //}
 
-    private static GridModel CreateRolesGridModel()
-    {
-        var gridModel = GetKeyNameGridModel(ECarcassDataTypeKeys.Role.ToDtKey());
-        gridModel.Cells.Add(GetIntegerCell(nameof(Role.RolLevel).UnCapitalize(), "დონე"));
-        return gridModel;
-    }
+    //private static GridModel CreateRolesGridModel()
+    //{
+    //    var gridModel = GetKeyNameGridModel(nameof(Role.RolId), nameof(Role.RolKey), nameof(Role.RolName));
+    //    gridModel.Cells.Add(GetIntegerCell(nameof(Role.RolLevel).UnCapitalize(), "დონე"));
+    //    return gridModel;
+    //}
 
-    private static GridModel CreateUsersGridModel()
-    {
-        var gridModel = new GridModel();
-        var cells = new[]
-        {
-            GetAutoNumberColumn("usrId"),
-            GetTextBoxCell(nameof(User.UserName).UnCapitalize(), "მომხმარებლის სახელი"),
-            GetTextBoxCell(nameof(User.Email).UnCapitalize(), "ელექტრონული ფოსტის მისამართი"),
-            GetTextBoxCell(nameof(User.FirstName).UnCapitalize(), "სახელი"),
-            GetTextBoxCell(nameof(User.LastName).UnCapitalize(), "გვარი")
-        };
-        gridModel.Cells = [.. cells];
-        return gridModel;
-    }
+    //private static GridModel CreateUsersGridModel()
+    //{
+    //    var gridModel = new GridModel();
+    //    var cells = new[]
+    //    {
+    //        GetAutoNumberColumn("usrId"),
+    //        GetTextBoxCell(nameof(User.UserName).UnCapitalize(), "მომხმარებლის სახელი"),
+    //        GetTextBoxCell(nameof(User.Email).UnCapitalize(), "ელექტრონული ფოსტის მისამართი"),
+    //        GetTextBoxCell(nameof(User.FirstName).UnCapitalize(), "სახელი"),
+    //        GetTextBoxCell(nameof(User.LastName).UnCapitalize(), "გვარი")
+    //    };
+    //    gridModel.Cells = [.. cells];
+    //    return gridModel;
+    //}
 
-    protected static GridModel GetKeyNameSortIdGridModel(string pref)
-    {
-        var gridModel = GetKeyNameGridModel(pref);
-        gridModel.Cells.Add(GetSortIdCell());
-        return gridModel;
-    }
+    //protected static GridModel GetKeyNameSortIdGridModel(string idFieldName, string keyFieldName, string nameFieldName)
+    //{
+    //    var gridModel = GetKeyNameGridModel(idFieldName, keyFieldName, nameFieldName);
+    //    gridModel.Cells.Add(GetSortIdCell());
+    //    return gridModel;
+    //}
 
-    protected static GridModel GetKeyNameGridModel(string pref)
-    {
-        var gridModel = new GridModel();
-        var cells = new[]
-        {
-            GetAutoNumberColumn($"{pref}Id"), GetKeyColumn($"{pref}Key"), GetNameColumn($"{pref}Name")
-        };
-        gridModel.Cells = [.. cells];
-        return gridModel;
-    }
+    //protected static GridModel GetKeyNameGridModel(string idFieldName, string keyFieldName, string nameFieldName)
+    //{
+    //    var gridModel = new GridModel();
+    //    var cells = new[]
+    //    {
+    //        GetAutoNumberColumn(idFieldName), GetKeyColumn(keyFieldName), GetNameColumn(nameFieldName)
+    //    };
+    //    gridModel.Cells = [.. cells];
+    //    return gridModel;
+    //}
 
     protected static Cell GetAutoNumberColumn(string fieldName)
     {
