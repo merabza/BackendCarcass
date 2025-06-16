@@ -9,7 +9,8 @@ namespace CarcassDb.Fabrics;
 
 public static class DataTypeFabric
 {
-    public static DataType CreatePseudo(string dtName, string dtNameNominative, string dtNameGenitive, string table1Name, string table2Name)
+    public static DataType CreatePseudo(string dtName, string dtNameNominative, string dtNameGenitive,
+        string table1Name, string table2Name)
     {
         return new DataType
         {
