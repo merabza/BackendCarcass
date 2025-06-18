@@ -5,7 +5,7 @@ using CarcassMasterDataDom.CellModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace CarcassDb.Factorys;
+namespace CarcassDb.Fabrics;
 
 public static class DataTypeFactory
 {
