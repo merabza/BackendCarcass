@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace CarcassDataSeeding;
 
-public /*open*/ class CarcassDataSeedersFabric
+public /*open*/ class CarcassDataSeedersFactory
 {
     private readonly IDataSeederRepository _repo;
     protected readonly ICarcassDataSeederRepository CarcassRepo;
@@ -14,7 +14,7 @@ public /*open*/ class CarcassDataSeedersFabric
     protected readonly UserManager<AppUser> MyUserManager;
     protected readonly string SecretDataFolder;
 
-    protected CarcassDataSeedersFabric(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager,
+    protected CarcassDataSeedersFactory(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager,
         string secretDataFolder, string dataSeedFolder, ICarcassDataSeederRepository carcassRepo,
         IDataSeederRepository repo)
     {

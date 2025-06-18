@@ -6,7 +6,7 @@ using LibCrud.Models;
 
 namespace CarcassDom.Models;
 
-public static class FilterSortRequestFabric
+public static class FilterSortRequestFactory
 {
     public static FilterSortRequest? Create(string strFilterSortRequest)
     {

@@ -5,14 +5,14 @@ namespace CarcassDataSeeding;
 
 public /*open*/ class CarcassDataSeeder : DataSeederBase
 {
-    protected readonly CarcassDataSeedersFabric DataSeedersFabric;
+    protected readonly CarcassDataSeedersFactory DataSeedersFactory;
     protected readonly ILogger<CarcassDataSeeder> Logger;
 
-    protected CarcassDataSeeder(ILogger<CarcassDataSeeder> logger, CarcassDataSeedersFabric dataSeedersFabric,
+    protected CarcassDataSeeder(ILogger<CarcassDataSeeder> logger, CarcassDataSeedersFactory dataSeedersFactory,
         bool checkOnly) : base(checkOnly)
     {
         Logger = logger;
-        DataSeedersFabric = dataSeedersFabric;
+        DataSeedersFactory = dataSeedersFactory;
     }
 
     public override bool SeedData()
@@ -26,42 +26,42 @@ public /*open*/ class CarcassDataSeeder : DataSeederBase
 
         Logger.LogInformation("Seeding DataTypes");
 
-        if (!Use(DataSeedersFabric.CreateDataTypesSeeder()))
+        if (!Use(DataSeedersFactory.CreateDataTypesSeeder()))
             return false;
 
         Logger.LogInformation("Seeding Users");
 
-        if (!Use(DataSeedersFabric.CreateUsersSeeder()))
+        if (!Use(DataSeedersFactory.CreateUsersSeeder()))
             return false;
 
         Logger.LogInformation("Seeding Roles");
 
-        if (!Use(DataSeedersFabric.CreateRolesSeeder()))
+        if (!Use(DataSeedersFactory.CreateRolesSeeder()))
             return false;
 
         Logger.LogInformation("Seeding MenuGroups");
 
-        if (!Use(DataSeedersFabric.CreateMenuGroupsSeeder()))
+        if (!Use(DataSeedersFactory.CreateMenuGroupsSeeder()))
             return false;
 
         Logger.LogInformation("Seeding Menu");
 
-        if (!Use(DataSeedersFabric.CreateMenuSeeder()))
+        if (!Use(DataSeedersFactory.CreateMenuSeeder()))
             return false;
 
         Logger.LogInformation("Seeding CrudRightTypes");
 
-        if (!Use(DataSeedersFabric.CreateCrudRightTypesSeeder()))
+        if (!Use(DataSeedersFactory.CreateCrudRightTypesSeeder()))
             return false;
 
         Logger.LogInformation("Seeding AppClaims");
 
-        if (!Use(DataSeedersFabric.CreateAppClaimsSeeder()))
+        if (!Use(DataSeedersFactory.CreateAppClaimsSeeder()))
             return false;
 
         Logger.LogInformation("Seeding ManyToManyJoin");
 
-        if (!Use(DataSeedersFabric.CreateManyToManyJoinsSeeder()))
+        if (!Use(DataSeedersFactory.CreateManyToManyJoinsSeeder()))
             return false;
 
         Logger.LogInformation("Seed Carcass Data Finished successful");
