@@ -3,7 +3,6 @@ using System.Linq;
 using CarcassDataSeeding.Models;
 using CarcassDb.Models;
 using DatabaseToolsShared;
-using LanguageExt.TypeClasses;
 
 namespace CarcassDataSeeding.Seeders;
 
