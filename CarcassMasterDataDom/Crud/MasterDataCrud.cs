@@ -532,7 +532,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         foreach (var cell in gridModel.Cells)
         {
-            var prop = props.SingleOrDefault(w => w.Name == cell.FieldName.CapitalizeCamel());
+            var prop = props.SingleOrDefault(w => w.Name == cell.FieldName);
             if (prop is null)
             {
                 errors.Add(MasterDataApiErrors.MasterDataFieldNotFound(_tableName, cell.FieldName));

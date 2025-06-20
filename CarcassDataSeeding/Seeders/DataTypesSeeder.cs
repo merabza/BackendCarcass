@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CarcassDataSeeding.Models;
-using CarcassDb.Fabrics;
+using CarcassDb.Factories;
 using CarcassDb.Models;
 using CarcassMasterDataDom.CellModels;
 using DatabaseToolsShared;
@@ -195,6 +195,20 @@ public /*open*/
         return allowNull
             ? Cell.String(fieldName, caption).Nullable().Default()
             : Cell.String(fieldName, caption).Required($"{caption} შევსებული უნდა იყოს").Default();
+    }
+
+    protected static Cell GetDatePickerCell(string fieldName, string caption, bool allowNull = false)
+    {
+        return allowNull
+            ? Cell.Date(fieldName, caption).Nullable().Default()
+            : Cell.Date(fieldName, caption).Required($"{caption} შევსებული უნდა იყოს").Default();
+    }
+
+    protected static Cell GetDateOnlyCell(string fieldName, string caption, bool allowNull = false)
+    {
+        return allowNull
+            ? Cell.Date(fieldName, caption).Nullable().Default().DateOnly()
+            : Cell.Date(fieldName, caption).Required($"{caption} შევსებული უნდა იყოს").Default().DateOnly();
     }
 
     //GetNumberColumn(3,"mrPosition","პოზიცია")
