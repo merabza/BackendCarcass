@@ -26,7 +26,7 @@ public sealed class GetTableRowsDataHandler : IQueryHandler<GetTableRowsDataQuer
     public async Task<OneOf<TableRowsData, IEnumerable<Err>>> Handle(GetTableRowsDataQueryRequest request,
         CancellationToken cancellationToken = default)
     {
-        var filterSortRequestObject = FilterSortRequestFabric.Create(request.FilterSortRequest);
+        var filterSortRequestObject = FilterSortRequestFactory.Create(request.FilterSortRequest);
 
         if (filterSortRequestObject == null)
             return new[] { CommonErrors.IncorrectData };
