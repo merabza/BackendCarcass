@@ -49,7 +49,7 @@ public sealed class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValu
                           	CONCAT_WS('.', MMJ.PKey, MMJ.CKey) AS [Key],
                           	CONCAT_WS('.', P.{parentDataType.DtNameFieldName}, C.{childDataType.DtNameFieldName}) AS [Name],
                           	NULL AS ParentId
-                          FROM manyToManyJoins MMJ
+                          FROM ManyToManyJoins MMJ
                           	INNER JOIN {parentDataType.DtTable} P ON MMJ.pKey = P.{parentDataType.DtKeyFieldName}
                           	INNER JOIN {childDataType.DtTable} C ON MMJ.CKey = C.{childDataType.DtKeyFieldName}
                           WHERE MMJ.PtId = {dt.DtManyToManyJoinParentDataTypeId}
