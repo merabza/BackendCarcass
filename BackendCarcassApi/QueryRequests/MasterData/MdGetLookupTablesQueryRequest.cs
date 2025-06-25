@@ -1,10 +1,24 @@
 ﻿using BackendCarcassApi.QueryResponses;
 using MediatRMessagingAbstractions;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 
 namespace BackendCarcassApi.QueryRequests.MasterData;
 
-public sealed class MdGetLookupTablesQueryRequest(HttpRequest httpRequest) : IQuery<MdGetLookupTablesQueryResponse>
+public sealed class MdGetLookupTablesQueryRequest : IQuery<MdGetLookupTablesQueryResponse>
 {
-    public HttpRequest HttpRequest { get; init; } = httpRequest; //+
+    //StringValues tables
+    //public MdGetLookupTablesQueryRequest(HttpRequest httpRequest)
+    //{
+    //    HttpRequest = httpRequest;
+    //}
+
+    //public HttpRequest HttpRequest { get; init; } //+
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public MdGetLookupTablesQueryRequest(StringValues tables)
+    {
+        Tables = tables;
+    }
+
+    public StringValues Tables { get; init; } //+
 }

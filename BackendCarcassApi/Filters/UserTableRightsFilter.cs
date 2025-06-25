@@ -30,11 +30,11 @@ public sealed class UserTableRightsFilter : IEndpointFilter
         var strTableName = tableName?.ToString() ?? string.Empty;
 
         RightsDeterminer rightsDeterminer = new(_repo, _logger, _currentUser);
-        var result = await rightsDeterminer.CheckTableRights(_currentUser.Name, context.HttpContext.Request.Method,
-            new TableKeyName { TableName = strTableName }, CancellationToken.None);
+        var checkTableRightsResult = await rightsDeterminer.CheckTableRights(_currentUser.Name,
+            context.HttpContext.Request.Method, new TableKeyName { TableName = strTableName }, CancellationToken.None);
 
-        if (result != null)
-            return result;
+        if (checkTableRightsResult.IsSome)
+            return checkTableRightsResult;
 
         return await next(context);
     }

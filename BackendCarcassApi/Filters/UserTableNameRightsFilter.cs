@@ -30,10 +30,10 @@ public /*open*/ class UserTableNameRightsFilter : IEndpointFilter
         foreach (var tableKey in _tableKeys)
         {
             RightsDeterminer rightsDeterminer = new(_repo, _logger, _currentUser);
-            var result = await rightsDeterminer.CheckTableRights(_currentUser.Name, context.HttpContext.Request.Method,
-                new TableKeyName { TableKey = tableKey }, CancellationToken.None);
-            if (result != null)
-                return result;
+            var checkTableRightsResult = await rightsDeterminer.CheckTableRights(_currentUser.Name,
+                context.HttpContext.Request.Method, new TableKeyName { TableKey = tableKey }, CancellationToken.None);
+            if (checkTableRightsResult.IsSome)
+                return checkTableRightsResult;
         }
 
         return await next(context);

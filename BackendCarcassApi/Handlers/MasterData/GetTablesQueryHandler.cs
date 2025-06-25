@@ -25,8 +25,8 @@ public sealed class GetTablesQueryHandler : IQueryHandler<MdGetTablesQueryReques
     public async Task<OneOf<MdGetTablesQueryResponse, IEnumerable<Err>>> Handle(MdGetTablesQueryRequest request,
         CancellationToken cancellationToken = default)
     {
-        var reqQuery = request.HttpRequest.Query["tables"];
-        List<string> tableNames = reqQuery.Where(tableName => tableName is not null).Distinct().ToList()!;
+        List<string> tableNames = request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()
+            .ToList()!;
         var mdLoader = new MasterDataLoader(tableNames, _masterDataLoaderCreator);
         var loaderResult = await mdLoader.Run(cancellationToken);
         return loaderResult.Match<OneOf<MdGetTablesQueryResponse, IEnumerable<Err>>>(

@@ -30,8 +30,8 @@ public sealed class
     public async Task<OneOf<MdGetLookupTablesQueryResponse, IEnumerable<Err>>> Handle(
         MdGetLookupTablesQueryRequest request, CancellationToken cancellationToken = default)
     {
-        var reqQuery = request.HttpRequest.Query["tables"];
-        List<string> tableNames = reqQuery.Where(tableName => tableName is not null).Distinct().ToList()!;
+        //var reqQuery = request.HttpRequest.Query["tables"];
+        List<string> tableNames = request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct().ToList()!;
         var mdLoader = new ReturnValuesLoader(tableNames, _rvRepo, _returnValuesLoaderCreator);
         var loaderResult = await mdLoader.Run(cancellationToken);
         return loaderResult.Match<OneOf<MdGetLookupTablesQueryResponse, IEnumerable<Err>>>(

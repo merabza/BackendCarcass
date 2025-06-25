@@ -4,6 +4,7 @@ using BackendCarcassContracts.V1.Responses;
 using BackendCarcassContracts.V1.Routes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;
@@ -42,9 +43,9 @@ public sealed class ProcessesEndpoints : IInstaller
         return true;
     }
 
-    private static IResult Status(int userId, int viewStyle)
+    private static Ok<CommandRunningStatusResponse> Status(int userId, int viewStyle)
     {
         var commandRunningStatus = new CommandRunningStatusResponse();
-        return Results.Ok(commandRunningStatus);
+        return TypedResults.Ok(commandRunningStatus);
     }
 }

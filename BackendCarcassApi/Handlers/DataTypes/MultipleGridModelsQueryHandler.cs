@@ -27,25 +27,27 @@ public sealed class
         MultipleGridModelsQueryRequest request, CancellationToken cancellationToken = default)
     {
         Dictionary<string, string> resultList = new();
-        //შემოწმდეს მოწოდებული მოთხოვნა
-        var reqQuery = request.HttpRequest.Query["grids"];
-        if (reqQuery.Count == 0)
-            return new[] { DataTypesApiErrors.NoGridNamesInUriQuery };
 
         //დამზადდეს ჩასატვირთი მოდელების შესაბამისი ცხრილების სახელების სია.
         //სიის დამზადება საჭიროა იმისათვის, რომ შესაძლებელი გახდეს მისი მეორედ გავლა
         //პირველი გავლისას მოწმდება უფლებები
-        var tableNames = reqQuery.Distinct().ToList();
+        var gridNames = request.Grids.Where(w => !string.IsNullOrWhiteSpace(w)).Distinct().ToList();
+        if (gridNames.Count == 0)
+            return new[] { DataTypesApiErrors.NoGridNamesInUriQuery };
 
+        List<Err> errors = [];
         //ხოლო მეორე გავლისას ხდება უშუალოდ საჭირო ინფორმაციის ჩატვირთვა
-        foreach (var tableName in tableNames.Where(tableName => tableName is not null))
+        foreach (var gridName in gridNames)
         {
-            var res = await _repository.GridModel(tableName!, cancellationToken);
-            if (res == null)
-                return new[] { DataTypesApiErrors.GridNotFound(tableName!) };
-            resultList.Add(tableName!, res);
+            var res = await _repository.GridModel(gridName!, cancellationToken);
+            if (res != null)
+                resultList.Add(gridName!, res);
+            else
+                errors.Add(DataTypesApiErrors.GridNotFound(gridName!));
         }
 
+        if ( errors.Count > 0)
+            return errors;
         return resultList;
     }
 }

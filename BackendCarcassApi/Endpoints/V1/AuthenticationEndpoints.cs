@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.Handlers.Authentication;
 using BackendCarcassApi.Mappers;
 using BackendCarcassContracts.Errors;
 using BackendCarcassContracts.V1.Requests;
+using BackendCarcassContracts.V1.Responses;
 using BackendCarcassContracts.V1.Routes;
 using CorsTools;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using SystemToolsShared.Errors;
 using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;
@@ -55,15 +59,17 @@ public sealed class AuthenticationEndpoints : IInstaller
     //   მაგრამ სამწუხაროდ უფლებების არქონის გამო პრაქტიკულად შეეძლება მხოლოდ თავისი ინფორმაციის ცვლილება
     //   ან თავისივე რეგისტრაციის წაშლა
     // POST api/v1/authentication/registration
-    private static async ValueTask<IResult> Registration([FromBody] RegistrationRequest? request, IMediator mediator,
-        CancellationToken cancellationToken = default)
+    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<IEnumerable<Err>>>> Registration(
+        [FromBody] RegistrationRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(RegistrationCommandHandler)} from {nameof(Registration)}");
         if (request is null)
-            return Results.BadRequest(CarcassApiErrors.RequestIsEmpty);
+            return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
+
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);
-        return result.Match(Results.Ok, Results.BadRequest);
+        return result.Match<Results<Ok<LoginResponse>, BadRequest<IEnumerable<Err>>>>(res => TypedResults.Ok(res),
+            errors => TypedResults.BadRequest(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -72,14 +78,15 @@ public sealed class AuthenticationEndpoints : IInstaller
     //მოქმედება -> სხვადასხვა შემოწმებების შემდეგ ცდილობს მომხმარებლის ავტორიზებას
     //   წარმატებული ავტორიზების შემთხვევაში იქმნება JwT, რომელიც მომხმარებლის ინფორმაციასთან ერთად გადაეწოდება გამომძახებელს
     // POST api/authentication/login
-    private static async ValueTask<IResult> Login([FromBody] LoginRequest? request, IMediator mediator,
-        CancellationToken cancellationToken = default)
+    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<IEnumerable<Err>>>> Login(
+        [FromBody] LoginRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(LoginCommandHandler)} from {nameof(Login)}");
         if (request is null)
-            return Results.BadRequest(CarcassApiErrors.RequestIsEmpty);
+            return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);
-        return result.Match(Results.Ok, Results.BadRequest);
+        return result.Match<Results<Ok<LoginResponse>, BadRequest<IEnumerable<Err>>>>(res => TypedResults.Ok(res),
+            errors => TypedResults.BadRequest(errors));
     }
 }

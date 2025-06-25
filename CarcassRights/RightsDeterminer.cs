@@ -8,6 +8,7 @@ using CarcassDom;
 using CarcassIdentity;
 using LanguageExt;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using SystemToolsShared.Errors;
@@ -29,26 +30,26 @@ public sealed class RightsDeterminer
         _currentUser = currentUser;
     }
 
-    public async ValueTask<IResult?> CheckTableRights(string? userName, string method, TableKeyName tableKeyName,
-        CancellationToken cancellationToken = default)
+    public async ValueTask<Option<BadRequest<IEnumerable<Err>>>> CheckTableRights(string? userName, string method,
+        TableKeyName tableKeyName, CancellationToken cancellationToken = default)
     {
         //var userName = _context.HttpContext.User.Identity?.Name;
         if (userName == null)
-            return Results.BadRequest(new[] { RightsApiErrors.UserNotIdentified });
+            return TypedResults.BadRequest(Err.Create(RightsApiErrors.UserNotIdentified));
 
         var tableKey = await tableKeyName.GetTableKey(_repo, cancellationToken);
-        if (tableKey is null or "")
-            return Results.BadRequest(new[] { RightsApiErrors.TableNameNotIdentified });
+        if (string.IsNullOrWhiteSpace(tableKey))
+            return TypedResults.BadRequest(Err.Create(RightsApiErrors.TableNameNotIdentified));
 
         //შემოწმდეს აქვს თუ არა მიმდინარე მომხმარებელს _claimName-ის შესაბამისი სპეციალური უფლება
         var result = method == HttpMethods.Get
             ? await CheckViewRightByTableKey(tableKey, cancellationToken)
             : await CheckCrudRightByTableKey(tableKey, GetCrudType(method), cancellationToken);
         if (result.IsT1)
-            return Results.BadRequest(result.AsT1);
+            return TypedResults.BadRequest(result.AsT1);
 
         //თუ არა დაბრუნდეს შეცდომა
-        return !result.AsT0 ? Results.BadRequest(new[] { RightsApiErrors.InsufficientRights }) : null;
+        return !result.AsT0 ? TypedResults.BadRequest(Err.Create(RightsApiErrors.InsufficientRights)) : null;
     }
 
     private static Option<ECrudOperationType> GetCrudType(string method)
