@@ -27,4 +27,8 @@
     <ProjectReference Include="..\BackendCarcassApi\BackendCarcassApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Endpoints\V1\" />
+  </ItemGroup>
+
 </Project>
