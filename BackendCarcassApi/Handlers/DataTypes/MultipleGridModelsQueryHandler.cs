@@ -46,7 +46,7 @@ public sealed class
                 errors.Add(DataTypesApiErrors.GridNotFound(gridName!));
         }
 
-        if ( errors.Count > 0)
+        if (errors.Count > 0)
             return errors;
         return resultList;
     }

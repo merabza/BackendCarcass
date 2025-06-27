@@ -31,7 +31,8 @@ public sealed class
         MdGetLookupTablesQueryRequest request, CancellationToken cancellationToken = default)
     {
         //var reqQuery = request.HttpRequest.Query["tables"];
-        List<string> tableNames = request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct().ToList()!;
+        List<string> tableNames = request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()
+            .ToList()!;
         var mdLoader = new ReturnValuesLoader(tableNames, _rvRepo, _returnValuesLoaderCreator);
         var loaderResult = await mdLoader.Run(cancellationToken);
         return loaderResult.Match<OneOf<MdGetLookupTablesQueryResponse, IEnumerable<Err>>>(
