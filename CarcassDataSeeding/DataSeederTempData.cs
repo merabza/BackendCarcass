@@ -10,6 +10,7 @@ public sealed class DataSeederTempData
     private static readonly Lock SyncRoot = new();
 
     private readonly Dictionary<Type, Dictionary<string, int>> _keyIdIntDictionary = [];
+    private readonly Dictionary<Type, Dictionary<string, short>> _keyIdShortDictionary = [];
     private readonly Dictionary<Type, Dictionary<Tuple<int, int, short>, int>> _keyInt2ShortIdIntDictionary = [];
     private readonly Dictionary<Type, Dictionary<Tuple<int, int, int>, int>> _keyInt3IdIntDictionary = [];
     private readonly Dictionary<Type, Dictionary<Tuple<int, int, int, int>, int>> _keyInt4IdIntDictionary = [];
@@ -271,13 +272,6 @@ public sealed class DataSeederTempData
         return GetIntIdByKey<T>(key1.Value, key2.Value);
     }
 
-    public int? GetIntNullableIdByKey<T>(string? key)
-    {
-        if (key == null)
-            return null;
-        return GetIntIdByKey<T>(key);
-    }
-
     public void SaveIntIdKeys<T>(Dictionary<int, int> dict)
     {
         if (_keyIntIdIntDictionary.ContainsKey(typeof(T)))
@@ -295,12 +289,29 @@ public sealed class DataSeederTempData
         throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
+    public void SaveShortIdKeys<T>(Dictionary<string, short> dict)
+    {
+        if (_keyIdShortDictionary.ContainsKey(typeof(T)))
+            _keyIdShortDictionary[typeof(T)] = dict;
+        else
+            _keyIdShortDictionary.Add(typeof(T), dict);
+    }
+
     public void SaveIntIdKeys<T>(Dictionary<string, int> dict)
     {
         if (_keyIdIntDictionary.ContainsKey(typeof(T)))
             _keyIdIntDictionary[typeof(T)] = dict;
         else
             _keyIdIntDictionary.Add(typeof(T), dict);
+    }
+
+    public short GetShortIdByKey<T>(string key)
+    {
+        if (!_keyIdShortDictionary.ContainsKey(typeof(T)))
+            throw new Exception($"Cannot get Keys for key {typeof(T)}");
+        if (_keyIdShortDictionary[typeof(T)].TryGetValue(key, out var value))
+            return value;
+        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public int GetIntIdByKey<T>(string key)
@@ -376,4 +387,19 @@ public sealed class DataSeederTempData
             return null;
         return GetShortIdByOldId<T>(oldId.Value);
     }
+
+    public int? GetIntNullableIdByKey<T>(string? key)
+    {
+        if (key == null)
+            return null;
+        return GetIntIdByKey<T>(key);
+    }
+
+    public short? GetShortNullableIdByKey<T>(string? key)
+    {
+        if (key == null)
+            return null;
+        return GetShortIdByKey<T>(key);
+    }
+
 }
