@@ -62,7 +62,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         CancellationToken cancellationToken = default)
     {
         var role = (RoleCrudData)crudDataForCreate;
-        AppRole appRole = new(role.RolKey, role.RolName, role.RolLevel);
+        var appRole = new AppRole(role.RolKey, role.RolName, role.RolLevel);
         //შევქმნათ როლი
         var createResult = await _roleManager.CreateAsync(appRole);
         if (!createResult.Succeeded)

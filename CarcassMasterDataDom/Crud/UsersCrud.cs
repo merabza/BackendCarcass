@@ -62,7 +62,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         CancellationToken cancellationToken = default)
     {
         var user = (UserCrudData)crudDataForCreate;
-        AppUser appUser = new(user.UserName, user.FirstName, user.LastName) { Email = user.Email };
+        var appUser = new AppUser(user.UserName, user.FirstName, user.LastName) { Email = user.Email };
 
         //შევქმნათ როლი
         var createResult = await _userManager.CreateAsync(appUser);

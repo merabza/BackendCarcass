@@ -16,7 +16,7 @@ public sealed class GridModel
         var jCommands = (JArray?)jo["cells"];
         if (jCommands is null)
             return null;
-        GridModel gridModel = new();
+        var gridModel = new GridModel();
         foreach (var jt in jCommands)
         {
             var cJson = jt.ToString();
