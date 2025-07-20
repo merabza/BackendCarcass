@@ -31,7 +31,7 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
     public async Task<Option<IEnumerable<Err>>> Create(IDataType newItem)
     {
         var role = (Role)newItem;
-        AppRole appRole = new(role.RolKey, role.RolName, role.RolLevel);
+        var appRole = new AppRole(role.RolKey, role.RolName, role.RolLevel);
         //შევქმნათ როლი
         var result = await _roleManager.CreateAsync(appRole);
         role.RolId = appRole.Id;

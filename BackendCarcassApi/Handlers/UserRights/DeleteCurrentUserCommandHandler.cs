@@ -33,7 +33,7 @@ public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurr
         //ეს ერთგვარი ტესტია. თუ კოდი აქამდე მოვიდა, მიმდინარე მომხმარებელი ვალიდურია
         if (_currentUser.Name != request.UserName)
             return new[] { UserRightsErrors.BadRequestFailedToDeleteUser };
-        UsersMdRepo usersMdRepo = new(_userMgr);
+        var usersMdRepo = new UsersMdRepo(_userMgr);
         var user = await _userMgr.FindByNameAsync(request.UserName!);
         //თუ არ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user == null)

@@ -29,7 +29,7 @@ public /*open*/ class UserMenuRightsFilter : IEndpointFilter
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         //შემოწმდეს აქვს თუ არა მიმდინარე მომხმარებელს _claimName-ის შესაბამისი სპეციალური უფლება
-        RightsDeterminer rightsDeterminer = new(_repo, _logger, _currentUser);
+        var rightsDeterminer = new RightsDeterminer(_repo, _logger, _currentUser);
         var result = await rightsDeterminer.HasUserRightRole(_menuNames, CancellationToken.None);
         if (result.IsT1)
             return Results.BadRequest(result.AsT1);

@@ -32,7 +32,7 @@ public sealed class MenuRightsRepository : AbstractRepository, IMenuRightsReposi
         var menuRes = await MenuItems(userName, cancellationToken);
         ICollection<MenuItmModel> menu = await menuRes.ToListAsync(cancellationToken);
 
-        MainMenuModel mainMenuModel = new();
+        var mainMenuModel = new MainMenuModel();
         foreach (var menuGroup in menuGroups)
         {
             menuGroup.Menu = menu.Where(m => m.MenGroupId == menuGroup.MengId).ToList();

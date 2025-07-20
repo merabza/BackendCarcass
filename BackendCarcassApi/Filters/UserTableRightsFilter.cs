@@ -29,7 +29,7 @@ public sealed class UserTableRightsFilter : IEndpointFilter
         routeData.TryGetValue("tableName", out var tableName);
         var strTableName = tableName?.ToString() ?? string.Empty;
 
-        RightsDeterminer rightsDeterminer = new(_repo, _logger, _currentUser);
+        var rightsDeterminer = new RightsDeterminer(_repo, _logger, _currentUser);
         var checkTableRightsResult = await rightsDeterminer.CheckTableRights(_currentUser.Name,
             context.HttpContext.Request.Method, new TableKeyName { TableName = strTableName }, CancellationToken.None);
 

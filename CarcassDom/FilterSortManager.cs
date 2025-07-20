@@ -10,14 +10,14 @@ public sealed class FilterSortManager
 
     public void Use(ICurrentUser currentUser, FilterSortObject filterSortObject)
     {
-        FilterSortIdentifier filterSortIdentifier = new(currentUser.SerialNumber,
-            filterSortObject.TabWindowId, filterSortObject.TableName);
+        var filterSortIdentifier = new FilterSortIdentifier(currentUser.SerialNumber, filterSortObject.TabWindowId,
+            filterSortObject.TableName);
         _filterSortObjects[filterSortIdentifier] = filterSortObject;
     }
 
     public FilterSortObject? Get(ICurrentUser currentUser, int tabWindowId, string tableName)
     {
-        FilterSortIdentifier filterSortIdentifier = new(currentUser.SerialNumber, tabWindowId, tableName);
+        var filterSortIdentifier = new FilterSortIdentifier(currentUser.SerialNumber, tabWindowId, tableName);
         return _filterSortObjects.GetValueOrDefault(filterSortIdentifier);
     }
 }

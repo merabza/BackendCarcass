@@ -28,7 +28,7 @@ public /*open*/ class UserClaimRightsFilter : IEndpointFilter
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         //შემოწმდეს აქვს თუ არა მიმდინარე მომხმარებელს _claimName-ის შესაბამისი სპეციალური უფლება
-        RightsDeterminer rightsDeterminer = new(_repo, _logger, _currentUser);
+        var rightsDeterminer = new RightsDeterminer(_repo, _logger, _currentUser);
         var result = await rightsDeterminer.CheckUserRightToClaim(_claimName, CancellationToken.None);
         if (result.IsT1)
             return Results.BadRequest(result.AsT1);

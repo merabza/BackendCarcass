@@ -31,7 +31,8 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
     {
         //ამოვიღოთ მოთხოვნის ტანი
         // ReSharper disable once using
-        using StreamReader reader = new(request.HttpRequest.Body);
+        // ReSharper disable once DisposableConstructor
+        using var reader = new StreamReader(request.HttpRequest.Body);
         var body = await reader.ReadToEndAsync(cancellationToken);
 
         var crudData = new MasterDataCrudData(body);
