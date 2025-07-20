@@ -26,7 +26,7 @@ public sealed class
     public async Task<OneOf<Dictionary<string, string>, IEnumerable<Err>>> Handle(
         MultipleGridModelsQueryRequest request, CancellationToken cancellationToken = default)
     {
-        Dictionary<string, string> resultList = new();
+        var resultList = new Dictionary<string, string>();
 
         //დამზადდეს ჩასატვირთი მოდელების შესაბამისი ცხრილების სახელების სია.
         //სიის დამზადება საჭიროა იმისათვის, რომ შესაძლებელი გახდეს მისი მეორედ გავლა
