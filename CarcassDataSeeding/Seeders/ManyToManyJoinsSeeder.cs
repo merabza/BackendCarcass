@@ -24,7 +24,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         _carcassRepo = carcassRepo;
     }
 
-    protected override bool AdditionalCheck(List<ManyToManyJoinSeederModel> jsonData, List<ManyToManyJoin> savedData)
+    public override bool AdditionalCheck(List<ManyToManyJoinSeederModel> jsonData, List<ManyToManyJoin> savedData)
     {
         //var dataTypeDKey = ECarcassDataTypeKeys.DataType.ToDtKey();
         //return Check(CreateMustListByRules()) && Check(GetThirdPartRights(
@@ -79,7 +79,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
     //    }).ToList());
     //}
 
-    protected override List<ManyToManyJoin> Adapt(List<ManyToManyJoinSeederModel> manyToManyJoinsSeedData)
+    public override List<ManyToManyJoin> Adapt(List<ManyToManyJoinSeederModel> manyToManyJoinsSeedData)
     {
         var tempData = DataSeederTempData.Instance;
         return manyToManyJoinsSeedData.Select(s => new ManyToManyJoin
@@ -91,7 +91,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         }).ToList();
     }
 
-    protected override List<ManyToManyJoin> CreateListByRules()
+    public override List<ManyToManyJoin> CreateListByRules()
     {
         return CreateMustListByRules().Distinct(new ManyToManyJoinComparer()).ToList();
     }

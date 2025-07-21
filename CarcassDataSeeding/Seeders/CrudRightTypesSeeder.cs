@@ -17,13 +17,13 @@ public /*open*/
     {
     }
 
-    protected override bool AdditionalCheck(List<CrudRightTypeSeederModel> jsonData, List<CrudRightType> savedData)
+    public override bool AdditionalCheck(List<CrudRightTypeSeederModel> jsonData, List<CrudRightType> savedData)
     {
         DataSeederTempData.Instance.SaveIntIdKeys<CrudRightType>(savedData.ToDictionary(k => k.Key, v => v.Id));
         return true;
     }
 
-    protected override List<CrudRightType> CreateListByRules()
+    public override List<CrudRightType> CreateListByRules()
     {
         CrudRightType[] crudRightTypes =
         [

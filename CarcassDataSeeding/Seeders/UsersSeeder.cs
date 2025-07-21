@@ -23,7 +23,7 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
         _secretDataFolder = secretDataFolder;
     }
 
-    protected override bool AdditionalCheck(List<UserSeederModel> jsonData, List<User> savedData)
+    public override bool AdditionalCheck(List<UserSeederModel> jsonData, List<User> savedData)
     {
         var userToCreate = GetAppUserModels().Select(userModel => new
         {
@@ -43,7 +43,7 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
         return true;
     }
 
-    protected override List<User> Adapt(List<UserSeederModel> usersSeedData)
+    public override List<User> Adapt(List<UserSeederModel> usersSeedData)
     {
         return usersSeedData.Select(s => new User
         {

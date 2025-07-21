@@ -16,13 +16,13 @@ public /*open*/
     {
     }
 
-    protected override bool AdditionalCheck(List<MenuItmSeederModel> jsonData, List<MenuItm> savedData)
+    public override bool AdditionalCheck(List<MenuItmSeederModel> jsonData, List<MenuItm> savedData)
     {
         DataSeederTempData.Instance.SaveIntIdKeys<MenuItm>(savedData.ToDictionary(k => k.Key, v => v.Id));
         return true;
     }
 
-    protected override List<MenuItm> Adapt(List<MenuItmSeederModel> menuSeedData)
+    public override List<MenuItm> Adapt(List<MenuItmSeederModel> menuSeedData)
     {
         var tempData = DataSeederTempData.Instance;
         return menuSeedData.Select(s => new MenuItm
@@ -37,7 +37,7 @@ public /*open*/
         }).ToList();
     }
 
-    protected override List<MenuItm> CreateListByRules()
+    public override List<MenuItm> CreateListByRules()
     {
         var tempData = DataSeederTempData.Instance;
         const string mdList = nameof(mdList);

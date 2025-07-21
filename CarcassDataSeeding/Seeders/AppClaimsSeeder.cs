@@ -16,7 +16,7 @@ public /*open*/
     {
     }
 
-    protected override bool AdditionalCheck(List<AppClaimSeederModel> jsonData, List<AppClaim> savedData)
+    public override bool AdditionalCheck(List<AppClaimSeederModel> jsonData, List<AppClaim> savedData)
     {
         DataSeederTempData.Instance.SaveIntIdKeys<AppClaim>(savedData.ToDictionary(k => k.Key, v => v.Id));
         return true;

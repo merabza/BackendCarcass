@@ -24,7 +24,7 @@ public /*open*/
         _secretDataFolder = secretDataFolder;
     }
 
-    protected override bool AdditionalCheck(List<RoleSeederModel> jsonData, List<Role> savedData)
+    public override bool AdditionalCheck(List<RoleSeederModel> jsonData, List<Role> savedData)
     {
         DataSeederTempData.Instance.SaveIntIdKeys<Role>(savedData.ToDictionary(k => k.RolKey, v => v.RolId));
 
@@ -44,7 +44,7 @@ public /*open*/
         return true;
     }
 
-    protected override List<Role> Adapt(List<RoleSeederModel> rolesSeedData)
+    public override List<Role> Adapt(List<RoleSeederModel> rolesSeedData)
     {
         return rolesSeedData.Select(s => new Role
         {

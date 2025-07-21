@@ -23,13 +23,13 @@ public /*open*/
         CarcassRepo = carcassRepo;
     }
 
-    protected override bool AdditionalCheck(List<DataTypeSeederModel> jsonData, List<DataType> savedData)
+    public override bool AdditionalCheck(List<DataTypeSeederModel> jsonData, List<DataType> savedData)
     {
         DataSeederTempData.Instance.SaveIntIdKeys<DataType>(savedData.ToDictionary(k => k.Key, v => v.Id));
         return SetParents(jsonData, savedData) && SetParentDataTypes() && RemoveRedundantDataTypes();
     }
 
-    protected override List<DataType> Adapt(List<DataTypeSeederModel> dataTypesSeedData)
+    public override List<DataType> Adapt(List<DataTypeSeederModel> dataTypesSeedData)
     {
         return dataTypesSeedData.Select(s => new DataType
         {
@@ -115,7 +115,7 @@ public /*open*/
         return CarcassRepo.SetDtParentDataTypes(dtdt) && CarcassRepo.SetManyToManyJoinParentChildDataTypes(dtdtdt);
     }
 
-    protected override List<DataType> CreateListByRules()
+    public override List<DataType> CreateListByRules()
     {
         //var appClaimDKey = ECarcassDataTypeKeys.AppClaim.ToDtKey();
         //var crudRightTypeDKey = ECarcassDataTypeKeys.CrudRightType.ToDtKey();

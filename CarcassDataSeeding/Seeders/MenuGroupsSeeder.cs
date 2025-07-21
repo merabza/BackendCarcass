@@ -19,13 +19,13 @@ public /*open*/
     {
     }
 
-    protected override bool AdditionalCheck(List<MenuGroupSeederModel> jsonData, List<MenuGroup> savedData)
+    public override bool AdditionalCheck(List<MenuGroupSeederModel> jsonData, List<MenuGroup> savedData)
     {
         DataSeederTempData.Instance.SaveIntIdKeys<MenuGroup>(savedData.ToDictionary(k => k.Key, v => v.Id));
         return true;
     }
 
-    protected override List<MenuGroup> CreateListByRules()
+    public override List<MenuGroup> CreateListByRules()
     {
         var menuGroups = new MenuGroup[]
         {
