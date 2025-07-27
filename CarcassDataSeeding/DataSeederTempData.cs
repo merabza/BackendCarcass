@@ -27,7 +27,7 @@ public sealed class DataSeederTempData
     private readonly Dictionary<Type, Dictionary<Tuple<int, string>, int>> _keyIntStringIdIntDictionary = [];
     private readonly Dictionary<Type, Dictionary<Tuple<string, int>, int>> _keyStringIntIdIntDictionary = [];
     private readonly Dictionary<Type, Dictionary<Tuple<string, short>, int>> _keyStringShortIdIntDictionary = [];
-    private readonly Dictionary<Type, Dictionary<DateTime, DateTime>> _oldDateTimeIdsDictToDateTimeIds = [];
+    //private readonly Dictionary<Type, Dictionary<DateTime, DateTime>> _oldDateTimeIdsDictToDateTimeIds = [];
     private readonly Dictionary<Type, Dictionary<int, int>> _oldIntIdsDictToIntIds = [];
     private readonly Dictionary<Type, Dictionary<short, short>> _oldShortIdsDictToShortIds = [];
 
@@ -357,22 +357,22 @@ public sealed class DataSeederTempData
         throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {oldId}");
     }
 
-    public void SaveOldDatetimeIdsDictToDatetimeIds<T>(Dictionary<DateTime, DateTime> dict)
-    {
-        if (_oldDateTimeIdsDictToDateTimeIds.ContainsKey(typeof(T)))
-            _oldDateTimeIdsDictToDateTimeIds[typeof(T)] = dict;
-        else
-            _oldDateTimeIdsDictToDateTimeIds.Add(typeof(T), dict);
-    }
+    //public void SaveOldDatetimeIdsDictToDatetimeIds<T>(Dictionary<DateTime, DateTime> dict)
+    //{
+    //    if (_oldDateTimeIdsDictToDateTimeIds.ContainsKey(typeof(T)))
+    //        _oldDateTimeIdsDictToDateTimeIds[typeof(T)] = dict;
+    //    else
+    //        _oldDateTimeIdsDictToDateTimeIds.Add(typeof(T), dict);
+    //}
 
-    public DateTime GetDatetimeIdByOldId<T>(DateTime oldId)
-    {
-        if (!_oldDateTimeIdsDictToDateTimeIds.ContainsKey(typeof(T)))
-            throw new Exception($"Cannot get Keys for key {typeof(T)}");
-        if (_oldDateTimeIdsDictToDateTimeIds[typeof(T)].TryGetValue(oldId, out var value))
-            return value;
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {oldId}");
-    }
+    //public DateTime GetDatetimeIdByOldId<T>(DateTime oldId)
+    //{
+    //    if (!_oldDateTimeIdsDictToDateTimeIds.ContainsKey(typeof(T)))
+    //        throw new Exception($"Cannot get Keys for key {typeof(T)}");
+    //    if (_oldDateTimeIdsDictToDateTimeIds[typeof(T)].TryGetValue(oldId, out var value))
+    //        return value;
+    //    throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {oldId}");
+    //}
 
     public int? GetIntNullableIdByOldId<T>(int? oldId)
     {
