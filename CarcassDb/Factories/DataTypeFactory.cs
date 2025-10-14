@@ -22,7 +22,8 @@ public static class DataTypeFactory
     }
 
     public static DataType Create(string dtName, string dtNameNominative, string dtNameGenitive, string tableName,
-        string idFieldName, string? keyFieldName, string? nameFieldName, params List<Cell> additionalCells)
+        string idFieldName, string? idFieldColumnHeader, string? keyFieldName, string? keyFieldNameColumnHeader,
+        string? nameFieldName, string? nameFieldNameColumnHeader, params List<Cell> additionalCells)
     {
         var serializerSettings = new JsonSerializerSettings
         {
@@ -33,7 +34,7 @@ public static class DataTypeFactory
         {
             Cells =
             [
-                GetAutoNumberColumn(idFieldName)
+                GetAutoNumberColumn(idFieldName, idFieldColumnHeader)
             ]
         };
 
@@ -59,19 +60,19 @@ public static class DataTypeFactory
         };
     }
 
-    private static IntegerCell GetAutoNumberColumn(string fieldName)
+    private static IntegerCell GetAutoNumberColumn(string fieldName, string? columnHeader)
     {
-        return Cell.Integer(fieldName, null, "", "", false).Default();
+        return Cell.Integer(fieldName, columnHeader, "", "", false).Default();
     }
 
-    private static StringCell GetKeyColumn(string fieldName)
+    private static StringCell GetKeyColumn(string fieldName, string? columnHeader)
     {
-        return GetTextBoxCell(fieldName, "კოდი");
+        return GetTextBoxCell(fieldName, columnHeader ?? "კოდი");
     }
 
-    private static StringCell GetNameColumn(string fieldName)
+    private static StringCell GetNameColumn(string fieldName, string? columnHeader)
     {
-        return GetTextBoxCell(fieldName, "სახელი");
+        return GetTextBoxCell(fieldName, columnHeader ?? "სახელი");
     }
 
     private static StringCell GetTextBoxCell(string fieldName, string caption, bool allowNull = false)

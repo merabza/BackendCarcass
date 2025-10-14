@@ -125,16 +125,15 @@ public /*open*/
 
             //AppClaim
             DataTypeFactory.Create("სპეციალური უფლებები", "სპეციალური უფლება", "სპეციალური უფლების",
-                CarcassRepo.GetTableName<AppClaim>(), nameof(AppClaim.AclId).UnCapitalize(),
-                nameof(AppClaim.AclKey).UnCapitalize(), nameof(AppClaim.AclName).UnCapitalize()),
+                CarcassRepo.GetTableName<AppClaim>(), nameof(AppClaim.AclId).UnCapitalize(), null,
+                nameof(AppClaim.AclKey).UnCapitalize(), null, nameof(AppClaim.AclName).UnCapitalize(), null),
 
             //DataType
             DataTypeFactory.Create("მონაცემთა ტიპები", "მონაცემთა ტიპი", "მონაცემთა ტიპის",
-                CarcassRepo.GetTableName<DataType>(), nameof(DataType.DtId).UnCapitalize(),
-                nameof(DataType.DtTable).UnCapitalize(), nameof(DataType.DtName).UnCapitalize(),
+                CarcassRepo.GetTableName<DataType>(), nameof(DataType.DtId).UnCapitalize(), null,
+                nameof(DataType.DtTable).UnCapitalize(), "ცხრილი", nameof(DataType.DtName).UnCapitalize(), null,
                 GetTextBoxCell(nameof(DataType.DtNameNominative).UnCapitalize(), "სახელობითი"),
                 GetTextBoxCell(nameof(DataType.DtNameGenitive).UnCapitalize(), "მიცემითი"),
-                GetTextBoxCell(nameof(DataType.DtTable).UnCapitalize(), "ცხრილი"),
                 GetTextBoxCell(nameof(DataType.DtIdFieldName).UnCapitalize(), "იდენტიფიკატორი ველის სახელი"),
                 GetTextBoxCell(nameof(DataType.DtKeyFieldName).UnCapitalize(), "კოდი ველის სახელი"),
                 GetTextBoxCell(nameof(DataType.DtNameFieldName).UnCapitalize(), "სახელი ველის სახელი"),
@@ -149,8 +148,8 @@ public /*open*/
             //CrudRightType
             DataTypeFactory.Create("მონაცემების ცვლილებაზე უფლებების ტიპები", "მონაცემების ცვლილებაზე უფლების ტიპი",
                 "მონაცემების ცვლილებაზე უფლების ტიპის", CarcassRepo.GetTableName<CrudRightType>(),
-                nameof(CrudRightType.CrtId).UnCapitalize(), nameof(CrudRightType.CrtKey).UnCapitalize(),
-                nameof(CrudRightType.CrtName).UnCapitalize()),
+                nameof(CrudRightType.CrtId).UnCapitalize(), null, nameof(CrudRightType.CrtKey).UnCapitalize(), null,
+                nameof(CrudRightType.CrtName).UnCapitalize(), null),
 
             //DataTypeToDataTypeModel
             DataTypeFactory.CreatePseudo("უფლებები", "უფლება", "უფლების", CarcassRepo.GetTableName<DataType>(),
@@ -158,14 +157,14 @@ public /*open*/
 
             //MenuGroup
             DataTypeFactory.Create("მენიუს ჯგუფები", "მენიუს ჯგუფი", "მენიუს ჯგუფის",
-                CarcassRepo.GetTableName<MenuGroup>(), nameof(MenuGroup.MengId).UnCapitalize(),
-                nameof(MenuGroup.MengKey).UnCapitalize(), nameof(MenuGroup.MengName).UnCapitalize(), GetSortIdCell(),
-                GetTextBoxCell(nameof(MenuGroup.MengIconName).UnCapitalize(), "ხატულა")),
+                CarcassRepo.GetTableName<MenuGroup>(), nameof(MenuGroup.MengId).UnCapitalize(), null,
+                nameof(MenuGroup.MengKey).UnCapitalize(), null, nameof(MenuGroup.MengName).UnCapitalize(), null,
+                GetSortIdCell(), GetTextBoxCell(nameof(MenuGroup.MengIconName).UnCapitalize(), "ხატულა")),
 
             //MenuItm
             DataTypeFactory.Create("მენიუ", "მენიუ", "მენიუს", CarcassRepo.GetTableName<MenuItm>(),
-                nameof(MenuItm.MenId).UnCapitalize(), nameof(MenuItm.MenKey).UnCapitalize(),
-                nameof(MenuItm.MenName).UnCapitalize(), GetSortIdCell(),
+                nameof(MenuItm.MenId).UnCapitalize(), null, nameof(MenuItm.MenKey).UnCapitalize(), null,
+                nameof(MenuItm.MenName).UnCapitalize(), null, GetSortIdCell(),
                 GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
                 GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი",
                     CarcassRepo.GetTableName<MenuGroup>()),
@@ -174,16 +173,17 @@ public /*open*/
 
             //Role
             DataTypeFactory.Create("როლები", "როლი", "როლის", CarcassRepo.GetTableName<Role>(),
-                nameof(Role.RolId).UnCapitalize(), nameof(Role.RolKey).UnCapitalize(),
-                nameof(Role.RolName).UnCapitalize(), GetIntegerCell(nameof(Role.RolLevel).UnCapitalize(), "დონე")),
+                nameof(Role.RolId).UnCapitalize(), null, nameof(Role.RolKey).UnCapitalize(), null,
+                nameof(Role.RolName).UnCapitalize(), null,
+                GetIntegerCell(nameof(Role.RolLevel).UnCapitalize(), "დონე")),
 
             //User
             DataTypeFactory.Create("მომხმარებლები", "მომხმარებელი", "მომხმარებლის", CarcassRepo.GetTableName<User>(),
-                nameof(User.UsrId).UnCapitalize(), nameof(User.NormalizedUserName).UnCapitalize(),
-                nameof(User.FullName).UnCapitalize(),
+                nameof(User.UsrId).UnCapitalize(), null, nameof(User.NormalizedUserName).UnCapitalize(),
+                "მომხმარებლის სახელი", nameof(User.FullName).UnCapitalize(), "სრული სახელი",
                 GetTextBoxCell(nameof(User.UserName).UnCapitalize(), "მომხმარებლის სახელი"),
                 GetTextBoxCell(nameof(User.Email).UnCapitalize(), "ელექტრონული ფოსტის მისამართი"),
-                GetTextBoxCell(nameof(User.FirstName).UnCapitalize(), "სახელი"),
+                GetTextBoxCell(nameof(User.FirstName).UnCapitalize(), "სახელი-"),
                 GetTextBoxCell(nameof(User.LastName).UnCapitalize(), "გვარი"))
         };
 
