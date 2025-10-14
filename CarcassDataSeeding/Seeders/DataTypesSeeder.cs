@@ -180,7 +180,7 @@ public /*open*/
             //User
             DataTypeFactory.Create("მომხმარებლები", "მომხმარებელი", "მომხმარებლის", CarcassRepo.GetTableName<User>(),
                 nameof(User.UsrId).UnCapitalize(), null, nameof(User.NormalizedUserName).UnCapitalize(),
-                "მომხმარებლის სახელი", nameof(User.FullName).UnCapitalize(), "სრული სახელი",
+                "მომხმარებლის სახელი ნორმალიზებული", nameof(User.FullName).UnCapitalize(), "სრული სახელი",
                 GetTextBoxCell(nameof(User.UserName).UnCapitalize(), "მომხმარებლის სახელი"),
                 GetTextBoxCell(nameof(User.Email).UnCapitalize(), "ელექტრონული ფოსტის მისამართი"),
                 GetTextBoxCell(nameof(User.FirstName).UnCapitalize(), "სახელი-"),
