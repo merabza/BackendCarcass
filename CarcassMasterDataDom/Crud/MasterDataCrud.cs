@@ -40,7 +40,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async ValueTask<OneOf<IEnumerable<IDataType>, IEnumerable<Err>>> GetAllRecords(
+    public async ValueTask<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
         var queryResult = Query();
@@ -68,12 +68,12 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         return (List<IDataType>)queryRunResult;
 
-        //return await Query().Match<Task<OneOf<IEnumerable<IDataType>, IEnumerable<Err>>>>(
+        //return await Query().Match<Task<OneOf<IEnumerable<IDataType>, Err[]>>>(
         //    async x => await x.ToListAsync(cancellationToken),
-        //    e => Task.FromResult<OneOf<IEnumerable<IDataType>, IEnumerable<Err>>>(e));
+        //    e => Task.FromResult<OneOf<IEnumerable<IDataType>, Err[]>>(e));
     }
 
-    public static OneOf<MasterDataCrud, IEnumerable<Err>> Create(string tableName, ILogger logger,
+    public static OneOf<MasterDataCrud, Err[]> Create(string tableName, ILogger logger,
         ICarcassMasterDataRepository cmdRepo)
     {
         var entityType = cmdRepo.GetEntityTypeByTableName(tableName);
@@ -83,7 +83,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         return new MasterDataCrud(tableName, entityType, logger, cmdRepo);
     }
 
-    private async Task<OneOf<bool, IEnumerable<Err>>> IsGridWithSortId(CancellationToken cancellationToken = default)
+    private async Task<OneOf<bool, Err[]>> IsGridWithSortId(CancellationToken cancellationToken = default)
     {
         var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
         if (gridModel is null)
@@ -113,7 +113,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         }).ToList();
     }
 
-    public override async ValueTask<OneOf<TableRowsData, IEnumerable<Err>>> GetTableRowsData(
+    public override async ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(
         FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default)
     {
         var queryResult = QueryObject();
@@ -179,7 +179,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, rows);
     }
 
-    protected override async Task<OneOf<ICrudData, IEnumerable<Err>>> GetOneData(int id,
+    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id,
         CancellationToken cancellationToken = default)
     {
         var getOneRecordResult = await GetOneRecord(id, cancellationToken);
@@ -199,11 +199,11 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         sortedData.SortId++;
         return new MasterDataCrudLoadedData(sortedData.EditFields());
 
-        //return getOneRecordResult.Match<OneOf<ICrudData, IEnumerable<Err>>>(t0 => new MasterDataCrudLoadedData(t0.EditFields()),
+        //return getOneRecordResult.Match<OneOf<ICrudData, Err[]>>(t0 => new MasterDataCrudLoadedData(t0.EditFields()),
         //    t1 => t1);
     }
 
-    private async Task<OneOf<IDataType, IEnumerable<Err>>> GetOneRecord(int id,
+    private async Task<OneOf<IDataType, Err[]>> GetOneRecord(int id,
         CancellationToken cancellationToken = default)
     {
         var errors = new List<Err>();
@@ -224,12 +224,12 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         var idt = await res.Where(lambda).SingleOrDefaultAsync(cancellationToken);
 
         if (idt is not null)
-            return OneOf<IDataType, IEnumerable<Err>>.FromT0(idt);
+            return OneOf<IDataType, Err[]>.FromT0(idt);
         errors.Add(MasterDataApiErrors.EntryNotFound);
         return errors.ToArray();
     }
 
-    private OneOf<string, IEnumerable<Err>> GetSingleKeyPropertyName()
+    private OneOf<string, Err[]> GetSingleKeyPropertyName()
     {
         var singleKey = _entityType.GetKeys().SingleOrDefault();
         if (singleKey is null)
@@ -241,11 +241,11 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
                 MasterDataApiErrors.TableSingleKeyMustHaveOneProperty(_tableName)
             }; //ვერ ვიპოვეთ ერთადერთი გასაღები
 
-        return OneOf<string, IEnumerable<Err>>.FromT0(singleKey.Properties[0].Name);
-        //return OneOf<IProperty, IEnumerable<Err>>.FromT0(singleKey.Properties[0]);
+        return OneOf<string, Err[]>.FromT0(singleKey.Properties[0].Name);
+        //return OneOf<IProperty, Err[]>.FromT0(singleKey.Properties[0]);
     }
 
-    private OneOf<object, IEnumerable<Err>> QueryObject()
+    private OneOf<object, Err[]> QueryObject()
     {
         //var q = _cmdRepo.RunGenericMethodForQueryRecords(entityType);
         //var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); //
@@ -262,10 +262,10 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             {
                 MasterDataApiErrors.SetMethodReturnsNullForTable(_tableName)
             } //ცხრილის Set მეთოდი აბრუნებს null-ს
-            : OneOf<object, IEnumerable<Err>>.FromT0(result);
+            : OneOf<object, Err[]>.FromT0(result);
     }
 
-    private OneOf<IQueryable<IDataType>, IEnumerable<Err>> Query()
+    private OneOf<IQueryable<IDataType>, Err[]> Query()
     {
         //var q = _cmdRepo.RunGenericMethodForQueryRecords(entityType);
         //var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); //
@@ -282,10 +282,10 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             {
                 MasterDataApiErrors.SetMethodReturnsNullForTable(_tableName)
             } //ცხრილის Set მეთოდი აბრუნებს null-ს
-            : OneOf<IQueryable<IDataType>, IEnumerable<Err>>.FromT0((IQueryable<IDataType>)result);
+            : OneOf<IQueryable<IDataType>, Err[]>.FromT0((IQueryable<IDataType>)result);
     }
 
-    protected override async ValueTask<Option<IEnumerable<Err>>> CreateData(ICrudData crudDataForCreate,
+    protected override async ValueTask<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default)
     {
         var masterDataCrudDataForCreate = (MasterDataCrudData)crudDataForCreate;
@@ -361,10 +361,10 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         _justCreated = newItem;
         return null;
 
-        //return createResult.Match(x => x, () => OneOf<IDataType, IEnumerable<Err>>.FromT0(newItem));
+        //return createResult.Match(x => x, () => OneOf<IDataType, Err[]>.FromT0(newItem));
     }
 
-    protected override async ValueTask<Option<IEnumerable<Err>>> UpdateData(int id, ICrudData crudDataNewVersion,
+    protected override async ValueTask<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default)
     {
         var masterDataCrudDataForUpdate = (MasterDataCrudData)crudDataNewVersion;
@@ -447,7 +447,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         //sortHelper.ReSortSortIds(queryResult.AsT0);
     }
 
-    protected override async ValueTask<Option<IEnumerable<Err>>> AfterUpdateData(
+    protected override async ValueTask<Option<Err[]>> AfterUpdateData(
         CancellationToken cancellationToken = default)
     {
         if (_sortHelper is null)
@@ -461,7 +461,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         return null;
     }
 
-    private async Task<Option<IEnumerable<Err>>> Update(int id, IDataType newItem,
+    private async Task<Option<Err[]>> Update(int id, IDataType newItem,
         CancellationToken cancellationToken = default)
     {
         //var q = _cmdRepo.RunGenericMethodForQueryRecords(entityType);
@@ -473,7 +473,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         //    }; //ბაზაში ვერ ვიპოვეთ მოწოდებული იდენტიფიკატორის შესაბამისი ჩანაწერი. RecordNotFound
 
         var result = await GetOneRecord(id, cancellationToken);
-        return result.Match<Option<IEnumerable<Err>>>(r =>
+        return result.Match<Option<Err[]>>(r =>
         {
             r.UpdateTo(newItem);
             _cmdRepo.Update(r);
@@ -481,7 +481,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         }, e => (Err[])e);
     }
 
-    protected override async Task<Option<IEnumerable<Err>>> DeleteData(int id,
+    protected override async Task<Option<Err[]>> DeleteData(int id,
         CancellationToken cancellationToken = default)
     {
         var getOneRecordResult = await GetOneRecord(id, cancellationToken);
@@ -517,7 +517,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         return null;
     }
 
-    private async Task<Option<IEnumerable<Err>>> Validate(IDataType newItem,
+    private async Task<Option<Err[]>> Validate(IDataType newItem,
         CancellationToken cancellationToken = default)
     {
         //var dt = _context.DataTypes.SingleOrDefault(s => s.DtTable == tableName);

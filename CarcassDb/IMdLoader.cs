@@ -8,5 +8,5 @@ namespace CarcassDb;
 
 public interface IMdLoader
 {
-    OneOf<IQueryable<IDataType>, IEnumerable<Err>> Load();
+    OneOf<IQueryable<IDataType>, Err[]> Load();
 }

@@ -19,7 +19,7 @@ public sealed class MasterDataLoader
         _tableNames = tableNames;
     }
 
-    public async ValueTask<OneOf<Dictionary<string, IEnumerable<dynamic>>, IEnumerable<Err>>> Run(
+    public async ValueTask<OneOf<Dictionary<string, IEnumerable<dynamic>>, Err[]>> Run(
         CancellationToken cancellationToken = default)
     {
         var resultList = new Dictionary<string, IEnumerable<dynamic>>();
@@ -30,7 +30,7 @@ public sealed class MasterDataLoader
         {
             var createMasterDataLoaderResult = _masterDataLoaderCreator.CreateMasterDataLoader(tableName);
             if (createMasterDataLoaderResult.IsT1)
-                return (Err[])createMasterDataLoaderResult.AsT1;
+                return createMasterDataLoaderResult.AsT1;
             var loader = createMasterDataLoaderResult.AsT0;
             var tableResult = await loader.GetAllRecords(cancellationToken);
             if (tableResult.IsT1)
@@ -45,7 +45,7 @@ public sealed class MasterDataLoader
         }
 
         if (errors.Count > 0)
-            return errors;
+            return errors.ToArray();
         return resultList;
     }
 }

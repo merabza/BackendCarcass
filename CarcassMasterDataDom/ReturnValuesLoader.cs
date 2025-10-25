@@ -24,7 +24,7 @@ public sealed class ReturnValuesLoader
         _tableNames = tableNames;
     }
 
-    public async Task<OneOf<Dictionary<string, IEnumerable<SrvModel>>, IEnumerable<Err>>> Run(
+    public async Task<OneOf<Dictionary<string, IEnumerable<SrvModel>>, Err[]>> Run(
         CancellationToken cancellationToken = default)
     {
         var resultList = new Dictionary<string, IEnumerable<SrvModel>>();
@@ -73,7 +73,7 @@ public sealed class ReturnValuesLoader
         }
 
         if (errors.Count > 0)
-            return errors;
+            return errors.ToArray();
         return resultList;
     }
 }

@@ -27,7 +27,7 @@ public abstract class CrudBase
     //შესაბამისად შექმნის პროცედურას შეუძლია დააბრუნოს შესანახ ობიექტზე რეფერენსი და როცა უკვე შენახვა მოხდება, ამ რეფერენსიდან შესაძლებელი იქნება იდენტიფიკატორის ამოღება
     protected virtual int JustCreatedId => 0;
 
-    public Task<OneOf<ICrudData, IEnumerable<Err>>> GetOne(int id, CancellationToken cancellationToken = default)
+    public Task<OneOf<ICrudData, Err[]>> GetOne(int id, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -41,7 +41,7 @@ public abstract class CrudBase
         }
     }
 
-    public async Task<OneOf<ICrudData, IEnumerable<Err>>> Create(ICrudData crudDataForCreate,
+    public async Task<OneOf<ICrudData, Err[]>> Create(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default)
     {
         const string methodName = nameof(Create);
@@ -79,7 +79,7 @@ public abstract class CrudBase
         }
     }
 
-    public async Task<Option<IEnumerable<Err>>> Update(int id, ICrudData crudDataNewVersion,
+    public async Task<Option<Err[]>> Update(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default)
     {
         try
@@ -111,7 +111,7 @@ public abstract class CrudBase
         }
     }
 
-    public async Task<Option<IEnumerable<Err>>> Delete(int id, CancellationToken cancellationToken = default)
+    public async Task<Option<Err[]>> Delete(int id, CancellationToken cancellationToken = default)
     {
         const string methodName = nameof(Delete);
         try
@@ -148,22 +148,22 @@ public abstract class CrudBase
         }
     }
 
-    protected abstract Task<OneOf<ICrudData, IEnumerable<Err>>> GetOneData(int id,
+    protected abstract Task<OneOf<ICrudData, Err[]>> GetOneData(int id,
         CancellationToken cancellationToken = default);
 
-    protected abstract ValueTask<Option<IEnumerable<Err>>> CreateData(ICrudData crudDataForCreate,
+    protected abstract ValueTask<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default);
 
-    protected abstract ValueTask<Option<IEnumerable<Err>>> UpdateData(int id, ICrudData crudDataNewVersion,
+    protected abstract ValueTask<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default);
 
-    protected virtual ValueTask<Option<IEnumerable<Err>>> AfterUpdateData(CancellationToken cancellationToken = default)
+    protected virtual ValueTask<Option<Err[]>> AfterUpdateData(CancellationToken cancellationToken = default)
     {
-        return ValueTask.FromResult<Option<IEnumerable<Err>>>(null);
+        return ValueTask.FromResult<Option<Err[]>>(null);
     }
 
-    protected abstract Task<Option<IEnumerable<Err>>> DeleteData(int id, CancellationToken cancellationToken = default);
+    protected abstract Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default);
 
-    public abstract ValueTask<OneOf<TableRowsData, IEnumerable<Err>>> GetTableRowsData(
+    public abstract ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(
         FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default);
 }
