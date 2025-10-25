@@ -62,13 +62,13 @@ public sealed class DataTypesEndpoints : IInstaller
     //მოქმედება -> ხდება DataType ცხრილის ყველა ჩანაწერის ჩატვირთვა, ოღონდ ველი სადაც ინახება ცხრილების მოდელები
     //   არ ჩაიტვირთება. ასე კეთდება სისწრაფისათვის. ცხრილების მოდელების ჩატვირთვა ხდება ცალკე
     //[HttpGet("getdatatypes")]
-    private static async Task<Results<Ok<DataTypesResponse[]>, BadRequest<IEnumerable<Err>>>> DataTypesList(
-        IMediator mediator, CancellationToken cancellationToken = default)
+    private static async Task<Results<Ok<DataTypesResponse[]>, BadRequest<Err[]>>> DataTypesList(IMediator mediator,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(DataTypesListQueryHandler)} from {nameof(DataTypesList)}");
         var query = new DataTypesQueryRequest();
         var result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<DataTypesResponse[]>, BadRequest<IEnumerable<Err>>>>(res => TypedResults.Ok(res),
+        return result.Match<Results<Ok<DataTypesResponse[]>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
 
@@ -80,13 +80,13 @@ public sealed class DataTypesEndpoints : IInstaller
     //   თუ აქვს ხდება DataType ცხრილის შესაბამისი ჩანაწერის მოძებნა და იქიდან ჩაიტვირთება ცხრილის მოდელი
     //   ჩატვირთული ინფორმაცია უბრუნდება გამომძახებელს
     //[HttpGet("getgridmodel/{tableName}")]
-    private static async Task<Results<Ok<string>, BadRequest<IEnumerable<Err>>>> GridModel(string gridName,
-        IMediator mediator, CancellationToken cancellationToken = default)
+    private static async Task<Results<Ok<string>, BadRequest<Err[]>>> GridModel(string gridName, IMediator mediator,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GridModelQueryHandler)} from {nameof(GridModel)}");
         var query = new GridModelQueryRequest(gridName);
         var result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<string>, BadRequest<IEnumerable<Err>>>>(res => TypedResults.Ok(res),
+        return result.Match<Results<Ok<string>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
 
@@ -106,13 +106,13 @@ public sealed class DataTypesEndpoints : IInstaller
     //შესაბამისად ეს ინფორმაცია კი ინახება ცხრილების მოდელებში, რისი ჩატვირთვაც აქ ხდება.
     //query like this: example.com/api/forms/getmultiplegridrules?grids=gridName1&grids=gridName2&grids=gridName3
     //[HttpGet("getmultiplegridrules")]
-    private static async Task<Results<Ok<Dictionary<string, string>>, BadRequest<IEnumerable<Err>>>> MultipleGridModels(
+    private static async Task<Results<Ok<Dictionary<string, string>>, BadRequest<Err[]>>> MultipleGridModels(
         StringValues grids, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MultipleGridModelsQueryHandler)} from {nameof(MultipleGridModels)}");
         var query = new MultipleGridModelsQueryRequest(grids);
         var result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<Dictionary<string, string>>, BadRequest<IEnumerable<Err>>>>(
-            res => TypedResults.Ok(res), errors => TypedResults.BadRequest(errors));
+        return result.Match<Results<Ok<Dictionary<string, string>>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
+            errors => TypedResults.BadRequest(errors));
     }
 }

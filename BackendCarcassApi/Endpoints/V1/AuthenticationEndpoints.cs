@@ -58,7 +58,7 @@ public sealed class AuthenticationEndpoints : IInstaller
     //   მაგრამ სამწუხაროდ უფლებების არქონის გამო პრაქტიკულად შეეძლება მხოლოდ თავისი ინფორმაციის ცვლილება
     //   ან თავისივე რეგისტრაციის წაშლა
     // POST api/v1/authentication/registration
-    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<IEnumerable<Err>>>> Registration(
+    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<Err[]>>> Registration(
         [FromBody] RegistrationRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(RegistrationCommandHandler)} from {nameof(Registration)}");
@@ -67,7 +67,7 @@ public sealed class AuthenticationEndpoints : IInstaller
 
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);
-        return result.Match<Results<Ok<LoginResponse>, BadRequest<IEnumerable<Err>>>>(res => TypedResults.Ok(res),
+        return result.Match<Results<Ok<LoginResponse>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
 
@@ -77,7 +77,7 @@ public sealed class AuthenticationEndpoints : IInstaller
     //მოქმედება -> სხვადასხვა შემოწმებების შემდეგ ცდილობს მომხმარებლის ავტორიზებას
     //   წარმატებული ავტორიზების შემთხვევაში იქმნება JwT, რომელიც მომხმარებლის ინფორმაციასთან ერთად გადაეწოდება გამომძახებელს
     // POST api/authentication/login
-    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<IEnumerable<Err>>>> Login(
+    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<Err[]>>> Login(
         [FromBody] LoginRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(LoginCommandHandler)} from {nameof(Login)}");
@@ -85,7 +85,7 @@ public sealed class AuthenticationEndpoints : IInstaller
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);
-        return result.Match<Results<Ok<LoginResponse>, BadRequest<IEnumerable<Err>>>>(res => TypedResults.Ok(res),
+        return result.Match<Results<Ok<LoginResponse>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
 }

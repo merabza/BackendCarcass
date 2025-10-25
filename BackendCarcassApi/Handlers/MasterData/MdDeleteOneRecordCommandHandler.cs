@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.MasterData;
@@ -24,19 +23,19 @@ public sealed class MdDeleteOneRecordCommandHandler : ICommandHandler<MdDeleteOn
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
 
-    public async Task<OneOf<Unit, IEnumerable<Err>>> Handle(MdDeleteOneRecordCommandRequest request,
+    public async Task<OneOf<Unit, Err[]>> Handle(MdDeleteOneRecordCommandRequest request,
         CancellationToken cancellationToken = default)
     {
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
-            return (Err[])createMasterDataCrudResult.AsT1;
+            return createMasterDataCrudResult.AsT1;
         var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.Delete(request.Id, cancellationToken);
-        return result.Match<OneOf<Unit, IEnumerable<Err>>>(y =>
+        return result.Match<OneOf<Unit, Err[]>>(y =>
         {
             var errors = y.ToList();
             errors.Add(MasterDataApiErrors.CannotDeleteNewRecord);
-            return errors;
+            return errors.ToArray();
         }, () => new Unit());
     }
 }

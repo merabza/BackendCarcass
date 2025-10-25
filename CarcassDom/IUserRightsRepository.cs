@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using OneOf;
 using RepositoriesDom;
@@ -23,7 +22,6 @@ public interface IUserRightsRepository : IAbstractRepository
     Task<bool> CheckTableViewRight(int roleDtId, string roleName, int dataTypeDtId, string keyByTableName, int menuDtId,
         CancellationToken cancellationToken = default);
 
-    Task<OneOf<bool, IEnumerable<Err>>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
-        string keyByTableName, int dataCrudRightDtId, ECrudOperationType crudType,
-        CancellationToken cancellationToken = default);
+    Task<OneOf<bool, Err[]>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId, string keyByTableName,
+        int dataCrudRightDtId, ECrudOperationType crudType, CancellationToken cancellationToken = default);
 }

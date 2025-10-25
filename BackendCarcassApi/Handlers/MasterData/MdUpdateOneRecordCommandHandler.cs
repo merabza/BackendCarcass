@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,7 +25,7 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
 
-    public async Task<OneOf<Unit, IEnumerable<Err>>> Handle(MdUpdateOneRecordCommandRequest request,
+    public async Task<OneOf<Unit, Err[]>> Handle(MdUpdateOneRecordCommandRequest request,
         CancellationToken cancellationToken = default)
     {
         //ამოვიღოთ მოთხოვნის ტანი
@@ -38,14 +37,14 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
         var crudData = new MasterDataCrudData(body);
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
-            return (Err[])createMasterDataCrudResult.AsT1;
+            return createMasterDataCrudResult.AsT1;
         var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
-        return result.Match<OneOf<Unit, IEnumerable<Err>>>(y =>
+        return result.Match<OneOf<Unit, Err[]>>(y =>
         {
             var errors = y.ToList();
             errors.Add(MasterDataApiErrors.CannotUpdateNewRecord);
-            return errors;
+            return errors.ToArray();
         }, () => new Unit());
     }
 }

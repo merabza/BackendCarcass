@@ -28,12 +28,12 @@ public sealed class ChildrenTreeDataQueryHandler : ICommandHandler<ChildrenTreeD
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, IEnumerable<Err>>> Handle(ChildrenTreeDataCommandRequest request,
+    public async Task<OneOf<List<DataTypeModel>, Err[]>> Handle(ChildrenTreeDataCommandRequest request,
         CancellationToken cancellationToken = default)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo);
         var result = await rightsCollector.ChildrenTreeData(_currentUser.Name, request.DataTypeKey, request.ViewStyle,
             cancellationToken);
-        return result.Match<OneOf<List<DataTypeModel>, IEnumerable<Err>>>(r => r, e => (Err[])e);
+        return result.Match<OneOf<List<DataTypeModel>, Err[]>>(r => r, e => (Err[])e);
     }
 }

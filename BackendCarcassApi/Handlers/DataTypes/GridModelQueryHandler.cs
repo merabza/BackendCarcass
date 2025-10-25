@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.QueryRequests.DataTypes;
 using BackendCarcassContracts.Errors;
@@ -21,7 +20,7 @@ public sealed class GridModelQueryHandler : IQueryHandler<GridModelQueryRequest,
         _repository = repository;
     }
 
-    public async Task<OneOf<string, IEnumerable<Err>>> Handle(GridModelQueryRequest request,
+    public async Task<OneOf<string, Err[]>> Handle(GridModelQueryRequest request,
         CancellationToken cancellationToken = default)
     {
         var res = await _repository.GridModel(request.GridName, cancellationToken);

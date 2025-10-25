@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.UserRights;
 using CarcassIdentity;
@@ -24,7 +23,7 @@ public sealed class MainMenuQueryHandler : IQueryHandler<MainMenuQueryRequest, M
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<MainMenuModel, IEnumerable<Err>>> Handle(MainMenuQueryRequest request,
+    public async Task<OneOf<MainMenuModel, Err[]>> Handle(MainMenuQueryRequest request,
         CancellationToken cancellationToken = default)
     {
         var mainMenuModel = await _mdRepo.MainMenu(_currentUser.Name, cancellationToken);

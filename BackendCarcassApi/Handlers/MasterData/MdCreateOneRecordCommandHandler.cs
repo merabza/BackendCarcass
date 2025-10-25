@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.MasterData;
@@ -26,7 +24,7 @@ public sealed class
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
 
-    public async Task<OneOf<MasterDataCrudLoadedData, IEnumerable<Err>>> Handle(MdCreateOneRecordCommandRequest request,
+    public async Task<OneOf<MasterDataCrudLoadedData, Err[]>> Handle(MdCreateOneRecordCommandRequest request,
         CancellationToken cancellationToken = default)
     {
         //ამოვიღოთ მოთხოვნის ტანი
@@ -41,12 +39,7 @@ public sealed class
             return (Err[])createMasterDataCrudResult.AsT1;
         var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.Create(crudData, cancellationToken);
-        return result.Match<OneOf<MasterDataCrudLoadedData, IEnumerable<Err>>>(rcd => (MasterDataCrudLoadedData)rcd,
-            y =>
-            {
-                var errors = y.ToList();
-                errors.Add(MasterDataApiErrors.CannotCreateNewRecord);
-                return errors;
-            });
+        return result.Match<OneOf<MasterDataCrudLoadedData, Err[]>>(rcd => (MasterDataCrudLoadedData)rcd,
+            y => Err.RecreateErrors(y, MasterDataApiErrors.CannotCreateNewRecord));
     }
 }

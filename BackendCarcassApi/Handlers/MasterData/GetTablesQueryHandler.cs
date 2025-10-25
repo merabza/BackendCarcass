@@ -22,14 +22,14 @@ public sealed class GetTablesQueryHandler : IQueryHandler<MdGetTablesQueryReques
         _masterDataLoaderCreator = masterDataLoaderCreator;
     }
 
-    public async Task<OneOf<MdGetTablesQueryResponse, IEnumerable<Err>>> Handle(MdGetTablesQueryRequest request,
+    public async Task<OneOf<MdGetTablesQueryResponse, Err[]>> Handle(MdGetTablesQueryRequest request,
         CancellationToken cancellationToken = default)
     {
         List<string> tableNames = request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()
             .ToList()!;
         var mdLoader = new MasterDataLoader(tableNames, _masterDataLoaderCreator);
         var loaderResult = await mdLoader.Run(cancellationToken);
-        return loaderResult.Match<OneOf<MdGetTablesQueryResponse, IEnumerable<Err>>>(
-            r => new MdGetTablesQueryResponse(r), e => (Err[])e);
+        return loaderResult.Match<OneOf<MdGetTablesQueryResponse, Err[]>>(r => new MdGetTablesQueryResponse(r),
+            e => e.ToArray());
     }
 }

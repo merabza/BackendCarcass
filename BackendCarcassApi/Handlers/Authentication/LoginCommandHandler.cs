@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.Authentication;
@@ -34,7 +33,7 @@ public sealed class LoginCommandHandler : LoginCommandBase, ICommandHandler<Logi
         _mdRepo = mdRepo;
     }
 
-    public async Task<OneOf<LoginResponse, IEnumerable<Err>>> Handle(LoginCommandRequest request,
+    public async Task<OneOf<LoginResponse, Err[]>> Handle(LoginCommandRequest request,
         CancellationToken cancellationToken = default)
     {
         //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი

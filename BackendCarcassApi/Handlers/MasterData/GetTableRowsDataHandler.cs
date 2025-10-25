@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.QueryRequests.MasterData;
@@ -23,7 +23,7 @@ public sealed class GetTableRowsDataHandler : IQueryHandler<GetTableRowsDataQuer
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
 
-    public async Task<OneOf<TableRowsData, IEnumerable<Err>>> Handle(GetTableRowsDataQueryRequest request,
+    public async Task<OneOf<TableRowsData, Err[]>> Handle(GetTableRowsDataQueryRequest request,
         CancellationToken cancellationToken = default)
     {
         var filterSortRequestObject = FilterSortRequestFactory.Create(request.FilterSortRequest);
@@ -38,10 +38,10 @@ public sealed class GetTableRowsDataHandler : IQueryHandler<GetTableRowsDataQuer
 
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
-            return (Err[])createMasterDataCrudResult.AsT1;
+            return createMasterDataCrudResult.AsT1;
         var masterDataCruder = createMasterDataCrudResult.AsT0;
 
         var result = await masterDataCruder.GetTableRowsData(filterSortRequestObject, cancellationToken);
-        return result.Match<OneOf<TableRowsData, IEnumerable<Err>>>(r => r, e => (Err[])e);
+        return result.Match<OneOf<TableRowsData, Err[]>>(r => r, e => e.ToArray());
     }
 }

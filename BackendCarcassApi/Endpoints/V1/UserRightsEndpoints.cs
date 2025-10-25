@@ -70,7 +70,7 @@ public sealed class UserRightsEndpoints : IInstaller
     //უფლება -> მხოლოდ ავტორიზაცია
     //მოქმედება -> მოწმდება მიღებული ინფორმაციის ვალიდურობა და ხდება პროფაილში ცვლილებების დაფიქსირება
     // GET api/v1/userrights/changeprofile
-    private static async ValueTask<Results<Ok, BadRequest<IEnumerable<Err>>>> ChangeProfile(
+    private static async ValueTask<Results<Ok, BadRequest<Err[]>>> ChangeProfile(
         [FromBody] ChangeProfileRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ChangeProfileCommandHandler)} from {nameof(ChangeProfile)}");
@@ -78,7 +78,7 @@ public sealed class UserRightsEndpoints : IInstaller
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);
-        return result.Match<Results<Ok, BadRequest<IEnumerable<Err>>>>(_ => TypedResults.Ok(),
+        return result.Match<Results<Ok, BadRequest<Err[]>>>(_ => TypedResults.Ok(),
             errors => TypedResults.BadRequest(errors));
     }
 
@@ -88,7 +88,7 @@ public sealed class UserRightsEndpoints : IInstaller
     //უფლება -> მხოლოდ ავტორიზაცია
     //მოქმედება -> მოწმდება მიღებული ინფორმაციის ვალიდურობა და ხდება პაროლის ცვლილებების დაფიქსირება
     // PUT api/v1/userrights/changepassword
-    private static async ValueTask<Results<Ok, BadRequest<IEnumerable<Err>>>> ChangePassword(
+    private static async ValueTask<Results<Ok, BadRequest<Err[]>>> ChangePassword(
         [FromBody] ChangePasswordRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ChangePasswordCommandHandler)} from {nameof(ChangePassword)}");
@@ -96,7 +96,7 @@ public sealed class UserRightsEndpoints : IInstaller
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);
-        return result.Match<Results<Ok, BadRequest<IEnumerable<Err>>>>(_ => TypedResults.Ok(),
+        return result.Match<Results<Ok, BadRequest<Err[]>>>(_ => TypedResults.Ok(),
             errors => TypedResults.BadRequest(errors));
     }
 
@@ -111,13 +111,13 @@ public sealed class UserRightsEndpoints : IInstaller
     //  თუ მაინც გახდა საჭირო მომავალში მომხმარებლის წაშლა, უნდა აეწყოს მომხმარებლის ჩანაწერების გადაბარების მექანიზმი
     //  რის მერეც შესაძლებელი გახდება მომხმარებლის იდენტიფიკატორის გათავისუფლება კავშირებისაგან და წაშლაც მოხერხდება
     // DELETE api/v1/userrights/deletecurrentuser/{userName}
-    private static async ValueTask<Results<Ok, BadRequest<IEnumerable<Err>>>> DeleteCurrentUser(string userName,
+    private static async ValueTask<Results<Ok, BadRequest<Err[]>>> DeleteCurrentUser(string userName,
         IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(DeleteCurrentUserCommandHandler)} from {nameof(DeleteCurrentUser)}");
         var command = new DeleteCurrentUserCommandRequest { UserName = userName };
         var result = await mediator.Send(command, cancellationToken);
-        return result.Match<Results<Ok, BadRequest<IEnumerable<Err>>>>(_ => TypedResults.Ok(),
+        return result.Match<Results<Ok, BadRequest<Err[]>>>(_ => TypedResults.Ok(),
             errors => TypedResults.BadRequest(errors));
     }
 
@@ -128,13 +128,13 @@ public sealed class UserRightsEndpoints : IInstaller
     //მოქმედება -> რეპოზიტორიას გადაეწოდება მიმდინარე მომხმარებლის სახელი და
     //  მისი უფლებების მიხედვით ჩატვირთული მენიუს შესახებ ინფორმაციას უბრუნებს გამომძახებელს
     // GET api/v1/userrights/getmainmenu
-    private static async Task<Results<Ok<MainMenuModel>, BadRequest<IEnumerable<Err>>>> MainMenu(IMediator mediator,
+    private static async Task<Results<Ok<MainMenuModel>, BadRequest<Err[]>>> MainMenu(IMediator mediator,
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MainMenuQueryHandler)} from {nameof(MainMenu)}");
         var query = new MainMenuQueryRequest();
         var result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<MainMenuModel>, BadRequest<IEnumerable<Err>>>>(res => TypedResults.Ok(res),
+        return result.Match<Results<Ok<MainMenuModel>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
 }

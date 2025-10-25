@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using CarcassMasterDataDom.Crud;
 using CarcassMasterDataDom.Models;
 using LibCrud;
@@ -23,17 +23,17 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
         Services = services;
     }
 
-    public virtual OneOf<IMasterDataLoader, IEnumerable<Err>> CreateMasterDataLoader(string queryName)
+    public virtual OneOf<IMasterDataLoader, Err[]> CreateMasterDataLoader(string queryName)
     {
         // ReSharper disable once using
         var scope = Services.CreateScope();
 
         return MasterDataCrud
             .Create(queryName, _logger, scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>())
-            .Match<OneOf<IMasterDataLoader, IEnumerable<Err>>>(f0 => f0, f1 => (Err[])f1);
+            .Match<OneOf<IMasterDataLoader, Err[]>>(f0 => f0, f1 => f1.ToArray());
     }
 
-    public virtual OneOf<CrudBase, IEnumerable<Err>> CreateMasterDataCrud(string tableName)
+    public virtual OneOf<CrudBase, Err[]> CreateMasterDataCrud(string tableName)
     {
         // ReSharper disable once using
         var scope = Services.CreateScope();
@@ -46,7 +46,7 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
             "roles" => new RolesCrud(_logger, scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>(),
                 carcassMasterDataRepository),
             _ => MasterDataCrud.Create(tableName, _logger, carcassMasterDataRepository)
-                .Match<OneOf<CrudBase, IEnumerable<Err>>>(f0 => f0, f1 => (Err[])f1)
+                .Match<OneOf<CrudBase, Err[]>>(f0 => f0, f1 => f1.ToArray())
         };
     }
 }

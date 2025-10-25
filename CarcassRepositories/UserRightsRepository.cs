@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -67,8 +66,8 @@ public sealed class UserRightsRepository : AbstractRepository, IUserRightsReposi
             keyByTableName, cancellationToken);
     }
 
-    public async Task<OneOf<bool, IEnumerable<Err>>> CheckTableCrudRight(int roleDtId, string roleName,
-        int dataTypeDtId, string keyByTableName, int dataCrudRightDtId, ECrudOperationType crudType,
+    public async Task<OneOf<bool, Err[]>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
+        string keyByTableName, int dataCrudRightDtId, ECrudOperationType crudType,
         CancellationToken cancellationToken = default)
     {
         return await _context.ManyToManyJoins.AnyAsync(

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.QueryRequests.Rights;
@@ -27,12 +28,12 @@ internal sealed class ParentsTreeDataQueryHandler : IQueryHandler<ParentsTreeDat
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, IEnumerable<Err>>> Handle(ParentsTreeDataQueryRequest request,
+    public async Task<OneOf<List<DataTypeModel>, Err[]>> Handle(ParentsTreeDataQueryRequest request,
         CancellationToken cancellationToken = default)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo);
         var result = await rightsCollector.ParentsTreeData(_currentUser.Name, request.ViewStyle, cancellationToken);
 
-        return result.Match<OneOf<List<DataTypeModel>, IEnumerable<Err>>>(r => r, e => (Err[])e);
+        return result.Match<OneOf<List<DataTypeModel>, Err[]>>(r => r, e => e.ToArray());
     }
 }

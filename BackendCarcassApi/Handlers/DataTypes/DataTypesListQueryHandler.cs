@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.Handlers.Authentication;
 using BackendCarcassApi.QueryRequests.DataTypes;
@@ -26,7 +25,7 @@ public sealed class DataTypesListQueryHandler : LoginCommandBase,
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<DataTypesResponse[], IEnumerable<Err>>> Handle(DataTypesQueryRequest request,
+    public async Task<OneOf<DataTypesResponse[], Err[]>> Handle(DataTypesQueryRequest request,
         CancellationToken cancellationToken = default)
     {
         var res = await _repository.DataTypes(_currentUser.Name, cancellationToken);

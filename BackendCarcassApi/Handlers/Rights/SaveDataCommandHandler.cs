@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.Rights;
 using CarcassDom;
@@ -27,7 +26,7 @@ public sealed class SaveDataCommandHandler : ICommandHandler<SaveDataCommandRequ
         _logger = logger;
     }
 
-    public async Task<OneOf<bool, IEnumerable<Err>>> Handle(SaveDataCommandRequest request,
+    public async Task<OneOf<bool, Err[]>> Handle(SaveDataCommandRequest request,
         CancellationToken cancellationToken = default)
     {
         var rightsSaver = new RightsSaver(_logger, _repo);

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.Authentication;
 using BackendCarcassContracts.Errors;
@@ -31,7 +30,7 @@ public sealed class RegistrationCommandHandler : LoginCommandBase,
         _identitySettings = identitySettings;
     }
 
-    public async Task<OneOf<LoginResponse, IEnumerable<Err>>> Handle(RegistrationCommandRequest request,
+    public async Task<OneOf<LoginResponse, Err[]>> Handle(RegistrationCommandRequest request,
         CancellationToken cancellationToken = default)
     {
         //if (string.IsNullOrWhiteSpace(request.UserName))

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.UserRights;
 using BackendCarcassContracts.Errors;
@@ -27,7 +26,7 @@ public sealed class ChangeProfileCommandHandler : ICommandHandler<ChangeProfileC
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<Unit, IEnumerable<Err>>> Handle(ChangeProfileCommandRequest request,
+    public async Task<OneOf<Unit, Err[]>> Handle(ChangeProfileCommandRequest request,
         CancellationToken cancellationToken = default)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით

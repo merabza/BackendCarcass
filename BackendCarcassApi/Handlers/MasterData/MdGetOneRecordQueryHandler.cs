@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.QueryRequests.MasterData;
@@ -22,15 +22,14 @@ public sealed class MdGetOneRecordQueryHandler : IQueryHandler<MdGetOneRecordQue
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
 
-    public async Task<OneOf<MasterDataCrudLoadedData, IEnumerable<Err>>> Handle(MdGetOneRecordQueryRequest request,
+    public async Task<OneOf<MasterDataCrudLoadedData, Err[]>> Handle(MdGetOneRecordQueryRequest request,
         CancellationToken cancellationToken = default)
     {
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
-            return (Err[])createMasterDataCrudResult.AsT1;
+            return createMasterDataCrudResult.AsT1.ToArray();
         var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.GetOne(request.Id, cancellationToken);
-        return result.Match<OneOf<MasterDataCrudLoadedData, IEnumerable<Err>>>(r => (MasterDataCrudLoadedData)r,
-            e => (Err[])e);
+        return result.Match<OneOf<MasterDataCrudLoadedData, Err[]>>(r => (MasterDataCrudLoadedData)r, e => e.ToArray());
     }
 }

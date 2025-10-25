@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.UserRights;
 using BackendCarcassContracts.Errors;
@@ -26,7 +25,7 @@ public sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePasswor
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<Unit, IEnumerable<Err>>> Handle(ChangePasswordCommandRequest request,
+    public async Task<OneOf<Unit, Err[]>> Handle(ChangePasswordCommandRequest request,
         CancellationToken cancellationToken = default)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით

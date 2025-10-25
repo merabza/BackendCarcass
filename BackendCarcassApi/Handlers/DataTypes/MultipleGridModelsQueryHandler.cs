@@ -23,8 +23,8 @@ public sealed class
         _repository = repository;
     }
 
-    public async Task<OneOf<Dictionary<string, string>, IEnumerable<Err>>> Handle(
-        MultipleGridModelsQueryRequest request, CancellationToken cancellationToken = default)
+    public async Task<OneOf<Dictionary<string, string>, Err[]>> Handle(MultipleGridModelsQueryRequest request,
+        CancellationToken cancellationToken = default)
     {
         var resultList = new Dictionary<string, string>();
 
@@ -47,7 +47,7 @@ public sealed class
         }
 
         if (errors.Count > 0)
-            return errors;
+            return errors.ToArray();
         return resultList;
     }
 }

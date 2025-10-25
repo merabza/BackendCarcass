@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassApi.CommandRequests.UserRights;
 using BackendCarcassContracts.Errors;
@@ -27,7 +26,7 @@ public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurr
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<Unit, IEnumerable<Err>>> Handle(DeleteCurrentUserCommandRequest request,
+    public async Task<OneOf<Unit, Err[]>> Handle(DeleteCurrentUserCommandRequest request,
         CancellationToken cancellationToken = default)
     {
         //ეს ერთგვარი ტესტია. თუ კოდი აქამდე მოვიდა, მიმდინარე მომხმარებელი ვალიდურია
