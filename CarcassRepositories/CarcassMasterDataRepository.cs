@@ -22,7 +22,7 @@ public /*open*/ class CarcassMasterDataRepository : AbstractRepository, ICarcass
         _context = carcassContext;
     }
 
-    //public OneOf<IQueryable<IDataType>, IEnumerable<Err>> LoadByTableName(string tableName)
+    //public OneOf<IQueryable<IDataType>, Err[]> LoadByTableName(string tableName)
     //{
     //    var vvv = GetEntityTypeByTableName(tableName);// _context.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
     //    if (vvv == null)
@@ -38,7 +38,7 @@ public /*open*/ class CarcassMasterDataRepository : AbstractRepository, ICarcass
     //        {
     //            MasterDataApiErrors.SetMethodReturnsNullForTable(tableName)
     //        } //ცხრილის Set მეთოდი აბრუნებს null-ს
-    //        : OneOf<IQueryable<IDataType>, IEnumerable<Err>>.FromT0((IQueryable<IDataType>)result);
+    //        : OneOf<IQueryable<IDataType>, Err[]>.FromT0((IQueryable<IDataType>)result);
     //}
 
     public object? RunGenericMethodForLoadAllRecords(MethodInfo setMethod, IReadOnlyTypeBase entityType)
@@ -62,7 +62,7 @@ public /*open*/ class CarcassMasterDataRepository : AbstractRepository, ICarcass
         return _context.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
     }
 
-    public async Task<Option<IEnumerable<Err>>> Create(IDataType newItem, CancellationToken cancellationToken = default)
+    public async Task<Option<Err[]>> Create(IDataType newItem, CancellationToken cancellationToken = default)
     {
         await _context.AddAsync(newItem, cancellationToken);
         //await _context.SaveChangesAsync();

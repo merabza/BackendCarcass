@@ -23,12 +23,12 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         _userManager = userManager;
     }
 
-    public OneOf<IQueryable<IDataType>, IEnumerable<Err>> Load()
+    public OneOf<IQueryable<IDataType>, Err[]> Load()
     {
-        return OneOf<IQueryable<IDataType>, IEnumerable<Err>>.FromT0(_userManager.Users.Cast<IDataType>());
+        return OneOf<IQueryable<IDataType>, Err[]>.FromT0(_userManager.Users.Cast<IDataType>());
     }
 
-    public async Task<Option<IEnumerable<Err>>> Create(IDataType newItem)
+    public async Task<Option<Err[]>> Create(IDataType newItem)
     {
         var user = (User)newItem;
         var appUser = new AppUser(user.UserName, user.FirstName, user.LastName) { Email = user.Email };
@@ -38,7 +38,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         return (Err[])ConvertError(result);
     }
 
-    public async ValueTask<Option<IEnumerable<Err>>> Update(int id, IDataType newItem)
+    public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
         if (oldUser == null)
@@ -66,7 +66,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         return (Err[])ConvertError(setEmailResult);
     }
 
-    public async ValueTask<Option<IEnumerable<Err>>> Delete(int id)
+    public async ValueTask<Option<Err[]>> Delete(int id)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
         if (oldUser == null)

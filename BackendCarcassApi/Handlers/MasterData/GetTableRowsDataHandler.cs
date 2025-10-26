@@ -33,7 +33,7 @@ public sealed class GetTableRowsDataHandler : IQueryHandler<GetTableRowsDataQuer
 
         //var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(request.tableName);
         //var result = await loader.GetTableRowsData(filterSortRequestObject, cancellationToken);
-        //return result.Match<OneOf<TableRowsData, IEnumerable<Err>>>(
+        //return result.Match<OneOf<TableRowsData, Err[]>>(
         //    r => r, e => e);
 
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);

@@ -21,12 +21,12 @@
 //        _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
 //    }
 
-//    public async Task<OneOf<MdGetTableAllRecordsQueryResponse, IEnumerable<Err>>> Handle(
+//    public async Task<OneOf<MdGetTableAllRecordsQueryResponse, Err[]>> Handle(
 //        MdGetTableAllRecordsQueryRequest request, CancellationToken cancellationToken = default)
 //    {
 //        var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(request.TableName);
 //        var entResult = await loader.GetAllRecords(cancellationToken);
-//        return entResult.Match<OneOf<MdGetTableAllRecordsQueryResponse, IEnumerable<Err>>>(
+//        return entResult.Match<OneOf<MdGetTableAllRecordsQueryResponse, Err[]>>(
 //            r => new MdGetTableAllRecordsQueryResponse(r), e => e);
 //    }
 //}

@@ -23,12 +23,12 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         _roleManager = roleManager;
     }
 
-    public OneOf<IQueryable<IDataType>, IEnumerable<Err>> Load()
+    public OneOf<IQueryable<IDataType>, Err[]> Load()
     {
-        return OneOf<IQueryable<IDataType>, IEnumerable<Err>>.FromT0(_roleManager.Roles.Cast<IDataType>());
+        return OneOf<IQueryable<IDataType>, Err[]>.FromT0(_roleManager.Roles.Cast<IDataType>());
     }
 
-    public async Task<Option<IEnumerable<Err>>> Create(IDataType newItem)
+    public async Task<Option<Err[]>> Create(IDataType newItem)
     {
         var role = (Role)newItem;
         var appRole = new AppRole(role.RolKey, role.RolName, role.RolLevel);
@@ -38,7 +38,7 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         return (Err[])ConvertError(result);
     }
 
-    public async ValueTask<Option<IEnumerable<Err>>> Update(int id, IDataType newItem)
+    public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
         if (oldRole == null)
@@ -59,7 +59,7 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         return (Err[])ConvertError(setRoleResult);
     }
 
-    public async ValueTask<Option<IEnumerable<Err>>> Delete(int id)
+    public async ValueTask<Option<Err[]>> Delete(int id)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
         if (oldRole == null)

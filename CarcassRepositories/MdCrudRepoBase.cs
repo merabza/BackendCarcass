@@ -13,7 +13,7 @@ namespace CarcassRepositories;
 
 public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string tableName) : IMdCrudRepo
 {
-    public OneOf<IQueryable<IDataType>, IEnumerable<Err>> Load()
+    public OneOf<IQueryable<IDataType>, Err[]> Load()
     {
         var vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
         if (vvv == null)
@@ -26,17 +26,17 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
         var result = setMethod.MakeGenericMethod(vvv.ClrType).Invoke(carcassContext, null);
         return result == null
             ? new[] { MasterDataApiErrors.SetMethodReturnsNullForTable(tableName) } //ცხრილის Set მეთოდი აბრუნებს null-ს
-            : OneOf<IQueryable<IDataType>, IEnumerable<Err>>.FromT0((IQueryable<IDataType>)result);
+            : OneOf<IQueryable<IDataType>, Err[]>.FromT0((IQueryable<IDataType>)result);
     }
 
-    public async Task<Option<IEnumerable<Err>>> Create(IDataType newItem)
+    public async Task<Option<Err[]>> Create(IDataType newItem)
     {
         await carcassContext.AddAsync(newItem);
         await carcassContext.SaveChangesAsync();
         return null;
     }
 
-    public async ValueTask<Option<IEnumerable<Err>>> Update(int id, IDataType newItem)
+    public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
         var vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
         if (vvv == null)
@@ -57,7 +57,7 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
         return null;
     }
 
-    public async ValueTask<Option<IEnumerable<Err>>> Delete(int id)
+    public async ValueTask<Option<Err[]>> Delete(int id)
     {
         var entResult = Load();
         if (entResult.IsT1)

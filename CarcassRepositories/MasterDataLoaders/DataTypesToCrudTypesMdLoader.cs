@@ -13,9 +13,9 @@
 
 //    //_dataTypeKeys = dataTypeKeys;
 
-//    public OneOf<IQueryable<IDataType>, IEnumerable<Err>> Load()
+//    public OneOf<IQueryable<IDataType>, Err[]> Load()
 //    {
-//        return OneOf<IQueryable<IDataType>, IEnumerable<Err>>.FromT0(
+//        return OneOf<IQueryable<IDataType>, Err[]>.FromT0(
 //            from mmj in ctx.ManyToManyJoins
 //            join pt in ctx.DataTypes on mmj.PtId equals pt.DtId
 //            join ct in ctx.DataTypes on mmj.CtId equals ct.DtId

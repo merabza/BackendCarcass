@@ -8,7 +8,7 @@ namespace CarcassRepositories;
 
 public /*open*/ class IdentityCrudBase
 {
-    protected static Option<IEnumerable<Err>> ConvertError(IdentityResult result)
+    protected static Option<Err[]> ConvertError(IdentityResult result)
     {
         return result.Succeeded
             ? null

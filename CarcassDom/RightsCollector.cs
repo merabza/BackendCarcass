@@ -20,7 +20,7 @@ public sealed class RightsCollector(IRightsRepository repo, IReturnValuesReposit
     private readonly IRightsRepository _repo = repo;
     private readonly IReturnValuesRepository _rvRepo = rvRepo;
 
-    public async Task<OneOf<List<DataTypeModel>, IEnumerable<Err>>> ParentsTreeData(string userName,
+    public async Task<OneOf<List<DataTypeModel>, Err[]>> ParentsTreeData(string userName,
         ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
         var dataTypes =
@@ -32,7 +32,7 @@ public sealed class RightsCollector(IRightsRepository repo, IReturnValuesReposit
         return await GetTreeData(userName, dataTypes, cancellationToken);
     }
 
-    private async ValueTask<OneOf<List<DataTypeModel>, IEnumerable<Err>>> GetTreeData(string userName,
+    private async ValueTask<OneOf<List<DataTypeModel>, Err[]>> GetTreeData(string userName,
         IEnumerable<DataTypeModelForRvs> dataTypes, CancellationToken cancellationToken = default)
     {
         var dataTypeModels = new List<DataTypeModel>();
@@ -55,7 +55,7 @@ public sealed class RightsCollector(IRightsRepository repo, IReturnValuesReposit
         return dataTypeModels;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, IEnumerable<Err>>> ChildrenTreeData(string userName,
+    public async Task<OneOf<List<DataTypeModel>, Err[]>> ChildrenTreeData(string userName,
         string dataTypeKey, ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
         var dataTypes =
@@ -119,7 +119,7 @@ public sealed class RightsCollector(IRightsRepository repo, IReturnValuesReposit
             mmjDataId, cancellationToken);
     }
 
-    private async Task<OneOf<List<ReturnValueModel>, IEnumerable<Err>>> GetRetValues(DataTypeModelForRvs dt,
+    private async Task<OneOf<List<ReturnValueModel>, Err[]>> GetRetValues(DataTypeModelForRvs dt,
         string userName, CancellationToken cancellationToken = default)
     {
         if (dt.DtTable == _repo.GetTableName<User>())
