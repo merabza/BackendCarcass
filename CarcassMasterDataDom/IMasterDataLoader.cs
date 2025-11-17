@@ -8,6 +8,5 @@ namespace CarcassMasterDataDom;
 
 public interface IMasterDataLoader
 {
-    ValueTask<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(
-        CancellationToken cancellationToken = default);
+    ValueTask<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(CancellationToken cancellationToken = default);
 }

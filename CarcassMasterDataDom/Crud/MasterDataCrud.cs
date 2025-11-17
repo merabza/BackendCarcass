@@ -113,8 +113,8 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         }).ToList();
     }
 
-    public override async ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(
-        FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default)
+    public override async ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+        CancellationToken cancellationToken = default)
     {
         var queryResult = QueryObject();
         if (queryResult.IsT1)
@@ -203,8 +203,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         //    t1 => t1);
     }
 
-    private async Task<OneOf<IDataType, Err[]>> GetOneRecord(int id,
-        CancellationToken cancellationToken = default)
+    private async Task<OneOf<IDataType, Err[]>> GetOneRecord(int id, CancellationToken cancellationToken = default)
     {
         var errors = new List<Err>();
         var entResult = Query();
@@ -447,8 +446,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         //sortHelper.ReSortSortIds(queryResult.AsT0);
     }
 
-    protected override async ValueTask<Option<Err[]>> AfterUpdateData(
-        CancellationToken cancellationToken = default)
+    protected override async ValueTask<Option<Err[]>> AfterUpdateData(CancellationToken cancellationToken = default)
     {
         if (_sortHelper is null)
             return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
@@ -461,8 +459,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         return null;
     }
 
-    private async Task<Option<Err[]>> Update(int id, IDataType newItem,
-        CancellationToken cancellationToken = default)
+    private async Task<Option<Err[]>> Update(int id, IDataType newItem, CancellationToken cancellationToken = default)
     {
         //var q = _cmdRepo.RunGenericMethodForQueryRecords(entityType);
         //var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); //
@@ -481,8 +478,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         }, e => (Err[])e);
     }
 
-    protected override async Task<Option<Err[]>> DeleteData(int id,
-        CancellationToken cancellationToken = default)
+    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         var getOneRecordResult = await GetOneRecord(id, cancellationToken);
 
@@ -517,8 +513,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         return null;
     }
 
-    private async Task<Option<Err[]>> Validate(IDataType newItem,
-        CancellationToken cancellationToken = default)
+    private async Task<Option<Err[]>> Validate(IDataType newItem, CancellationToken cancellationToken = default)
     {
         //var dt = _context.DataTypes.SingleOrDefault(s => s.DtTable == tableName);
         var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
