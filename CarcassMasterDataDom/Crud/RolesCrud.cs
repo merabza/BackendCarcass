@@ -38,8 +38,8 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
             new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level)));
     }
 
-    public override async ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(
-        FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default)
+    public override async ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+        CancellationToken cancellationToken = default)
     {
         var roles = _roleManager.Roles;
 
@@ -93,8 +93,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return ConvertError(setRoleResult);
     }
 
-    protected override async Task<Option<Err[]>> DeleteData(int id,
-        CancellationToken cancellationToken = default)
+    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString());
         if (oldRole is null)

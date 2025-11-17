@@ -148,8 +148,7 @@ public abstract class CrudBase
         }
     }
 
-    protected abstract Task<OneOf<ICrudData, Err[]>> GetOneData(int id,
-        CancellationToken cancellationToken = default);
+    protected abstract Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken = default);
 
     protected abstract ValueTask<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default);
@@ -164,6 +163,6 @@ public abstract class CrudBase
 
     protected abstract Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default);
 
-    public abstract ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(
-        FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default);
+    public abstract ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+        CancellationToken cancellationToken = default);
 }
