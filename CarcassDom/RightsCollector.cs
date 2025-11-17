@@ -55,8 +55,8 @@ public sealed class RightsCollector(IRightsRepository repo, IReturnValuesReposit
         return dataTypeModels;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, Err[]>> ChildrenTreeData(string userName,
-        string dataTypeKey, ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
+    public async Task<OneOf<List<DataTypeModel>, Err[]>> ChildrenTreeData(string userName, string dataTypeKey,
+        ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
         var dataTypes =
             (viewStyle == ERightsEditorViewStyle.NormalView
@@ -119,8 +119,8 @@ public sealed class RightsCollector(IRightsRepository repo, IReturnValuesReposit
             mmjDataId, cancellationToken);
     }
 
-    private async Task<OneOf<List<ReturnValueModel>, Err[]>> GetRetValues(DataTypeModelForRvs dt,
-        string userName, CancellationToken cancellationToken = default)
+    private async Task<OneOf<List<ReturnValueModel>, Err[]>> GetRetValues(DataTypeModelForRvs dt, string userName,
+        CancellationToken cancellationToken = default)
     {
         if (dt.DtTable == _repo.GetTableName<User>())
         {

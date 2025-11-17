@@ -39,8 +39,8 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
             .Select(x => new UserCrudData(x.UserName!, x.FirstName, x.LastName, x.Email!)));
     }
 
-    public override async ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(
-        FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default)
+    public override async ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+        CancellationToken cancellationToken = default)
     {
         var users = _userManager.Users;
         var (realOffset, count, rows) = await users.UseCustomSortFilterPagination(filterSortRequest,
@@ -102,8 +102,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return ConvertError(setEmailResult);
     }
 
-    protected override async Task<Option<Err[]>> DeleteData(int id,
-        CancellationToken cancellationToken = default)
+    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString());
         if (oldUser is null)
