@@ -124,17 +124,9 @@ public /*open*/
             //carcass used
 
             //AppClaim
-            DataTypeFactory.Create(
-                "სპეციალური უფლებები", 
-                "სპეციალური უფლება", 
-                "სპეციალური უფლების",
-                CarcassRepo.GetTableName<AppClaim>(), 
-                nameof(AppClaim.AclId).UnCapitalize(), 
-                null,
-                nameof(AppClaim.AclKey).UnCapitalize(), 
-                null, 
-                nameof(AppClaim.AclName).UnCapitalize(), 
-                null),
+            DataTypeFactory.Create("სპეციალური უფლებები", "სპეციალური უფლება", "სპეციალური უფლების",
+                CarcassRepo.GetTableName<AppClaim>(), nameof(AppClaim.AclId).UnCapitalize(), null,
+                nameof(AppClaim.AclKey).UnCapitalize(), null, nameof(AppClaim.AclName).UnCapitalize(), null),
 
             //DataType
             DataTypeFactory.Create("მონაცემთა ტიპები", "მონაცემთა ტიპი", "მონაცემთა ტიპის",
