@@ -12,6 +12,7 @@ namespace CarcassDataSeeding.Seeders;
 
 public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToManyJoinSeederModel>
 {
+    protected const string AdminRoleKey = "Admin";
     private readonly ICarcassDataSeederRepository _carcassRepo;
     private readonly string _secretDataFolder;
 
@@ -57,12 +58,11 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
         var existingManyToManyJoins = DataSeederRepo.GetAll<ManyToManyJoin>();
 
-        if (!DataSeederRepo.CreateEntities(manyToManyJoinsList
-                .Except(existingManyToManyJoins, new ManyToManyJoinComparer()).Distinct(new ManyToManyJoinComparer())
-                .ToList()))
-            throw new Exception("manyToManyJoinsList entities cannot be created");
-
-        return DataSeederRepo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
+        return !DataSeederRepo.CreateEntities(manyToManyJoinsList
+            .Except(existingManyToManyJoins, new ManyToManyJoinComparer()).Distinct(new ManyToManyJoinComparer())
+            .ToList())
+            ? throw new Exception("manyToManyJoinsList entities cannot be created")
+            : DataSeederRepo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
     }
 
     //private bool Check(List<ManyToManyJoin> mustBeDataTypes)
@@ -112,8 +112,6 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         var menuGroupDataTypeId = tempData.GetIntIdByKey<DataType>(menuGroupTableName);
         var menuDataTypeId = tempData.GetIntIdByKey<DataType>(menuTableName);
         var crudRightTypeDataTypeId = tempData.GetIntIdByKey<DataType>(crudRightTypeTableName);
-
-        const string adminRoleKey = "Admin";
 
         ManyToManyJoin[] newManyToManyJoins =
         [
@@ -183,9 +181,9 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
             },
             new() { PtId = dataTypeDataTypeId, PKey = roleTableName, CtId = dataTypeDataTypeId, CKey = roleTableName },
             //admin dt dt [dt, usr, rol]
-            new() { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = dataTypeTableName },
-            new() { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = userTableName },
-            new() { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = dataTypeDataTypeId, CKey = roleTableName }
+            new() { PtId = roleDataTypeId, PKey = AdminRoleKey, CtId = dataTypeDataTypeId, CKey = dataTypeTableName },
+            new() { PtId = roleDataTypeId, PKey = AdminRoleKey, CtId = dataTypeDataTypeId, CKey = userTableName },
+            new() { PtId = roleDataTypeId, PKey = AdminRoleKey, CtId = dataTypeDataTypeId, CKey = roleTableName }
         ];
         var lst = newManyToManyJoins.ToList();
 
@@ -228,7 +226,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         string[] menGroupKeys = ["Main", "MasterData"]; //, "ProgramConstructor"
         lst.AddRange(menGroupKeys.Select(s => new ManyToManyJoin
         {
-            PtId = roleDataTypeId, PKey = adminRoleKey, CtId = menuGroupDataTypeId, CKey = s
+            PtId = roleDataTypeId, PKey = AdminRoleKey, CtId = menuGroupDataTypeId, CKey = s
         }));
 
         //admin menu
@@ -238,7 +236,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
             "DataTypes", "Roles", "Users", "MenuGroups", "MenuEditor", "Rights", "CrudRightTypes"
         ];
         lst.AddRange(menKeys.Select(s =>
-            new ManyToManyJoin { PtId = roleDataTypeId, PKey = adminRoleKey, CtId = menuDataTypeId, CKey = s }));
+            new ManyToManyJoin { PtId = roleDataTypeId, PKey = AdminRoleKey, CtId = menuDataTypeId, CKey = s }));
 
         return lst;
     }
@@ -252,13 +250,11 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         var firstDataTypeId = tempData.GetIntIdByKey<DataType>(firstDKey);
         var secondDataTypeId = tempData.GetIntIdByKey<DataType>(secondDKey);
 
-        const string adminRoleKey = "Admin";
-
         var existingDataTypesToCrudTypes = _carcassRepo.GetManyToManyJoins(firstDataTypeId, secondDataTypeId);
 
         return existingDataTypesToCrudTypes.Select(s => new ManyToManyJoin
         {
-            PtId = roleDataTypeId, PKey = adminRoleKey, CtId = pairDataTypeId, CKey = s.PKey + "." + s.CKey
+            PtId = roleDataTypeId, PKey = AdminRoleKey, CtId = pairDataTypeId, CKey = s.PKey + "." + s.CKey
         }).ToList();
     }
 
@@ -269,13 +265,11 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         var dataTypeDt = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<DataType>());
         var dataTypeRol = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<Role>());
 
-        const string adminRoleKey = "Admin";
-
         var existingDataTypes = DataSeederRepo.GetAll<DataType>();
 
         return existingDataTypes.Select(s => new ManyToManyJoin
         {
-            PtId = dataTypeRol, PKey = adminRoleKey, CtId = dataTypeDt, CKey = s.DtTable
+            PtId = dataTypeRol, PKey = AdminRoleKey, CtId = dataTypeDt, CKey = s.DtTable
         }).ToList();
     }
 
@@ -286,13 +280,11 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         var dataTypeMenuGroup = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<MenuGroup>());
         var dataTypeRol = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<Role>());
 
-        const string adminRoleKey = "Admin";
-
         var existingMenuGroups = DataSeederRepo.GetAll<MenuGroup>();
 
         return existingMenuGroups.Select(s => new ManyToManyJoin
         {
-            PtId = dataTypeRol, PKey = adminRoleKey, CtId = dataTypeMenuGroup, CKey = s.MengKey
+            PtId = dataTypeRol, PKey = AdminRoleKey, CtId = dataTypeMenuGroup, CKey = s.MengKey
         }).ToList();
     }
 
@@ -303,13 +295,11 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         var dataTypeMenu = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<MenuItm>());
         var dataTypeRol = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<Role>());
 
-        const string adminRoleKey = "Admin";
-
         var existingMenuItems = DataSeederRepo.GetAll<MenuItm>();
 
         return existingMenuItems.Select(s => new ManyToManyJoin
         {
-            PtId = dataTypeRol, PKey = adminRoleKey, CtId = dataTypeMenu, CKey = s.MenKey
+            PtId = dataTypeRol, PKey = AdminRoleKey, CtId = dataTypeMenu, CKey = s.MenKey
         }).ToList();
     }
 

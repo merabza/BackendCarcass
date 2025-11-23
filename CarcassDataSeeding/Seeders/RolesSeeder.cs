@@ -34,7 +34,13 @@ public /*open*/
             .Select(roleModel => new
             {
                 roleModel, existingRole = existingRoles.SingleOrDefault(sd => sd.RolKey == roleModel.RoleKey)
-            }).Where(w => w.existingRole is null).Select(s => s.roleModel);
+            }).Where(w => w.existingRole is null).Select(s => s.roleModel).ToList();
+
+        //თუ არ არსებობს ადმინის როლი, შევქმნათ იგი
+        if (!(rolesToCreate.Any(x => x.Level <= 10) || rolesToCreate.Any(x =>
+                x.RoleKey.Equals("admin", StringComparison.CurrentCultureIgnoreCase) ||
+                x.RoleKey.Equals("administrator", StringComparison.CurrentCultureIgnoreCase))))
+            rolesToCreate.Add(new RoleModel { Level = 10, RoleKey = "admin", RoleName = "ადმინისტრატორი" });
 
         if (rolesToCreate.Any(roleModel => !CreateRole(roleModel)))
             return false;
@@ -57,10 +63,7 @@ public /*open*/
         //შევქმნათ როლი
         var result = _roleManager.CreateAsync(new AppRole(roleModel.RoleKey, roleModel.RoleName, roleModel.Level))
             .Result;
-        if (result.Succeeded)
-            return true;
-
-        throw new Exception($"Role {roleModel.RoleName} can not be created.");
+        return result.Succeeded ? true : throw new Exception($"Role {roleModel.RoleName} can not be created.");
     }
 
     private List<RoleModel> GetRoleModels()
