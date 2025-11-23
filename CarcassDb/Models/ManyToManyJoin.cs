@@ -4,32 +4,27 @@ namespace CarcassDb.Models;
 
 public sealed class ManyToManyJoin
 {
-    private DataType? _childDataTypeNavigation;
-    private DataType? _parentDataTypeNavigation;
-
-    public int MmjId { get; set; }
-    public int PtId { get; set; }
+    public int MmjId { get; init; }
+    public int PtId { get; init; }
 
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
-    public required string PKey { get; set; }
-    public int CtId { get; set; }
+    public required string PKey { get; init; }
+    public int CtId { get; init; }
 
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
-    public required string CKey { get; set; }
+    public required string CKey { get; init; }
 
     public DataType ParentDataTypeNavigation
     {
         get =>
-            _parentDataTypeNavigation ??
-            throw new InvalidOperationException("Uninitialized property: " + nameof(ParentDataTypeNavigation));
-        set => _parentDataTypeNavigation = value;
+            field ?? throw new InvalidOperationException("Uninitialized property: " + nameof(ParentDataTypeNavigation));
+        init;
     }
 
     public DataType ChildDataTypeNavigation
     {
         get =>
-            _childDataTypeNavigation ??
-            throw new InvalidOperationException("Uninitialized property: " + nameof(ChildDataTypeNavigation));
-        set => _childDataTypeNavigation = value;
+            field ?? throw new InvalidOperationException("Uninitialized property: " + nameof(ChildDataTypeNavigation));
+        init;
     }
 }
