@@ -66,7 +66,7 @@ public sealed class DataTypesEndpoints : IInstaller
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(DataTypesListQueryHandler)} from {nameof(DataTypesList)}");
-        var query = new DataTypesQueryRequest();
+        var query = new DataTypesRequestQuery();
         var result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<DataTypesResponse[]>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
@@ -84,7 +84,7 @@ public sealed class DataTypesEndpoints : IInstaller
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GridModelQueryHandler)} from {nameof(GridModel)}");
-        var query = new GridModelQueryRequest(gridName);
+        var query = new GridModelRequestQuery(gridName);
         var result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<string>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
@@ -110,7 +110,7 @@ public sealed class DataTypesEndpoints : IInstaller
         StringValues grids, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MultipleGridModelsQueryHandler)} from {nameof(MultipleGridModels)}");
-        var query = new MultipleGridModelsQueryRequest(grids);
+        var query = new MultipleGridModelsRequestQuery(grids);
         var result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<Dictionary<string, string>>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));

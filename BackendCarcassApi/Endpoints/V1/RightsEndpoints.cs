@@ -70,7 +70,7 @@ public sealed class RightsEndpoints : IInstaller
         IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ParentsTreeDataQueryHandler)} from {nameof(ParentsTreeData)}");
-        var query = new ParentsTreeDataQueryRequest((ERightsEditorViewStyle)viewStyle);
+        var query = new ParentsTreeDataRequestQuery((ERightsEditorViewStyle)viewStyle);
         var result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<List<DataTypeModel>>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
@@ -86,8 +86,8 @@ public sealed class RightsEndpoints : IInstaller
     private static async Task<Results<Ok<List<DataTypeModel>>, BadRequest<Err[]>>> ChildrenTreeData(string dataTypeKey,
         int viewStyle, IMediator mediator, CancellationToken cancellationToken = default)
     {
-        Debug.WriteLine($"Call {nameof(ChildrenTreeDataQueryHandler)} from {nameof(ChildrenTreeData)}");
-        var query = new ChildrenTreeDataCommandRequest(dataTypeKey, (ERightsEditorViewStyle)viewStyle);
+        Debug.WriteLine($"Call {nameof(ChildrenTreeDataCommandHandler)} from {nameof(ChildrenTreeData)}");
+        var query = new ChildrenTreeDataRequestCommand(dataTypeKey, (ERightsEditorViewStyle)viewStyle);
         var result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<List<DataTypeModel>>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
@@ -105,8 +105,8 @@ public sealed class RightsEndpoints : IInstaller
     private static async Task<Results<Ok<List<TypeDataModel>>, BadRequest<Err[]>>> HalfChecks(int dataTypeId,
         string dataKey, int viewStyle, IMediator mediator, CancellationToken cancellationToken = default)
     {
-        Debug.WriteLine($"Call {nameof(HalfChecksQueryHandler)} from {nameof(HalfChecks)}");
-        var query = new HalfChecksCommandRequest(dataTypeId, dataKey, (ERightsEditorViewStyle)viewStyle);
+        Debug.WriteLine($"Call {nameof(HalfChecksCommandHandler)} from {nameof(HalfChecks)}");
+        var query = new HalfChecksRequestCommand(dataTypeId, dataKey, (ERightsEditorViewStyle)viewStyle);
         var result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<List<TypeDataModel>>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
@@ -128,7 +128,7 @@ public sealed class RightsEndpoints : IInstaller
         Debug.WriteLine($"Call {nameof(SaveDataCommandHandler)} from {nameof(SaveData)}");
         if (changesForSave is null)
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
-        var commandRequest = new SaveDataCommandRequest(changesForSave);
+        var commandRequest = new SaveDataRequestCommand(changesForSave);
         var result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match<Results<Ok<bool>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));

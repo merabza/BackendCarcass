@@ -3,10 +3,10 @@ using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.QueryRequests.MasterData;
 
-public sealed class MdGetOneRecordQueryRequest : IQuery<MasterDataCrudLoadedData>
+public sealed class MdGetOneRecordRequestQuery : IQuery<MasterDataCrudLoadedData>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MdGetOneRecordQueryRequest(string tableName, int id)
+    public MdGetOneRecordRequestQuery(string tableName, int id)
     {
         TableName = tableName;
         Id = id;

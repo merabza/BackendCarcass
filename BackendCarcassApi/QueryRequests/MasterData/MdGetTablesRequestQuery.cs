@@ -4,7 +4,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace BackendCarcassApi.QueryRequests.MasterData;
 
-public sealed class MdGetTablesQueryRequest : IQuery<MdGetTablesQueryResponse>
+public sealed class MdGetTablesRequestQuery : IQuery<MdGetTablesQueryResponse>
 {
     //public MdGetTablesQueryRequest(HttpRequest httpRequest)
     //{
@@ -14,7 +14,7 @@ public sealed class MdGetTablesQueryRequest : IQuery<MdGetTablesQueryResponse>
     //public HttpRequest HttpRequest { get; set; } //+
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MdGetTablesQueryRequest(StringValues tables)
+    public MdGetTablesRequestQuery(StringValues tables)
     {
         Tables = tables;
     }

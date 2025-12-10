@@ -92,7 +92,7 @@ public sealed class MasterDataEndpoints : IInstaller
         IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GetTablesQueryHandler)} from {nameof(GetTables)}");
-        var query = new MdGetTablesQueryRequest(tables);
+        var query = new MdGetTablesRequestQuery(tables);
         var result = await mediator.Send(query, cancellationToken);
 
         // Explicitly specify the type arguments for the Match method to resolve CS0411
@@ -115,7 +115,7 @@ public sealed class MasterDataEndpoints : IInstaller
         StringValues tables, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GetLookupTablesQueryHandler)} from {nameof(GetTables)}");
-        var query = new MdGetLookupTablesQueryRequest(tables);
+        var query = new MdGetLookupTablesRequestQuery(tables);
         var result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<MdGetLookupTablesQueryResponse>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
@@ -126,8 +126,8 @@ public sealed class MasterDataEndpoints : IInstaller
         [FromRoute] string tableName, [FromQuery] string filterSortRequest,
         CancellationToken cancellationToken = default)
     {
-        Debug.WriteLine($"Call {nameof(GetTableRowsDataHandler)} from {nameof(GetTableRowsData)}");
-        var queryNotes = new GetTableRowsDataQueryRequest(tableName, filterSortRequest);
+        Debug.WriteLine($"Call {nameof(GetTableRowsDataQueryHandler)} from {nameof(GetTableRowsData)}");
+        var queryNotes = new GetTableRowsDataRequestQuery(tableName, filterSortRequest);
         var resultNotes = await mediator.Send(queryNotes, cancellationToken);
         return resultNotes.Match<Results<Ok<TableRowsData>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
@@ -147,7 +147,7 @@ public sealed class MasterDataEndpoints : IInstaller
         int id, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdGetOneRecordQueryHandler)} from {nameof(MdGetOneRecord)}");
-        var query = new MdGetOneRecordQueryRequest(tableName, id);
+        var query = new MdGetOneRecordRequestQuery(tableName, id);
         var result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<MasterDataCrudLoadedData>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
@@ -166,7 +166,7 @@ public sealed class MasterDataEndpoints : IInstaller
         string tableName, HttpRequest request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdCreateOneRecordCommandHandler)} from {nameof(MdCreateOneRecord)}");
-        var commandRequest = new MdCreateOneRecordCommandRequest(tableName, request);
+        var commandRequest = new MdCreateOneRecordRequestCommand(tableName, request);
         var result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match<Results<Ok<MasterDataCrudLoadedData>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
@@ -187,7 +187,7 @@ public sealed class MasterDataEndpoints : IInstaller
         HttpRequest request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdUpdateOneRecordCommandHandler)} from {nameof(MdUpdateOneRecord)}");
-        var commandRequest = new MdUpdateOneRecordCommandRequest(tableName, request, id);
+        var commandRequest = new MdUpdateOneRecordRequestCommand(tableName, request, id);
         var result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match<Results<NoContent, BadRequest<Err[]>>>(_ => TypedResults.NoContent(),
             errors => TypedResults.BadRequest(errors));
@@ -207,7 +207,7 @@ public sealed class MasterDataEndpoints : IInstaller
         IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdDeleteOneRecordCommandHandler)} from {nameof(MdDeleteOneRecord)}");
-        var commandRequest = new MdDeleteOneRecordCommandRequest(tableName, id);
+        var commandRequest = new MdDeleteOneRecordRequestCommand(tableName, id);
         var result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match<Results<NoContent, BadRequest<Err[]>>>(_ => TypedResults.NoContent(),
             errors => TypedResults.BadRequest(errors));

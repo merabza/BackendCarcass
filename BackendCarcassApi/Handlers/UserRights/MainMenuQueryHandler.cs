@@ -11,7 +11,7 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.UserRights;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class MainMenuQueryHandler : IQueryHandler<MainMenuQueryRequest, MainMenuModel>
+public sealed class MainMenuQueryHandler : IQueryHandler<MainMenuRequestQuery, MainMenuModel>
 {
     private readonly ICurrentUser _currentUser;
     private readonly IMenuRightsRepository _mdRepo;
@@ -23,7 +23,7 @@ public sealed class MainMenuQueryHandler : IQueryHandler<MainMenuQueryRequest, M
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<MainMenuModel, Err[]>> Handle(MainMenuQueryRequest request,
+    public async Task<OneOf<MainMenuModel, Err[]>> Handle(MainMenuRequestQuery request,
         CancellationToken cancellationToken = default)
     {
         var mainMenuModel = await _mdRepo.MainMenu(_currentUser.Name, cancellationToken);

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
 using CarcassDb;
@@ -61,7 +60,7 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
     {
         var entResult = Load();
         if (entResult.IsT1)
-            return (Err[])entResult.AsT1;
+            return entResult.AsT1;
 
         var res = entResult.AsT0.ToList();
         var idt = res.SingleOrDefault(w => w.Id == id);

@@ -2,10 +2,10 @@
 
 namespace BackendCarcassApi.QueryRequests.DataTypes;
 
-public sealed class GridModelQueryRequest : IQuery<string>
+public sealed class GridModelRequestQuery : IQuery<string>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public GridModelQueryRequest(string gridName)
+    public GridModelRequestQuery(string gridName)
     {
         GridName = gridName;
     }

@@ -13,7 +13,7 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.UserRights;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePasswordCommandRequest>
+public sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePasswordRequestCommand>
 {
     private readonly ICurrentUser _currentUser;
     private readonly UserManager<AppUser> _userMgr;
@@ -25,7 +25,7 @@ public sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePasswor
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<Unit, Err[]>> Handle(ChangePasswordCommandRequest request,
+    public async Task<OneOf<Unit, Err[]>> Handle(ChangePasswordRequestCommand request,
         CancellationToken cancellationToken = default)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით

@@ -16,7 +16,7 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOneRecordCommandRequest>
+public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOneRecordRequestCommand>
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
 
@@ -25,7 +25,7 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
 
-    public async Task<OneOf<Unit, Err[]>> Handle(MdUpdateOneRecordCommandRequest request,
+    public async Task<OneOf<Unit, Err[]>> Handle(MdUpdateOneRecordRequestCommand request,
         CancellationToken cancellationToken = default)
     {
         //ამოვიღოთ მოთხოვნის ტანი

@@ -5,7 +5,7 @@ using FluentValidation;
 namespace BackendCarcassApi.Validators;
 
 // ReSharper disable once UnusedType.Global
-public sealed class LoginCommandValidator : AbstractValidator<LoginCommandRequest>
+public sealed class LoginCommandValidator : AbstractValidator<LoginRequestCommand>
 {
     public LoginCommandValidator()
     {

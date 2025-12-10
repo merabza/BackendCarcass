@@ -10,7 +10,7 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.DataTypes;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class GridModelQueryHandler : IQueryHandler<GridModelQueryRequest, string>
+public sealed class GridModelQueryHandler : IQueryHandler<GridModelRequestQuery, string>
 {
     private readonly IMenuRightsRepository _repository;
 
@@ -20,7 +20,7 @@ public sealed class GridModelQueryHandler : IQueryHandler<GridModelQueryRequest,
         _repository = repository;
     }
 
-    public async Task<OneOf<string, Err[]>> Handle(GridModelQueryRequest request,
+    public async Task<OneOf<string, Err[]>> Handle(GridModelRequestQuery request,
         CancellationToken cancellationToken = default)
     {
         var res = await _repository.GridModel(request.GridName, cancellationToken);

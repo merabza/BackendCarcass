@@ -14,7 +14,7 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.UserRights;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurrentUserCommandRequest>
+public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurrentUserRequestCommand>
 {
     private readonly ICurrentUser _currentUser;
     private readonly UserManager<AppUser> _userMgr;
@@ -26,7 +26,7 @@ public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurr
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<Unit, Err[]>> Handle(DeleteCurrentUserCommandRequest request,
+    public async Task<OneOf<Unit, Err[]>> Handle(DeleteCurrentUserRequestCommand request,
         CancellationToken cancellationToken = default)
     {
         //ეს ერთგვარი ტესტია. თუ კოდი აქამდე მოვიდა, მიმდინარე მომხმარებელი ვალიდურია

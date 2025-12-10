@@ -115,7 +115,7 @@ public sealed class UserRightsEndpoints : IInstaller
         IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(DeleteCurrentUserCommandHandler)} from {nameof(DeleteCurrentUser)}");
-        var command = new DeleteCurrentUserCommandRequest { UserName = userName };
+        var command = new DeleteCurrentUserRequestCommand { UserName = userName };
         var result = await mediator.Send(command, cancellationToken);
         return result.Match<Results<Ok, BadRequest<Err[]>>>(_ => TypedResults.Ok(),
             errors => TypedResults.BadRequest(errors));
@@ -132,7 +132,7 @@ public sealed class UserRightsEndpoints : IInstaller
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MainMenuQueryHandler)} from {nameof(MainMenu)}");
-        var query = new MainMenuQueryRequest();
+        var query = new MainMenuRequestQuery();
         var result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<MainMenuModel>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));

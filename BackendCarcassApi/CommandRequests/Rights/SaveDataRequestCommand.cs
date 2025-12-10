@@ -4,10 +4,10 @@ using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.CommandRequests.Rights;
 
-public sealed class SaveDataCommandRequest : ICommand<bool>
+public sealed class SaveDataRequestCommand : ICommand<bool>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public SaveDataCommandRequest(List<RightsChangeModel> changesForSave)
+    public SaveDataRequestCommand(List<RightsChangeModel> changesForSave)
     {
         ChangesForSave = changesForSave;
     }

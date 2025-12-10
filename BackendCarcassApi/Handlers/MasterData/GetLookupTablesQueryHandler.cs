@@ -15,7 +15,7 @@ namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class
-    GetLookupTablesQueryHandler : IQueryHandler<MdGetLookupTablesQueryRequest, MdGetLookupTablesQueryResponse>
+    GetLookupTablesQueryHandler : IQueryHandler<MdGetLookupTablesRequestQuery, MdGetLookupTablesQueryResponse>
 {
     private readonly IReturnValuesLoaderCreator _returnValuesLoaderCreator;
     private readonly IReturnValuesRepository _rvRepo;
@@ -27,7 +27,7 @@ public sealed class
         _returnValuesLoaderCreator = returnValuesLoaderCreator;
     }
 
-    public async Task<OneOf<MdGetLookupTablesQueryResponse, Err[]>> Handle(MdGetLookupTablesQueryRequest request,
+    public async Task<OneOf<MdGetLookupTablesQueryResponse, Err[]>> Handle(MdGetLookupTablesRequestQuery request,
         CancellationToken cancellationToken = default)
     {
         //var reqQuery = request.HttpRequest.Query["tables"];

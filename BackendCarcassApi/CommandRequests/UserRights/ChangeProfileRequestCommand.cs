@@ -2,7 +2,7 @@
 
 namespace BackendCarcassApi.CommandRequests.UserRights;
 
-public sealed class ChangeProfileCommandRequest : ICommand
+public sealed class ChangeProfileRequestCommand : ICommand
 {
     public int Userid { get; set; }
     public string? UserName { get; set; }

@@ -45,11 +45,11 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     {
         var queryResult = Query();
         if (queryResult.IsT1)
-            return (Err[])queryResult.AsT1;
+            return queryResult.AsT1;
 
         var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
         if (isGridWithSortIdResult.IsT1)
-            return (Err[])isGridWithSortIdResult.AsT1;
+            return isGridWithSortIdResult.AsT1;
 
         var isGridWithSortId = isGridWithSortIdResult.AsT0;
 
@@ -118,7 +118,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     {
         var queryResult = QueryObject();
         if (queryResult.IsT1)
-            return (Err[])queryResult.AsT1;
+            return queryResult.AsT1;
 
         var query = queryResult.AsT0;
 
@@ -184,11 +184,11 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     {
         var getOneRecordResult = await GetOneRecord(id, cancellationToken);
         if (getOneRecordResult.IsT1)
-            return (Err[])getOneRecordResult.AsT1;
+            return getOneRecordResult.AsT1;
 
         var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
         if (isGridWithSortIdResult.IsT1)
-            return (Err[])isGridWithSortIdResult.AsT1;
+            return isGridWithSortIdResult.AsT1;
 
         var isGridWithSortId = isGridWithSortIdResult.AsT0;
 
@@ -303,7 +303,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
         if (isGridWithSortIdResult.IsT1)
-            return (Err[])isGridWithSortIdResult.AsT1;
+            return isGridWithSortIdResult.AsT1;
 
         var isGridWithSortId = isGridWithSortIdResult.AsT0;
 
@@ -327,7 +327,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         var queryResult = Query();
         if (queryResult.IsT1)
-            return (Err[])queryResult.AsT1;
+            return queryResult.AsT1;
 
         //მაქსიმუმის დათვლა სხვადასხვა მიზეზებით გვჭირდება, ამიტომ ვითვლით აქ.
         var sortIdMax = sortHelper.CountSortIdMax(queryResult.AsT0);
@@ -388,7 +388,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
         if (isGridWithSortIdResult.IsT1)
-            return (Err[])isGridWithSortIdResult.AsT1;
+            return isGridWithSortIdResult.AsT1;
 
         var isGridWithSortId = isGridWithSortIdResult.AsT0;
 
@@ -409,7 +409,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         var queryResult = Query();
         if (queryResult.IsT1)
-            return (Err[])queryResult.AsT1;
+            return queryResult.AsT1;
 
         var sortIdMax = sortHelper.CountSortIdMax(queryResult.AsT0);
 
@@ -453,7 +453,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         var queryResult = Query();
         if (queryResult.IsT1)
-            return (Err[])queryResult.AsT1;
+            return queryResult.AsT1;
 
         await _sortHelper.ReSortSortIds(queryResult.AsT0, cancellationToken);
         return null;
@@ -475,7 +475,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             r.UpdateTo(newItem);
             _cmdRepo.Update(r);
             return null;
-        }, e => (Err[])e);
+        }, e => e);
     }
 
     protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
@@ -483,13 +483,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         var getOneRecordResult = await GetOneRecord(id, cancellationToken);
 
         if (getOneRecordResult.IsT1)
-            return (Err[])getOneRecordResult.AsT1;
+            return getOneRecordResult.AsT1;
 
         _cmdRepo.Delete(getOneRecordResult.AsT0);
 
         var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
         if (isGridWithSortIdResult.IsT1)
-            return (Err[])isGridWithSortIdResult.AsT1;
+            return isGridWithSortIdResult.AsT1;
 
         var isGridWithSortId = isGridWithSortIdResult.AsT0;
 
@@ -506,7 +506,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         var queryResult = Query();
         if (queryResult.IsT1)
-            return (Err[])queryResult.AsT1;
+            return queryResult.AsT1;
 
         await sortHelper.ReSortSortIds(queryResult.AsT0, cancellationToken);
 

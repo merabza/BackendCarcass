@@ -3,4 +3,4 @@ using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.CommandRequests.UserRights;
 
-public sealed class MainMenuQueryRequest : IQuery<MainMenuModel>;
+public sealed class MainMenuRequestQuery : IQuery<MainMenuModel>;

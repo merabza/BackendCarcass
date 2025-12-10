@@ -14,7 +14,7 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.Rights;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-internal sealed class ParentsTreeDataQueryHandler : IQueryHandler<ParentsTreeDataQueryRequest, List<DataTypeModel>>
+internal sealed class ParentsTreeDataQueryHandler : IQueryHandler<ParentsTreeDataRequestQuery, List<DataTypeModel>>
 {
     private readonly ICurrentUser _currentUser;
     private readonly IRightsRepository _repo;
@@ -28,7 +28,7 @@ internal sealed class ParentsTreeDataQueryHandler : IQueryHandler<ParentsTreeDat
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, Err[]>> Handle(ParentsTreeDataQueryRequest request,
+    public async Task<OneOf<List<DataTypeModel>, Err[]>> Handle(ParentsTreeDataRequestQuery request,
         CancellationToken cancellationToken = default)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo);

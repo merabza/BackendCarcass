@@ -16,7 +16,7 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.Authentication;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class LoginCommandHandler : LoginCommandBase, ICommandHandler<LoginCommandRequest, LoginResponse>
+public sealed class LoginCommandHandler : LoginCommandBase, ICommandHandler<LoginRequestCommand, LoginResponse>
 {
     private readonly IOptions<IdentitySettings> _identitySettings;
     private readonly IMenuRightsRepository _mdRepo;
@@ -33,7 +33,7 @@ public sealed class LoginCommandHandler : LoginCommandBase, ICommandHandler<Logi
         _mdRepo = mdRepo;
     }
 
-    public async Task<OneOf<LoginResponse, Err[]>> Handle(LoginCommandRequest request,
+    public async Task<OneOf<LoginResponse, Err[]>> Handle(LoginRequestCommand request,
         CancellationToken cancellationToken = default)
     {
         //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი

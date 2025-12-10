@@ -5,7 +5,7 @@ using FluentValidation;
 namespace BackendCarcassApi.Validators;
 
 // ReSharper disable once UnusedType.Global
-public sealed class RegistrationCommandValidator : AbstractValidator<RegistrationCommandRequest>
+public sealed class RegistrationCommandValidator : AbstractValidator<RegistrationRequestCommand>
 {
     private const int UserNameMaxLength = 255;
 

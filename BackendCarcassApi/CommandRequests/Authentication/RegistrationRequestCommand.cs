@@ -3,7 +3,7 @@ using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.CommandRequests.Authentication;
 
-public sealed class RegistrationCommandRequest : ICommand<LoginResponse>
+public sealed class RegistrationRequestCommand : ICommand<LoginResponse>
 {
     public string? Email { get; set; }
     public string? FirstName { get; set; }

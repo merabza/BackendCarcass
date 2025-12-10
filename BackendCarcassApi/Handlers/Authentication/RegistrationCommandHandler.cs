@@ -15,7 +15,7 @@ namespace BackendCarcassApi.Handlers.Authentication;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class RegistrationCommandHandler : LoginCommandBase,
-    ICommandHandler<RegistrationCommandRequest, LoginResponse>
+    ICommandHandler<RegistrationRequestCommand, LoginResponse>
 {
     private readonly IOptions<IdentitySettings> _identitySettings;
     private readonly SignInManager<AppUser> _signinMgr;
@@ -30,7 +30,7 @@ public sealed class RegistrationCommandHandler : LoginCommandBase,
         _identitySettings = identitySettings;
     }
 
-    public async Task<OneOf<LoginResponse, Err[]>> Handle(RegistrationCommandRequest request,
+    public async Task<OneOf<LoginResponse, Err[]>> Handle(RegistrationRequestCommand request,
         CancellationToken cancellationToken = default)
     {
         //if (string.IsNullOrWhiteSpace(request.UserName))

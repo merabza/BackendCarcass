@@ -5,9 +5,9 @@ namespace BackendCarcassApi.Mappers;
 
 public static class ChangePasswordCommandRequestMapper
 {
-    public static ChangePasswordCommandRequest AdaptTo(this ChangePasswordRequest changePasswordRequest)
+    public static ChangePasswordRequestCommand AdaptTo(this ChangePasswordRequest changePasswordRequest)
     {
-        return new ChangePasswordCommandRequest(changePasswordRequest.Userid, changePasswordRequest.UserName,
+        return new ChangePasswordRequestCommand(changePasswordRequest.Userid, changePasswordRequest.UserName,
             changePasswordRequest.OldPassword, changePasswordRequest.NewPassword,
             changePasswordRequest.NewPasswordConfirm);
     }

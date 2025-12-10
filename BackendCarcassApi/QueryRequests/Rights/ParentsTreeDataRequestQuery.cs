@@ -5,10 +5,10 @@ using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.QueryRequests.Rights;
 
-public sealed class ParentsTreeDataQueryRequest : IQuery<List<DataTypeModel>>
+public sealed class ParentsTreeDataRequestQuery : IQuery<List<DataTypeModel>>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ParentsTreeDataQueryRequest(ERightsEditorViewStyle viewStyle)
+    public ParentsTreeDataRequestQuery(ERightsEditorViewStyle viewStyle)
     {
         ViewStyle = viewStyle;
     }

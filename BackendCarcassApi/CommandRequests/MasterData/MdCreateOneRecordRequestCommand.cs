@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace BackendCarcassApi.CommandRequests.MasterData;
 
-public sealed class MdCreateOneRecordCommandRequest : ICommand<MasterDataCrudLoadedData>
+public sealed class MdCreateOneRecordRequestCommand : ICommand<MasterDataCrudLoadedData>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MdCreateOneRecordCommandRequest(string tableName, HttpRequest httpRequest)
+    public MdCreateOneRecordRequestCommand(string tableName, HttpRequest httpRequest)
     {
         TableName = tableName;
         HttpRequest = httpRequest;

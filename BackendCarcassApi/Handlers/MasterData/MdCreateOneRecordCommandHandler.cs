@@ -15,7 +15,7 @@ namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class
-    MdCreateOneRecordCommandHandler : ICommandHandler<MdCreateOneRecordCommandRequest, MasterDataCrudLoadedData>
+    MdCreateOneRecordCommandHandler : ICommandHandler<MdCreateOneRecordRequestCommand, MasterDataCrudLoadedData>
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
 
@@ -24,7 +24,7 @@ public sealed class
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
 
-    public async Task<OneOf<MasterDataCrudLoadedData, Err[]>> Handle(MdCreateOneRecordCommandRequest request,
+    public async Task<OneOf<MasterDataCrudLoadedData, Err[]>> Handle(MdCreateOneRecordRequestCommand request,
         CancellationToken cancellationToken = default)
     {
         //ამოვიღოთ მოთხოვნის ტანი
@@ -36,7 +36,7 @@ public sealed class
         var crudData = new MasterDataCrudData(body);
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
-            return (Err[])createMasterDataCrudResult.AsT1;
+            return createMasterDataCrudResult.AsT1;
         var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.Create(crudData, cancellationToken);
         return result.Match<OneOf<MasterDataCrudLoadedData, Err[]>>(rcd => (MasterDataCrudLoadedData)rcd,

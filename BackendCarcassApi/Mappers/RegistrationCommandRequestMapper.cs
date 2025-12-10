@@ -5,9 +5,9 @@ namespace BackendCarcassApi.Mappers;
 
 public static class RegistrationCommandRequestMapper
 {
-    public static RegistrationCommandRequest AdaptTo(this RegistrationRequest registrationRequest)
+    public static RegistrationRequestCommand AdaptTo(this RegistrationRequest registrationRequest)
     {
-        return new RegistrationCommandRequest
+        return new RegistrationRequestCommand
         {
             Email = registrationRequest.Email,
             FirstName = registrationRequest.FirstName,

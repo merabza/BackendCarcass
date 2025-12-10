@@ -13,7 +13,7 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class MdGetOneRecordQueryHandler : IQueryHandler<MdGetOneRecordQueryRequest, MasterDataCrudLoadedData>
+public sealed class MdGetOneRecordQueryHandler : IQueryHandler<MdGetOneRecordRequestQuery, MasterDataCrudLoadedData>
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
 
@@ -22,7 +22,7 @@ public sealed class MdGetOneRecordQueryHandler : IQueryHandler<MdGetOneRecordQue
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
 
-    public async Task<OneOf<MasterDataCrudLoadedData, Err[]>> Handle(MdGetOneRecordQueryRequest request,
+    public async Task<OneOf<MasterDataCrudLoadedData, Err[]>> Handle(MdGetOneRecordRequestQuery request,
         CancellationToken cancellationToken = default)
     {
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);

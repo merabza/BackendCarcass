@@ -14,7 +14,7 @@ namespace BackendCarcassApi.Handlers.UserRights;
 
 // ReSharper disable once UnusedType.Global
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class ChangeProfileCommandHandler : ICommandHandler<ChangeProfileCommandRequest>
+public sealed class ChangeProfileCommandHandler : ICommandHandler<ChangeProfileRequestCommand>
 {
     private readonly ICurrentUser _currentUser;
     private readonly UserManager<AppUser> _userMgr;
@@ -26,7 +26,7 @@ public sealed class ChangeProfileCommandHandler : ICommandHandler<ChangeProfileC
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<Unit, Err[]>> Handle(ChangeProfileCommandRequest request,
+    public async Task<OneOf<Unit, Err[]>> Handle(ChangeProfileRequestCommand request,
         CancellationToken cancellationToken = default)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით

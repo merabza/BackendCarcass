@@ -5,7 +5,7 @@ using FluentValidation;
 namespace BackendCarcassApi.Validators;
 
 // ReSharper disable once UnusedType.Global
-public sealed class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommandRequest>
+public sealed class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordRequestCommand>
 {
     private const int UserNameMaxLength = 255;
 

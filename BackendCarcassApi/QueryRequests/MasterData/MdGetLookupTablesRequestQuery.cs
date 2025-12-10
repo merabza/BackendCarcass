@@ -4,7 +4,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace BackendCarcassApi.QueryRequests.MasterData;
 
-public sealed class MdGetLookupTablesQueryRequest : IQuery<MdGetLookupTablesQueryResponse>
+public sealed class MdGetLookupTablesRequestQuery : IQuery<MdGetLookupTablesQueryResponse>
 {
     //StringValues tables
     //public MdGetLookupTablesQueryRequest(HttpRequest httpRequest)
@@ -15,7 +15,7 @@ public sealed class MdGetLookupTablesQueryRequest : IQuery<MdGetLookupTablesQuer
     //public HttpRequest HttpRequest { get; init; } //+
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MdGetLookupTablesQueryRequest(StringValues tables)
+    public MdGetLookupTablesRequestQuery(StringValues tables)
     {
         Tables = tables;
     }

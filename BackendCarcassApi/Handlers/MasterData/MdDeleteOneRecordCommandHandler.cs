@@ -14,7 +14,7 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class MdDeleteOneRecordCommandHandler : ICommandHandler<MdDeleteOneRecordCommandRequest>
+public sealed class MdDeleteOneRecordCommandHandler : ICommandHandler<MdDeleteOneRecordRequestCommand>
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
 
@@ -23,7 +23,7 @@ public sealed class MdDeleteOneRecordCommandHandler : ICommandHandler<MdDeleteOn
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
 
-    public async Task<OneOf<Unit, Err[]>> Handle(MdDeleteOneRecordCommandRequest request,
+    public async Task<OneOf<Unit, Err[]>> Handle(MdDeleteOneRecordRequestCommand request,
         CancellationToken cancellationToken = default)
     {
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);

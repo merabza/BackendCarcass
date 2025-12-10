@@ -4,7 +4,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace BackendCarcassApi.QueryRequests.DataTypes;
 
-public sealed class MultipleGridModelsQueryRequest : IQuery<Dictionary<string, string>>
+public sealed class MultipleGridModelsRequestQuery : IQuery<Dictionary<string, string>>
 {
     //public MultipleGridModelsQueryRequest(HttpRequest httpRequest)
     //{
@@ -14,7 +14,7 @@ public sealed class MultipleGridModelsQueryRequest : IQuery<Dictionary<string, s
     //public HttpRequest HttpRequest { get; set; } //+
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MultipleGridModelsQueryRequest(StringValues grids)
+    public MultipleGridModelsRequestQuery(StringValues grids)
     {
         Grids = grids;
     }

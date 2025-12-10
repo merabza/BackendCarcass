@@ -3,6 +3,6 @@ using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.QueryRequests.DataTypes;
 
-public sealed class DataTypesQueryRequest : IQuery<DataTypesResponse[]>
+public sealed class DataTypesRequestQuery : IQuery<DataTypesResponse[]>
 {
 }

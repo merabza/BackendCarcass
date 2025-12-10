@@ -11,7 +11,7 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.Rights;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class SaveDataCommandHandler : ICommandHandler<SaveDataCommandRequest, bool>
+public sealed class SaveDataCommandHandler : ICommandHandler<SaveDataRequestCommand, bool>
 {
     private readonly ICurrentUser _currentUser;
     private readonly ILogger<SaveDataCommandHandler> _logger;
@@ -26,7 +26,7 @@ public sealed class SaveDataCommandHandler : ICommandHandler<SaveDataCommandRequ
         _logger = logger;
     }
 
-    public async Task<OneOf<bool, Err[]>> Handle(SaveDataCommandRequest request,
+    public async Task<OneOf<bool, Err[]>> Handle(SaveDataRequestCommand request,
         CancellationToken cancellationToken = default)
     {
         var rightsSaver = new RightsSaver(_logger, _repo);

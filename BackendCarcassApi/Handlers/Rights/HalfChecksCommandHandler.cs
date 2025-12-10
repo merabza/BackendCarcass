@@ -13,27 +13,27 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.Rights;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class ChildrenTreeDataQueryHandler : ICommandHandler<ChildrenTreeDataCommandRequest, List<DataTypeModel>>
+public sealed class HalfChecksCommandHandler : ICommandHandler<HalfChecksRequestCommand, List<TypeDataModel>>
 {
     private readonly ICurrentUser _currentUser;
+
     private readonly IRightsRepository _repo;
     private readonly IReturnValuesRepository _rvRepo;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ChildrenTreeDataQueryHandler(IRightsRepository repo, IReturnValuesRepository rvRepo,
-        ICurrentUser currentUser)
+    public HalfChecksCommandHandler(IRightsRepository repo, IReturnValuesRepository rvRepo, ICurrentUser currentUser)
     {
         _repo = repo;
         _rvRepo = rvRepo;
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, Err[]>> Handle(ChildrenTreeDataCommandRequest request,
+    public async Task<OneOf<List<TypeDataModel>, Err[]>> Handle(HalfChecksRequestCommand request,
         CancellationToken cancellationToken = default)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo);
-        var result = await rightsCollector.ChildrenTreeData(_currentUser.Name, request.DataTypeKey, request.ViewStyle,
-            cancellationToken);
-        return result.Match<OneOf<List<DataTypeModel>, Err[]>>(r => r, e => (Err[])e);
+        var typeDataModels = await rightsCollector.HalfChecks(_currentUser.Name, request.DataTypeId, request.DataKey,
+            request.ViewStyle, cancellationToken);
+        return typeDataModels;
     }
 }

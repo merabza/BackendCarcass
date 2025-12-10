@@ -5,10 +5,10 @@ using MediatRMessagingAbstractions;
 
 namespace BackendCarcassApi.CommandRequests.Rights;
 
-public sealed class ChildrenTreeDataCommandRequest : ICommand<List<DataTypeModel>>
+public sealed class ChildrenTreeDataRequestCommand : ICommand<List<DataTypeModel>>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ChildrenTreeDataCommandRequest(string dataTypeKey, ERightsEditorViewStyle viewStyle)
+    public ChildrenTreeDataRequestCommand(string dataTypeKey, ERightsEditorViewStyle viewStyle)
     {
         ViewStyle = viewStyle;
         DataTypeKey = dataTypeKey;

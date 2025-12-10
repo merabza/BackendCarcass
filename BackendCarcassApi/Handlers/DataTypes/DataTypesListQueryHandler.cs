@@ -13,7 +13,7 @@ namespace BackendCarcassApi.Handlers.DataTypes;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class DataTypesListQueryHandler : LoginCommandBase,
-    IQueryHandler<DataTypesQueryRequest, DataTypesResponse[]>
+    IQueryHandler<DataTypesRequestQuery, DataTypesResponse[]>
 {
     private readonly ICurrentUser _currentUser;
     private readonly IMenuRightsRepository _repository;
@@ -25,7 +25,7 @@ public sealed class DataTypesListQueryHandler : LoginCommandBase,
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<DataTypesResponse[], Err[]>> Handle(DataTypesQueryRequest request,
+    public async Task<OneOf<DataTypesResponse[], Err[]>> Handle(DataTypesRequestQuery request,
         CancellationToken cancellationToken = default)
     {
         var res = await _repository.DataTypes(_currentUser.Name, cancellationToken);

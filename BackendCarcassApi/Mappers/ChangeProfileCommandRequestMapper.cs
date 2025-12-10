@@ -5,9 +5,9 @@ namespace BackendCarcassApi.Mappers;
 
 public static class ChangeProfileCommandRequestMapper
 {
-    public static ChangeProfileCommandRequest AdaptTo(this ChangeProfileRequest changeProfileRequest)
+    public static ChangeProfileRequestCommand AdaptTo(this ChangeProfileRequest changeProfileRequest)
     {
-        return new ChangeProfileCommandRequest
+        return new ChangeProfileRequestCommand
         {
             Userid = changeProfileRequest.Userid,
             UserName = changeProfileRequest.UserName,

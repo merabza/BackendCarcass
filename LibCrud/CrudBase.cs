@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
@@ -17,6 +16,7 @@ public abstract class CrudBase
     private readonly ILogger _logger;
 
     // ReSharper disable once ConvertToPrimaryConstructor
+    // ReSharper disable once BothContextCallDeclaration.Global
     protected CrudBase(ILogger logger, IAbstractRepository absRepo)
     {
         _logger = logger;
@@ -27,6 +27,7 @@ public abstract class CrudBase
     //შესაბამისად შექმნის პროცედურას შეუძლია დააბრუნოს შესანახ ობიექტზე რეფერენსი და როცა უკვე შენახვა მოხდება, ამ რეფერენსიდან შესაძლებელი იქნება იდენტიფიკატორის ამოღება
     protected virtual int JustCreatedId => 0;
 
+    // ReSharper disable once BothContextCallDeclaration.Global
     public Task<OneOf<ICrudData, Err[]>> GetOne(int id, CancellationToken cancellationToken = default)
     {
         try

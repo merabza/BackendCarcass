@@ -12,7 +12,7 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class GetTablesQueryHandler : IQueryHandler<MdGetTablesQueryRequest, MdGetTablesQueryResponse>
+public sealed class GetTablesQueryHandler : IQueryHandler<MdGetTablesRequestQuery, MdGetTablesQueryResponse>
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCreator;
 
@@ -22,7 +22,7 @@ public sealed class GetTablesQueryHandler : IQueryHandler<MdGetTablesQueryReques
         _masterDataLoaderCreator = masterDataLoaderCreator;
     }
 
-    public async Task<OneOf<MdGetTablesQueryResponse, Err[]>> Handle(MdGetTablesQueryRequest request,
+    public async Task<OneOf<MdGetTablesQueryResponse, Err[]>> Handle(MdGetTablesRequestQuery request,
         CancellationToken cancellationToken = default)
     {
         List<string> tableNames = request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()

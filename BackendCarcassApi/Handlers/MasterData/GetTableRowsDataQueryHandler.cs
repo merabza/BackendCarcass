@@ -13,17 +13,17 @@ using SystemToolsShared.Errors;
 namespace BackendCarcassApi.Handlers.MasterData;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class GetTableRowsDataHandler : IQueryHandler<GetTableRowsDataQueryRequest, TableRowsData>
+public sealed class GetTableRowsDataQueryHandler : IQueryHandler<GetTableRowsDataRequestQuery, TableRowsData>
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public GetTableRowsDataHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
+    public GetTableRowsDataQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
     {
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
 
-    public async Task<OneOf<TableRowsData, Err[]>> Handle(GetTableRowsDataQueryRequest request,
+    public async Task<OneOf<TableRowsData, Err[]>> Handle(GetTableRowsDataRequestQuery request,
         CancellationToken cancellationToken = default)
     {
         var filterSortRequestObject = FilterSortRequestFactory.Create(request.FilterSortRequest);

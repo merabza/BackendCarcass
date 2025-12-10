@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using LanguageExt;
 using Microsoft.AspNetCore.Identity;
 using SystemToolsShared.Errors;

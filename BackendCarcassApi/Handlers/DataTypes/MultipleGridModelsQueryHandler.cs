@@ -13,7 +13,7 @@ namespace BackendCarcassApi.Handlers.DataTypes;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class
-    MultipleGridModelsQueryHandler : IQueryHandler<MultipleGridModelsQueryRequest, Dictionary<string, string>>
+    MultipleGridModelsQueryHandler : IQueryHandler<MultipleGridModelsRequestQuery, Dictionary<string, string>>
 {
     private readonly IMenuRightsRepository _repository;
 
@@ -23,7 +23,7 @@ public sealed class
         _repository = repository;
     }
 
-    public async Task<OneOf<Dictionary<string, string>, Err[]>> Handle(MultipleGridModelsQueryRequest request,
+    public async Task<OneOf<Dictionary<string, string>, Err[]>> Handle(MultipleGridModelsRequestQuery request,
         CancellationToken cancellationToken = default)
     {
         var resultList = new Dictionary<string, string>();
