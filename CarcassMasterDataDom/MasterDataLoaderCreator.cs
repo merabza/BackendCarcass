@@ -13,8 +13,8 @@ namespace CarcassMasterDataDom;
 
 public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
 {
-    private readonly ILogger<MasterDataLoaderCreator> _logger;
     protected readonly IServiceProvider Services;
+    private readonly ILogger<MasterDataLoaderCreator> _logger;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public MasterDataLoaderCreator(ILogger<MasterDataLoaderCreator> logger, IServiceProvider services)
