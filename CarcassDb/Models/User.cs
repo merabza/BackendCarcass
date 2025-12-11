@@ -7,6 +7,7 @@ namespace CarcassDb.Models;
 public sealed class User : IDataType
 {
     public int UsrId { get; set; }
+
     public required string UserName { get; set; }
     public required string NormalizedUserName { get; set; }
     public required string Email { get; set; }
