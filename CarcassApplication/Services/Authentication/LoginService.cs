@@ -1,50 +1,39 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BackendCarcassApi.CommandRequests.Authentication;
-using BackendCarcassContracts.V1.Responses;
-using CarcassApplication.Services.Authentication;
-using MediatRMessagingAbstractions;
+﻿using CarcassApplication.Repositories;
+using CarcassApplication.Services.Authentication.Models;
+using CarcassIdentity.Models;
+using CarcassMasterDataDom.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using OneOf;
 using SystemToolsShared.Errors;
 
-namespace BackendCarcassApi.Handlers.Authentication;
+namespace CarcassApplication.Services.Authentication;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class LoginCommandHandler : LoginCommandBase, ICommandHandler<LoginRequestCommand, LoginResponse>
+public class LoginService : LoginBase, IScopeServiceCarcass
 {
-    private readonly LoginService _loginService;
-
     // ReSharper disable once ConvertToPrimaryConstructor
-    public LoginCommandHandler(LoginService loginService)
+    public LoginService(UserManager<AppUser> userMgr, SignInManager<AppUser> signinMgr,
+        IOptions<IdentitySettings> identitySettings, IUserClaimsRepository userClaimsRepository) : base(userMgr,
+        signinMgr, identitySettings, userClaimsRepository)
     {
-        _loginService = loginService;
     }
 
-    public async Task<OneOf<LoginResponse, Err[]>> Handle(LoginRequestCommand request,
+    public async Task<OneOf<LoginResult, Err[]>> TryToLogin(string userName, string password,
         CancellationToken cancellationToken = default)
     {
-        var tryLoginResult = await _loginService.TryToLogin(request.UserName!, request.Password!, cancellationToken);
-        if (tryLoginResult.IsT1)
-            return tryLoginResult.AsT1;
+        //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი
+        var user = await UserMgr.FindByNameAsync(userName);
 
-        var user = tryLoginResult.AsT0.User;
-        var appUserModel = new LoginResponse(user.Id, LastSequentialNumber, user.UserName!, user.Email!,
-            tryLoginResult.AsT0.Token,
-            tryLoginResult.AsT0.Roles.Aggregate(string.Empty,
-                (cur, next) => cur + (cur == string.Empty ? string.Empty : ", ") + next), user.FirstName, user.LastName,
-            tryLoginResult.AsT0.AppClaims);
-        return appUserModel;
+        return await LoginProcess(user, password, cancellationToken);
 
-        ////მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი
-        //var user = await _userMgr.FindByNameAsync(request.UserName!);
         ////თუ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         //if (user == null)
         //    return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
 
         ////აქ მოვალთ მხოლოდ იმ შემთხვევაში, თუ მომხმარებელი წარმატებით შეიქმნა,
         ////მოხდეს მისი ავტომატური ავტორიზაცია
-        //user = await DoLogin(_signinMgr, user, request.Password!);
+        //user = await DoLogin(_signinMgr, user, password);
         //if (user == null)
         //    return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
 
@@ -68,9 +57,19 @@ public sealed class LoginCommandHandler : LoginCommandBase, ICommandHandler<Logi
         //if (token is null)
         //    return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
 
-        //var appUserModel = new LoginResponse(user.Id, LastSequentialNumber, user.UserName, user.Email, token,
-        //    roles.Aggregate(string.Empty, (cur, next) => cur + (cur == string.Empty ? string.Empty : ", ") + next),
-        //    user.FirstName, user.LastName, await _mdRepo.UserAppClaims(user.UserName, cancellationToken));
-        //return appUserModel;
+        //var appClaims = await _userClaimsRepository.UserAppClaims(user.UserName, cancellationToken);
+        ////var appUserModel = new LoginResponse(user.Id, _lastSequentialNumber, user.UserName, user.Email, token,
+        ////    roles.Aggregate(string.Empty, (cur, next) => cur + (cur == string.Empty ? string.Empty : ", ") + next),
+        ////    user.FirstName, user.LastName, await _userClaimsRepository.UserAppClaims(user.UserName, cancellationToken));
+        ////return appUserModel;
+
+        //return new LoginResult
+        //{
+        //    User = user,
+        //    LastSequentialNumber = LastSequentialNumber,
+        //    Token = token,
+        //    AppClaims = appClaims,
+        //    Roles = roles
+        //};
     }
 }

@@ -15,6 +15,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\SystemTools\RepositoriesDom\RepositoriesDom.csproj" />
         <ProjectReference Include="..\..\WebSystemTools\WebInstallers\WebInstallers.csproj" />
+        <ProjectReference Include="..\CarcassApplication\CarcassApplication.csproj" />
         <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
         <ProjectReference Include="..\CarcassDom\CarcassDom.csproj" />
         <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />

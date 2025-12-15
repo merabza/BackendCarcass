@@ -42,15 +42,15 @@ public sealed class MenuRightsRepository : AbstractRepository, IMenuRightsReposi
         return mainMenuModel;
     }
 
-    public async Task<List<string>> UserAppClaims(string userName, CancellationToken cancellationToken = default)
-    {
-        var userDataTypeId = await DataTypeIdByKey(GetTableName<User>(), cancellationToken);
-        var roleDataTypeId = await DataTypeIdByKey(GetTableName<Role>(), cancellationToken);
-        var appClaimDataTypeId = await DataTypeIdByKey(GetTableName<AppClaim>(), cancellationToken);
+    //public async Task<List<string>> UserAppClaims(string userName, CancellationToken cancellationToken = default)
+    //{
+    //    var userDataTypeId = await DataTypeIdByKey(GetTableName<User>(), cancellationToken);
+    //    var roleDataTypeId = await DataTypeIdByKey(GetTableName<Role>(), cancellationToken);
+    //    var appClaimDataTypeId = await DataTypeIdByKey(GetTableName<AppClaim>(), cancellationToken);
 
-        return await Task.FromResult(ManyToManyJoinsPcc(userDataTypeId, userName, roleDataTypeId, appClaimDataTypeId)
-            .ToList());
-    }
+    //    return await Task.FromResult(ManyToManyJoinsPcc(userDataTypeId, userName, roleDataTypeId, appClaimDataTypeId)
+    //        .ToList());
+    //}
 
     public async Task<string?> GridModel(string tableName, CancellationToken cancellationToken = default)
     {

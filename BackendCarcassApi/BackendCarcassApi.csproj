@@ -14,6 +14,7 @@
         <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassContracts\BackendCarcassContracts.csproj" />
         <ProjectReference Include="..\..\SystemTools\MediatRMessagingAbstractions\MediatRMessagingAbstractions.csproj" />
         <ProjectReference Include="..\..\WebSystemTools\CorsTools\CorsTools.csproj" />
+        <ProjectReference Include="..\CarcassApplication\CarcassApplication.csproj" />
         <ProjectReference Include="..\CarcassDom\CarcassDom.csproj" />
         <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
         <ProjectReference Include="..\CarcassRepositories\CarcassRepositories.csproj" />

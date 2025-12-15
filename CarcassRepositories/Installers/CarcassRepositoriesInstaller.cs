@@ -1,10 +1,11 @@
-using System;
-using System.Collections.Generic;
+using CarcassApplication.Repositories;
 using CarcassDom;
 using CarcassIdentity;
 using CarcassMasterDataDom;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
 using WebInstallers;
 
 namespace CarcassRepositories.Installers;
@@ -26,6 +27,7 @@ public sealed class CarcassRepositoriesInstaller : IInstaller
         builder.Services.AddScoped<IDataTypesRepository, DataTypesRepository>();
         builder.Services.AddScoped<IReturnValuesRepository, SqlReturnValuesRepository>();
         builder.Services.AddScoped<IRightsRepository, RightsRepository>();
+        builder.Services.AddScoped<IUserClaimsRepository, UserClaimsRepository>();
 
         if (debugMode)
             Console.WriteLine($"{GetType().Name}.{nameof(InstallServices)} Finished");
