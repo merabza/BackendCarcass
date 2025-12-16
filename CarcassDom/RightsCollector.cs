@@ -132,7 +132,7 @@ public sealed class RightsCollector(IRightsRepository repo, IReturnValuesReposit
             return (from usr in users
                     join ml in uml on usr.UsrId equals ml.Item1 into gj
                     from s in gj.DefaultIfEmpty()
-                    where s.Item2 >= minOfLevel
+                    where s != null && s.Item2 >= minOfLevel
                     select new ReturnValueModel { Id = usr.UsrId, Key = usr.NormalizedUserName, Name = usr.FullName })
                 .ToList();
         }
