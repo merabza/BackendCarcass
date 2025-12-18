@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
+using SystemToolsShared;
 
 namespace CarcassDb.Models;
 
@@ -10,6 +11,8 @@ namespace CarcassDb.Models;
 //  ეს უკვე ნიშნავს, რომ ნახვის უფლება არსებობს
 public sealed class CrudRightType : IDataType, IMyEquatable
 {
+    public static string DtKeyKey => nameof(CrtId).CountDtKey();
+
     public int CrtId { get; set; } //იდენტიფიკატორი
 
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength

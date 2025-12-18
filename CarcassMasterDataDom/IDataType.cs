@@ -1,4 +1,6 @@
-﻿namespace CarcassMasterDataDom;
+﻿using Newtonsoft.Json;
+
+namespace CarcassMasterDataDom;
 
 /// <summary>
 ///     ინტერფეისი <c>IDataType</c> გამოიყენება, მონაცემთა ტიპების და ძირითადი ინფორმაციის კლასებისთვის
@@ -9,6 +11,7 @@
 /// </remarks>
 public interface IDataType
 {
+    static string DtKeyKey { get; }
     /// <summary>
     ///     ჩანაწერის იდენტიფიკატორი
     /// </summary>

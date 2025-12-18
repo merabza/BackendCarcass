@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
+using SystemToolsShared;
 
 namespace CarcassDb.Models;
 
 //როლი
 public sealed class Role : IDataType, IMyEquatable
 {
+    public static string DtKeyKey => nameof(RolId).CountDtKey();
+
     public int RolId { get; set; }
 
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength

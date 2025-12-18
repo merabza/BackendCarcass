@@ -1,14 +1,13 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
+using SystemToolsShared;
 
 namespace CarcassDb.Models;
 
 //მენიუს ელემენტი
 public sealed class MenuItm : IDataType, IMyEquatable
 {
-    private MenuGroup? _menGroupNavigation;
-
     public int MenId { get; set; }
 
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
@@ -30,11 +29,11 @@ public sealed class MenuItm : IDataType, IMyEquatable
 
     public MenuGroup MenGroupNavigation
     {
-        get =>
-            _menGroupNavigation ??
-            throw new InvalidOperationException("Uninitialized property: " + nameof(MenGroupNavigation));
-        set => _menGroupNavigation = value;
+        get => field ?? throw new InvalidOperationException("Uninitialized property: " + nameof(MenGroupNavigation));
+        set;
     }
+
+    public static string DtKeyKey => nameof(MenId).CountDtKey();
 
     [NotMapped]
     public int Id
