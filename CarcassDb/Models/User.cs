@@ -1,14 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
-using SystemToolsShared;
 
 namespace CarcassDb.Models;
 
 //მომხმარებელი
 public sealed class User : IDataType
 {
-    public static string DtKeyKey => "user";
-
     public int UsrId { get; set; }
 
     public required string UserName { get; set; }
@@ -19,6 +16,8 @@ public sealed class User : IDataType
     public required string FullName { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
+
+    [NotMapped] public static string DtKeyKey => "user";
 
     [NotMapped]
     public int Id
