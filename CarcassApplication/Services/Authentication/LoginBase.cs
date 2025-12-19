@@ -13,11 +13,10 @@ namespace CarcassApplication.Services.Authentication;
 public class LoginBase
 {
     protected static int LastSequentialNumber;
-    private readonly SignInManager<AppUser> _signinMgr;
     protected readonly UserManager<AppUser> UserMgr;
     private readonly IOptions<IdentitySettings> _identitySettings;
+    private readonly SignInManager<AppUser> _signinMgr;
     private readonly IUserClaimsRepository? _userClaimsRepository;
-
 
     public LoginBase(UserManager<AppUser> userMgr, SignInManager<AppUser> signinMgr,
         IOptions<IdentitySettings> identitySettings, IUserClaimsRepository? userClaimsRepository = null)
@@ -39,7 +38,6 @@ public class LoginBase
     //    var result = await signinMgr.PasswordSignInAsync(user, password, true, false);
     //    return result.Succeeded ? user : null;
     //}
-
 
     public async Task<OneOf<LoginResult, Err[]>> LoginProcess(AppUser? user, string password,
         CancellationToken cancellationToken = default)
@@ -88,9 +86,5 @@ public class LoginBase
             AppClaims = appClaims ?? [],
             Roles = roles
         };
-
-
     }
-
-
 }
