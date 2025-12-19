@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
-using SystemToolsShared;
 
 namespace CarcassDb.Models;
 
 //მომხმარებელი
 public sealed class User : IDataType
 {
-    public static string DtKeyKey => "user";
+    //public static string DtKeyKey => "user";
 
     public int UsrId { get; set; }
 

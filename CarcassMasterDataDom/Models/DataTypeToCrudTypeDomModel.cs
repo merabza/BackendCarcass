@@ -5,7 +5,7 @@ namespace CarcassMasterDataDom.Models;
 
 public sealed class DataTypeToCrudTypeDomModel : IDataType
 {
-    public static string DtKeyKey => nameof(DtctId).CountDtKey();
+    //public static string DtKeyKey => nameof(DtctId).CountDtKey();
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public DataTypeToCrudTypeDomModel(int dtctId, string dtctKey, string dtctName, int dataTypeId)
@@ -38,6 +38,6 @@ public sealed class DataTypeToCrudTypeDomModel : IDataType
 
     public dynamic EditFields()
     {
-        return new { DtctId, DtctKey, DtctName, DataTypeId };
+        return new DataTypeToCrudTypeDomModel(DtctId, DtctKey, DtctName, DataTypeId);
     }
 }

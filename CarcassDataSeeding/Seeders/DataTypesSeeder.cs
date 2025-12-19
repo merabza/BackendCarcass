@@ -33,6 +33,7 @@ public /*open*/
     {
         return dataTypesSeedData.Select(s => new DataType
         {
+            //DtKey = s.DtKey,
             DtTable = s.DtTable,
             DtName = s.DtName,
             DtNameNominative = s.DtNameNominative,

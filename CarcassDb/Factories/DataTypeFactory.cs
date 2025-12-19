@@ -9,12 +9,12 @@ namespace CarcassDb.Factories;
 
 public static class DataTypeFactory
 {
-    public static DataType CreatePseudo(string dtKey, string dtName, string dtNameNominative, string dtNameGenitive,
+    public static DataType CreatePseudo(string dtName, string dtNameNominative, string dtNameGenitive,
         string table1Name, string table2Name)
     {
         return new DataType
         {
-            DtKey = dtKey,
+            //DtKey = dtKey,
             DtName = dtName,
             DtNameNominative = dtNameNominative,
             DtNameGenitive = dtNameGenitive,
@@ -22,7 +22,7 @@ public static class DataTypeFactory
         };
     }
 
-    public static DataType Create(string dtKey, string dtName, string dtNameNominative, string dtNameGenitive, string tableName,
+    public static DataType Create(string dtName, string dtNameNominative, string dtNameGenitive, string tableName,
         string idFieldName, string? idFieldColumnHeader, string? keyFieldName, string? keyFieldNameColumnHeader,
         string? nameFieldName, string? nameFieldNameColumnHeader, params List<Cell> additionalCells)
     {
@@ -50,7 +50,7 @@ public static class DataTypeFactory
 
         return new DataType
         {
-            DtKey = dtKey,
+            //DtKey = dtKey,
             DtName = dtName,
             DtNameNominative = dtNameNominative,
             DtNameGenitive = dtNameGenitive,

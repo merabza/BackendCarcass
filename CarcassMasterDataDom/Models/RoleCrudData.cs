@@ -30,6 +30,6 @@ public sealed class RoleCrudData : ICrudData, IDataType
 
     public dynamic EditFields()
     {
-        return new { Id, RolKey, RolName, RolLevel };
+        return new RoleCrudData(RolKey, RolName, RolLevel);
     }
 }

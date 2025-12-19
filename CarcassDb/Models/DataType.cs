@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
-using SystemToolsShared;
 
 namespace CarcassDb.Models;
 
 //მონაცემთა ტიპი
 public sealed class DataType : IDataType, IMyEquatable
 {
-    public static string DtKeyKey => nameof(DtId).CountDtKey();
+    //public static string DtKeyKey => nameof(DtId).CountDtKey();
 
     public int DtId { get; set; }
 
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
-    public required string DtKey { get; set; }
+    //public required string DtKey { get; set; }
 
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
     public required string DtName { get; set; }
@@ -68,7 +67,7 @@ public sealed class DataType : IDataType, IMyEquatable
         set => DtId = value;
     }
 
-    [NotMapped] public string Key => DtKey;
+    [NotMapped] public string Key => DtTable;
 
     [NotMapped] public string Name => DtName;
 
@@ -79,7 +78,7 @@ public sealed class DataType : IDataType, IMyEquatable
         return new
         {
             DtId,
-            DtKey,
+            //DtKey,
             DtTable,
             DtName,
             DtNameNominative,
@@ -95,7 +94,7 @@ public sealed class DataType : IDataType, IMyEquatable
     {
         if (data is not DataType newData)
             return false;
-        DtKey = newData.DtKey;
+        //DtKey = newData.DtKey;
         DtName = newData.DtName;
         DtNameNominative = newData.DtNameNominative;
         DtNameGenitive = newData.DtNameGenitive;
@@ -113,10 +112,12 @@ public sealed class DataType : IDataType, IMyEquatable
         if (data is not DataType other)
             return false;
 
-        return DtKey == other.DtKey && DtName == other.DtName && DtNameNominative == other.DtNameNominative &&
-               DtNameGenitive == other.DtNameGenitive && DtTable == other.DtTable &&
-               DtIdFieldName == other.DtIdFieldName && Equals(DtKeyFieldName, other.DtKeyFieldName) &&
-               Equals(DtNameFieldName, other.DtNameFieldName) && Equals(DtParentDataTypeId, other.DtParentDataTypeId) &&
-               Equals(DtGridRulesJson, other.DtGridRulesJson);
+        return
+            //DtKey == other.DtKey && 
+            DtName == other.DtName && DtNameNominative == other.DtNameNominative &&
+            DtNameGenitive == other.DtNameGenitive && DtTable == other.DtTable &&
+            DtIdFieldName == other.DtIdFieldName && Equals(DtKeyFieldName, other.DtKeyFieldName) &&
+            Equals(DtNameFieldName, other.DtNameFieldName) && Equals(DtParentDataTypeId, other.DtParentDataTypeId) &&
+            Equals(DtGridRulesJson, other.DtGridRulesJson);
     }
 }
