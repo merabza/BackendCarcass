@@ -35,6 +35,6 @@ public sealed class MenuToCrudTypeDomModel : IDataType
 
     public dynamic EditFields()
     {
-        return new { MnctId, MnctKey, MnctName };
+        return new MenuToCrudTypeDomModel(MnctId, MnctKey, MnctName);
     }
 }

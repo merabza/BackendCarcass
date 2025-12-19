@@ -37,6 +37,6 @@ public sealed class DataTypeToDataTypeDomModel : IDataType
 
     public dynamic EditFields()
     {
-        return new { DtdtId, DtdtKey, DtdtName, PKey };
+        return new DataTypeToDataTypeDomModel(DtdtId, DtdtKey, DtdtName, PKey);
     }
 }

@@ -32,6 +32,6 @@ public sealed class UserCrudData : ICrudData, IDataType
 
     public dynamic EditFields()
     {
-        return new { UserName, FirstName, LastName, Email };
+        return new UserCrudData(UserName, FirstName, LastName, Email);
     }
 }

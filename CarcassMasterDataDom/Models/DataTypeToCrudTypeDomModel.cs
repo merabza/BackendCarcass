@@ -37,6 +37,6 @@ public sealed class DataTypeToCrudTypeDomModel : IDataType
 
     public dynamic EditFields()
     {
-        return new { DtctId, DtctKey, DtctName, DataTypeId };
+        return new DataTypeToCrudTypeDomModel(DtctId, DtctKey, DtctName, DataTypeId);
     }
 }
