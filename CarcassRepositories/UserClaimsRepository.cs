@@ -1,12 +1,12 @@
-﻿using CarcassApplication.Repositories;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using CarcassApplication.Repositories;
 using CarcassDb;
 using CarcassDb.Models;
 using Microsoft.EntityFrameworkCore;
 using RepositoriesDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CarcassRepositories;
 
@@ -41,11 +41,9 @@ public class UserClaimsRepository : AbstractRepository, IUserClaimsRepository
         return from r1 in _carcassContext.ManyToManyJoins
             join r2 in _carcassContext.ManyToManyJoins on new { t = r1.CtId, i = r1.CKey } equals new
             {
-                t = r2.PtId,
-                i = r2.PKey
+                t = r2.PtId, i = r2.PKey
             }
             where r1.PtId == parentTypeId && r1.PKey == parentKey && r1.CtId == childTypeId && r2.CtId == childTypeId2
             select r2.CKey;
     }
-
 }
