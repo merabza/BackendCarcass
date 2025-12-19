@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
-using SystemToolsShared;
 
 namespace CarcassDb.Models;
 
@@ -33,7 +32,7 @@ public sealed class MenuItm : IDataType, IMyEquatable
         set;
     }
 
-    public static string DtKeyKey => nameof(MenId).CountDtKey();
+    //public static string DtKeyKey => nameof(MenId).CountDtKey();
 
     [NotMapped]
     public int Id

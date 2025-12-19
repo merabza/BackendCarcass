@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
-using SystemToolsShared;
 
 namespace CarcassDb.Models;
 
 //მენიუს ჯგუფი
 public sealed class MenuGroup : IDataType, IMyEquatable
 {
-    public static string DtKeyKey => nameof(MengId).CountDtKey();
+    //public static string DtKeyKey => nameof(MengId).CountDtKey();
     public int MengId { get; set; }
 
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength

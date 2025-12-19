@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using CarcassMasterDataDom;
-using SystemToolsShared;
 
 namespace CarcassDb.Models;
 
 //მონაცემთა ტიპი
 public sealed class DataType : IDataType, IMyEquatable
 {
-    public static string DtKeyKey => nameof(DtId).CountDtKey();
+    //public static string DtKeyKey => nameof(DtId).CountDtKey();
 
     public int DtId { get; set; }
 

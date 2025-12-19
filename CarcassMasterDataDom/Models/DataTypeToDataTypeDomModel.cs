@@ -1,11 +1,10 @@
 ﻿using System;
-using SystemToolsShared;
 
 namespace CarcassMasterDataDom.Models;
 
 public sealed class DataTypeToDataTypeDomModel : IDataType
 {
-    public static string DtKeyKey => nameof(DtdtId).CountDtKey();
+    //public static string DtKeyKey => nameof(DtdtId).CountDtKey();
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public DataTypeToDataTypeDomModel(int dtdtId, string dtdtKey, string dtdtName, string pKey)

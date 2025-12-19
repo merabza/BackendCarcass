@@ -1,12 +1,11 @@
-﻿using CarcassMasterDataDom;
-using System.ComponentModel.DataAnnotations.Schema;
-using SystemToolsShared;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using CarcassMasterDataDom;
 
 namespace CarcassDb.Models;
 
 public sealed class AppClaim : IDataType, IMyEquatable
 {
-    public static string DtKeyKey => nameof(AclId).CountDtKey();
+    //public static string DtKeyKey => nameof(AclId).CountDtKey();
 
     public int AclId { get; set; } //იდენტიფიკატორი
 
