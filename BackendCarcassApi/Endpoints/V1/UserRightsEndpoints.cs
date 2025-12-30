@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,29 +14,20 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using SystemToolsShared.Errors;
-using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;
 
 // ReSharper disable once UnusedType.Global
-public sealed class UserRightsEndpoints : IInstaller
+public static class UserRightsEndpoints
 {
-    public int InstallPriority => 70;
-    public int ServiceUsePriority => 70;
-
-    public bool InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
-        Dictionary<string, string> parameters)
-    {
-        return true;
-    }
-
-    public bool UseServices(WebApplication app, bool debugMode)
+    public static bool UseUserRightsEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
+            Console.WriteLine($"{nameof(UseUserRightsEndpoints)} Started");
 
-        var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase)
+        var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase)
             .RequireAuthorization();
 
         group.MapGet(CarcassApiRoutes.UserRights.IsCurrentUserValid, IsCurrentUserValid);
@@ -47,7 +37,7 @@ public sealed class UserRightsEndpoints : IInstaller
         group.MapGet(CarcassApiRoutes.UserRights.MainMenu, MainMenu);
 
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
+            Console.WriteLine($"{nameof(UseUserRightsEndpoints)} Finished");
 
         return true;
     }

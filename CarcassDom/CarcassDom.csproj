@@ -12,8 +12,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
-        <ProjectReference Include="..\..\WebSystemTools\WebInstallers\WebInstallers.csproj" />
-        <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
+        <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
         <ProjectReference Include="..\CarcassMasterDataDom\CarcassMasterDataDom.csproj" />
     </ItemGroup>
 

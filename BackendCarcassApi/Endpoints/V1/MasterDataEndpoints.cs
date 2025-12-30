@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,33 +15,23 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
 using SystemToolsShared.Errors;
-using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;
 
 //უნივერსალური მექანიზმი ნებისმიერი ცხრილის ჩასატვირთად და დასარედაქტირებლად ბაზაში.
 
 // ReSharper disable once UnusedType.Global
-public sealed class MasterDataEndpoints : IInstaller
+public static class MasterDataEndpoints
 {
-    public int InstallPriority => 70;
-
-    public int ServiceUsePriority => 70;
-
-    public bool InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
-        Dictionary<string, string> parameters)
-    {
-        return true;
-    }
-
-    public bool UseServices(WebApplication app, bool debugMode)
+    public static bool UseMasterDataEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
+            Console.WriteLine($"{nameof(UseMasterDataEndpoints)} Started");
 
-        var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.MasterData.MasterDataBase)
+        var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.MasterData.MasterDataBase)
             .RequireAuthorization();
 
         //group.MapGet(CarcassApiRoutes.MasterData.All, AllRecords).AddEndpointFilter<UserTableRightsFilter>();
@@ -57,7 +46,7 @@ public sealed class MasterDataEndpoints : IInstaller
             .AddEndpointFilter<UserTableRightsFilter>();
 
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
+            Console.WriteLine($"{nameof(UseMasterDataEndpoints)} Finished");
 
         return true;
     }

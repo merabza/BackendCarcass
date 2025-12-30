@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using BackendCarcassContracts.V1.Responses;
 using BackendCarcassContracts.V1.Routes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using WebInstallers;
+using Microsoft.AspNetCore.Routing;
 
 namespace BackendCarcassApi.Endpoints.V1;
 
@@ -17,28 +16,19 @@ namespace BackendCarcassApi.Endpoints.V1;
 //[Route("api/[controller]")]
 
 // ReSharper disable once UnusedType.Global
-public sealed class ProcessesEndpoints : IInstaller
+public static class ProcessesEndpoints
 {
-    public int InstallPriority => 70;
-    public int ServiceUsePriority => 70;
-
-    public bool InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
-        Dictionary<string, string> parameters)
-    {
-        return true;
-    }
-
-    public bool UseServices(WebApplication app, bool debugMode)
+    public static bool UseProcessesEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
+            Console.WriteLine($"{nameof(UseProcessesEndpoints)} Started");
 
-        app.MapGet(
+        endpoints.MapGet(
             CarcassApiRoutes.ApiBase + CarcassApiRoutes.Processes.ProcessesBase + CarcassApiRoutes.Processes.Status,
             Status).RequireAuthorization();
 
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
+            Console.WriteLine($"{nameof(UseProcessesEndpoints)} Finished");
 
         return true;
     }

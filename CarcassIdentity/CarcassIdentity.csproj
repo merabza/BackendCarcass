@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\WebSystemTools\WebInstallers\WebInstallers.csproj" />
         <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
     </ItemGroup>
 

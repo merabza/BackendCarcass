@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using CarcassIdentity.Models;
 using CarcassMasterDataDom.Models;
@@ -9,30 +8,26 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using WebInstallers;
 
-namespace CarcassIdentity.Installers;
+namespace CarcassIdentity.DependencyInjection;
 
 // ReSharper disable once UnusedType.Global
-public sealed class CarcassIdentityInstaller : IInstaller
+public static class CarcassIdentityDependencyInjection
 {
-    public int InstallPriority => 27;
-    public int ServiceUsePriority => 60;
-
-    public bool InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
-        Dictionary<string, string> parameters)
+    public static IServiceCollection AddCarcassIdentity(this IServiceCollection services, IConfiguration configuration,
+        bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(InstallServices)} Started");
+            Console.WriteLine($"{nameof(AddCarcassIdentity)} Started");
 
-        builder.Services.AddScoped<IUserStore<AppUser>, MyUserStore>();
-        builder.Services.AddScoped<IUserPasswordStore<AppUser>, MyUserStore>();
-        builder.Services.AddScoped<IUserEmailStore<AppUser>, MyUserStore>();
-        builder.Services.AddScoped<IUserRoleStore<AppUser>, MyUserStore>();
-        builder.Services.AddScoped<IRoleStore<AppRole>, MyUserStore>();
-        builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+        services.AddScoped<IUserStore<AppUser>, MyUserStore>();
+        services.AddScoped<IUserPasswordStore<AppUser>, MyUserStore>();
+        services.AddScoped<IUserEmailStore<AppUser>, MyUserStore>();
+        services.AddScoped<IUserRoleStore<AppUser>, MyUserStore>();
+        services.AddScoped<IRoleStore<AppRole>, MyUserStore>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
 
-        builder.Services.AddIdentity<AppUser, AppRole>(options =>
+        services.AddIdentity<AppUser, AppRole>(options =>
         {
             options.Password.RequiredLength = 3;
             options.Password.RequireNonAlphanumeric = false;
@@ -42,8 +37,8 @@ public sealed class CarcassIdentityInstaller : IInstaller
         }).AddDefaultTokenProviders();
 
         // configure strongly typed settings objects
-        var appSettingsSection = builder.Configuration.GetSection("IdentitySettings");
-        builder.Services.Configure<IdentitySettings>(appSettingsSection);
+        var appSettingsSection = configuration.GetSection("IdentitySettings");
+        services.Configure<IdentitySettings>(appSettingsSection);
 
         // configure jwt authentication
         var identitySettings = appSettingsSection.Get<IdentitySettings>() ??
@@ -51,7 +46,7 @@ public sealed class CarcassIdentityInstaller : IInstaller
         var jwtSecret = identitySettings.JwtSecret ?? throw new Exception("jwtSecret is null");
         var key = Encoding.ASCII.GetBytes(jwtSecret);
 
-        builder.Services.AddAuthentication(x =>
+        services.AddAuthentication(x =>
         {
             x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -69,24 +64,25 @@ public sealed class CarcassIdentityInstaller : IInstaller
             };
         });
 
-        builder.Services.AddAuthorization(x => { x.InvokeHandlersAfterFailure = true; });
+        services.AddAuthorizationBuilder()
+            .SetInvokeHandlersAfterFailure(true);
 
         if (debugMode)
-            Console.WriteLine("CarcassIdentityInstaller.InstallServices Finished");
+            Console.WriteLine($"{nameof(AddCarcassIdentity)} Finished");
 
-        return true;
+        return services;
     }
 
-    public bool UseServices(WebApplication app, bool debugMode)
+    public static bool UseAuthenticationAndAuthorization(this IApplicationBuilder app, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
+            Console.WriteLine($"{nameof(UseAuthenticationAndAuthorization)} Started");
 
         app.UseAuthentication();
         app.UseAuthorization();
 
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
+            Console.WriteLine($"{nameof(UseAuthenticationAndAuthorization)} Finished");
 
         return true;
     }

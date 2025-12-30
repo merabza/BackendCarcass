@@ -10,7 +10,7 @@ using SystemToolsShared.Errors;
 namespace CarcassApplication.Services.Authentication;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class RegistrationService : LoginBase, IScopeServiceCarcass
+public class RegistrationService : LoginBase, IScopeServiceCarcassApplication
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public RegistrationService(UserManager<AppUser> userMgr, SignInManager<AppUser> signinMgr,

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,42 +8,33 @@ using BackendCarcassContracts.Errors;
 using BackendCarcassContracts.V1.Requests;
 using BackendCarcassContracts.V1.Responses;
 using BackendCarcassContracts.V1.Routes;
-using CorsTools;
+using CorsTools.DependencyInjection;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using SystemToolsShared.Errors;
-using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;
 
 // ReSharper disable once UnusedType.Global
-public sealed class AuthenticationEndpoints : IInstaller
+public static class AuthenticationEndpoints
 {
-    public int InstallPriority => 70;
-    public int ServiceUsePriority => 70;
-
-    public bool InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
-        Dictionary<string, string> parameters)
-    {
-        return true;
-    }
-
-    public bool UseServices(WebApplication app, bool debugMode)
+    public static bool UseAuthenticationEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
+            Console.WriteLine($"{nameof(UseAuthenticationEndpoints)} Started");
 
-        var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
-            .RequireCors(CorsInstaller.MyAllowSpecificOrigins);
+        var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
+            .RequireCors(CorsDependencyInjection.MyAllowSpecificOrigins);
 
         group.MapPost(CarcassApiRoutes.Authentication.Registration, Registration);
         group.MapPost(CarcassApiRoutes.Authentication.Login, Login);
 
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
+            Console.WriteLine($"{nameof(UseAuthenticationEndpoints)} Finished");
 
         return true;
     }

@@ -7,7 +7,6 @@ namespace CarcassDb.Configurations;
 
 public sealed class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
 {
-    private const int DtKeyMaxLength = 36;
     private const int DtNameMaxLength = 100;
     private const int DtNameNominativeMaxLength = 100;
     private const int DtNameGenitiveMaxLength = 100;

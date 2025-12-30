@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using BackendCarcassApi.Handlers.DataTypes;
+﻿using BackendCarcassApi.Handlers.DataTypes;
 using BackendCarcassApi.QueryRequests.DataTypes;
 using BackendCarcassContracts.V1.Responses;
 using BackendCarcassContracts.V1.Routes;
@@ -11,9 +6,14 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using SystemToolsShared.Errors;
-using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;
 
@@ -24,25 +24,15 @@ namespace BackendCarcassApi.Endpoints.V1;
 //[Authorize]
 
 // ReSharper disable once UnusedType.Global
-public sealed class DataTypesEndpoints : IInstaller
+public static class DataTypesEndpoints
 {
-    public int InstallPriority => 70;
 
-    public int ServiceUsePriority => 70;
-
-    //private static int _lastSequentialNumber;
-    public bool InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
-        Dictionary<string, string> parameters)
-    {
-        return true;
-    }
-
-    public bool UseServices(WebApplication app, bool debugMode)
+    public static bool UseDataTypesEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
+            Console.WriteLine($"{nameof(UseDataTypesEndpoints)} Started");
 
-        var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.DataTypes.DataTypesBase)
+        var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.DataTypes.DataTypesBase)
             .RequireAuthorization();
 
         group.MapGet(CarcassApiRoutes.DataTypes.DataTypesList, DataTypesList);
@@ -50,7 +40,7 @@ public sealed class DataTypesEndpoints : IInstaller
         group.MapGet(CarcassApiRoutes.DataTypes.MultipleGridModels, MultipleGridModels);
 
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
+            Console.WriteLine($"{nameof(UseDataTypesEndpoints)} Finished");
 
         return true;
     }

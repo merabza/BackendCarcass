@@ -16,9 +16,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Routing;
 using SystemToolsShared.Errors;
-using WebInstallers;
 
 namespace BackendCarcassApi.Endpoints.V1;
 
@@ -28,24 +27,15 @@ namespace BackendCarcassApi.Endpoints.V1;
 //[Route("api/[controller]")]
 
 // ReSharper disable once UnusedType.Global
-public sealed class RightsEndpoints : IInstaller
+public static class RightsEndpoints
 {
-    public int InstallPriority => 70;
-    public int ServiceUsePriority => 70;
-
-    public bool InstallServices(WebApplicationBuilder builder, bool debugMode, string[] args,
-        Dictionary<string, string> parameters)
-    {
-        return true;
-    }
-
-    public bool UseServices(WebApplication app, bool debugMode)
+    public static bool UseRightsEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
     {
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Started");
+            Console.WriteLine($"{nameof(UseRightsEndpoints)} Started");
 
-        var group = app.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Rights.RightsBase).RequireAuthorization()
-            .AddEndpointFilter<UserMustHaveRightsEditorRightsFilter>();
+        var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Rights.RightsBase)
+            .RequireAuthorization().AddEndpointFilter<UserMustHaveRightsEditorRightsFilter>();
 
         group.MapGet(CarcassApiRoutes.Rights.ParentsTreeData, ParentsTreeData);
         group.MapGet(CarcassApiRoutes.Rights.ChildrenTreeData, ChildrenTreeData);
@@ -54,7 +44,7 @@ public sealed class RightsEndpoints : IInstaller
         group.MapPost(CarcassApiRoutes.Rights.Optimize, Optimize);
 
         if (debugMode)
-            Console.WriteLine($"{GetType().Name}.{nameof(UseServices)} Finished");
+            Console.WriteLine($"{nameof(UseRightsEndpoints)} Finished");
 
         return true;
     }
@@ -142,7 +132,7 @@ public sealed class RightsEndpoints : IInstaller
     //   აქ დამატებით მომხმარებლის მონაცემებზე უფლებების შემოწმება არ ხდება,
     //   რადგან შეცდომები, რასაც ეს პროცედურა ასწორებს, ნებისმიერ შემთხვევაში გასასწორებელია
     //[HttpPost("optimize")]
-    private static Ok<bool> Optimize(ILogger<RightsEndpoints> logger, CancellationToken cancellationToken = default)
+    private static Ok<bool> Optimize(CancellationToken cancellationToken = default)
     {
         //Debug.WriteLine($"Call {nameof(OptimizeCommandHandler)} from {nameof(Optimize)}");
         //if (!HasUserRightRole(mdRepo, request))
