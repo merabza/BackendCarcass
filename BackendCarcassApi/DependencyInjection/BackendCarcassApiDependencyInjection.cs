@@ -1,5 +1,3 @@
-//Created by CarcassRepositoriesInstallerClassCreator at 8/1/2022 9:35:56 PM
-
 using System;
 using BackendCarcassApi.Endpoints.V1;
 using Microsoft.AspNetCore.Routing;
