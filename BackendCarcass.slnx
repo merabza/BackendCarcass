@@ -1,0 +1,12 @@
+<Solution>
+  <Project Path="BackendCarcassApi/BackendCarcassApi.csproj" />
+  <Project Path="CarcassDataSeeding/CarcassDataSeeding.csproj" />
+  <Project Path="CarcassDb/CarcassDb.csproj" />
+  <Project Path="CarcassDom/CarcassDom.csproj" />
+  <Project Path="CarcassIdentity/CarcassIdentity.csproj" />
+  <Project Path="CarcassMappers/CarcassMappers.csproj" />
+  <Project Path="CarcassMasterDataDom/CarcassMasterDataDom.csproj" />
+  <Project Path="CarcassRepositories/CarcassRepositories.csproj" />
+  <Project Path="CarcassRights/CarcassRights.csproj" />
+  <Project Path="LibCrud/LibCrud.csproj" />
+</Solution>
