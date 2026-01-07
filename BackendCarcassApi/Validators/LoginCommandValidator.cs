@@ -1,5 +1,5 @@
-﻿using BackendCarcassApi.CommandRequests.Authentication;
-using BackendCarcassContracts.Errors;
+﻿using BackendCarcassContracts.Errors;
+using Carcass.Application.Authentication.Login;
 using FluentValidation;
 
 namespace BackendCarcassApi.Validators;

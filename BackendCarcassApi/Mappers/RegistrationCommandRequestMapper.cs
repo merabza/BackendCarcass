@@ -1,5 +1,5 @@
-﻿using BackendCarcassApi.CommandRequests.Authentication;
-using BackendCarcassContracts.V1.Requests;
+﻿using BackendCarcassContracts.V1.Requests;
+using Carcass.Application.Authentication.Registration;
 
 namespace BackendCarcassApi.Mappers;
 

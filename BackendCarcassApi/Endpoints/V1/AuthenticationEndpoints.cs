@@ -2,12 +2,13 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcassApi.Handlers.Authentication;
 using BackendCarcassApi.Mappers;
 using BackendCarcassContracts.Errors;
 using BackendCarcassContracts.V1.Requests;
 using BackendCarcassContracts.V1.Responses;
 using BackendCarcassContracts.V1.Routes;
+using Carcass.Application.Authentication.Login;
+using Carcass.Application.Authentication.Registration;
 using CorsTools.DependencyInjection;
 using MediatR;
 using Microsoft.AspNetCore.Builder;

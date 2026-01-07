@@ -1,5 +1,5 @@
-﻿using BackendCarcassApi.CommandRequests.UserRights;
-using BackendCarcassContracts.Errors;
+﻿using BackendCarcassContracts.Errors;
+using Carcass.Application.UserRights.ChangePassword;
 using FluentValidation;
 
 namespace BackendCarcassApi.Validators;

@@ -2,12 +2,14 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcassApi.CommandRequests.UserRights;
-using BackendCarcassApi.Handlers.UserRights;
 using BackendCarcassApi.Mappers;
 using BackendCarcassContracts.Errors;
 using BackendCarcassContracts.V1.Requests;
 using BackendCarcassContracts.V1.Routes;
+using Carcass.Application.UserRights.ChangePassword;
+using Carcass.Application.UserRights.ChangeProfile;
+using Carcass.Application.UserRights.DeleteCurrentUser;
+using Carcass.Application.UserRights.GetMainMenu;
 using CarcassRepositories.Models;
 using MediatR;
 using Microsoft.AspNetCore.Builder;

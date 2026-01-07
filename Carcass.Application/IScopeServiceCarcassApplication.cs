@@ -1,0 +1,3 @@
+﻿namespace Carcass.Application;
+
+public interface IScopeServiceCarcassApplication;

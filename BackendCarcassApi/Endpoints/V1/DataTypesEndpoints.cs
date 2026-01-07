@@ -1,6 +1,4 @@
-﻿using BackendCarcassApi.Handlers.DataTypes;
-using BackendCarcassApi.QueryRequests.DataTypes;
-using BackendCarcassContracts.V1.Responses;
+﻿using BackendCarcassContracts.V1.Responses;
 using BackendCarcassContracts.V1.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +11,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Carcass.Application.DataTypes.GetDataTypesList;
+using Carcass.Application.DataTypes.GetGridModel;
+using Carcass.Application.DataTypes.GetMultipleGridModels;
 using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Endpoints.V1;

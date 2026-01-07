@@ -1,5 +1,5 @@
-﻿using BackendCarcassApi.CommandRequests.UserRights;
-using BackendCarcassContracts.V1.Requests;
+﻿using BackendCarcassContracts.V1.Requests;
+using Carcass.Application.UserRights.ChangeProfile;
 
 namespace BackendCarcassApi.Mappers;
 

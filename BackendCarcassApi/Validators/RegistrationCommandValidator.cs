@@ -1,10 +1,10 @@
-﻿using BackendCarcassApi.CommandRequests.Authentication;
-using BackendCarcassContracts.Errors;
+﻿using BackendCarcassContracts.Errors;
+using Carcass.Application.Authentication.Registration;
 using FluentValidation;
 
 namespace BackendCarcassApi.Validators;
 
-// ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 public sealed class RegistrationCommandValidator : AbstractValidator<RegistrationRequestCommand>
 {
     private const int UserNameMaxLength = 255;
