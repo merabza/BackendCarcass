@@ -31,7 +31,7 @@ public /*open*/ class MixedCell : Cell
 
     protected MixedCell Required(string? errorCode = null, string? errorMessage = null)
     {
-        IsRequiredErr = CarcassMasterDataDomErrors.Required(FieldName, Caption, errorCode, errorMessage);
+        IsRequiredErr = CarcassMasterDataErrors.Required(FieldName, Caption, errorCode, errorMessage);
         return this;
     }
 
@@ -55,7 +55,7 @@ public /*open*/ class MixedCell : Cell
         if (value is T)
             return errors;
 
-        errors.Add(CarcassMasterDataDomErrors.MustBeBoolean(FieldName, Caption, typeName));
+        errors.Add(CarcassMasterDataErrors.MustBeBoolean(FieldName, Caption, typeName));
 
         return errors;
     }

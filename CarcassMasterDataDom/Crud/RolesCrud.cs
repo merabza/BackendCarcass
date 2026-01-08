@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using RepositoriesDom;
+using RepositoriesAbstraction;
 using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom.Crud;

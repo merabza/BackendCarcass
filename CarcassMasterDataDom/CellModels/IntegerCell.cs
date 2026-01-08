@@ -13,7 +13,7 @@ public /*open*/ class IntegerCell : NumberCell
         typeName ?? CellTypeNameForSave(nameof(IntegerCell)))
     {
         IsIntegerErr = visible
-            ? CarcassMasterDataDomErrors.MustBeInteger(FieldName, Caption, errorCode, errorMessage)
+            ? CarcassMasterDataErrors.MustBeInteger(FieldName, Caption, errorCode, errorMessage)
             : null;
     }
 

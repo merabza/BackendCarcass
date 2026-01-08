@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore.Metadata;
-using RepositoriesDom;
+using RepositoriesAbstraction;
 using SystemToolsShared.Errors;
 
 namespace CarcassMasterDataDom;

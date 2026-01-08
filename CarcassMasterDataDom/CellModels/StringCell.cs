@@ -58,10 +58,10 @@ public sealed class StringCell : MixedCell
             return errMes;
 
         if (IsRequiredErr is not null && strValue == string.Empty)
-            errMes.Add(CarcassMasterDataDomErrors.IsEmpty(FieldName, Caption));
+            errMes.Add(CarcassMasterDataErrors.IsEmpty(FieldName, Caption));
 
         if (MaxLenRule is not null && strValue.Length > MaxLenRule.Val)
-            errMes.Add(CarcassMasterDataDomErrors.IsTooLong(FieldName, Caption));
+            errMes.Add(CarcassMasterDataErrors.IsTooLong(FieldName, Caption));
 
         return errMes;
     }

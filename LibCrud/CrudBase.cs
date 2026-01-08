@@ -5,7 +5,7 @@ using LanguageExt;
 using LibCrud.Models;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using RepositoriesDom;
+using RepositoriesAbstraction;
 using SystemToolsShared.Errors;
 
 namespace LibCrud;

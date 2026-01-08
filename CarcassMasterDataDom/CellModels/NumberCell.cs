@@ -34,7 +34,7 @@ public /*open*/ class NumberCell : MixedCell
 
     protected NumberCell Positive(string? errorCode = null, string? errorMessage = null)
     {
-        IsPositiveErr = CarcassMasterDataDomErrors.MustBePositive(FieldName, Caption, errorCode, errorMessage);
+        IsPositiveErr = CarcassMasterDataErrors.MustBePositive(FieldName, Caption, errorCode, errorMessage);
         return this;
     }
 }
