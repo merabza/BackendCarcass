@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using CarcassMasterDataDom;
+using CarcassMasterData;
 
 namespace CarcassDb.Models;
 

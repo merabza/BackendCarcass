@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CarcassDb;
-using CarcassMasterDataDom.Models;
+using CarcassMasterData.Models;
 using Microsoft.EntityFrameworkCore;
 
 // ReSharper disable ReplaceWithPrimaryConstructorParameter

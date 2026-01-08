@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CarcassMasterDataDom.Models;
+using CarcassMasterData.Models;
 
 namespace Carcass.Application.MasterData.GetLookupTables;
 

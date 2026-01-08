@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CarcassDb;
-using CarcassDom;
+using CarcassRights;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
-using RepositoriesDom;
+using RepositoriesAbstraction;
 using SystemToolsShared.Errors;
 
 namespace CarcassRepositories;

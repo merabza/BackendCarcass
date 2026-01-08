@@ -1,7 +1,9 @@
-﻿using BackendCarcassContracts.Errors;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using BackendCarcassContracts.Errors;
 using Carcass.Application.Services.Authentication.Models;
 using CarcassIdentity.Models;
-using CarcassMasterDataDom.Models;
+using CarcassMasterData.Models;
 using CarcassRepositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -13,10 +15,10 @@ namespace Carcass.Application.Services.Authentication;
 public class LoginBase
 {
     protected static int LastSequentialNumber;
-    protected readonly UserManager<AppUser> UserMgr;
     private readonly IOptions<IdentitySettings> _identitySettings;
     private readonly SignInManager<AppUser> _signinMgr;
     private readonly IUserClaimsRepository? _userClaimsRepository;
+    protected readonly UserManager<AppUser> UserMgr;
 
     public LoginBase(UserManager<AppUser> userMgr, SignInManager<AppUser> signinMgr,
         IOptions<IdentitySettings> identitySettings, IUserClaimsRepository? userClaimsRepository = null)

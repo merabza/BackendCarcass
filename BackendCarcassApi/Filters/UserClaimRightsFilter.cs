@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
-using CarcassDom;
 using CarcassIdentity;
 using CarcassRights;
 using Microsoft.AspNetCore.Http;

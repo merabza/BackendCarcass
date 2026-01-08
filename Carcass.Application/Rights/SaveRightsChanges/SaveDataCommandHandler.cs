@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using CarcassDom;
 using CarcassIdentity;
+using CarcassRights;
 using MediatRMessagingAbstractions;
 using Microsoft.Extensions.Logging;
 using OneOf;

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CarcassDb.Models;
-using CarcassMasterDataDom;
-using CarcassMasterDataDom.CellModels;
+using CarcassMasterData;
+using CarcassMasterData.CellModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

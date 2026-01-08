@@ -2,14 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassContracts\BackendCarcassContracts.csproj" />
     <ProjectReference Include="..\..\SystemTools\MediatRMessagingAbstractions\MediatRMessagingAbstractions.csproj" />
+    <ProjectReference Include="..\CarcassFilterSort\CarcassFilterSort.csproj" />
+    <ProjectReference Include="..\CarcassMasterData\CarcassMasterData.csproj" />
     <ProjectReference Include="..\CarcassRepositories\CarcassRepositories.csproj" />
+    <ProjectReference Include="..\LibCrud\LibCrud.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
 using CarcassIdentity;
-using CarcassMasterDataDom.Models;
+using CarcassMasterData.Models;
 using MediatR;
 using MediatRMessagingAbstractions;
 using Microsoft.AspNetCore.Identity;

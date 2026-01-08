@@ -15,10 +15,11 @@
         <ProjectReference Include="..\..\SystemTools\MediatRMessagingAbstractions\MediatRMessagingAbstractions.csproj" />
         <ProjectReference Include="..\..\WebSystemTools\CorsTools\CorsTools.csproj" />
         <ProjectReference Include="..\Carcass.Application\Carcass.Application.csproj" />
-        <ProjectReference Include="..\CarcassDom\CarcassDom.csproj" />
         <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
+        <ProjectReference Include="..\CarcassMasterData\CarcassMasterData.csproj" />
         <ProjectReference Include="..\CarcassRepositories\CarcassRepositories.csproj" />
         <ProjectReference Include="..\CarcassRights\CarcassRights.csproj" />
+        <ProjectReference Include="..\LibCrud\LibCrud.csproj" />
     </ItemGroup>
 
     <ItemGroup>

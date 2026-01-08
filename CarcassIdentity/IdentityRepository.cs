@@ -4,11 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using CarcassDb;
 using CarcassDb.Models;
-using CarcassMasterDataDom.Models;
+using CarcassMasterData.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using RepositoriesDom;
+using RepositoriesAbstraction;
 
 namespace CarcassIdentity;
 

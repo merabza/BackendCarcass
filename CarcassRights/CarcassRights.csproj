@@ -12,7 +12,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
-        <ProjectReference Include="..\CarcassDom\CarcassDom.csproj" />
         <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
     </ItemGroup>
 

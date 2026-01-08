@@ -1,0 +1,3 @@
+﻿namespace CarcassFilterSort;
+
+public sealed class FilterSortIdentifierEqualityComparer;

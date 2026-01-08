@@ -4,10 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using CarcassDb;
 using CarcassDb.Models;
-using CarcassMasterDataDom;
-using CarcassMasterDataDom.Models;
+using CarcassMasterData;
+using CarcassMasterData.Models;
 using Microsoft.EntityFrameworkCore;
-using RepositoriesDom;
+using RepositoriesAbstraction;
 
 namespace CarcassRepositories;
 

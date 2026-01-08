@@ -1,4 +1,4 @@
-﻿using CarcassMasterDataDom.Models;
+﻿using CarcassMasterData.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 using CarcassIdentity.Models;
-using CarcassMasterDataDom.Models;
+using CarcassMasterData.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -64,8 +64,7 @@ public static class CarcassIdentityDependencyInjection
             };
         });
 
-        services.AddAuthorizationBuilder()
-            .SetInvokeHandlersAfterFailure(true);
+        services.AddAuthorizationBuilder().SetInvokeHandlersAfterFailure(true);
 
         if (debugMode)
             Console.WriteLine($"{nameof(AddCarcassIdentity)} Finished");

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassMasterDataDom;
+using CarcassMasterData;
 using MediatRMessagingAbstractions;
 using OneOf;
 using SystemToolsShared.Errors;

@@ -1,4 +1,5 @@
-﻿using CarcassMasterDataDom.Models;
+﻿using System.Collections.Generic;
+using CarcassMasterData.Models;
 
 namespace Carcass.Application.Services.Authentication.Models;
 

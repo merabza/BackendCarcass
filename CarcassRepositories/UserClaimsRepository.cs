@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using CarcassDb;
 using CarcassDb.Models;
 using Microsoft.EntityFrameworkCore;
-using RepositoriesDom;
+using RepositoriesAbstraction;
 
 namespace CarcassRepositories;
 

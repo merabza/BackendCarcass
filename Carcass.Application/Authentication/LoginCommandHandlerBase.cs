@@ -1,4 +1,5 @@
-﻿using CarcassMasterDataDom.Models;
+﻿using System.Threading.Tasks;
+using CarcassMasterData.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Carcass.Application.Authentication;

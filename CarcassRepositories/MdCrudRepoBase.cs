@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
 using CarcassDb;
-using CarcassMasterDataDom;
+using CarcassMasterData;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using OneOf;

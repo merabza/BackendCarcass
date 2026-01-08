@@ -11,7 +11,7 @@ using Carcass.Application.MasterData.GetMultipleTablesRows;
 using Carcass.Application.MasterData.GetOneRecord;
 using Carcass.Application.MasterData.GetTableRows;
 using Carcass.Application.MasterData.UpdateOneRecord;
-using CarcassMasterDataDom.Models;
+using CarcassMasterData.Models;
 using LibCrud.Models;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
