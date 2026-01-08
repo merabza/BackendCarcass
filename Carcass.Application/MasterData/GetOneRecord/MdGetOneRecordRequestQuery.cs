@@ -1,4 +1,4 @@
-﻿using CarcassMasterDataDom.Models;
+﻿using CarcassMasterData.Models;
 using MediatRMessagingAbstractions;
 
 namespace Carcass.Application.MasterData.GetOneRecord;

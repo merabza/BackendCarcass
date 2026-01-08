@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
 using CarcassDb.Models;
-using CarcassDom;
 using CarcassIdentity;
 using LanguageExt;
 using Microsoft.AspNetCore.Http;

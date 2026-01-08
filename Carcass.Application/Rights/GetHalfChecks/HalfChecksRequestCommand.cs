@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using CarcassDom;
-using CarcassDom.Models;
+using CarcassRights;
+using CarcassRights.Models;
 using MediatRMessagingAbstractions;
 
 namespace Carcass.Application.Rights.GetHalfChecks;

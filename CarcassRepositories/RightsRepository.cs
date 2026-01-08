@@ -5,13 +5,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using CarcassDb;
 using CarcassDb.Models;
-using CarcassDom;
-using CarcassDom.Models;
 using CarcassMappers;
-using CarcassMasterDataDom.Models;
+using CarcassMasterData.Models;
+using CarcassRights;
+using CarcassRights.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using RepositoriesDom;
+using RepositoriesAbstraction;
 
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
 

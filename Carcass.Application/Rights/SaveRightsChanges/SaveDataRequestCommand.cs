@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CarcassDom.Models;
+using CarcassRights.Models;
 using MediatRMessagingAbstractions;
 
 namespace Carcass.Application.Rights.SaveRightsChanges;

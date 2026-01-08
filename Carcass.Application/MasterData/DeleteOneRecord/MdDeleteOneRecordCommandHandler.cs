@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
-using CarcassMasterDataDom;
+using CarcassMasterData;
 using MediatR;
 using MediatRMessagingAbstractions;
 using OneOf;

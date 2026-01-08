@@ -1,7 +1,7 @@
 using System;
-using CarcassDom;
 using CarcassIdentity;
-using CarcassMasterDataDom;
+using CarcassMasterData;
+using CarcassRights;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CarcassRepositories.DependencyInjection;

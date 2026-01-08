@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using CarcassMasterDataDom;
+using CarcassMasterData;
 using OneOf;
 using SystemToolsShared.Errors;
 

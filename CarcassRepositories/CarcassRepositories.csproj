@@ -13,12 +13,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\SystemTools\RepositoriesDom\RepositoriesDom.csproj" />
         <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
-        <ProjectReference Include="..\CarcassDom\CarcassDom.csproj" />
         <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
         <ProjectReference Include="..\CarcassMappers\CarcassMappers.csproj" />
-        <ProjectReference Include="..\CarcassMasterDataDom\CarcassMasterDataDom.csproj" />
+        <ProjectReference Include="..\CarcassRights\CarcassRights.csproj" />
     </ItemGroup>
 
 </Project>

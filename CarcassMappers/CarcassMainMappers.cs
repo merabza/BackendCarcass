@@ -1,5 +1,5 @@
 ﻿using CarcassDb.Models;
-using CarcassDom.Models;
+using CarcassRights.Models;
 
 namespace CarcassMappers;
 

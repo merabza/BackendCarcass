@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassDom;
-using CarcassDom.Models;
 using CarcassIdentity;
-using CarcassMasterDataDom;
+using CarcassMasterData;
+using CarcassRights;
+using CarcassRights.Models;
 using MediatRMessagingAbstractions;
 using OneOf;
 using SystemToolsShared.Errors;

@@ -1,4 +1,4 @@
-﻿using CarcassMasterDataDom;
+﻿using CarcassMasterData;
 
 namespace CarcassDb;
 

@@ -7,10 +7,10 @@ using BackendCarcassContracts.V1.Responses;
 using CarcassDb;
 using CarcassDb.Models;
 using CarcassDb.QueryModels;
-using CarcassDom;
 using CarcassRepositories.Models;
+using CarcassRights;
 using Microsoft.EntityFrameworkCore;
-using RepositoriesDom;
+using RepositoriesAbstraction;
 
 namespace CarcassRepositories;
 
