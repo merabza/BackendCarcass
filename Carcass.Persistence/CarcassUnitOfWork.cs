@@ -49,4 +49,9 @@ public /*open*/ class CarcassUnitOfWork : IUnitOfWork
             return new[] { SystemToolsErrors.UnexpectedDatabaseException(e) };
         }
     }
+
+    public void SetCommandTimeout(TimeSpan timeout)
+    {
+        _dbContext.Database.SetCommandTimeout(timeout);
+    }
 }
