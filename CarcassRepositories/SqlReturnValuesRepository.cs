@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassDb;
+using Carcass.Database;
 using CarcassMasterData.Models;
 using Microsoft.EntityFrameworkCore;
 

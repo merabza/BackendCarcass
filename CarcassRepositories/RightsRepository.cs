@@ -3,27 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassDb;
-using CarcassDb.Models;
+using Carcass.Database;
+using Carcass.Database.Models;
 using CarcassMappers;
 using CarcassMasterData.Models;
 using CarcassRights;
 using CarcassRights.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using RepositoriesAbstraction;
 
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
 
 namespace CarcassRepositories;
 
-public sealed class RightsRepository : AbstractRepository, IRightsRepository
+public sealed class RightsRepository : IRightsRepository
 {
     private readonly CarcassDbContext _carcassContext;
     private readonly ILogger<RightsRepository> _logger;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public RightsRepository(ILogger<RightsRepository> logger, CarcassDbContext context) : base(context)
+    public RightsRepository(ILogger<RightsRepository> logger, CarcassDbContext context)
     {
         _carcassContext = context;
         _logger = logger;

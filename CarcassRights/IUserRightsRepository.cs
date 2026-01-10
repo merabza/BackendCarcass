@@ -1,12 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using OneOf;
-using RepositoriesAbstraction;
 using SystemToolsShared.Errors;
 
 namespace CarcassRights;
 
-public interface IUserRightsRepository : IAbstractRepository
+public interface IUserRightsRepository
 {
     //Task<bool> CheckUserRightToClaim(IEnumerable<Claim> userClaims, string claimName);
     Task<int?> GetDataTypeIdByKey(string? tableName, CancellationToken cancellationToken = default);

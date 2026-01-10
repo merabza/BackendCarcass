@@ -1,4 +1,4 @@
-﻿using CarcassDb.Models;
+﻿using Carcass.Database.Models;
 using CarcassRights.Models;
 
 namespace CarcassMappers;

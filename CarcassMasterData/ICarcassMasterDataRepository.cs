@@ -3,12 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore.Metadata;
-using RepositoriesAbstraction;
 using SystemToolsShared.Errors;
 
 namespace CarcassMasterData;
 
-public interface ICarcassMasterDataRepository : IAbstractRepository
+public interface ICarcassMasterDataRepository
 {
     //OneOf<IQueryable<IDataType>, Err[]> LoadByTableName(string tableName);
     object? RunGenericMethodForLoadAllRecords(MethodInfo setMethod, IReadOnlyTypeBase entityType);

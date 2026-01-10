@@ -2,28 +2,30 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassDb;
-using CarcassDb.Models;
+using Carcass.Database;
+using Carcass.Database.Models;
 using CarcassMasterData.Models;
+using DomainShared.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using RepositoriesAbstraction;
 
 namespace CarcassIdentity;
 
-public sealed class IdentityRepository : AbstractRepository, IIdentityRepository
+public sealed class IdentityRepository : IIdentityRepository
 {
     private readonly CarcassDbContext _carcassContext;
 
     //private readonly IDataTypeKeys _dataTypeKeys;
     private readonly ILogger<IdentityRepository> _logger;
+    private readonly IUnitOfWork _unitOfWork;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public IdentityRepository(CarcassDbContext ctx, ILogger<IdentityRepository> logger) : base(ctx)
+    public IdentityRepository(CarcassDbContext ctx, IUnitOfWork unitOfWork, ILogger<IdentityRepository> logger)
     {
         _carcassContext = ctx;
         _logger = logger;
+        _unitOfWork = unitOfWork;
         //_dataTypeKeys = dataTypeKeys;
     }
 
@@ -32,8 +34,8 @@ public sealed class IdentityRepository : AbstractRepository, IIdentityRepository
 
     public IQueryable<ManyToManyJoin> RolesByUsers =>
         _carcassContext.ManyToManyJoins.Include(i => i.ParentDataTypeNavigation).Include(i => i.ChildDataTypeNavigation)
-            .Where(w => w.ParentDataTypeNavigation.DtTable == GetTableName<User>() &&
-                        w.ChildDataTypeNavigation.DtTable == GetTableName<Role>());
+            .Where(w => w.ParentDataTypeNavigation.DtTable == _unitOfWork.GetTableName<User>() &&
+                        w.ChildDataTypeNavigation.DtTable == _unitOfWork.GetTableName<Role>());
 
     public async ValueTask<IdentityResult> CreateUserAsync(AppUser appUser,
         CancellationToken cancellationToken = default)

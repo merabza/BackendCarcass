@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
 using CarcassIdentity;
 using CarcassRights;
+using DomainShared.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -14,20 +15,22 @@ public /*open*/ class UserClaimRightsFilter : IEndpointFilter
     private readonly ICurrentUser _currentUser;
     private readonly ILogger<UserClaimRightsFilter> _logger;
     private readonly IUserRightsRepository _repo;
+    private readonly IUnitOfWork _unitOfWork;
 
-    protected UserClaimRightsFilter(string claimName, IUserRightsRepository repo, ILogger<UserClaimRightsFilter> logger,
-        ICurrentUser currentUser)
+    protected UserClaimRightsFilter(string claimName, IUserRightsRepository repo, IUnitOfWork unitOfWork,
+        ILogger<UserClaimRightsFilter> logger, ICurrentUser currentUser)
     {
         _claimName = claimName;
         _repo = repo;
         _logger = logger;
         _currentUser = currentUser;
+        _unitOfWork = unitOfWork;
     }
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         //შემოწმდეს აქვს თუ არა მიმდინარე მომხმარებელს _claimName-ის შესაბამისი სპეციალური უფლება
-        var rightsDeterminer = new RightsDeterminer(_repo, _logger, _currentUser);
+        var rightsDeterminer = new RightsDeterminer(_repo, _unitOfWork, _logger, _currentUser);
         var result = await rightsDeterminer.CheckUserRightToClaim(_claimName, CancellationToken.None);
         if (result.IsT1)
             return Results.BadRequest(result.AsT1);

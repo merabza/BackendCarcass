@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using CarcassIdentity;
 using CarcassRights;
+using DomainShared.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -12,14 +13,16 @@ public sealed class UserTableRightsFilter : IEndpointFilter
     private readonly ICurrentUser _currentUser;
     private readonly ILogger<UserMenuRightsFilter> _logger;
     private readonly IUserRightsRepository _repo;
+    private readonly IUnitOfWork _unitOfWork;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public UserTableRightsFilter(IUserRightsRepository repo, ILogger<UserMenuRightsFilter> logger,
-        ICurrentUser currentUser)
+    public UserTableRightsFilter(IUserRightsRepository repo, IUnitOfWork unitOfWork,
+        ILogger<UserMenuRightsFilter> logger, ICurrentUser currentUser)
     {
         _repo = repo;
         _logger = logger;
         _currentUser = currentUser;
+        _unitOfWork = unitOfWork;
     }
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
@@ -28,7 +31,7 @@ public sealed class UserTableRightsFilter : IEndpointFilter
         routeData.TryGetValue("tableName", out var tableName);
         var strTableName = tableName?.ToString() ?? string.Empty;
 
-        var rightsDeterminer = new RightsDeterminer(_repo, _logger, _currentUser);
+        var rightsDeterminer = new RightsDeterminer(_repo, _unitOfWork, _logger, _currentUser);
         var checkTableRightsResult = await rightsDeterminer.CheckTableRights(_currentUser.Name,
             context.HttpContext.Request.Method, new TableKeyName { TableName = strTableName }, CancellationToken.None);
 

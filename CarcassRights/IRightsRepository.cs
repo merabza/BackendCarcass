@@ -5,11 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using CarcassMasterData.Models;
 using CarcassRights.Models;
-using RepositoriesAbstraction;
 
 namespace CarcassRights;
 
-public interface IRightsRepository : IAbstractRepository
+public interface IRightsRepository
 {
     Task<int> DataTypeIdByTableName(string tableName, CancellationToken cancellationToken = default);
     int UserMinLevel(IEnumerable<string> drPcs);
@@ -54,5 +53,4 @@ public interface IRightsRepository : IAbstractRepository
 
     Task<bool> RemoveOneManyToManyJoin(ManyToManyJoinModel manyToManyJoinModel,
         CancellationToken cancellationToken = default);
-
 }

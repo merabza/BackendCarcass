@@ -3,8 +3,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
-using CarcassDb.Models;
+using Carcass.Database.Models;
 using CarcassIdentity;
+using DomainShared.Repositories;
 using LanguageExt;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -21,12 +22,15 @@ public sealed class RightsDeterminer
     private readonly ICurrentUser _currentUser;
     private readonly ILogger _logger;
     private readonly IUserRightsRepository _repo;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public RightsDeterminer(IUserRightsRepository repo, ILogger logger, ICurrentUser currentUser)
+    public RightsDeterminer(IUserRightsRepository repo, IUnitOfWork unitOfWork, ILogger logger,
+        ICurrentUser currentUser)
     {
         _repo = repo;
         _logger = logger;
         _currentUser = currentUser;
+        _unitOfWork = unitOfWork;
     }
 
     public async ValueTask<Option<BadRequest<Err[]>>> CheckTableRights(string? userName, string method,
@@ -83,8 +87,9 @@ public sealed class RightsDeterminer
     private async Task<OneOf<bool, Err[]>> CheckRoleRightToClaim(string roleName, string claimName,
         CancellationToken cancellationToken = default)
     {
-        var roleDtId = await _repo.GetDataTypeIdByKey(_repo.GetTableName<Role>(), cancellationToken);
-        var appClaimDataTypeId = await _repo.GetDataTypeIdByKey(_repo.GetTableName<AppClaim>(), cancellationToken);
+        var roleDtId = await _repo.GetDataTypeIdByKey(_unitOfWork.GetTableName<Role>(), cancellationToken);
+        var appClaimDataTypeId =
+            await _repo.GetDataTypeIdByKey(_unitOfWork.GetTableName<AppClaim>(), cancellationToken);
 
         if (roleDtId is null) _logger.LogError($"{nameof(CheckRoleRightToClaim)} {nameof(roleDtId)} is null");
         if (appClaimDataTypeId is null)
@@ -99,9 +104,9 @@ public sealed class RightsDeterminer
     private async Task<OneOf<bool, Err[]>> CheckMenuRight(string roleName, string menuItemName,
         CancellationToken cancellationToken = default)
     {
-        var menuGroupsDtId = await _repo.GetDataTypeIdByKey(_repo.GetTableName<MenuGroup>(), cancellationToken);
-        var menuDtId = await _repo.GetDataTypeIdByKey(_repo.GetTableName<MenuItm>(), cancellationToken);
-        var roleDtId = await _repo.GetDataTypeIdByKey(_repo.GetTableName<Role>(), cancellationToken);
+        var menuGroupsDtId = await _repo.GetDataTypeIdByKey(_unitOfWork.GetTableName<MenuGroup>(), cancellationToken);
+        var menuDtId = await _repo.GetDataTypeIdByKey(_unitOfWork.GetTableName<MenuItm>(), cancellationToken);
+        var roleDtId = await _repo.GetDataTypeIdByKey(_unitOfWork.GetTableName<Role>(), cancellationToken);
 
         if (menuGroupsDtId is null) _logger.LogError($"{nameof(CheckMenuRight)} {nameof(menuGroupsDtId)} is null");
         if (menuDtId is null) _logger.LogError($"{nameof(CheckMenuRight)} {nameof(menuDtId)} is null");
@@ -182,9 +187,9 @@ public sealed class RightsDeterminer
     private async Task<OneOf<bool, Err[]>> CheckViewRightByTableKey(string roleName, string tableKey,
         CancellationToken cancellationToken = default)
     {
-        var roleDtId = await _repo.GetDataTypeIdByKey(_repo.GetTableName<Role>(), cancellationToken);
-        var dataTypeDtId = await _repo.GetDataTypeIdByKey(_repo.GetTableName<DataType>(), cancellationToken);
-        var menuDtId = await _repo.GetDataTypeIdByKey(_repo.GetTableName<MenuItm>(), cancellationToken);
+        var roleDtId = await _repo.GetDataTypeIdByKey(_unitOfWork.GetTableName<Role>(), cancellationToken);
+        var dataTypeDtId = await _repo.GetDataTypeIdByKey(_unitOfWork.GetTableName<DataType>(), cancellationToken);
+        var menuDtId = await _repo.GetDataTypeIdByKey(_unitOfWork.GetTableName<MenuItm>(), cancellationToken);
 
         if (roleDtId is null) _logger.LogError($"{nameof(CheckViewRightByTableKey)} {nameof(roleDtId)} is null");
         if (dataTypeDtId is null)
@@ -256,11 +261,10 @@ public sealed class RightsDeterminer
     private async Task<OneOf<bool, Err[]>> CheckCrudRightByTableKey(string roleName, string tableKey,
         ECrudOperationType crudType, CancellationToken cancellationToken = default)
     {
-        var roleDtId = await _repo.GetDataTypeIdByKey(_repo.GetTableName<Role>(), cancellationToken);
-        var dataTypeDtId = await _repo.GetDataTypeIdByKey(_repo.GetTableName<DataType>(), cancellationToken);
-        var dataCrudRightDtId =
-            await _repo.GetDataTypeIdByKey($"{_repo.GetTableName<DataType>()}{_repo.GetTableName<CrudRightType>()}",
-                cancellationToken);
+        var roleDtId = await _repo.GetDataTypeIdByKey(_unitOfWork.GetTableName<Role>(), cancellationToken);
+        var dataTypeDtId = await _repo.GetDataTypeIdByKey(_unitOfWork.GetTableName<DataType>(), cancellationToken);
+        var dataCrudRightDtId = await _repo.GetDataTypeIdByKey(
+            $"{_unitOfWork.GetTableName<DataType>()}{_unitOfWork.GetTableName<CrudRightType>()}", cancellationToken);
 
         if (roleDtId is null) _logger.LogError($"{nameof(CheckCrudRightByTableKey)} {nameof(roleDtId)} is null");
         if (dataTypeDtId is null)

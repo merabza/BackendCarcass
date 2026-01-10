@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CarcassDb.QueryModels;
+using Carcass.Database.QueryModels;
 
 namespace CarcassRepositories.Models;
 

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using CarcassIdentity;
 using CarcassRights;
+using DomainShared.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -13,22 +14,24 @@ public /*open*/ class UserTableNameRightsFilter : IEndpointFilter
     private readonly ILogger<UserMenuRightsFilter> _logger;
     private readonly IUserRightsRepository _repo;
     private readonly string[] _tableKeys;
+    private readonly IUnitOfWork _unitOfWork;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    protected UserTableNameRightsFilter(IUserRightsRepository repo, ILogger<UserMenuRightsFilter> logger,
-        string[] tableKeys, ICurrentUser currentUser)
+    protected UserTableNameRightsFilter(ILogger<UserMenuRightsFilter> logger, string[] tableKeys,
+        ICurrentUser currentUser, IUserRightsRepository repo, IUnitOfWork unitOfWork)
     {
-        _repo = repo;
         _logger = logger;
         _tableKeys = tableKeys;
         _currentUser = currentUser;
+        _unitOfWork = unitOfWork;
+        _repo = repo;
     }
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         foreach (var tableKey in _tableKeys)
         {
-            var rightsDeterminer = new RightsDeterminer(_repo, _logger, _currentUser);
+            var rightsDeterminer = new RightsDeterminer(_repo, _unitOfWork, _logger, _currentUser);
             var checkTableRightsResult = await rightsDeterminer.CheckTableRights(_currentUser.Name,
                 context.HttpContext.Request.Method, new TableKeyName { TableKey = tableKey }, CancellationToken.None);
             if (checkTableRightsResult.IsSome)

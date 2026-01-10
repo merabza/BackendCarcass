@@ -2,27 +2,29 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassDb;
-using CarcassDb.Models;
+using Carcass.Database;
+using Carcass.Database.Models;
+using DomainShared.Repositories;
 using Microsoft.EntityFrameworkCore;
-using RepositoriesAbstraction;
 
 namespace CarcassRepositories;
 
-public class UserClaimsRepository : AbstractRepository, IUserClaimsRepository
+public class UserClaimsRepository : IUserClaimsRepository
 {
     private readonly CarcassDbContext _carcassContext;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public UserClaimsRepository(CarcassDbContext carcassContext) : base(carcassContext)
+    public UserClaimsRepository(CarcassDbContext carcassContext, IUnitOfWork unitOfWork)
     {
         _carcassContext = carcassContext;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<List<string>> UserAppClaims(string userName, CancellationToken cancellationToken = default)
     {
-        var userDataTypeId = await DataTypeIdByKey(GetTableName<User>(), cancellationToken);
-        var roleDataTypeId = await DataTypeIdByKey(GetTableName<Role>(), cancellationToken);
-        var appClaimDataTypeId = await DataTypeIdByKey(GetTableName<AppClaim>(), cancellationToken);
+        var userDataTypeId = await DataTypeIdByKey(_unitOfWork.GetTableName<User>(), cancellationToken);
+        var roleDataTypeId = await DataTypeIdByKey(_unitOfWork.GetTableName<Role>(), cancellationToken);
+        var appClaimDataTypeId = await DataTypeIdByKey(_unitOfWork.GetTableName<AppClaim>(), cancellationToken);
 
         return await Task.FromResult(ManyToManyJoinsPcc(userDataTypeId, userName, roleDataTypeId, appClaimDataTypeId)
             .ToList());

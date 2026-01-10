@@ -2,6 +2,7 @@
 using System.Linq;
 using CarcassMasterData.Crud;
 using CarcassMasterData.Models;
+using DomainShared.Repositories;
 using LibCrud;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,10 +28,11 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
     {
         // ReSharper disable once using
         var scope = Services.CreateScope();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         return MasterDataCrud
-            .Create(queryName, _logger, scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>())
-            .Match<OneOf<IMasterDataLoader, Err[]>>(f0 => f0, f1 => f1.ToArray());
+            .Create(queryName, _logger, scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>(),
+                unitOfWork).Match<OneOf<IMasterDataLoader, Err[]>>(f0 => f0, f1 => f1.ToArray());
     }
 
     public virtual OneOf<CrudBase, Err[]> CreateMasterDataCrud(string tableName)
@@ -38,14 +40,15 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
         // ReSharper disable once using
         var scope = Services.CreateScope();
         var carcassMasterDataRepository = scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         return tableName switch
         {
             "users" => new UsersCrud(_logger, scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>(),
-                carcassMasterDataRepository),
+                unitOfWork),
             "roles" => new RolesCrud(_logger, scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>(),
-                carcassMasterDataRepository),
-            _ => MasterDataCrud.Create(tableName, _logger, carcassMasterDataRepository)
+                unitOfWork),
+            _ => MasterDataCrud.Create(tableName, _logger, carcassMasterDataRepository, unitOfWork)
                 .Match<OneOf<CrudBase, Err[]>>(f0 => f0, f1 => f1.ToArray())
         };
     }

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppGrammarGe\Carcass.Domain\Carcass.Domain.csproj" />
+    <ProjectReference Include="..\Carcass.Database\Carcass.Database.csproj" />
+    <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
+  </ItemGroup>
+
+</Project>

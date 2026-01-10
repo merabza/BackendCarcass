@@ -12,6 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\AppGrammarGe\Carcass.Domain\Carcass.Domain.csproj" />
+        <ProjectReference Include="..\Carcass.Database\Carcass.Database.csproj" />
         <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
     </ItemGroup>
 

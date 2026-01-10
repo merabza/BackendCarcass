@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
 using CarcassMasterData.Models;
+using DomainShared.Repositories;
 using LanguageExt;
 using LibCrud;
 using LibCrud.Models;
@@ -11,7 +12,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using RepositoriesAbstraction;
 using SystemToolsShared.Errors;
 
 namespace CarcassMasterData.Crud;
@@ -22,8 +22,8 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
     private AppUser? _justCreated;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public UsersCrud(ILogger logger, UserManager<AppUser> userManager, IAbstractRepository absRepo) : base(logger,
-        absRepo)
+    public UsersCrud(ILogger logger, UserManager<AppUser> userManager, IUnitOfWork unitOfWork) : base(logger,
+        unitOfWork)
     {
         _userManager = userManager;
     }

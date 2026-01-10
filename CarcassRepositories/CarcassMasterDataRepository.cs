@@ -2,54 +2,53 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassDb;
+using Carcass.Database;
 using CarcassMasterData;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using RepositoriesAbstraction;
 using SystemToolsShared.Errors;
 
 namespace CarcassRepositories;
 
-public /*open*/ class CarcassMasterDataRepository : AbstractRepository, ICarcassMasterDataRepository
+public /*open*/ class CarcassMasterDataRepository : ICarcassMasterDataRepository
 {
     private readonly CarcassDbContext _context;
 
-    protected CarcassMasterDataRepository(CarcassDbContext carcassContext) : base(carcassContext)
+    protected CarcassMasterDataRepository(CarcassDbContext carcassContext)
     {
         _context = carcassContext;
     }
 
-    //public OneOf<IQueryable<IDataType>, Err[]> LoadByTableName(string tableName)
-    //{
-    //    var vvv = GetEntityTypeByTableName(tableName);// _context.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
-    //    if (vvv == null)
-    //        return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
+//public OneOf<IQueryable<IDataType>, Err[]> LoadByTableName(string tableName)
+//{
+//    var vvv = GetEntityTypeByTableName(tableName);// _context.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
+//    if (vvv == null)
+//        return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
 
-    //    var setMethod = MethodInfo();
-    //    if (setMethod == null)
-    //        return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(tableName) }; //ცხრილს არ აქვს მეთოდი Set
+//    var setMethod = MethodInfo();
+//    if (setMethod == null)
+//        return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(tableName) }; //ცხრილს არ აქვს მეთოდი Set
 
-    //    var result = MakeGenericMethod(setMethod, vvv);
-    //    return result == null
-    //        ? new[]
-    //        {
-    //            MasterDataApiErrors.SetMethodReturnsNullForTable(tableName)
-    //        } //ცხრილის Set მეთოდი აბრუნებს null-ს
-    //        : OneOf<IQueryable<IDataType>, Err[]>.FromT0((IQueryable<IDataType>)result);
-    //}
+//    var result = MakeGenericMethod(setMethod, vvv);
+//    return result == null
+//        ? new[]
+//        {
+//            MasterDataApiErrors.SetMethodReturnsNullForTable(tableName)
+//        } //ცხრილის Set მეთოდი აბრუნებს null-ს
+//        : OneOf<IQueryable<IDataType>, Err[]>.FromT0((IQueryable<IDataType>)result);
+//}
 
     public object? RunGenericMethodForLoadAllRecords(MethodInfo setMethod, IReadOnlyTypeBase entityType)
     {
         return setMethod.MakeGenericMethod(entityType.ClrType).Invoke(_context, null);
     }
 
-    //public IQueryable? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType)
-    //{
-    //    return (IQueryable?)_context.GetType().GetMethod("Set")?.MakeGenericMethod(entityType.ClrType)
-    //        .Invoke(_context, null);
-    //}
+//public IQueryable? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType)
+//{
+//    return (IQueryable?)_context.GetType().GetMethod("Set")?.MakeGenericMethod(entityType.ClrType)
+//        .Invoke(_context, null);
+//}
 
     public MethodInfo? SetMethodInfo()
     {

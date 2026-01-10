@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
+using Carcass.Database.Models;
 using CarcassDb;
-using CarcassDb.Models;
 using CarcassMasterData;
 using CarcassMasterData.Models;
 using LanguageExt;

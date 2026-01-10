@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassDb.Models;
+using Carcass.Database.Models;
 using CarcassMasterData.Models;
 using Microsoft.AspNetCore.Identity;
 

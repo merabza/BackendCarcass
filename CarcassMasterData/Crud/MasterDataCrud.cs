@@ -8,6 +8,7 @@ using BackendCarcassContracts.Errors;
 using CarcassMasterData.CellModels;
 using CarcassMasterData.Models;
 using CarcassMasterData.SortIdStuff;
+using DomainShared.Repositories;
 using LanguageExt;
 using LibCrud;
 using LibCrud.Models;
@@ -31,7 +32,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
     // ReSharper disable once ConvertToPrimaryConstructor
     private MasterDataCrud(string tableName, IEntityType entityType, ILogger logger,
-        ICarcassMasterDataRepository cmdRepo) : base(logger, cmdRepo)
+        ICarcassMasterDataRepository cmdRepo, IUnitOfWork unitOfWork) : base(logger, unitOfWork)
     {
         _tableName = tableName;
         _entityType = entityType;
@@ -74,13 +75,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     }
 
     public static OneOf<MasterDataCrud, Err[]> Create(string tableName, ILogger logger,
-        ICarcassMasterDataRepository cmdRepo)
+        ICarcassMasterDataRepository cmdRepo, IUnitOfWork unitOfWork)
     {
         var entityType = cmdRepo.GetEntityTypeByTableName(tableName);
         if (entityType is null)
             return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
 
-        return new MasterDataCrud(tableName, entityType, logger, cmdRepo);
+        return new MasterDataCrud(tableName, entityType, logger, cmdRepo, unitOfWork);
     }
 
     private async Task<OneOf<bool, Err[]>> IsGridWithSortId(CancellationToken cancellationToken = default)

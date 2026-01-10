@@ -29,18 +29,6 @@ public class LoginBase
         _userClaimsRepository = userClaimsRepository;
     }
 
-    //ამ მეთოდით ავტორიზაციის პროცესი გამოტანილია ცალკე
-    //და გამოიყენება როგორც ავტორიზაციისას, ისე ახალი მომხმარებლის დარეგისტრირებისას,
-    //რომ ავტომატურად მოხდეს რეგისტრაციისას ავტორიზაციაც
-    //public static async ValueTask<AppUser?> DoLogin(SignInManager<AppUser> signinMgr, AppUser? user, string password)
-    //{
-    //    if (user == null)
-    //        return null;
-    //    await signinMgr.SignOutAsync();
-    //    var result = await signinMgr.PasswordSignInAsync(user, password, true, false);
-    //    return result.Succeeded ? user : null;
-    //}
-
     public async Task<OneOf<LoginResult, Err[]>> LoginProcess(AppUser? user, string password,
         CancellationToken cancellationToken = default)
     {
@@ -75,10 +63,6 @@ public class LoginBase
         var appClaims = _userClaimsRepository is null
             ? null
             : await _userClaimsRepository.UserAppClaims(user.UserName, cancellationToken);
-        //var appUserModel = new LoginResponse(user.Id, _lastSequentialNumber, user.UserName, user.Email, token,
-        //    roles.Aggregate(string.Empty, (cur, next) => cur + (cur == string.Empty ? string.Empty : ", ") + next),
-        //    user.FirstName, user.LastName, await _userClaimsRepository.UserAppClaims(user.UserName, cancellationToken));
-        //return appUserModel;
 
         return new LoginResult
         {

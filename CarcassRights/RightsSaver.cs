@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassDb.Models;
+using Carcass.Database.Models;
 using CarcassRights.Models;
+using DomainShared.Repositories;
 using Microsoft.Extensions.Logging;
 
 // ReSharper disable ConvertToPrimaryConstructor
@@ -14,11 +15,13 @@ public sealed class RightsSaver
 {
     private readonly ILogger _logger;
     private readonly IRightsRepository _repo;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public RightsSaver(ILogger logger, IRightsRepository repo)
+    public RightsSaver(ILogger logger, IRightsRepository repo, IUnitOfWork unitOfWork)
     {
         _logger = logger;
         _repo = repo;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<bool> SaveRightsChanges(string userName, List<RightsChangeModel> changedRights,
@@ -26,12 +29,12 @@ public sealed class RightsSaver
     {
         try
         {
-            var dataTypeTableName = _repo.GetTableName<DataType>();
+            var dataTypeTableName = _unitOfWork.GetTableName<DataType>();
             var dtDataId = await _repo.DataTypeIdByTableName(dataTypeTableName, cancellationToken);
             var mmjDataId =
                 await _repo.DataTypeIdByTableName($"{dataTypeTableName}{dataTypeTableName}", cancellationToken);
-            var roleDataId = await _repo.DataTypeIdByTableName(_repo.GetTableName<Role>(), cancellationToken);
-            var userDataId = await _repo.DataTypeIdByTableName(_repo.GetTableName<User>(), cancellationToken);
+            var roleDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<Role>(), cancellationToken);
+            var userDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<User>(), cancellationToken);
             var allowPairs = await _repo.ManyToManyJoinsPcc4(userDataId, userName, roleDataId, mmjDataId, dtDataId,
                 dtDataId, cancellationToken);
 
@@ -65,7 +68,7 @@ public sealed class RightsSaver
                 }
             }
 
-            await _repo.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
         catch (Exception e)

@@ -2,22 +2,21 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassDb;
+using Carcass.Database;
 using CarcassRights;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
-using RepositoriesAbstraction;
 using SystemToolsShared.Errors;
 
 namespace CarcassRepositories;
 
-public sealed class UserRightsRepository : AbstractRepository, IUserRightsRepository
+public sealed class UserRightsRepository : IUserRightsRepository
 {
     private readonly CarcassDbContext _context;
     //private readonly IDataTypeKeys _dataTypeKeys;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public UserRightsRepository(CarcassDbContext context) : base(context)
+    public UserRightsRepository(CarcassDbContext context)
     {
         _context = context;
         //_dataTypeKeys = dataTypeKeys;

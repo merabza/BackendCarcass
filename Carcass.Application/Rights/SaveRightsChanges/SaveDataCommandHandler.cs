@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using CarcassIdentity;
 using CarcassRights;
+using DomainShared.Repositories;
 using MediatRMessagingAbstractions;
 using Microsoft.Extensions.Logging;
 using OneOf;
@@ -15,20 +16,22 @@ public sealed class SaveDataCommandHandler : ICommandHandler<SaveDataRequestComm
     private readonly ICurrentUser _currentUser;
     private readonly ILogger<SaveDataCommandHandler> _logger;
     private readonly IRightsRepository _repo;
+    private readonly IUnitOfWork _unitOfWork;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public SaveDataCommandHandler(ILogger<SaveDataCommandHandler> logger, IRightsRepository repo,
-        ICurrentUser currentUser)
+        IUnitOfWork unitOfWork, ICurrentUser currentUser)
     {
         _repo = repo;
         _currentUser = currentUser;
+        _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
     public async Task<OneOf<bool, Err[]>> Handle(SaveDataRequestCommand request,
         CancellationToken cancellationToken = default)
     {
-        var rightsSaver = new RightsSaver(_logger, _repo);
+        var rightsSaver = new RightsSaver(_logger, _repo, _unitOfWork);
         return await rightsSaver.SaveRightsChanges(_currentUser.Name, request.ChangesForSave, cancellationToken);
     }
 }
