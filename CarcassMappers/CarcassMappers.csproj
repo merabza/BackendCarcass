@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
         <ProjectReference Include="..\CarcassRights\CarcassRights.csproj" />
     </ItemGroup>
 
