@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\SystemTools\DatabaseToolsShared\DatabaseToolsShared.csproj" />
     <ProjectReference Include="..\Carcass.Database\Carcass.Database.csproj" />
     <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
   </ItemGroup>
