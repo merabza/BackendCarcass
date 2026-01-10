@@ -4,8 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Carcass.Database;
 using DomainShared.Repositories;
+using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using SystemToolsShared.Errors;
 
 namespace Carcass.Persistence;
 
@@ -32,5 +34,19 @@ public /*open*/ class CarcassUnitOfWork : IUnitOfWork
     public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
         return _dbContext.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task<Option<Err[]>> ExecuteSqlRawRetOptionAsync(string sql,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await _dbContext.Database.ExecuteSqlRawAsync(sql, cancellationToken);
+            return null;
+        }
+        catch (Exception e)
+        {
+            return new[] { SystemToolsErrors.UnexpectedDatabaseException(e) };
+        }
     }
 }
