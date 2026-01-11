@@ -22,8 +22,4 @@
         <ProjectReference Include="..\LibCrud\LibCrud.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Handlers\" />
-    </ItemGroup>
-
 </Project>
