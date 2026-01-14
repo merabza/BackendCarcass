@@ -12,9 +12,15 @@ public sealed class TableKeyName
         CancellationToken cancellationToken = default)
     {
         if (TableKey is not null)
+        {
             return TableKey;
+        }
+
         if (TableName is not null)
+        {
             return await repo.KeyByTableName(TableName, cancellationToken);
+        }
+
         return null;
     }
 }

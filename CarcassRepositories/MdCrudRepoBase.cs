@@ -17,11 +17,15 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
     {
         var vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
         if (vvv == null)
+        {
             return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
+        }
 
         var setMethod = carcassContext.GetType().GetMethod("Set", []);
         if (setMethod == null)
+        {
             return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(tableName) }; //ცხრილს არ აქვს მეთოდი Set
+        }
 
         var result = setMethod.MakeGenericMethod(vvv.ClrType).Invoke(carcassContext, null);
         return result == null
@@ -40,16 +44,21 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
     {
         var vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
         if (vvv == null)
+        {
             return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
+        }
 
         var q = (IQueryable<IDataType>?)carcassContext.GetType().GetMethod("Set")?.MakeGenericMethod(vvv.ClrType)
             .Invoke(carcassContext, null);
-        var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); //
+        var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); 
         if (idt == null)
+        {
             return new[]
             {
                 MasterDataApiErrors.RecordNotFound(tableName, id)
             }; //ბაზაში ვერ ვიპოვეთ მოწოდებული იდენტიფიკატორის შესაბამისი ჩანაწერი. RecordNotFound
+        }
+
         idt.UpdateTo(newItem);
 
         carcassContext.Update(idt);
@@ -61,15 +70,19 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
     {
         var entResult = Load();
         if (entResult.IsT1)
+        {
             return entResult.AsT1;
+        }
 
-        var res = entResult.AsT0.ToList();
+        var res = await entResult.AsT0.ToListAsync(); // S6966: Await ToListAsync instead.
         var idt = res.SingleOrDefault(w => w.Id == id);
         if (idt == null)
+        {
             return new[]
             {
                 MasterDataApiErrors.RecordNotFound(tableName, id)
             }; //ბაზაში ვერ ვიპოვეთ მოწოდებული იდენტიფიკატორის შესაბამისი ჩანაწერი. RecordNotFound
+        }
 
         carcassContext.Remove(id);
         await carcassContext.SaveChangesAsync();

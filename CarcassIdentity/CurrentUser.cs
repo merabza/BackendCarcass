@@ -23,10 +23,10 @@ public sealed class CurrentUser : ICurrentUser
 
     private T GetClaimValue<T>(string type) where T : IConvertible
     {
-        var value = _httpContext.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == type)?.Value;
+        string? value = _httpContext.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == type)?.Value;
 
         return value != null
-            ? (T)Convert.ChangeType(value, typeof(T))
+            ? (T)Convert.ChangeType(value, typeof(T), System.Globalization.CultureInfo.InvariantCulture)
             : throw new UnauthorizedAccessException($"{type} claim not found");
     }
 

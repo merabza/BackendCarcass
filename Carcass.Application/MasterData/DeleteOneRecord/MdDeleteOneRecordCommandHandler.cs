@@ -23,11 +23,14 @@ public sealed class MdDeleteOneRecordCommandHandler : ICommandHandler<MdDeleteOn
     }
 
     public async Task<OneOf<Unit, Err[]>> Handle(MdDeleteOneRecordRequestCommand request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
+        {
             return createMasterDataCrudResult.AsT1;
+        }
+
         var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.Delete(request.Id, cancellationToken);
         return result.Match<OneOf<Unit, Err[]>>(y =>

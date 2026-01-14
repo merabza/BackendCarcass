@@ -11,13 +11,13 @@ namespace BackendCarcassApi.Filters;
 public sealed class UserTableRightsFilter : IEndpointFilter
 {
     private readonly ICurrentUser _currentUser;
-    private readonly ILogger<UserMenuRightsFilter> _logger;
+    private readonly ILogger<UserTableRightsFilter> _logger;
     private readonly IUserRightsRepository _repo;
     private readonly IUnitOfWork _unitOfWork;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public UserTableRightsFilter(IUserRightsRepository repo, IUnitOfWork unitOfWork,
-        ILogger<UserMenuRightsFilter> logger, ICurrentUser currentUser)
+        ILogger<UserTableRightsFilter> logger, ICurrentUser currentUser)
     {
         _repo = repo;
         _logger = logger;
@@ -36,7 +36,9 @@ public sealed class UserTableRightsFilter : IEndpointFilter
             context.HttpContext.Request.Method, new TableKeyName { TableName = strTableName }, CancellationToken.None);
 
         if (checkTableRightsResult.IsSome)
+        {
             return checkTableRightsResult;
+        }
 
         return await next(context);
     }

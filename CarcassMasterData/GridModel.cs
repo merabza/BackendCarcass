@@ -15,22 +15,30 @@ public sealed class GridModel
         var jo = JObject.Parse(dtGridRulesJson);
         var jCommands = (JArray?)jo["cells"];
         if (jCommands is null)
+        {
             return null;
+        }
+
         var gridModel = new GridModel();
         foreach (var jt in jCommands)
         {
-            var cJson = jt.ToString();
-            var strTypeName = jt["typeName"]?.Value<string>();
+            string cJson = jt.ToString();
+            string? strTypeName = jt["typeName"]?.Value<string>();
             if (strTypeName is null)
+            {
                 continue;
+            }
 
-            var cellTypeName = $"{strTypeName}{nameof(Cell)}";
+            string cellTypeName = $"{strTypeName}{nameof(Cell)}";
             var method = typeof(JsonConvert).GetMethod(nameof(JsonConvert.DeserializeObject), 1, [typeof(string)]);
             var genType = Type.GetType($"{nameof(CarcassMasterData)}.{nameof(CellModels)}.{cellTypeName}");
             if (genType is null)
+            {
                 continue;
+            }
+
             var generic = method?.MakeGenericMethod(genType);
-            var cellObject = generic?.Invoke(null, [cJson]) ?? throw new Exception($"{cellTypeName} is null");
+            object cellObject = generic?.Invoke(null, [cJson]) ?? throw new Exception($"{cellTypeName} is null");
             gridModel.Cells.Add((Cell)cellObject);
 
             //if (!Enum.TryParse<ECellTypeName>(strTypeName, out var cellType))

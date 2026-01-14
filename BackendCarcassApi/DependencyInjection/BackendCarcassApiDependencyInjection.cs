@@ -9,8 +9,8 @@ public static class BackendCarcassApiDependencyInjection
 {
     public static bool UseBackendCarcassApiEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
     {
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseBackendCarcassApiEndpoints)} Started");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseBackendCarcassApiEndpoints)} Started");
 
         endpoints.UseAuthenticationEndpoints(debugMode);
         endpoints.UseDataTypesEndpoints(debugMode);
@@ -19,8 +19,8 @@ public static class BackendCarcassApiDependencyInjection
         endpoints.UseRightsEndpoints(debugMode);
         endpoints.UseUserRightsEndpoints(debugMode);
 
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseBackendCarcassApiEndpoints)} Finished");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseBackendCarcassApiEndpoints)} Finished");
 
         return true;
     }

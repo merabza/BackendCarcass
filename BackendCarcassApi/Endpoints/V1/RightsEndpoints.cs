@@ -32,8 +32,8 @@ public static class RightsEndpoints
 {
     public static bool UseRightsEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
     {
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseRightsEndpoints)} Started");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseRightsEndpoints)} Started");
 
         var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Rights.RightsBase)
             .RequireAuthorization().AddEndpointFilter<UserMustHaveRightsEditorRightsFilter>();
@@ -44,8 +44,8 @@ public static class RightsEndpoints
         group.MapPost(CarcassApiRoutes.Rights.SaveData, SaveData);
         group.MapPost(CarcassApiRoutes.Rights.Optimize, Optimize);
 
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseRightsEndpoints)} Finished");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseRightsEndpoints)} Finished");
 
         return true;
     }
@@ -118,7 +118,10 @@ public static class RightsEndpoints
     {
         Debug.WriteLine($"Call {nameof(SaveDataCommandHandler)} from {nameof(SaveData)}");
         if (changesForSave is null)
+        {
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
+        }
+
         var commandRequest = new SaveDataRequestCommand(changesForSave);
         var result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match<Results<Ok<bool>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
@@ -133,7 +136,7 @@ public static class RightsEndpoints
     //   აქ დამატებით მომხმარებლის მონაცემებზე უფლებების შემოწმება არ ხდება,
     //   რადგან შეცდომები, რასაც ეს პროცედურა ასწორებს, ნებისმიერ შემთხვევაში გასასწორებელია
     //[HttpPost("optimize")]
-    private static Ok<bool> Optimize(CancellationToken cancellationToken = default)
+    private static Ok<bool> Optimize()
     {
         //Debug.WriteLine($"Call {nameof(OptimizeCommandHandler)} from {nameof(Optimize)}");
         //if (!HasUserRightRole(mdRepo, request))

@@ -68,7 +68,7 @@ public sealed class IdentityRepository : IIdentityRepository
         }
         catch (Exception e)
         {
-            _logger.Log(LogLevel.Error, e.Message);
+            _logger.LogError(e, "An exception occurred while creating a user.");
             return IdentityResult.Failed();
         }
     }
@@ -79,14 +79,17 @@ public sealed class IdentityRepository : IIdentityRepository
         {
             var oldUser = await _carcassContext.Users.SingleOrDefaultAsync(u => u.UsrId == userId, cancellationToken);
             if (oldUser == null)
+            {
                 return IdentityResult.Failed();
+            }
+
             _carcassContext.Remove(oldUser);
             await _carcassContext.SaveChangesAsync(cancellationToken);
             return IdentityResult.Success;
         }
         catch (Exception e)
         {
-            _logger.Log(LogLevel.Error, e.Message);
+            _logger.LogError(e, "An exception occurred while removing a user.");
             return IdentityResult.Failed();
         }
     }
@@ -96,9 +99,12 @@ public sealed class IdentityRepository : IIdentityRepository
     {
         try
         {
-            var oldUser = _carcassContext.Users.SingleOrDefault(r => r.UsrId == userId);
+            var oldUser = await _carcassContext.Users.SingleOrDefaultAsync(r => r.UsrId == userId, cancellationToken);
             if (oldUser == null)
+            {
                 return IdentityResult.Failed();
+            }
+
             oldUser.UserName = user.UserName;
             oldUser.NormalizedUserName = user.NormalizedUserName;
             oldUser.Email = user.Email;
@@ -113,7 +119,7 @@ public sealed class IdentityRepository : IIdentityRepository
         }
         catch (Exception e)
         {
-            _logger.Log(LogLevel.Error, e.Message);
+            _logger.LogError(e, "An exception occurred while updating a user.");
             return IdentityResult.Failed();
         }
     }
@@ -143,7 +149,7 @@ public sealed class IdentityRepository : IIdentityRepository
         }
         catch (Exception e)
         {
-            _logger.Log(LogLevel.Error, e.Message);
+            _logger.LogError(e, "An exception occurred while creating a role.");
             return IdentityResult.Failed();
         }
     }
@@ -152,24 +158,27 @@ public sealed class IdentityRepository : IIdentityRepository
     {
         try
         {
-            var oldRole = _carcassContext.Roles.SingleOrDefault(r => r.RolId == roleId);
+            var oldRole = await _carcassContext.Roles.SingleOrDefaultAsync(r => r.RolId == roleId, cancellationToken);
             if (oldRole == null)
+            {
                 return IdentityResult.Failed();
+            }
+
             _carcassContext.Remove(oldRole);
             await _carcassContext.SaveChangesAsync(cancellationToken);
             return IdentityResult.Success;
         }
         catch (Exception e)
         {
-            _logger.Log(LogLevel.Error, e.Message);
+            _logger.LogError(e, "An exception occurred while removing a role.");
             return IdentityResult.Failed();
         }
     }
 
-    public async ValueTask<IdentityResult> UpdateRoleAsync(int roleId, AppRole appRole,
+    public async ValueTask<IdentityResult> UpdateRoleAsync(int roleId, AppRole role,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(appRole.Name) || string.IsNullOrWhiteSpace(appRole.NormalizedName))
+        if (string.IsNullOrWhiteSpace(role.Name) || string.IsNullOrWhiteSpace(role.NormalizedName))
         {
             _logger.Log(LogLevel.Error, "Invalid appRole");
             return IdentityResult.Failed();
@@ -177,20 +186,23 @@ public sealed class IdentityRepository : IIdentityRepository
 
         try
         {
-            var oldRole = _carcassContext.Roles.SingleOrDefault(r => r.RolId == roleId);
+            var oldRole = await _carcassContext.Roles.SingleOrDefaultAsync(r => r.RolId == roleId, cancellationToken);
             if (oldRole == null)
+            {
                 return IdentityResult.Failed();
-            oldRole.RolKey = appRole.Name;
-            oldRole.RolName = appRole.RoleName;
-            oldRole.RolLevel = appRole.Level;
-            oldRole.RolNormalizedKey = appRole.NormalizedName;
+            }
+
+            oldRole.RolKey = role.Name;
+            oldRole.RolName = role.RoleName;
+            oldRole.RolLevel = role.Level;
+            oldRole.RolNormalizedKey = role.NormalizedName;
             _carcassContext.Update(oldRole);
             await _carcassContext.SaveChangesAsync(cancellationToken);
             return IdentityResult.Success;
         }
         catch (Exception e)
         {
-            _logger.Log(LogLevel.Error, e.Message);
+            _logger.LogError(e, "An exception occurred while updating a role.");
             return IdentityResult.Failed();
         }
     }

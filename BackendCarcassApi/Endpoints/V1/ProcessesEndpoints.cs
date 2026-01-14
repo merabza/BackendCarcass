@@ -20,15 +20,15 @@ public static class ProcessesEndpoints
 {
     public static bool UseProcessesEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
     {
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseProcessesEndpoints)} Started");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseProcessesEndpoints)} Started");
 
         endpoints.MapGet(
             CarcassApiRoutes.ApiBase + CarcassApiRoutes.Processes.ProcessesBase + CarcassApiRoutes.Processes.Status,
             Status).RequireAuthorization();
 
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseProcessesEndpoints)} Finished");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseProcessesEndpoints)} Finished");
 
         return true;
     }

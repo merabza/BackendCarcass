@@ -45,7 +45,9 @@ public /*open*/ class MixedCell : Cell
     {
         List<Err> errors = [];
         if (IsRequiredErr is not null && value is null)
+        {
             errors.Add(IsRequiredErr.Value);
+        }
 
         return errors;
     }
@@ -53,7 +55,9 @@ public /*open*/ class MixedCell : Cell
     protected List<Err> ValidateByType<T>(List<Err> errors, object? value, string typeName)
     {
         if (value is T)
+        {
             return errors;
+        }
 
         errors.Add(CarcassMasterDataErrors.MustBeBoolean(FieldName, Caption, typeName));
 

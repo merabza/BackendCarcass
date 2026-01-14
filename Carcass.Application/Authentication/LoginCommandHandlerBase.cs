@@ -14,7 +14,10 @@ public /*open*/ class LoginCommandHandlerBase
     protected static async ValueTask<AppUser?> DoLogin(SignInManager<AppUser> signinMgr, AppUser? user, string password)
     {
         if (user == null)
+        {
             return null;
+        }
+
         await signinMgr.SignOutAsync();
         var result = await signinMgr.PasswordSignInAsync(user, password, true, false);
         return result.Succeeded ? user : null;

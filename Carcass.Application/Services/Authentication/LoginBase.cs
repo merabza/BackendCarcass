@@ -33,18 +33,26 @@ public class LoginBase
         CancellationToken cancellationToken = default)
     {
         if (user == null)
+        {
             return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
+        }
 
         await _signinMgr.SignOutAsync();
         var result = await _signinMgr.PasswordSignInAsync(user, password, true, false);
         if (!result.Succeeded)
+        {
             return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
+        }
 
         if (user.UserName == null)
+        {
             return new[] { AuthenticationApiErrors.InvalidUsername };
+        }
 
         if (user.Email == null)
+        {
             return new[] { AuthenticationApiErrors.InvalidEmail };
+        }
 
         var roles = await UserMgr.GetRolesAsync(user);
 
@@ -53,12 +61,16 @@ public class LoginBase
         //IList<string> roles = await _userMgr.GetRolesAsync(user);
 
         if (_identitySettings.Value.JwtSecret is null)
+        {
             return new[] { CarcassApiErrors.ParametersAreInvalid };
+        }
 
         LastSequentialNumber++;
         var token = user.CreateJwToken(_identitySettings.Value.JwtSecret, LastSequentialNumber, roles);
         if (token is null)
+        {
             return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
+        }
 
         var appClaims = _userClaimsRepository is null
             ? null

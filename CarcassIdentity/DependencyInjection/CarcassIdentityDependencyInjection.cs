@@ -17,8 +17,8 @@ public static class CarcassIdentityDependencyInjection
     public static IServiceCollection AddCarcassIdentity(this IServiceCollection services, IConfiguration configuration,
         bool debugMode)
     {
-        if (debugMode)
-            Console.WriteLine($"{nameof(AddCarcassIdentity)} Started");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(AddCarcassIdentity)} Started");
 
         services.AddScoped<IUserStore<AppUser>, MyUserStore>();
         services.AddScoped<IUserPasswordStore<AppUser>, MyUserStore>();
@@ -43,8 +43,8 @@ public static class CarcassIdentityDependencyInjection
         // configure jwt authentication
         var identitySettings = appSettingsSection.Get<IdentitySettings>() ??
                                throw new Exception("IdentitySettings is null");
-        var jwtSecret = identitySettings.JwtSecret ?? throw new Exception("jwtSecret is null");
-        var key = Encoding.ASCII.GetBytes(jwtSecret);
+        string jwtSecret = identitySettings.JwtSecret ?? throw new Exception("jwtSecret is null");
+        byte[] key = Encoding.ASCII.GetBytes(jwtSecret);
 
         services.AddAuthentication(x =>
         {
@@ -59,29 +59,31 @@ public static class CarcassIdentityDependencyInjection
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false
+                //ValidateIssuer = false,
+                //ValidateAudience = false
             };
         });
 
         services.AddAuthorizationBuilder().SetInvokeHandlersAfterFailure(true);
 
-        if (debugMode)
-            Console.WriteLine($"{nameof(AddCarcassIdentity)} Finished");
+        //if (debugMode)
+        //{
+        //    Console.WriteLine($"{nameof(AddCarcassIdentity)} Finished");
+        //}
 
         return services;
     }
 
     public static bool UseAuthenticationAndAuthorization(this IApplicationBuilder app, bool debugMode)
     {
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseAuthenticationAndAuthorization)} Started");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseAuthenticationAndAuthorization)} Started");
 
         app.UseAuthentication();
         app.UseAuthorization();
 
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseAuthenticationAndAuthorization)} Finished");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseAuthenticationAndAuthorization)} Finished");
 
         return true;
     }

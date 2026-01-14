@@ -24,7 +24,7 @@ public sealed class
     }
 
     public async Task<OneOf<MasterDataCrudLoadedData, Err[]>> Handle(MdCreateOneRecordRequestCommand request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         //ამოვიღოთ მოთხოვნის ტანი
         // ReSharper disable once using
@@ -35,7 +35,10 @@ public sealed class
         var crudData = new MasterDataCrudData(body);
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
+        {
             return createMasterDataCrudResult.AsT1;
+        }
+
         var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.Create(crudData, cancellationToken);
         return result.Match<OneOf<MasterDataCrudLoadedData, Err[]>>(rcd => (MasterDataCrudLoadedData)rcd,

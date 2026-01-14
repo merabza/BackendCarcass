@@ -26,19 +26,27 @@ public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurr
     }
 
     public async Task<OneOf<Unit, Err[]>> Handle(DeleteCurrentUserRequestCommand request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         //ეს ერთგვარი ტესტია. თუ კოდი აქამდე მოვიდა, მიმდინარე მომხმარებელი ვალიდურია
         if (_currentUser.Name != request.UserName)
+        {
             return new[] { UserRightsErrors.BadRequestFailedToDeleteUser };
+        }
+
         var usersMdRepo = new UsersMdRepo(_userMgr);
         var user = await _userMgr.FindByNameAsync(request.UserName!);
         //თუ არ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user == null)
+        {
             return new[] { UserRightsErrors.NoUserFound };
+        }
 
         if (await usersMdRepo.Delete(user.Id))
+        {
             return new Unit();
+        }
+
         return new[] { UserRightsErrors.DeletionErrorUserCouldNotBeDeleted };
     }
 }

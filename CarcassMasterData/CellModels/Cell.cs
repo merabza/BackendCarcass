@@ -21,8 +21,11 @@ public /*open*/ class Cell
 
     public static string CellTypeNameForSave(string sourceCellTypeName)
     {
-        if (!sourceCellTypeName.EndsWith(nameof(Cell)) || sourceCellTypeName.Length <= nameof(Cell).Length)
+        if (!sourceCellTypeName.EndsWith(nameof(Cell), StringComparison.Ordinal) || sourceCellTypeName.Length <= nameof(Cell).Length)
+        {
             throw new Exception($"Invalid Cell Type Name {sourceCellTypeName}");
+        }
+
         return sourceCellTypeName[..^4];
     }
 
@@ -31,7 +34,7 @@ public /*open*/ class Cell
         return NumberCell.Create(fieldName, caption, visible);
     }
 
-    public static IntegerCell Integer(string fieldName, string? caption, string? errorCode = null,
+    public static IntegerCell CreateIntegerCell(string fieldName, string? caption, string? errorCode = null,
         string? errorMessage = null, bool visible = true)
     {
         return IntegerCell.Create(fieldName, caption, errorCode, errorMessage, visible);
@@ -67,7 +70,7 @@ public /*open*/ class Cell
         return DateCell.Create(fieldName, caption, showDate, showTime, visible);
     }
 
-    public static StringCell String(string fieldName, string? caption, bool visible = true)
+    public static StringCell CreateStringCell(string fieldName, string? caption, bool visible = true)
     {
         return StringCell.Create(fieldName, caption, visible);
     }

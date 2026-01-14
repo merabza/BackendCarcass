@@ -25,7 +25,7 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
     }
 
     public async Task<OneOf<Unit, Err[]>> Handle(MdUpdateOneRecordRequestCommand request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         //ამოვიღოთ მოთხოვნის ტანი
         // ReSharper disable once using
@@ -36,7 +36,10 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
         var crudData = new MasterDataCrudData(body);
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
+        {
             return createMasterDataCrudResult.AsT1;
+        }
+
         var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
         return result.Match<OneOf<Unit, Err[]>>(y =>

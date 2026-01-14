@@ -45,17 +45,20 @@ public /*open*/ class DesignTimeDbContextFactory<T> : IDesignTimeDbContextFactor
             //.AddEnvironmentVariables()
             .Build();
         //Console.WriteLine("Pass 2...");
-        var connectionString = configuration[_connectionParamName];
+        string? connectionString = configuration[_connectionParamName];
         //Console.WriteLine("Pass 3...");
 
         var builder = new DbContextOptionsBuilder<T>();
         //Console.WriteLine("Pass 4...");
         builder.UseSqlServer(connectionString, b => b.MigrationsAssembly(_assemblyName));
         //Console.WriteLine("Pass 5...");
-        var dbContext = Activator.CreateInstance(typeof(T), builder.Options, true);
+        object? dbContext = Activator.CreateInstance(typeof(T), builder.Options, true);
 
         if (dbContext is null)
+        {
             throw new Exception("dbContext does not created");
+        }
+
         //Console.WriteLine("Pass 6...");
         return (T)dbContext;
     }

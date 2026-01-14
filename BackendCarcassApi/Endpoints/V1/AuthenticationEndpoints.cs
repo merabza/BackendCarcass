@@ -25,8 +25,8 @@ public static class AuthenticationEndpoints
 {
     public static bool UseAuthenticationEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
     {
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseAuthenticationEndpoints)} Started");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseAuthenticationEndpoints)} Started");
 
         var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
             .RequireCors(CorsDependencyInjection.MyAllowSpecificOrigins);
@@ -34,8 +34,8 @@ public static class AuthenticationEndpoints
         group.MapPost(CarcassApiRoutes.Authentication.Registration, Registration);
         group.MapPost(CarcassApiRoutes.Authentication.Login, Login);
 
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseAuthenticationEndpoints)} Finished");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseAuthenticationEndpoints)} Finished");
 
         return true;
     }
@@ -54,7 +54,9 @@ public static class AuthenticationEndpoints
     {
         Debug.WriteLine($"Call {nameof(RegistrationCommandHandler)} from {nameof(Registration)}");
         if (request is null)
+        {
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
+        }
 
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);
@@ -73,7 +75,10 @@ public static class AuthenticationEndpoints
     {
         Debug.WriteLine($"Call {nameof(LoginCommandHandler)} from {nameof(Login)}");
         if (request is null)
+        {
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
+        }
+
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);
         return result.Match<Results<Ok<LoginResponse>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),

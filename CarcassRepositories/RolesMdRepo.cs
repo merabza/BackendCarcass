@@ -39,9 +39,11 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
 
     public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
-        var oldRole = await _roleManager.FindByIdAsync(id.ToString());
+        var oldRole = await _roleManager.FindByIdAsync(id.ToString(System.Globalization.CultureInfo.InvariantCulture));
         if (oldRole == null)
+        {
             return new[] { MasterDataApiErrors.CannotFindRole };
+        }
 
         var role = (Role)newItem;
         oldRole.RoleName = role.RolName;
@@ -49,10 +51,14 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
 
         var updateResult = await _roleManager.UpdateAsync(oldRole);
         if (!updateResult.Succeeded)
+        {
             return (Err[])ConvertError(updateResult);
+        }
 
         if (oldRole.RoleName == role.RolKey)
+        {
             return null;
+        }
 
         var setRoleResult = await _roleManager.SetRoleNameAsync(oldRole, role.RolKey);
         return (Err[])ConvertError(setRoleResult);
@@ -60,9 +66,12 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
 
     public async ValueTask<Option<Err[]>> Delete(int id)
     {
-        var oldRole = await _roleManager.FindByIdAsync(id.ToString());
+        var oldRole = await _roleManager.FindByIdAsync(id.ToString(System.Globalization.CultureInfo.InvariantCulture));
         if (oldRole == null)
+        {
             return new[] { MasterDataApiErrors.CannotFindRole };
+        }
+
         var deleteResult = await _roleManager.DeleteAsync(oldRole);
         return (Err[])ConvertError(deleteResult);
     }

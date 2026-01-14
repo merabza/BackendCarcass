@@ -43,16 +43,13 @@ public static class LinqExtensions
     {
         var propInfo = GetPropertyInfo(typeof(T), name);
         var expr = GetOrderExpression(typeof(T), propInfo);
-        var methodName = ascending ? nameof(Enumerable.OrderBy) : nameof(Enumerable.OrderByDescending);
+        string methodName = ascending ? nameof(Enumerable.OrderBy) : nameof(Enumerable.OrderByDescending);
         var method = typeof(Enumerable).GetMethods()
                          .FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == 2) ??
                      throw new Exception($"cannot find method {methodName}");
         var genericMethod = method.MakeGenericMethod(typeof(T), propInfo.PropertyType);
         var result = (IEnumerable<T>?)genericMethod.Invoke(null, [query, expr.Compile()]);
-        if (result is not null)
-            return result;
-
-        throw new Exception("OrderBy result is not null");
+        return result ?? throw new Exception("OrderBy result is not null");
     }
 
     public static IQueryable<T> OrderBy<T>(this IQueryable<T> query, string name, bool ascending,
@@ -76,7 +73,7 @@ public static class LinqExtensions
             expr = GetOrderExpression(typeof(T), propInfo);
         }
 
-        var methodName = ascending ? nameof(Queryable.OrderBy) : nameof(Queryable.OrderByDescending);
+        string methodName = ascending ? nameof(Queryable.OrderBy) : nameof(Queryable.OrderByDescending);
         var method =
             typeof(Queryable).GetMethods().FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == 2) ??
             throw new Exception($"cannot find method {methodName}");
@@ -85,9 +82,6 @@ public static class LinqExtensions
         //    : method.MakeGenericMethod(propObjType, propInfo.PropertyType);
         var genericMethod = method.MakeGenericMethod(typeof(T), propInfo.PropertyType);
         var result = (IQueryable<T>?)genericMethod.Invoke(null, [query, expr]);
-        if (result is not null)
-            return result;
-
-        throw new Exception("OrderBy result is not null");
+        return result ?? throw new Exception("OrderBy result is not null");
     }
 }

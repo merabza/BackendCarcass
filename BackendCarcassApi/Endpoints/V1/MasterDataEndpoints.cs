@@ -31,8 +31,8 @@ public static class MasterDataEndpoints
 {
     public static bool UseMasterDataEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
     {
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseMasterDataEndpoints)} Started");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseMasterDataEndpoints)} Started");
 
         var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.MasterData.MasterDataBase)
             .RequireAuthorization();
@@ -48,8 +48,8 @@ public static class MasterDataEndpoints
         group.MapDelete(CarcassApiRoutes.MasterData.Delete, MdDeleteOneRecord)
             .AddEndpointFilter<UserTableRightsFilter>();
 
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseMasterDataEndpoints)} Finished");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseMasterDataEndpoints)} Finished");
 
         return true;
     }

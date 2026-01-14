@@ -45,23 +45,33 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
         CancellationToken cancellationToken = default)
     {
         if (dt.DtParentDataTypeId is null)
+        {
             return null;
+        }
 
         var parentDataType = await GetDataType(dt.DtParentDataTypeId.Value, cancellationToken);
         if (parentDataType is null)
+        {
             return null;
+        }
 
         var parentEntType = GetEntityTypeByTableName(parentDataType.DtTable);
         if (parentEntType is null)
+        {
             return null;
+        }
 
         var parentPrimaryKeys = parentEntType.GetKeys().Where(w => w.IsPrimaryKey()).ToList();
         if (parentPrimaryKeys.Count != 1)
+        {
             return null;
+        }
 
         var parentPrimaryKey = parentPrimaryKeys[0];
         if (parentPrimaryKey.Properties.Count != 1)
+        {
             return null;
+        }
 
         var parentPrimaryKeyFieldName = parentPrimaryKey.Properties[0].Name;
 

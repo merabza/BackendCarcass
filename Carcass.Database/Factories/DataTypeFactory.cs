@@ -40,13 +40,19 @@ public static class DataTypeFactory
         };
 
         if (!string.IsNullOrEmpty(keyFieldName))
+        {
             gridModel.Cells.Add(GetKeyColumn(keyFieldName, keyFieldNameColumnHeader));
+        }
 
         if (!string.IsNullOrEmpty(nameFieldName))
+        {
             gridModel.Cells.Add(GetNameColumn(nameFieldName, nameFieldNameColumnHeader));
+        }
 
         if (additionalCells.Count > 0)
+        {
             gridModel.Cells.AddRange(additionalCells);
+        }
 
         return new DataType
         {
@@ -64,7 +70,7 @@ public static class DataTypeFactory
 
     private static IntegerCell GetAutoNumberColumn(string fieldName, string? columnHeader)
     {
-        return Cell.Integer(fieldName, columnHeader, "", "", false).Default();
+        return Cell.CreateIntegerCell(fieldName, columnHeader, "", "", false).Default();
     }
 
     private static StringCell GetKeyColumn(string fieldName, string? columnHeader)
@@ -80,7 +86,7 @@ public static class DataTypeFactory
     private static StringCell GetTextBoxCell(string fieldName, string caption, bool allowNull = false)
     {
         return allowNull
-            ? Cell.String(fieldName, caption).Nullable().Default()
-            : Cell.String(fieldName, caption).Required($"{caption} შევსებული უნდა იყოს").Default();
+            ? Cell.CreateStringCell(fieldName, caption).Nullable().Default()
+            : Cell.CreateStringCell(fieldName, caption).Required($"{caption} შევსებული უნდა იყოს").Default();
     }
 }

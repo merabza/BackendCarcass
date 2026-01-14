@@ -23,7 +23,7 @@ public sealed class
     }
 
     public async Task<OneOf<Dictionary<string, string>, Err[]>> Handle(MultipleGridModelsRequestQuery request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var resultList = new Dictionary<string, string>();
 
@@ -32,7 +32,9 @@ public sealed class
         //პირველი გავლისას მოწმდება უფლებები
         var gridNames = request.Grids.Where(w => !string.IsNullOrWhiteSpace(w)).Distinct().ToList();
         if (gridNames.Count == 0)
+        {
             return new[] { DataTypesApiErrors.NoGridNamesInUriQuery };
+        }
 
         List<Err> errors = [];
         //ხოლო მეორე გავლისას ხდება უშუალოდ საჭირო ინფორმაციის ჩატვირთვა
@@ -40,13 +42,20 @@ public sealed class
         {
             var res = await _repository.GridModel(gridName!, cancellationToken);
             if (res != null)
+            {
                 resultList.Add(gridName!, res);
+            }
             else
+            {
                 errors.Add(DataTypesApiErrors.GridNotFound(gridName!));
+            }
         }
 
         if (errors.Count > 0)
+        {
             return errors.ToArray();
+        }
+
         return resultList;
     }
 }

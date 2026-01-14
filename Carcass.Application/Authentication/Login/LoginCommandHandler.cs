@@ -21,17 +21,19 @@ public sealed class LoginCommandHandler : LoginCommandHandlerBase, ICommandHandl
     }
 
     public async Task<OneOf<LoginResponse, Err[]>> Handle(LoginRequestCommand request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var tryLoginResult = await _loginService.TryToLogin(request.UserName!, request.Password!, cancellationToken);
         if (tryLoginResult.IsT1)
+        {
             return tryLoginResult.AsT1;
+        }
 
         var user = tryLoginResult.AsT0.User;
         var appUserModel = new LoginResponse(user.Id, LastSequentialNumber, user.UserName!, user.Email!,
             tryLoginResult.AsT0.Token,
             tryLoginResult.AsT0.Roles.Aggregate(string.Empty,
-                (cur, next) => cur + (cur == string.Empty ? string.Empty : ", ") + next), user.FirstName, user.LastName,
+                (cur, next) => cur + (string.IsNullOrEmpty(cur) ? string.Empty : ", ") + next), user.FirstName, user.LastName,
             tryLoginResult.AsT0.AppClaims);
         return appUserModel;
     }

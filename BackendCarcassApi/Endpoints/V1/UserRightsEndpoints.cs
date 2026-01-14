@@ -26,8 +26,8 @@ public static class UserRightsEndpoints
 {
     public static bool UseUserRightsEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
     {
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseUserRightsEndpoints)} Started");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseUserRightsEndpoints)} Started");
 
         var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase)
             .RequireAuthorization();
@@ -38,8 +38,8 @@ public static class UserRightsEndpoints
         group.MapDelete(CarcassApiRoutes.UserRights.DeleteCurrentUser, DeleteCurrentUser);
         group.MapGet(CarcassApiRoutes.UserRights.MainMenu, MainMenu);
 
-        if (debugMode)
-            Console.WriteLine($"{nameof(UseUserRightsEndpoints)} Finished");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(UseUserRightsEndpoints)} Finished");
 
         return true;
     }
@@ -67,7 +67,10 @@ public static class UserRightsEndpoints
     {
         Debug.WriteLine($"Call {nameof(ChangeProfileCommandHandler)} from {nameof(ChangeProfile)}");
         if (request is null)
+        {
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
+        }
+
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);
         return result.Match<Results<Ok, BadRequest<Err[]>>>(_ => TypedResults.Ok(),
@@ -85,7 +88,10 @@ public static class UserRightsEndpoints
     {
         Debug.WriteLine($"Call {nameof(ChangePasswordCommandHandler)} from {nameof(ChangePassword)}");
         if (request is null)
+        {
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
+        }
+
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);
         return result.Match<Results<Ok, BadRequest<Err[]>>>(_ => TypedResults.Ok(),

@@ -32,7 +32,10 @@ public sealed class AppClaim : IDataType, IMyEquatable
     public bool UpdateTo(IDataType data)
     {
         if (data is not AppClaim newData)
+        {
             return false;
+        }
+
         AclKey = newData.AclKey;
         AclName = newData.AclName;
         return true;
@@ -46,7 +49,9 @@ public sealed class AppClaim : IDataType, IMyEquatable
     public bool EqualsTo(IDataType data)
     {
         if (data is not AppClaim other)
+        {
             return false;
+        }
 
         return AclKey == other.AclKey && AclName == other.AclName;
     }

@@ -10,7 +10,7 @@ public sealed class StringCell : MixedCell
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public StringCell(string fieldName, string? caption, bool visible = true, string? typeName = null) : base(fieldName,
-        caption, visible, typeName ?? CellTypeNameForSave(nameof(StringCell)))
+        caption, visible, typeName ?? CellTypeNameForSave(nameof(CellModels.StringCell)))
     {
     }
 
@@ -55,13 +55,19 @@ public sealed class StringCell : MixedCell
         var errMes = ValidateByType<string>(base.Validate(value), value, "სტრიქონის");
 
         if (value is not string strValue)
+        {
             return errMes;
+        }
 
-        if (IsRequiredErr is not null && strValue == string.Empty)
+        if (IsRequiredErr is not null && string.IsNullOrEmpty(strValue))
+        {
             errMes.Add(CarcassMasterDataErrors.IsEmpty(FieldName, Caption));
+        }
 
         if (MaxLenRule is not null && strValue.Length > MaxLenRule.Val)
+        {
             errMes.Add(CarcassMasterDataErrors.IsTooLong(FieldName, Caption));
+        }
 
         return errMes;
     }

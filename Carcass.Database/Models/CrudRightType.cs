@@ -37,7 +37,10 @@ public sealed class CrudRightType : IDataType, IMyEquatable
     public bool UpdateTo(IDataType data)
     {
         if (data is not CrudRightType newData)
+        {
             return false;
+        }
+
         CrtKey = newData.CrtKey;
         CrtName = newData.CrtName;
         return true;
@@ -51,7 +54,9 @@ public sealed class CrudRightType : IDataType, IMyEquatable
     public bool EqualsTo(IDataType data)
     {
         if (data is not CrudRightType other)
+        {
             return false;
+        }
 
         return CrtKey == other.CrtKey && CrtName == other.CrtName;
     }

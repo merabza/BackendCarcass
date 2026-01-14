@@ -34,10 +34,15 @@ public /*open*/ class UserMenuRightsFilter : IEndpointFilter
         var rightsDeterminer = new RightsDeterminer(_repo, _unitOfWork, _logger, _currentUser);
         var result = await rightsDeterminer.HasUserRightRole(_menuNames, CancellationToken.None);
         if (result.IsT1)
+        {
             return Results.BadRequest(result.AsT1);
+        }
+
         if (!result.AsT0)
             //თუ არა დაბრუნდეს შეცდომა
+        {
             return Results.BadRequest(new[] { RightsApiErrors.InsufficientRights });
+        }
 
         return await next(context);
     }

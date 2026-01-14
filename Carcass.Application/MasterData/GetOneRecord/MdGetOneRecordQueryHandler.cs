@@ -22,11 +22,14 @@ public sealed class MdGetOneRecordQueryHandler : IQueryHandler<MdGetOneRecordReq
     }
 
     public async Task<OneOf<MasterDataCrudLoadedData, Err[]>> Handle(MdGetOneRecordRequestQuery request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
+        {
             return createMasterDataCrudResult.AsT1.ToArray();
+        }
+
         var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.GetOne(request.Id, cancellationToken);
         return result.Match<OneOf<MasterDataCrudLoadedData, Err[]>>(r => (MasterDataCrudLoadedData)r, e => e.ToArray());

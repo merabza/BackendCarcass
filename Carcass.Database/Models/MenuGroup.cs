@@ -41,7 +41,10 @@ public sealed class MenuGroup : IDataType, IMyEquatable
     public bool UpdateTo(IDataType data)
     {
         if (data is not MenuGroup newData)
+        {
             return false;
+        }
+
         MengKey = newData.MengKey;
         MengName = newData.MengName;
         SortId = newData.SortId;
@@ -66,7 +69,9 @@ public sealed class MenuGroup : IDataType, IMyEquatable
     public bool EqualsTo(IDataType data)
     {
         if (data is not MenuGroup other)
+        {
             return false;
+        }
 
         return MengKey == other.MengKey && MengName == other.MengName && SortId == other.SortId &&
                Equals(MengIconName, other.MengIconName) && Hidden == other.Hidden;

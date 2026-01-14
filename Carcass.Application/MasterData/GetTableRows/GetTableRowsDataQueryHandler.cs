@@ -23,12 +23,14 @@ public sealed class GetTableRowsDataQueryHandler : IQueryHandler<GetTableRowsDat
     }
 
     public async Task<OneOf<TableRowsData, Err[]>> Handle(GetTableRowsDataRequestQuery request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var filterSortRequestObject = FilterSortRequestFactory.Create(request.FilterSortRequest);
 
         if (filterSortRequestObject == null)
+        {
             return new[] { CommonErrors.IncorrectData };
+        }
 
         //var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(request.tableName);
         //var result = await loader.GetTableRowsData(filterSortRequestObject, cancellationToken);
@@ -37,7 +39,10 @@ public sealed class GetTableRowsDataQueryHandler : IQueryHandler<GetTableRowsDat
 
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
+        {
             return createMasterDataCrudResult.AsT1;
+        }
+
         var masterDataCruder = createMasterDataCrudResult.AsT0;
 
         var result = await masterDataCruder.GetTableRowsData(filterSortRequestObject, cancellationToken);

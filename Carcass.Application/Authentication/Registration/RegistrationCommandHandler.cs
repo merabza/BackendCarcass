@@ -22,7 +22,7 @@ public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
     }
 
     public async Task<OneOf<LoginResponse, Err[]>> Handle(RegistrationRequestCommand request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var registerParameters = new RegisterParameters
         {
@@ -34,7 +34,9 @@ public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
         };
         var tryLoginResult = await _registrationService.TryToRegister(registerParameters, cancellationToken);
         if (tryLoginResult.IsT1)
+        {
             return tryLoginResult.AsT1;
+        }
 
         var user = tryLoginResult.AsT0.User;
         var appUserModel = new LoginResponse(user.Id, LastSequentialNumber, user.UserName!, user.Email!,

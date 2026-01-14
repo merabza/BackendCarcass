@@ -11,8 +11,8 @@ public static class CarcassRepositoriesDependencyInjection
 {
     public static IServiceCollection AddCarcassRepositories(this IServiceCollection services, bool debugMode)
     {
-        if (debugMode)
-            Console.WriteLine($"{nameof(AddCarcassRepositories)} Started");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(AddCarcassRepositories)} Started");
 
         services.AddScoped<IIdentityRepository, IdentityRepository>();
         services.AddScoped<IMenuRightsRepository, MenuRightsRepository>();
@@ -21,8 +21,8 @@ public static class CarcassRepositoriesDependencyInjection
         services.AddScoped<IRightsRepository, RightsRepository>();
         services.AddScoped<IUserClaimsRepository, UserClaimsRepository>();
 
-        if (debugMode)
-            Console.WriteLine($"{nameof(AddCarcassRepositories)} Finished");
+        //if (debugMode)
+        //    Console.WriteLine($"{nameof(AddCarcassRepositories)} Finished");
 
         return services;
     }
