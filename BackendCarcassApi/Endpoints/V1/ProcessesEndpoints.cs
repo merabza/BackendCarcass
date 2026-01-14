@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
+using Serilog;
 
 namespace BackendCarcassApi.Endpoints.V1;
 
@@ -18,22 +19,26 @@ namespace BackendCarcassApi.Endpoints.V1;
 // ReSharper disable once UnusedType.Global
 public static class ProcessesEndpoints
 {
-    public static bool UseProcessesEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
+    public static bool UseProcessesEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
     {
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(UseProcessesEndpoints)} Started");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Started", nameof(UseProcessesEndpoints));
+        }
 
         endpoints.MapGet(
             CarcassApiRoutes.ApiBase + CarcassApiRoutes.Processes.ProcessesBase + CarcassApiRoutes.Processes.Status,
             Status).RequireAuthorization();
 
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(UseProcessesEndpoints)} Finished");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Finished", nameof(UseProcessesEndpoints));
+        }
 
         return true;
     }
 
-    private static Ok<CommandRunningStatusResponse> Status(int userId, int viewStyle)
+    private static Ok<CommandRunningStatusResponse> Status()
     {
         var commandRunningStatus = new CommandRunningStatusResponse();
         return TypedResults.Ok(commandRunningStatus);

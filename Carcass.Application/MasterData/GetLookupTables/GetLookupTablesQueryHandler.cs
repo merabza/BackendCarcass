@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CarcassMasterData;
+using CarcassMasterData.Models;
 using MediatRMessagingAbstractions;
 using OneOf;
 using SystemToolsShared.Errors;
@@ -26,13 +27,13 @@ public sealed class
     }
 
     public async Task<OneOf<MdGetLookupTablesQueryResponse, Err[]>> Handle(MdGetLookupTablesRequestQuery request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         //var reqQuery = request.HttpRequest.Query["tables"];
         List<string> tableNames = request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()
             .ToList()!;
         var mdLoader = new ReturnValuesLoader(tableNames, _rvRepo, _returnValuesLoaderCreator);
-        var loaderResult = await mdLoader.Run(cancellationToken);
+        OneOf<Dictionary<string, IEnumerable<SrvModel>>, Err[]> loaderResult = await mdLoader.Run(cancellationToken);
         return loaderResult.Match<OneOf<MdGetLookupTablesQueryResponse, Err[]>>(
             r => new MdGetLookupTablesQueryResponse(r), e => e.ToArray());
     }

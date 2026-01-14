@@ -21,12 +21,12 @@ public sealed class GetTablesQueryHandler : IQueryHandler<MdGetTablesRequestQuer
     }
 
     public async Task<OneOf<MdGetTablesQueryResponse, Err[]>> Handle(MdGetTablesRequestQuery request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         List<string> tableNames = request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()
             .ToList()!;
         var mdLoader = new MasterDataLoader(tableNames, _masterDataLoaderCreator);
-        var loaderResult = await mdLoader.Run(cancellationToken);
+        OneOf<Dictionary<string, IEnumerable<dynamic>>, Err[]> loaderResult = await mdLoader.Run(cancellationToken);
         return loaderResult.Match<OneOf<MdGetTablesQueryResponse, Err[]>>(r => new MdGetTablesQueryResponse(r),
             e => e.ToArray());
     }

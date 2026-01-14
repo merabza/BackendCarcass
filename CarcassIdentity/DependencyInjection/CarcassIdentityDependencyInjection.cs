@@ -8,17 +8,20 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace CarcassIdentity.DependencyInjection;
 
 // ReSharper disable once UnusedType.Global
 public static class CarcassIdentityDependencyInjection
 {
-    public static IServiceCollection AddCarcassIdentity(this IServiceCollection services, IConfiguration configuration,
-        bool debugMode)
+    public static IServiceCollection AddCarcassIdentity(this IServiceCollection services, ILogger logger,
+        IConfiguration configuration, bool debugMode)
     {
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(AddCarcassIdentity)} Started");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Started", nameof(AddCarcassIdentity));
+        }
 
         services.AddScoped<IUserStore<AppUser>, MyUserStore>();
         services.AddScoped<IUserPasswordStore<AppUser>, MyUserStore>();
@@ -37,12 +40,12 @@ public static class CarcassIdentityDependencyInjection
         }).AddDefaultTokenProviders();
 
         // configure strongly typed settings objects
-        var appSettingsSection = configuration.GetSection("IdentitySettings");
+        IConfigurationSection appSettingsSection = configuration.GetSection("IdentitySettings");
         services.Configure<IdentitySettings>(appSettingsSection);
 
         // configure jwt authentication
-        var identitySettings = appSettingsSection.Get<IdentitySettings>() ??
-                               throw new Exception("IdentitySettings is null");
+        IdentitySettings identitySettings = appSettingsSection.Get<IdentitySettings>() ??
+                                            throw new Exception("IdentitySettings is null");
         string jwtSecret = identitySettings.JwtSecret ?? throw new Exception("jwtSecret is null");
         byte[] key = Encoding.ASCII.GetBytes(jwtSecret);
 
@@ -57,8 +60,7 @@ public static class CarcassIdentityDependencyInjection
             x.SaveToken = true;
             x.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuerSigningKey = true, IssuerSigningKey = new SymmetricSecurityKey(key)
                 //ValidateIssuer = false,
                 //ValidateAudience = false
             };
@@ -66,24 +68,28 @@ public static class CarcassIdentityDependencyInjection
 
         services.AddAuthorizationBuilder().SetInvokeHandlersAfterFailure(true);
 
-        //if (debugMode)
-        //{
-        //    Console.WriteLine($"{nameof(AddCarcassIdentity)} Finished");
-        //}
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Finished", nameof(AddCarcassIdentity));
+        }
 
         return services;
     }
 
-    public static bool UseAuthenticationAndAuthorization(this IApplicationBuilder app, bool debugMode)
+    public static bool UseAuthenticationAndAuthorization(this IApplicationBuilder app, ILogger logger, bool debugMode)
     {
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(UseAuthenticationAndAuthorization)} Started");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Started", nameof(UseAuthenticationAndAuthorization));
+        }
 
         app.UseAuthentication();
         app.UseAuthorization();
 
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(UseAuthenticationAndAuthorization)} Finished");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Finished", nameof(UseAuthenticationAndAuthorization));
+        }
 
         return true;
     }

@@ -9,8 +9,8 @@ public sealed class UserMustHaveRightsEditorRightsFilter : UserMenuRightsFilter
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public UserMustHaveRightsEditorRightsFilter(IUserRightsRepository repo, IUnitOfWork unitOfWork,
-        ILogger<UserMenuRightsFilter> logger, ICurrentUser currentUser) : base(["Rights"], repo, unitOfWork, logger,
-        currentUser)
+        ILogger<UserMustHaveRightsEditorRightsFilter> logger, ICurrentUser currentUser) : base(["Rights"], repo,
+        unitOfWork, logger, currentUser)
     {
     }
 }

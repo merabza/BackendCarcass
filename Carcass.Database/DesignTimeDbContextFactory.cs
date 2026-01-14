@@ -36,7 +36,7 @@ public /*open*/ class DesignTimeDbContextFactory<T> : IDesignTimeDbContextFactor
     {
         //Console.WriteLine("Pass 1...");
         //თუ პარამეტრების json ფაილის სახელი პირდაპირ არ არის გადმოცემული, ვიყენებთ სტანდარტულ სახელს appsettings.json
-        var configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+        IConfigurationRoot configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile(_parametersJsonFileName ?? "appsettings.json", false, true)
             //.AddEncryptedJsonFile(Path.Combine(pathToContentRoot, "appsettingsEncoded.json"), optional: false, reloadOnChange: true, Key,
             //  Path.Combine(pathToContentRoot, "appsetenkeys.json"))
@@ -54,12 +54,10 @@ public /*open*/ class DesignTimeDbContextFactory<T> : IDesignTimeDbContextFactor
         //Console.WriteLine("Pass 5...");
         object? dbContext = Activator.CreateInstance(typeof(T), builder.Options, true);
 
-        if (dbContext is null)
-        {
-            throw new Exception("dbContext does not created");
-        }
-
-        //Console.WriteLine("Pass 6...");
-        return (T)dbContext;
+        return dbContext is null
+            ? throw new Exception("dbContext does not created")
+            :
+            //Console.WriteLine("Pass 6...");
+            (T)dbContext;
     }
 }

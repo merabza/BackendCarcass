@@ -1,22 +1,25 @@
-using System;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace CarcassFilterSort.DependencyInjection;
 
 // ReSharper disable once UnusedType.Global
 public static class CarcassFilterSortDependencyInjection
 {
-    public static IServiceCollection AddCarcassFilterSort(this IServiceCollection services, bool debugMode)
+    public static IServiceCollection AddCarcassFilterSort(this IServiceCollection services, ILogger logger,
+        bool debugMode)
     {
-        //if (debugMode)
-        //{
-        //    Console.WriteLine($"{nameof(CarcassFilterSortDependencyInjection)} Started");
-        //}
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Started", nameof(AddCarcassFilterSort));
+        }
 
         services.AddSingleton<FilterSortManager>();
 
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(CarcassFilterSortDependencyInjection)} Finished");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Finished", nameof(AddCarcassFilterSort));
+        }
 
         return services;
     }

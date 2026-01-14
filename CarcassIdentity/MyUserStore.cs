@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,8 +18,6 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
     private readonly ILogger<MyUserStore> _logger;
 
     private readonly IIdentityRepository _repo;
-
-    private bool _disposedValue; // To detect redundant calls
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public MyUserStore(IIdentityRepository repo, ILogger<MyUserStore> logger)
@@ -44,7 +43,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     public Task<string> GetRoleIdAsync(AppRole role, CancellationToken cancellationToken)
     {
-        return Task.FromResult(role.Id.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        return Task.FromResult(role.Id.ToString(CultureInfo.InvariantCulture));
     }
 
     public Task<string?> GetRoleNameAsync(AppRole role, CancellationToken cancellationToken)
@@ -77,7 +76,9 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     async Task<AppRole?> IRoleStore<AppRole>.FindByIdAsync(string roleId, CancellationToken cancellationToken)
     {
-        Role? role = await _repo.Roles.FirstOrDefaultAsync(u => u.RolId.ToString(System.Globalization.CultureInfo.InvariantCulture) == roleId, cancellationToken);
+        Role? role =
+            await _repo.Roles.FirstOrDefaultAsync(u => u.RolId.ToString(CultureInfo.InvariantCulture) == roleId,
+                cancellationToken);
         return role == null
             ? null // throw new Exception($"Role with by roleId={roleId} does not exists")
             : new AppRole(role.RolKey, role.RolName, role.RolLevel)
@@ -111,7 +112,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
                 Email = s.Email,
                 NormalizedEmail = s.NormalizedEmail
             });
-            _logger.LogInformation("User count: {UserCount}", ret.Count().ToString(System.Globalization.CultureInfo.InvariantCulture));
+            _logger.LogInformation("User count: {UserCount}", ret.Count().ToString(CultureInfo.InvariantCulture));
             return ret;
         }
     }
@@ -122,7 +123,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
         return Task.FromResult(true);
     }
 
-    public Task<string?> GetEmailAsync(AppUser user, CancellationToken cancellationToken )
+    public Task<string?> GetEmailAsync(AppUser user, CancellationToken cancellationToken)
     {
         return Task.FromResult(user.Email);
     }
@@ -158,26 +159,27 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
         return Task.FromResult(user.NormalizedEmail);
     }
 
-    public Task SetNormalizedEmailAsync(AppUser user, string? normalizedEmail,
-        CancellationToken cancellationToken)
+    public Task SetNormalizedEmailAsync(AppUser user, string? normalizedEmail, CancellationToken cancellationToken)
     {
         user.NormalizedEmail = normalizedEmail;
         return Task.FromResult(true);
     }
 
-    public async Task<IdentityResult> CreateAsync(AppUser user, CancellationToken cancellationToken )
+    public async Task<IdentityResult> CreateAsync(AppUser user, CancellationToken cancellationToken)
     {
         return await _repo.CreateUserAsync(user, cancellationToken);
     }
 
-    public Task<IdentityResult> DeleteAsync(AppUser appUser, CancellationToken cancellationToken )
+    public Task<IdentityResult> DeleteAsync(AppUser appUser, CancellationToken cancellationToken)
     {
         return _repo.RemoveUserAsync(appUser.Id, cancellationToken);
     }
 
-    public async Task<AppUser?> FindByIdAsync(string userId, CancellationToken cancellationToken )
+    public async Task<AppUser?> FindByIdAsync(string userId, CancellationToken cancellationToken)
     {
-        User? user = await _repo.Users.FirstOrDefaultAsync(u => u.UsrId.ToString(System.Globalization.CultureInfo.InvariantCulture) == userId, cancellationToken);
+        User? user =
+            await _repo.Users.FirstOrDefaultAsync(u => u.UsrId.ToString(CultureInfo.InvariantCulture) == userId,
+                cancellationToken);
         return user is null
             ? null //throw new Exception($"AppUser with by userId={userId} does not exists")
             : new AppUser(user.UserName, user.FirstName, user.LastName)
@@ -190,8 +192,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
             };
     }
 
-    public async Task<AppUser?> FindByNameAsync(string normalizedUserName,
-        CancellationToken cancellationToken )
+    public async Task<AppUser?> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         //ThrowIfDisposed();
@@ -219,7 +220,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     public Task<string> GetUserIdAsync(AppUser user, CancellationToken cancellationToken)
     {
-        return Task.FromResult(user.Id.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        return Task.FromResult(user.Id.ToString(CultureInfo.InvariantCulture));
     }
 
     public Task<string?> GetUserNameAsync(AppUser user, CancellationToken cancellationToken)
@@ -227,8 +228,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
         return Task.FromResult(user.UserName);
     }
 
-    public Task SetNormalizedUserNameAsync(AppUser user, string? normalizedName,
-        CancellationToken cancellationToken)
+    public Task SetNormalizedUserNameAsync(AppUser user, string? normalizedName, CancellationToken cancellationToken)
     {
         user.NormalizedUserName = normalizedName;
         return Task.FromResult(true);
@@ -243,10 +243,9 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
     public async Task<IdentityResult> UpdateAsync(AppUser appUser, CancellationToken cancellationToken)
     {
         User? user = await _repo.Users.FirstOrDefaultAsync(u => u.UsrId == appUser.Id, cancellationToken);
-        if (user == null ||
-            string.IsNullOrWhiteSpace(appUser.UserName) || string.IsNullOrWhiteSpace(appUser.NormalizedUserName) ||
-            string.IsNullOrWhiteSpace(appUser.Email) || string.IsNullOrWhiteSpace(appUser.NormalizedEmail) ||
-            string.IsNullOrWhiteSpace(appUser.PasswordHash))
+        if (user == null || string.IsNullOrWhiteSpace(appUser.UserName) ||
+            string.IsNullOrWhiteSpace(appUser.NormalizedUserName) || string.IsNullOrWhiteSpace(appUser.Email) ||
+            string.IsNullOrWhiteSpace(appUser.NormalizedEmail) || string.IsNullOrWhiteSpace(appUser.PasswordHash))
         {
             return IdentityResult.Failed();
         }
@@ -282,17 +281,8 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
         return string.IsNullOrWhiteSpace(user?.PasswordHash);
     }
 
-    // ~MyUserStore() {
-    //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-    //   Dispose(false);
-    // }
-
-    // This code added to correctly implement the disposable pattern.
     public void Dispose()
     {
-        // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        Dispose(true);
-        // GC.SuppressFinalize(this);
     }
 
     public async Task AddToRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
@@ -353,16 +343,5 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
                 Id = s.UsrId, NormalizedUserName = s.NormalizedUserName
             }).ToListAsync(cancellationToken);
         return us;
-    }
-
-    // ReSharper disable once UnusedParameter.Local
-    private void Dispose(bool disposing)
-    {
-        if (_disposedValue)
-        {
-            return;
-        }
-
-        _disposedValue = true;
     }
 }

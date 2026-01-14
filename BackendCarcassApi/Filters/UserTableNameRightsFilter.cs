@@ -33,7 +33,7 @@ public /*open*/ class UserTableNameRightsFilter : IEndpointFilter
         {
             var rightsDeterminer = new RightsDeterminer(_repo, _unitOfWork, _logger, _currentUser);
             var checkTableRightsResult = await rightsDeterminer.CheckTableRights(_currentUser.Name,
-                context.HttpContext.Request.Method, new TableKeyName { TableKey = tableKey }, CancellationToken.None);
+                context.HttpContext.Request.Method, new TableKeyName { TableName = tableKey }, CancellationToken.None);
             if (checkTableRightsResult.IsSome)
             {
                 return checkTableRightsResult;

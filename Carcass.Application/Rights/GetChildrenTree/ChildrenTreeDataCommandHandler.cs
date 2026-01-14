@@ -32,11 +32,11 @@ public sealed class
     }
 
     public async Task<OneOf<List<DataTypeModel>, Err[]>> Handle(ChildrenTreeDataRequestCommand request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo, _unitOfWork);
-        var result = await rightsCollector.ChildrenTreeData(_currentUser.Name, request.DataTypeKey, request.ViewStyle,
-            cancellationToken);
+        OneOf<List<DataTypeModel>, Err[]> result = await rightsCollector.ChildrenTreeData(_currentUser.Name,
+            request.DataTypeKey, request.ViewStyle, cancellationToken);
         return result.Match<OneOf<List<DataTypeModel>, Err[]>>(r => r, e => e);
     }
 }

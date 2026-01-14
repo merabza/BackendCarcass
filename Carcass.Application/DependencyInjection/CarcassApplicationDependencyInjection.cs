@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Carcass.Application.DependencyInjection;
 
 public static class CarcassApplicationDependencyInjection
 {
 
-    public static IServiceCollection AddScopedAllCarcassApplicationServices(this IServiceCollection services, bool debugMode)
+    public static IServiceCollection AddScopedAllCarcassApplicationServices(this IServiceCollection services, ILogger logger, bool debugMode)
     {
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(AddScopedAllCarcassApplicationServices)} Started");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Started", nameof(AddScopedAllCarcassApplicationServices));
+        }
 
         var assembly = typeof(IScopeServiceCarcassApplication).Assembly;
         foreach (var type in assembly.ExportedTypes.Where(x =>
@@ -20,8 +23,10 @@ public static class CarcassApplicationDependencyInjection
             services.AddScoped(type);
         }
 
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(AddScopedAllCarcassApplicationServices)} Finished");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Finished", nameof(AddScopedAllCarcassApplicationServices));
+        }
 
         return services;
     }

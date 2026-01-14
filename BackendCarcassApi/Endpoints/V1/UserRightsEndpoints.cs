@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Serilog;
 using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Endpoints.V1;
@@ -24,10 +25,12 @@ namespace BackendCarcassApi.Endpoints.V1;
 // ReSharper disable once UnusedType.Global
 public static class UserRightsEndpoints
 {
-    public static bool UseUserRightsEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
+    public static bool UseUserRightsEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
     {
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(UseUserRightsEndpoints)} Started");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Started", nameof(UseUserRightsEndpoints));
+        }
 
         var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase)
             .RequireAuthorization();
@@ -38,8 +41,10 @@ public static class UserRightsEndpoints
         group.MapDelete(CarcassApiRoutes.UserRights.DeleteCurrentUser, DeleteCurrentUser);
         group.MapGet(CarcassApiRoutes.UserRights.MainMenu, MainMenu);
 
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(UseUserRightsEndpoints)} Finished");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Finished", nameof(UseUserRightsEndpoints));
+        }
 
         return true;
     }

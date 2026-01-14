@@ -28,8 +28,7 @@ public sealed class SaveDataCommandHandler : ICommandHandler<SaveDataRequestComm
         _logger = logger;
     }
 
-    public async Task<OneOf<bool, Err[]>> Handle(SaveDataRequestCommand request,
-        CancellationToken cancellationToken = default)
+    public async Task<OneOf<bool, Err[]>> Handle(SaveDataRequestCommand request, CancellationToken cancellationToken)
     {
         var rightsSaver = new RightsSaver(_logger, _repo, _unitOfWork);
         return await rightsSaver.SaveRightsChanges(_currentUser.Name, request.ChangesForSave, cancellationToken);

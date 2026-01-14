@@ -1,26 +1,31 @@
 using System;
 using BackendCarcassApi.Endpoints.V1;
 using Microsoft.AspNetCore.Routing;
+using Serilog;
 
 namespace BackendCarcassApi.DependencyInjection;
 
 // ReSharper disable once UnusedType.Global
 public static class BackendCarcassApiDependencyInjection
 {
-    public static bool UseBackendCarcassApiEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
+    public static bool UseBackendCarcassApiEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
     {
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(UseBackendCarcassApiEndpoints)} Started");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Started", nameof(UseBackendCarcassApiEndpoints));
+        }
 
-        endpoints.UseAuthenticationEndpoints(debugMode);
-        endpoints.UseDataTypesEndpoints(debugMode);
-        endpoints.UseMasterDataEndpoints(debugMode);
-        endpoints.UseProcessesEndpoints(debugMode);
-        endpoints.UseRightsEndpoints(debugMode);
-        endpoints.UseUserRightsEndpoints(debugMode);
+        endpoints.UseAuthenticationEndpoints(logger, debugMode);
+        endpoints.UseDataTypesEndpoints(logger, debugMode);
+        endpoints.UseMasterDataEndpoints(logger, debugMode);
+        endpoints.UseProcessesEndpoints(logger, debugMode);
+        endpoints.UseRightsEndpoints(logger, debugMode);
+        endpoints.UseUserRightsEndpoints(logger, debugMode);
 
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(UseBackendCarcassApiEndpoints)} Finished");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Finished", nameof(UseBackendCarcassApiEndpoints));
+        }
 
         return true;
     }

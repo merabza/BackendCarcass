@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Carcass.Database;
+using Carcass.Database.Models;
 using CarcassRights;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
@@ -33,7 +34,7 @@ public sealed class UserRightsRepository : IUserRightsRepository
     public Task<bool> CheckMenuRight(int roleDtId, string roleName, int menuGroupsDtId, int menuDtId,
         string menuItemName, CancellationToken cancellationToken = default)
     {
-        var res = from m in _context.Menu
+        IQueryable<ManyToManyJoin> res = from m in _context.Menu
             join mg in _context.MenuGroups on m.MenGroupId equals mg.MengId
             join rm in _context.ManyToManyJoins on m.MenKey equals rm.CKey
             join rmg in _context.ManyToManyJoins on mg.MengKey equals rmg.CKey
@@ -71,9 +72,9 @@ public sealed class UserRightsRepository : IUserRightsRepository
     {
         return await _context.ManyToManyJoins.AnyAsync(
             w => w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataTypeDtId && w.CKey == keyByTableName,
-            cancellationToken) && _context.ManyToManyJoins.Any(w =>
-            w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataCrudRightDtId &&
-            w.CKey == keyByTableName + '.' + Enum.GetName(typeof(ECrudOperationType), crudType));
+            cancellationToken) && await _context.ManyToManyJoins.AnyAsync(
+            w => w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataCrudRightDtId &&
+                 w.CKey == keyByTableName + '.' + Enum.GetName(crudType), cancellationToken);
     }
 
     //public bool CheckUserRightToClaim(IEnumerable<Claim> userClaims, string claimName)

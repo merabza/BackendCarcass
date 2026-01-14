@@ -3,16 +3,19 @@ using CarcassIdentity;
 using CarcassMasterData;
 using CarcassRights;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace CarcassRepositories.DependencyInjection;
 
 // ReSharper disable once UnusedType.Global
 public static class CarcassRepositoriesDependencyInjection
 {
-    public static IServiceCollection AddCarcassRepositories(this IServiceCollection services, bool debugMode)
+    public static IServiceCollection AddCarcassRepositories(this IServiceCollection services, ILogger logger, bool debugMode)
     {
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(AddCarcassRepositories)} Started");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Started", nameof(AddCarcassRepositories));
+        }
 
         services.AddScoped<IIdentityRepository, IdentityRepository>();
         services.AddScoped<IMenuRightsRepository, MenuRightsRepository>();
@@ -21,8 +24,10 @@ public static class CarcassRepositoriesDependencyInjection
         services.AddScoped<IRightsRepository, RightsRepository>();
         services.AddScoped<IUserClaimsRepository, UserClaimsRepository>();
 
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(AddCarcassRepositories)} Finished");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Finished", nameof(AddCarcassRepositories));
+        }
 
         return services;
     }

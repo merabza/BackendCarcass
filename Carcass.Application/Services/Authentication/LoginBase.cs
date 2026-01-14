@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
 using Carcass.Application.Services.Authentication.Models;
@@ -14,7 +15,6 @@ namespace Carcass.Application.Services.Authentication;
 
 public class LoginBase
 {
-    protected static int LastSequentialNumber;
     private readonly IOptions<IdentitySettings> _identitySettings;
     private readonly SignInManager<AppUser> _signinMgr;
     private readonly IUserClaimsRepository? _userClaimsRepository;
@@ -38,7 +38,7 @@ public class LoginBase
         }
 
         await _signinMgr.SignOutAsync();
-        var result = await _signinMgr.PasswordSignInAsync(user, password, true, false);
+        SignInResult result = await _signinMgr.PasswordSignInAsync(user, password, true, false);
         if (!result.Succeeded)
         {
             return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
@@ -54,7 +54,7 @@ public class LoginBase
             return new[] { AuthenticationApiErrors.InvalidEmail };
         }
 
-        var roles = await UserMgr.GetRolesAsync(user);
+        IList<string> roles = await UserMgr.GetRolesAsync(user);
 
         //ახლადშექმნილ მომხმარებელს როლები არ აქვს, ამიტომ შემდეგი ბრძანება დაკომენტარებულია
         //თუ მომავალში საჭირო გახდა, რომ ახლადშექმნილ მომხმარებელს ავტომატურად მიეცეს როლი, მაშინ შემდეგი ბრძანება უნდა აღსდგეს
@@ -65,21 +65,20 @@ public class LoginBase
             return new[] { CarcassApiErrors.ParametersAreInvalid };
         }
 
-        LastSequentialNumber++;
-        var token = user.CreateJwToken(_identitySettings.Value.JwtSecret, LastSequentialNumber, roles);
+        string? token = user.CreateJwToken(_identitySettings.Value.JwtSecret, 0, roles);
         if (token is null)
         {
             return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
         }
 
-        var appClaims = _userClaimsRepository is null
+        List<string>? appClaims = _userClaimsRepository is null
             ? null
             : await _userClaimsRepository.UserAppClaims(user.UserName, cancellationToken);
 
         return new LoginResult
         {
             User = user,
-            LastSequentialNumber = LastSequentialNumber,
+            LastSequentialNumber = 0,
             Token = token,
             AppClaims = appClaims ?? [],
             Roles = roles

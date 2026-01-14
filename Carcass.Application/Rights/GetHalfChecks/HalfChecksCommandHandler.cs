@@ -32,11 +32,11 @@ public sealed class HalfChecksCommandHandler : ICommandHandler<HalfChecksRequest
     }
 
     public async Task<OneOf<List<TypeDataModel>, Err[]>> Handle(HalfChecksRequestCommand request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo, _unitOfWork);
-        var typeDataModels = await rightsCollector.HalfChecks(_currentUser.Name, request.DataTypeId, request.DataKey,
-            request.ViewStyle, cancellationToken);
+        List<TypeDataModel> typeDataModels = await rightsCollector.HalfChecks(_currentUser.Name, request.DataTypeId,
+            request.DataKey, request.ViewStyle, cancellationToken);
         return typeDataModels;
     }
 }

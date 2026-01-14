@@ -6,8 +6,6 @@ namespace Carcass.Application.Authentication;
 
 public /*open*/ class LoginCommandHandlerBase
 {
-    protected static int LastSequentialNumber;
-
     //ამ მეთოდით ავტორიზაციის პროცესი გამოტანილია ცალკე
     //და გამოიყენება როგორც ავტორიზაციისას, ისე ახალი მომხმარებლის დარეგისტრირებისას,
     //რომ ავტომატურად მოხდეს რეგისტრაციისას ავტორიზაციაც
@@ -19,7 +17,7 @@ public /*open*/ class LoginCommandHandlerBase
         }
 
         await signinMgr.SignOutAsync();
-        var result = await signinMgr.PasswordSignInAsync(user, password, true, false);
+        SignInResult result = await signinMgr.PasswordSignInAsync(user, password, true, false);
         return result.Succeeded ? user : null;
     }
 }

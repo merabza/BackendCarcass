@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Carcass.Database;
+using Carcass.Database.Models;
 using CarcassMasterData;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
@@ -70,8 +71,9 @@ public /*open*/ class CarcassMasterDataRepository : ICarcassMasterDataRepository
     public async Task<GridModel?> GetDataTypeGridRulesByTableName(string tableName,
         CancellationToken cancellationToken = default)
     {
-        var dataType = await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
-        var dtGridRulesJson = dataType?.DtGridRulesJson;
+        DataType? dataType =
+            await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
+        string? dtGridRulesJson = dataType?.DtGridRulesJson;
 
         return dtGridRulesJson == null ? null : GridModel.DeserializeGridModel(dtGridRulesJson);
     }
@@ -81,15 +83,16 @@ public /*open*/ class CarcassMasterDataRepository : ICarcassMasterDataRepository
         _context.Update(newItem);
     }
 
-    public void Delete(IDataType itemForDelete)
+    public void Delete(IDataType dataType)
     {
-        _context.Remove(itemForDelete);
+        _context.Remove(dataType);
     }
 
     public async Task<string?> GetSortFieldNameByTableName(string tableName,
         CancellationToken cancellationToken = default)
     {
-        var dataType = await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
+        DataType? dataType =
+            await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
         return dataType?.DtNameFieldName;
     }
 }

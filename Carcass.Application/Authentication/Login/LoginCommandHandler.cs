@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassContracts.V1.Responses;
 using Carcass.Application.Services.Authentication;
+using Carcass.Application.Services.Authentication.Models;
+using CarcassMasterData.Models;
 using MediatRMessagingAbstractions;
 using OneOf;
 using SystemToolsShared.Errors;
@@ -23,18 +25,18 @@ public sealed class LoginCommandHandler : LoginCommandHandlerBase, ICommandHandl
     public async Task<OneOf<LoginResponse, Err[]>> Handle(LoginRequestCommand request,
         CancellationToken cancellationToken)
     {
-        var tryLoginResult = await _loginService.TryToLogin(request.UserName!, request.Password!, cancellationToken);
+        OneOf<LoginResult, Err[]> tryLoginResult =
+            await _loginService.TryToLogin(request.UserName!, request.Password!, cancellationToken);
         if (tryLoginResult.IsT1)
         {
             return tryLoginResult.AsT1;
         }
 
-        var user = tryLoginResult.AsT0.User;
-        var appUserModel = new LoginResponse(user.Id, LastSequentialNumber, user.UserName!, user.Email!,
-            tryLoginResult.AsT0.Token,
+        AppUser user = tryLoginResult.AsT0.User;
+        var appUserModel = new LoginResponse(user.Id, user.UserName!, user.Email!, tryLoginResult.AsT0.Token,
             tryLoginResult.AsT0.Roles.Aggregate(string.Empty,
-                (cur, next) => cur + (string.IsNullOrEmpty(cur) ? string.Empty : ", ") + next), user.FirstName, user.LastName,
-            tryLoginResult.AsT0.AppClaims);
+                (cur, next) => cur + (string.IsNullOrEmpty(cur) ? string.Empty : ", ") + next), user.FirstName,
+            user.LastName, tryLoginResult.AsT0.AppClaims);
         return appUserModel;
     }
 }

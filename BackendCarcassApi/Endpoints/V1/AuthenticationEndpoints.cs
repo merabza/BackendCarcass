@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Serilog;
 using SystemToolsShared.Errors;
 
 namespace BackendCarcassApi.Endpoints.V1;
@@ -23,10 +24,12 @@ namespace BackendCarcassApi.Endpoints.V1;
 // ReSharper disable once UnusedType.Global
 public static class AuthenticationEndpoints
 {
-    public static bool UseAuthenticationEndpoints(this IEndpointRouteBuilder endpoints, bool debugMode)
+    public static bool UseAuthenticationEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
     {
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(UseAuthenticationEndpoints)} Started");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Started", nameof(UseAuthenticationEndpoints));
+        }
 
         var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
             .RequireCors(CorsDependencyInjection.MyAllowSpecificOrigins);
@@ -34,8 +37,10 @@ public static class AuthenticationEndpoints
         group.MapPost(CarcassApiRoutes.Authentication.Registration, Registration);
         group.MapPost(CarcassApiRoutes.Authentication.Login, Login);
 
-        //if (debugMode)
-        //    Console.WriteLine($"{nameof(UseAuthenticationEndpoints)} Finished");
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Finished", nameof(UseAuthenticationEndpoints));
+        }
 
         return true;
     }
