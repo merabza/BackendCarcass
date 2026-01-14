@@ -7,15 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-<<<<<<< HEAD
-=======
-        <PackageReference Include="LanguageExt.Core" Version="4.4.9" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
-        <PackageReference Include="OneOf" Version="3.0.271" />
-    </ItemGroup>
-
-    <ItemGroup>
->>>>>>> c170f3f82f80967427cb3a0f71433846d98db4b6
         <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
         <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
         <ProjectReference Include="..\CarcassMappers\CarcassMappers.csproj" />

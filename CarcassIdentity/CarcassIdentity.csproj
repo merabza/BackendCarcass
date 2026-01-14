@@ -6,15 +6,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
-<<<<<<< HEAD
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-=======
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
-        <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="10.0.2" />
->>>>>>> c170f3f82f80967427cb3a0f71433846d98db4b6
     </ItemGroup>
 
     <ItemGroup>
