@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
+=======
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+>>>>>>> c170f3f82f80967427cb3a0f71433846d98db4b6
     <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
   </ItemGroup>
 

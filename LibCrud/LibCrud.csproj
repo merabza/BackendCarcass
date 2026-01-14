@@ -7,7 +7,18 @@
     </PropertyGroup>
 
     <ItemGroup>
+<<<<<<< HEAD
       <ProjectReference Include="..\..\SystemTools\DomainShared\DomainShared.csproj" />
+=======
+        <PackageReference Include="LanguageExt.Core" Version="4.4.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
+        <PackageReference Include="OneOf" Version="3.0.271" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\SystemTools\DomainShared\DomainShared.csproj" />
+        <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
+>>>>>>> c170f3f82f80967427cb3a0f71433846d98db4b6
     </ItemGroup>
 
 </Project>

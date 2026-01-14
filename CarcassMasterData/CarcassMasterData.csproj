@@ -7,8 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+=======
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="10.0.2" />
+    <PackageReference Include="OneOf" Version="3.0.271" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+>>>>>>> c170f3f82f80967427cb3a0f71433846d98db4b6
   </ItemGroup>
 
   <ItemGroup>
