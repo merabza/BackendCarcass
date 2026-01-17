@@ -16,7 +16,9 @@ public abstract class ValueObject : IEquatable<ValueObject>
     public override bool Equals(object? obj)
     {
         if (obj is null || obj.GetType() != GetType())
+        {
             return false;
+        }
 
         return obj is ValueObject valueObject &&
                GetEqualityComponents().SequenceEqual(valueObject.GetEqualityComponents());
