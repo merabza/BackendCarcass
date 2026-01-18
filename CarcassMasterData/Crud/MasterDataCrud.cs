@@ -283,7 +283,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             return OneOf<IDataType, Err[]>.FromT0(idt);
         }
 
-        errors.Add(MasterDataApiErrors.EntryNotFound);
+        errors.Add(MasterDataApiErrors.EntryNotFound());
         return errors.ToArray();
     }
 
