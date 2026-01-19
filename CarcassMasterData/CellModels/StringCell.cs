@@ -2,7 +2,7 @@
 using BackendCarcassContracts.Errors;
 using CarcassMasterData.Validation;
 using Newtonsoft.Json;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
 namespace CarcassMasterData.CellModels;
 
@@ -10,7 +10,7 @@ public sealed class StringCell : MixedCell
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public StringCell(string fieldName, string? caption, bool visible = true, string? typeName = null) : base(fieldName,
-        caption, visible, typeName ?? CellTypeNameForSave(nameof(CellModels.StringCell)))
+        caption, visible, typeName ?? CellTypeNameForSave(nameof(StringCell)))
     {
     }
 
@@ -20,7 +20,7 @@ public sealed class StringCell : MixedCell
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
     public IntRule? MaxLenRule { get; set; }
 
-    public new static StringCell Create(string fieldName, string? caption, bool visible = true, string? typeName = null)
+    public static new StringCell Create(string fieldName, string? caption, bool visible = true, string? typeName = null)
     {
         return new StringCell(fieldName, caption, visible, typeName);
     }
@@ -52,7 +52,7 @@ public sealed class StringCell : MixedCell
 
     public override List<Err> Validate(object? value)
     {
-        var errMes = ValidateByType<string>(base.Validate(value), value, "სტრიქონის");
+        List<Err> errMes = ValidateByType<string>(base.Validate(value), value, "სტრიქონის");
 
         if (value is not string strValue)
         {

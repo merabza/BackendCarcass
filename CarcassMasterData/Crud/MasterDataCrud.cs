@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassContracts.Errors;
@@ -17,7 +18,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
 namespace CarcassMasterData.Crud;
 
@@ -58,15 +59,15 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         bool isGridWithSortId = isGridWithSortIdResult.AsT0;
 
-        var query = queryResult.AsT0;
+        IQueryable<IDataType>? query = queryResult.AsT0;
 
         if (!isGridWithSortId)
         {
             return await query.ToListAsync(cancellationToken);
         }
 
-        var method = typeof(MasterDataCrud).GetMethod(nameof(OrderBySortId), 1, [typeof(object)]);
-        var generic = method?.MakeGenericMethod(_entityType.ClrType);
+        MethodInfo? method = typeof(MasterDataCrud).GetMethod(nameof(OrderBySortId), 1, [typeof(object)]);
+        MethodInfo? generic = method?.MakeGenericMethod(_entityType.ClrType);
         if (generic is null)
         {
             return new[] { MasterDataCrudErrors.GenericMethodWasNotCreated(nameof(OrderBySortId)) };
@@ -88,7 +89,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     public static OneOf<MasterDataCrud, Err[]> Create(string tableName, ILogger logger,
         ICarcassMasterDataRepository cmdRepo, IUnitOfWork unitOfWork)
     {
-        var entityType = cmdRepo.GetEntityTypeByTableName(tableName);
+        IEntityType? entityType = cmdRepo.GetEntityTypeByTableName(tableName);
         if (entityType is null)
         {
             return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
@@ -99,14 +100,14 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
     private async Task<OneOf<bool, Err[]>> IsGridWithSortId(CancellationToken cancellationToken = default)
     {
-        var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
+        GridModel? gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
         if (gridModel is null)
         {
             return new[] { MasterDataCrudErrors.GridModelIsNull(_tableName) };
         }
 
         IntegerCell? sortIdCell = null;
-        foreach (var cell in gridModel.Cells.Where(x => x.TypeName == "Integer"))
+        foreach (Cell cell in gridModel.Cells.Where(x => x.TypeName == "Integer"))
         {
             if (cell is not IntegerCell intCell)
             {
@@ -146,10 +147,10 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         object? query = queryResult.AsT0;
 
-        var method = typeof(MasterDataCrud).GetMethod(nameof(UseCustomSortFilterPagination), 1,
+        MethodInfo? method = typeof(MasterDataCrud).GetMethod(nameof(UseCustomSortFilterPagination), 1,
             [typeof(object), typeof(FilterSortRequest), typeof(CancellationToken)]);
         //var method = typeof(MasterDataCrud).GetMethod(nameof(UseUseCustomSortFilterPagination));
-        var generic = method?.MakeGenericMethod(_entityType.ClrType);
+        MethodInfo? generic = method?.MakeGenericMethod(_entityType.ClrType);
         if (generic is null)
         {
             return new[] { MasterDataCrudErrors.GenericMethodWasNotCreated(nameof(UseCustomSortFilterPagination)) };
@@ -181,13 +182,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         //tQuery.Include()
         if (filterSortRequest.SortByFields?.Length > 0)
         {
-            var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
+            GridModel? gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
             //DtNameFieldName
             if (gridModel is not null)
             {
-                foreach (var sortField in filterSortRequest.SortByFields)
+                foreach (SortField sortField in filterSortRequest.SortByFields)
                 {
-                    var cell = gridModel.Cells.SingleOrDefault(x => x.FieldName == sortField.FieldName);
+                    Cell? cell = gridModel.Cells.SingleOrDefault(x => x.FieldName == sortField.FieldName);
 
                     if (cell is null)
                     {
@@ -218,7 +219,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             }
         }
 
-        var (realOffset, count, rows) = await tQuery.UseCustomSortFilterPagination(filterSortRequest,
+        (int realOffset, int count, List<dynamic> rows) = await tQuery.UseCustomSortFilterPagination(filterSortRequest,
             s => s.EditFields(), cancellationToken);
         return new TableRowsData(count, realOffset, rows);
     }
@@ -262,7 +263,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             errors.AddRange(entResult.AsT1);
         }
 
-        var res = entResult.AsT0;
+        IQueryable<IDataType>? res = entResult.AsT0;
 
         var keyResult = GetSingleKeyPropertyName();
         if (keyResult.IsT1)
@@ -272,11 +273,11 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         string? keyPropertyName = keyResult.AsT0;
 
-        var parameter = Expression.Parameter(_entityType.ClrType, keyPropertyName);
-        var constant = Expression.Constant(id);
-        var equal = Expression.Equal(parameter, constant);
-        var lambda = Expression.Lambda<Func<IDataType, bool>>(equal, parameter);
-        var idt = await res.Where(lambda).SingleOrDefaultAsync(cancellationToken);
+        ParameterExpression parameter = Expression.Parameter(_entityType.ClrType, keyPropertyName);
+        ConstantExpression constant = Expression.Constant(id);
+        BinaryExpression equal = Expression.Equal(parameter, constant);
+        Expression<Func<IDataType, bool>> lambda = Expression.Lambda<Func<IDataType, bool>>(equal, parameter);
+        IDataType? idt = await res.Where(lambda).SingleOrDefaultAsync(cancellationToken);
 
         if (idt is not null)
         {
@@ -289,7 +290,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
     private OneOf<string, Err[]> GetSingleKeyPropertyName()
     {
-        var singleKey = _entityType.GetKeys().SingleOrDefault();
+        IKey? singleKey = _entityType.GetKeys().SingleOrDefault();
         if (singleKey is null)
         {
             return new[] { MasterDataApiErrors.TableHaveNotSingleKey(_tableName) }; //ვერ ვიპოვეთ ერთადერთი გასაღები
@@ -314,7 +315,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         //return _cmdRepo.LoadByTableName(_tableName);
 
-        var setMethod = _cmdRepo.SetMethodInfo();
+        MethodInfo? setMethod = _cmdRepo.SetMethodInfo();
         if (setMethod is null)
         {
             return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(_tableName) }; //ცხრილს არ აქვს მეთოდი Set
@@ -336,7 +337,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         //return _cmdRepo.LoadByTableName(_tableName);
 
-        var setMethod = _cmdRepo.SetMethodInfo();
+        MethodInfo? setMethod = _cmdRepo.SetMethodInfo();
         if (setMethod is null)
         {
             return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(_tableName) }; //ცხრილს არ აქვს მეთოდი Set
@@ -395,7 +396,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         //1.3. მიღებული რიცხვით ჩანაცვლდეს SortId-ის მნიშვნელობა
         //1.4. მოხდეს ახალი ჩანაწერის შენახვა
 
-        var sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
+        Type sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
         if (Activator.CreateInstance(sortIdHelperType, _cmdRepo) is not ISortIdHelper sortHelper)
         {
             return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
@@ -492,7 +493,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         //1.3. მიღებული რიცხვით ჩანაცვლდეს SortId-ის მნიშვნელობა
         //1.4. მოხდეს არსებული ჩანაწერის შენახვა
 
-        var sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
+        Type sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
         if (Activator.CreateInstance(sortIdHelperType, _cmdRepo) is not ISortIdHelper sortHelper)
         {
             return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
@@ -605,7 +606,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         //3.1 უნდა ჩავტვირთოთ იდენტიფიკატორები, SortId-ები, RowId-ები დალაგებული SortId-ებით
         //3.2. ისეთი ჩანაწერებისათვის რომლებისთვისაც SortId != RowId, გავაახლოთ SortId, RowId-ის მნიშვნელობით.
 
-        var sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
+        Type sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
         if (Activator.CreateInstance(sortIdHelperType, _cmdRepo) is not ISortIdHelper sortHelper)
         {
             return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
@@ -625,7 +626,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     private async Task<Option<Err[]>> Validate(IDataType newItem, CancellationToken cancellationToken = default)
     {
         //var dt = _context.DataTypes.SingleOrDefault(s => s.DtTable == tableName);
-        var gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
+        GridModel? gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
 
         if (gridModel is null)
         {
@@ -633,18 +634,18 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         }
 
         List<Err> errors = [];
-        var props = newItem.GetType().GetProperties();
+        PropertyInfo[] props = newItem.GetType().GetProperties();
 
-        foreach (var cell in gridModel.Cells)
+        foreach (Cell cell in gridModel.Cells)
         {
-            var prop = props.SingleOrDefault(w => w.Name == cell.FieldName);
+            PropertyInfo? prop = props.SingleOrDefault(w => w.Name == cell.FieldName);
             if (prop is null)
             {
                 errors.Add(MasterDataApiErrors.MasterDataFieldNotFound(_tableName, cell.FieldName));
                 continue;
             }
 
-            var mes = cell.Validate(prop.GetValue(newItem));
+            List<Err> mes = cell.Validate(prop.GetValue(newItem));
             if (mes.Count > 0)
             {
                 errors.AddRange(mes);

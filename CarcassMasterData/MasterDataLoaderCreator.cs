@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
 namespace CarcassMasterData;
 
@@ -35,8 +35,6 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
         return MasterDataCrud
             .Create(queryName, _logger, scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>(),
                 unitOfWork).Match<OneOf<IMasterDataLoader, Err[]>>(f0 => f0, f1 => f1.ToArray());
-
-        
     }
 
     public virtual OneOf<CrudBase, Err[]> CreateMasterDataCrud(string tableName)

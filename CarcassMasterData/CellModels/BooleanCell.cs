@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
 namespace CarcassMasterData.CellModels;
 
@@ -15,7 +15,7 @@ public sealed class BooleanCell : MixedCell
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
     public bool? Def { get; set; }
 
-    public new static BooleanCell Create(string fieldName, string? caption, bool visible = true,
+    public static new BooleanCell Create(string fieldName, string? caption, bool visible = true,
         string? typeName = null)
     {
         return new BooleanCell(fieldName, caption, visible, typeName);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
 namespace CarcassMasterData.Crud;
 
@@ -52,7 +53,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
     protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id,
         CancellationToken cancellationToken = default)
     {
-        var appUser = await _userManager.FindByIdAsync(id.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        var appUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (appUser?.UserName is not null && appUser.Email is not null)
         {
             return new UserCrudData(appUser.UserName, appUser.FirstName, appUser.LastName, appUser.Email);
@@ -81,7 +82,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
     protected override async ValueTask<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default)
     {
-        var oldUser = await _userManager.FindByIdAsync(id.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        var oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldUser is null)
         {
             return new[] { MasterDataApiErrors.CannotFindUser };
@@ -119,7 +120,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
 
     protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
-        var oldUser = await _userManager.FindByIdAsync(id.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        var oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldUser is null)
         {
             return new[] { MasterDataApiErrors.CannotFindUser };

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
 namespace CarcassMasterData.CellModels;
 
@@ -21,7 +21,8 @@ public /*open*/ class Cell
 
     public static string CellTypeNameForSave(string sourceCellTypeName)
     {
-        if (!sourceCellTypeName.EndsWith(nameof(Cell), StringComparison.Ordinal) || sourceCellTypeName.Length <= nameof(Cell).Length)
+        if (!sourceCellTypeName.EndsWith(nameof(Cell), StringComparison.Ordinal) ||
+            sourceCellTypeName.Length <= nameof(Cell).Length)
         {
             throw new Exception($"Invalid Cell Type Name {sourceCellTypeName}");
         }

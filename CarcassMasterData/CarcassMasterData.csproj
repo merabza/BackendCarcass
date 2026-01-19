@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassContracts\BackendCarcassContracts.csproj" />
     <ProjectReference Include="..\..\SystemTools\DomainShared\DomainShared.csproj" />
+    <ProjectReference Include="..\..\SystemTools\SystemTools.DomainShared\SystemTools.DomainShared.csproj" />
     <ProjectReference Include="..\..\SystemTools\SystemToolsShared\SystemToolsShared.csproj" />
     <ProjectReference Include="..\LibCrud\LibCrud.csproj" />
   </ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
 namespace CarcassMasterData.Crud;
 
@@ -52,7 +53,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
     protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id,
         CancellationToken cancellationToken = default)
     {
-        var appRole = await _roleManager.FindByIdAsync(id.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        var appRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (appRole?.Name is not null)
         {
             return new RoleCrudData(appRole.Name, appRole.RoleName, appRole.Level);
@@ -80,7 +81,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
     protected override async ValueTask<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default)
     {
-        var oldRole = await _roleManager.FindByIdAsync(id.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        var oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole is null)
         {
             return new[] { MasterDataApiErrors.CannotFindRole };
@@ -107,7 +108,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
 
     protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
-        var oldRole = await _roleManager.FindByIdAsync(id.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        var oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole is null)
         {
             return new[] { MasterDataApiErrors.CannotFindRole };
