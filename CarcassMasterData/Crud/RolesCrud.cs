@@ -34,7 +34,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
     public async ValueTask<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
-        var roles = await _roleManager.Roles.ToListAsync(cancellationToken);
+        List<AppRole> roles = await _roleManager.Roles.ToListAsync(cancellationToken);
         return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(roles.Select(x =>
             new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level)));
     }
@@ -42,10 +42,10 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
     public override async ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken = default)
     {
-        var roles = _roleManager.Roles;
+        IQueryable<AppRole> roles = _roleManager.Roles;
 
-        var (realOffset, count, rows) = await roles.UseCustomSortFilterPagination(filterSortRequest,
-            x => new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level), cancellationToken);
+        (int realOffset, int count, List<RoleCrudData> rows) = await roles.UseCustomSortFilterPagination(
+            filterSortRequest, x => new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level), cancellationToken);
 
         return new TableRowsData(count, realOffset, rows.Select(s => s.EditFields()).ToList());
     }
@@ -53,7 +53,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
     protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id,
         CancellationToken cancellationToken = default)
     {
-        var appRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
+        AppRole? appRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (appRole?.Name is not null)
         {
             return new RoleCrudData(appRole.Name, appRole.RoleName, appRole.Level);
@@ -68,7 +68,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         var role = (RoleCrudData)crudDataForCreate;
         var appRole = new AppRole(role.RolKey, role.RolName, role.RolLevel);
         //შევქმნათ როლი
-        var createResult = await _roleManager.CreateAsync(appRole);
+        IdentityResult createResult = await _roleManager.CreateAsync(appRole);
         if (!createResult.Succeeded)
         {
             return ConvertError(createResult);
@@ -81,7 +81,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
     protected override async ValueTask<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default)
     {
-        var oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
+        AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole is null)
         {
             return new[] { MasterDataApiErrors.CannotFindRole };
@@ -91,7 +91,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         oldRole.RoleName = role.RolName;
         oldRole.Level = role.RolLevel;
 
-        var updateResult = await _roleManager.UpdateAsync(oldRole);
+        IdentityResult updateResult = await _roleManager.UpdateAsync(oldRole);
         if (!updateResult.Succeeded)
         {
             return ConvertError(updateResult);
@@ -102,19 +102,19 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
             return null;
         }
 
-        var setRoleResult = await _roleManager.SetRoleNameAsync(oldRole, role.RolKey);
+        IdentityResult setRoleResult = await _roleManager.SetRoleNameAsync(oldRole, role.RolKey);
         return ConvertError(setRoleResult);
     }
 
     protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
-        var oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
+        AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole is null)
         {
             return new[] { MasterDataApiErrors.CannotFindRole };
         }
 
-        var deleteResult = await _roleManager.DeleteAsync(oldRole);
+        IdentityResult deleteResult = await _roleManager.DeleteAsync(oldRole);
         return ConvertError(deleteResult);
     }
 

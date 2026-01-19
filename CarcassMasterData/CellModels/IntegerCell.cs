@@ -72,7 +72,7 @@ public /*open*/ class IntegerCell : NumberCell
 
     public override List<Err> Validate(object? value)
     {
-        var errors = base.Validate(value);
+        List<Err> errors = base.Validate(value);
 
         int testIntValue;
         if (IsShort)

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
 using LibCrud.Models;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using SystemTools.DomainShared.Repositories;
@@ -53,10 +54,10 @@ public abstract class CrudBase
         try
         {
             // ReSharper disable once using
-            await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await using IDbContextTransaction transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
-                var result = await CreateData(crudDataForCreate, cancellationToken);
+                Option<Err[]> result = await CreateData(crudDataForCreate, cancellationToken);
                 if (result.IsSome)
                 {
                     return (Err[])result;
@@ -108,17 +109,17 @@ public abstract class CrudBase
         try
         {
             // ReSharper disable once using
-            await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await using IDbContextTransaction transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
-                var updateDataResult = await UpdateData(id, crudDataNewVersion, cancellationToken);
+                Option<Err[]> updateDataResult = await UpdateData(id, crudDataNewVersion, cancellationToken);
                 if (updateDataResult.IsSome)
                 {
                     return updateDataResult;
                 }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                var afterUpdateDataResult = await AfterUpdateData(cancellationToken);
+                Option<Err[]> afterUpdateDataResult = await AfterUpdateData(cancellationToken);
                 if (afterUpdateDataResult.IsSome)
                 {
                     return afterUpdateDataResult;
@@ -146,10 +147,10 @@ public abstract class CrudBase
         try
         {
             // ReSharper disable once using
-            await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await using IDbContextTransaction transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
-                var result = await DeleteData(id, cancellationToken);
+                Option<Err[]> result = await DeleteData(id, cancellationToken);
                 if (result.IsSome)
                 {
                     return result;

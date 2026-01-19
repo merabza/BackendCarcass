@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using CarcassMasterData.Models;
@@ -18,34 +20,35 @@ public static class CustomExpressionFilter
         Expression<Func<T, bool>>? filters;
         try
         {
-            var expressionFilters = columnFilters
+            List<ExpressionFilter> expressionFilters = columnFilters
                 .Select(item => new ExpressionFilter { ColumnName = item.FieldName, Value = item.Value }).ToList();
             // Create the parameter expression for the input data
-            var parameter = Expression.Parameter(typeof(T));
+            ParameterExpression parameter = Expression.Parameter(typeof(T));
 
             // Build the filter expression dynamically
             Expression? filterExpression = null;
-            foreach (var filter in expressionFilters)
+            foreach (ExpressionFilter filter in expressionFilters)
             {
                 if (filter.ColumnName is null)
                 {
                     continue;
                 }
 
-                var property = Expression.Property(parameter, filter.ColumnName);
+                MemberExpression property = Expression.Property(parameter, filter.ColumnName);
 
                 Expression comparison;
 
                 if (property.Type == typeof(string))
                 {
-                    var constant = Expression.Constant(filter.Value);
+                    ConstantExpression constant = Expression.Constant(filter.Value);
                     comparison = filter.Value is null
                         ? Expression.Call(typeof(string), "IsNullOrEmpty", null, property)
                         : Expression.Call(property, "Contains", Type.EmptyTypes, constant);
                 }
                 else if (property.Type == typeof(double))
                 {
-                    var constant = Expression.Constant(Convert.ToDouble(filter.Value, System.Globalization.CultureInfo.InvariantCulture));
+                    ConstantExpression constant =
+                        Expression.Constant(Convert.ToDouble(filter.Value, CultureInfo.InvariantCulture));
                     comparison = Expression.Equal(property, constant);
                 }
                 else if (property.Type == typeof(Guid))
@@ -55,46 +58,49 @@ public static class CustomExpressionFilter
                         continue;
                     }
 
-                    var constant = Expression.Constant(Guid.Parse(filter.Value));
+                    ConstantExpression constant = Expression.Constant(Guid.Parse(filter.Value));
                     comparison = Expression.Equal(property, constant);
                 }
                 else if (property.Type == typeof(int))
                 {
-                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableInt()), typeof(int));
+                    UnaryExpression constant =
+                        Expression.Convert(Expression.Constant(filter.Value?.ToNullableInt()), typeof(int));
                     comparison = Expression.Equal(property, constant);
                 }
                 else if (property.Type == typeof(int?))
                 {
-                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableInt()), typeof(int?));
+                    UnaryExpression constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableInt()),
+                        typeof(int?));
                     comparison = Expression.Equal(property, constant);
                 }
                 else if (property.Type == typeof(short))
                 {
-                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableShort()),
+                    UnaryExpression constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableShort()),
                         typeof(short));
                     comparison = Expression.Equal(property, constant);
                 }
                 else if (property.Type == typeof(short?))
                 {
-                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableShort()),
+                    UnaryExpression constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableShort()),
                         typeof(short?));
                     comparison = Expression.Equal(property, constant);
                 }
                 else if (property.Type == typeof(bool))
                 {
-                    var constant =
-                        Expression.Convert(Expression.Constant(filter.Value?.ToNullableBool()), typeof(bool));
+                    UnaryExpression constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableBool()),
+                        typeof(bool));
                     comparison = Expression.Equal(property, constant);
                 }
                 else if (property.Type == typeof(bool?))
                 {
-                    var constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableBool()),
+                    UnaryExpression constant = Expression.Convert(Expression.Constant(filter.Value?.ToNullableBool()),
                         typeof(bool?));
                     comparison = Expression.Equal(property, constant);
                 }
                 else
                 {
-                    var constant = Expression.Constant(Convert.ToInt32(filter.Value, System.Globalization.CultureInfo.InvariantCulture));
+                    ConstantExpression constant =
+                        Expression.Constant(Convert.ToInt32(filter.Value, CultureInfo.InvariantCulture));
                     comparison = Expression.Equal(property, constant);
                 }
 

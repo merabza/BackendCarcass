@@ -45,13 +45,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     public async ValueTask<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
-        var queryResult = Query();
+        OneOf<IQueryable<IDataType>, Err[]> queryResult = Query();
         if (queryResult.IsT1)
         {
             return queryResult.AsT1;
         }
 
-        var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
+        OneOf<bool, Err[]> isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
         if (isGridWithSortIdResult.IsT1)
         {
             return isGridWithSortIdResult.AsT1;
@@ -139,7 +139,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     public override async ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken = default)
     {
-        var queryResult = QueryObject();
+        OneOf<object, Err[]> queryResult = QueryObject();
         if (queryResult.IsT1)
         {
             return queryResult.AsT1;
@@ -227,13 +227,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id,
         CancellationToken cancellationToken = default)
     {
-        var getOneRecordResult = await GetOneRecord(id, cancellationToken);
+        OneOf<IDataType, Err[]> getOneRecordResult = await GetOneRecord(id, cancellationToken);
         if (getOneRecordResult.IsT1)
         {
             return getOneRecordResult.AsT1;
         }
 
-        var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
+        OneOf<bool, Err[]> isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
         if (isGridWithSortIdResult.IsT1)
         {
             return isGridWithSortIdResult.AsT1;
@@ -257,7 +257,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     private async Task<OneOf<IDataType, Err[]>> GetOneRecord(int id, CancellationToken cancellationToken = default)
     {
         var errors = new List<Err>();
-        var entResult = Query();
+        OneOf<IQueryable<IDataType>, Err[]> entResult = Query();
         if (entResult.IsT1)
         {
             errors.AddRange(entResult.AsT1);
@@ -265,7 +265,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         IQueryable<IDataType>? res = entResult.AsT0;
 
-        var keyResult = GetSingleKeyPropertyName();
+        OneOf<string, Err[]> keyResult = GetSingleKeyPropertyName();
         if (keyResult.IsT1)
         {
             errors.AddRange(keyResult.AsT1);
@@ -368,13 +368,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         newItem.Id = 0;
 
-        var validateResult = await Validate(newItem, cancellationToken);
+        Option<Err[]> validateResult = await Validate(newItem, cancellationToken);
         if (validateResult.IsSome)
         {
             return (Err[])validateResult;
         }
 
-        var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
+        OneOf<bool, Err[]> isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
         if (isGridWithSortIdResult.IsT1)
         {
             return isGridWithSortIdResult.AsT1;
@@ -402,7 +402,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
         }
 
-        var queryResult = Query();
+        OneOf<IQueryable<IDataType>, Err[]> queryResult = Query();
         if (queryResult.IsT1)
         {
             return queryResult.AsT1;
@@ -467,13 +467,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
                 }; //მოწოდებული ინფორმაცია არასწორია, რადგან იდენტიფიკატორი არ ემთხვევა მოწოდებული ობიექტის იდენტიფიკატორს
         }
 
-        var validateResult = await Validate(newItem, cancellationToken);
+        Option<Err[]> validateResult = await Validate(newItem, cancellationToken);
         if (validateResult.IsSome)
         {
             return validateResult;
         }
 
-        var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
+        OneOf<bool, Err[]> isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
         if (isGridWithSortIdResult.IsT1)
         {
             return isGridWithSortIdResult.AsT1;
@@ -501,7 +501,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         _sortHelper = sortHelper;
 
-        var queryResult = Query();
+        OneOf<IQueryable<IDataType>, Err[]> queryResult = Query();
         if (queryResult.IsT1)
         {
             return queryResult.AsT1;
@@ -549,7 +549,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
         }
 
-        var queryResult = Query();
+        OneOf<IQueryable<IDataType>, Err[]> queryResult = Query();
         if (queryResult.IsT1)
         {
             return queryResult.AsT1;
@@ -569,7 +569,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         //        MasterDataApiErrors.RecordNotFound(_tableName, id)
         //    }; //ბაზაში ვერ ვიპოვეთ მოწოდებული იდენტიფიკატორის შესაბამისი ჩანაწერი. RecordNotFound
 
-        var result = await GetOneRecord(id, cancellationToken);
+        OneOf<IDataType, Err[]> result = await GetOneRecord(id, cancellationToken);
         return result.Match<Option<Err[]>>(r =>
         {
             r.UpdateTo(newItem);
@@ -580,7 +580,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
     protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
-        var getOneRecordResult = await GetOneRecord(id, cancellationToken);
+        OneOf<IDataType, Err[]> getOneRecordResult = await GetOneRecord(id, cancellationToken);
 
         if (getOneRecordResult.IsT1)
         {
@@ -589,7 +589,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         _cmdRepo.Delete(getOneRecordResult.AsT0);
 
-        var isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
+        OneOf<bool, Err[]> isGridWithSortIdResult = await IsGridWithSortId(cancellationToken);
         if (isGridWithSortIdResult.IsT1)
         {
             return isGridWithSortIdResult.AsT1;
@@ -612,7 +612,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             return new[] { MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType) };
         }
 
-        var queryResult = Query();
+        OneOf<IQueryable<IDataType>, Err[]> queryResult = Query();
         if (queryResult.IsT1)
         {
             return queryResult.AsT1;

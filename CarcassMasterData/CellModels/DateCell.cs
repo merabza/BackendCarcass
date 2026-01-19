@@ -61,7 +61,7 @@ public sealed class DateCell : MixedCell
 
     public override List<Err> Validate(object? value)
     {
-        var errors = ValidateByType<DateTime>(base.Validate(value), value, "თარიღის");
+        List<Err> errors = ValidateByType<DateTime>(base.Validate(value), value, "თარიღის");
 
         if (value is not DateTime dateTimeValue)
         {

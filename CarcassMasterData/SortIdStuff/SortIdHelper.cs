@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ public sealed class SortIdHelper<T> : ISortIdHelper where T : class, ISortedData
     //3.2. ისეთი ჩანაწერებისათვის რომლებისთვისაც SortId != RowId, გავაახლოთ SortId, RowId-ის მნიშვნელობით.
     public async Task ReSortSortIds(object query, CancellationToken cancellationToken = default)
     {
-        var sortedList = await ((IQueryable<T>)query).OrderBy(x => x.SortId).ToListAsync(cancellationToken);
+        List<T> sortedList = await ((IQueryable<T>)query).OrderBy(x => x.SortId).ToListAsync(cancellationToken);
         foreach (var item in sortedList.Select((s, i) => new { s, i }).Where(x => x.s.SortId != x.i))
         {
             item.s.SortId = item.i;
@@ -59,7 +60,7 @@ public sealed class SortIdHelper<T> : ISortIdHelper where T : class, ISortedData
     public async Task<bool> IsSortIdExists(object query, int sortId, int exceptId)
     {
         var tQuery = (IQueryable<T>)query;
-        var ft = await tQuery.Where(x => x.SortId == sortId).ToListAsync();
+        List<T> ft = await tQuery.Where(x => x.SortId == sortId).ToListAsync();
         return ft.Any(x => x.Id != exceptId);
     }
 
@@ -68,9 +69,9 @@ public sealed class SortIdHelper<T> : ISortIdHelper where T : class, ISortedData
         CancellationToken cancellationToken = default)
     {
         var tQuery = (IQueryable<T>)query;
-        var forUpdateList = await tQuery.Where(x => x.SortId >= fromSortId).OrderBy(x => x.SortId)
+        List<T> forUpdateList = await tQuery.Where(x => x.SortId >= fromSortId).OrderBy(x => x.SortId)
             .ToListAsync(cancellationToken);
-        foreach (var item in forUpdateList.Where(x => x.Id != exceptId))
+        foreach (T item in forUpdateList.Where(x => x.Id != exceptId))
         {
             item.SortId += increaseWith;
             _cmdRepo.Update(item);

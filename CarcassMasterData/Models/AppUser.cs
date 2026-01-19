@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -38,7 +39,7 @@ public sealed class AppUser : IdentityUser<int>
 
         var claims = new List<Claim>
         {
-            new(ClaimTypes.Sid, Id.ToString(System.Globalization.CultureInfo.InvariantCulture)),
+            new(ClaimTypes.Sid, Id.ToString(CultureInfo.InvariantCulture)),
             new(ClaimTypes.Name, UserName),
             new(ClaimTypes.Email, Email)
         };
@@ -47,7 +48,7 @@ public sealed class AppUser : IdentityUser<int>
             claims.AddRange(roles.Select(s => new Claim(ClaimTypes.Role, s)));
         }
 
-        claims.Add(new Claim(ClaimTypes.SerialNumber, serialNumber.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+        claims.Add(new Claim(ClaimTypes.SerialNumber, serialNumber.ToString(CultureInfo.InvariantCulture)));
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -56,7 +57,7 @@ public sealed class AppUser : IdentityUser<int>
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
-        var token = tokenHandler.CreateToken(tokenDescriptor);
+        SecurityToken? token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
 }
