@@ -1,4 +1,4 @@
-namespace Carcass.Domain.Primitives;
+namespace BackendCarcass.Domain.Primitives;
 
 public interface IDomainEvent
 {

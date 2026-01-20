@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Carcass.Domain.Primitives;
+namespace BackendCarcass.Domain.Primitives;
 
 public class AggregateRoot<TId> : Entity<TId> where TId : notnull
 {

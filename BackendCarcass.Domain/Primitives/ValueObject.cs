@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Carcass.Domain.Primitives;
+namespace BackendCarcass.Domain.Primitives;
 
 public abstract class ValueObject : IEquatable<ValueObject>
 {
@@ -26,18 +26,10 @@ public abstract class ValueObject : IEquatable<ValueObject>
 
     public override int GetHashCode()
     {
-        return GetEqualityComponents()
-            .Select(obj => obj.GetHashCode())
-            .Aggregate((x, y) => x ^ y);
+        return GetEqualityComponents().Select(obj => obj.GetHashCode()).Aggregate((x, y) => x ^ y);
     }
 
-    public static bool operator ==(ValueObject? left, ValueObject? right)
-    {
-        return Equals(left, right);
-    }
+    public static bool operator ==(ValueObject? left, ValueObject? right) => Equals(left, right);
 
-    public static bool operator !=(ValueObject? left, ValueObject? right)
-    {
-        return !Equals(left, right);
-    }
+    public static bool operator !=(ValueObject? left, ValueObject? right) => !Equals(left, right);
 }

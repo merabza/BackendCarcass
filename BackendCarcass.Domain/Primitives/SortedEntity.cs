@@ -1,4 +1,4 @@
-namespace Carcass.Domain.Primitives;
+namespace BackendCarcass.Domain.Primitives;
 
 public abstract class SortedEntity<TId> : Entity<TId> where TId : notnull
 {
