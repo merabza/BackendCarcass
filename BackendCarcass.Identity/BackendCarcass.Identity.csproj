@@ -15,9 +15,6 @@
     <ItemGroup>
         <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
         <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />
-        <ProjectReference Include="..\Carcass.Database\Carcass.Database.csproj" />
-        <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
-        <ProjectReference Include="..\CarcassMasterData\CarcassMasterData.csproj" />
     </ItemGroup>
 
 </Project>

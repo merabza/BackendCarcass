@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BackendCarcass.Identity\BackendCarcass.Identity.csproj" />
     <ProjectReference Include="..\BackendCarcass.LibCrud\BackendCarcass.LibCrud.csproj" />
-    <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
   </ItemGroup>
 
 </Project>

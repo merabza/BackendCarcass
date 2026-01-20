@@ -9,7 +9,6 @@
     <ItemGroup>
         <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
         <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
-        <ProjectReference Include="..\CarcassRights\CarcassRights.csproj" />
     </ItemGroup>
 
 </Project>

@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\SystemTools\DatabaseToolsShared\DatabaseToolsShared.csproj" />
     <ProjectReference Include="..\..\SystemTools\SystemTools.DatabaseToolsShared\SystemTools.DatabaseToolsShared.csproj" />
     <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
-    <ProjectReference Include="..\Carcass.Database\Carcass.Database.csproj" />
-    <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
   </ItemGroup>
 
 </Project>
