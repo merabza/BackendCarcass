@@ -40,12 +40,19 @@ public static class DataTypeFactory
         };
 
         if (!string.IsNullOrEmpty(keyFieldName))
+        {
             gridModel.Cells.Add(GetKeyColumn(keyFieldName, keyFieldNameColumnHeader));
+        }
 
         if (!string.IsNullOrEmpty(nameFieldName))
+        {
             gridModel.Cells.Add(GetNameColumn(nameFieldName, nameFieldNameColumnHeader));
+        }
 
-        if (additionalCells.Count > 0) gridModel.Cells.AddRange(additionalCells);
+        if (additionalCells.Count > 0)
+        {
+            gridModel.Cells.AddRange(additionalCells);
+        }
 
         return new DataType
         {

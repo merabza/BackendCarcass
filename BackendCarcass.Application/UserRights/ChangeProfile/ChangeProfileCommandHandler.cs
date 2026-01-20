@@ -32,10 +32,15 @@ public sealed class ChangeProfileCommandHandler : ICommandHandler<ChangeProfileR
         var user = await _userMgr.FindByNameAsync(_currentUser.Name);
 
         //თუ არ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
-        if (user == null) return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
+        if (user == null)
+        {
+            return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
+        }
 
         if (user.Id != request.Userid || user.UserName != request.UserName || user.Email != request.Email)
+        {
             return new[] { UserRightsErrors.UserNotIdentifierSaveFiled };
+        }
 
         user.FirstName = request.FirstName!;
         user.LastName = request.LastName!;

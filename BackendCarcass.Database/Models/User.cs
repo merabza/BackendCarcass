@@ -32,7 +32,10 @@ public sealed class User : IDataType
 
     public bool UpdateTo(IDataType data)
     {
-        if (data is not User newData) return false;
+        if (data is not User newData)
+        {
+            return false;
+        }
 
         UserName = newData.UserName;
         Email = newData.Email;

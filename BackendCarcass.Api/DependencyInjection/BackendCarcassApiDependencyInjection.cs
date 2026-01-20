@@ -10,7 +10,10 @@ public static class BackendCarcassApiDependencyInjection
     public static bool UseBackendCarcassApiEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger,
         bool debugMode)
     {
-        if (debugMode) logger.Information("{MethodName} Started", nameof(UseBackendCarcassApiEndpoints));
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Started", nameof(UseBackendCarcassApiEndpoints));
+        }
 
         endpoints.UseAuthenticationEndpoints(logger, debugMode);
         endpoints.UseDataTypesEndpoints(logger, debugMode);
@@ -19,7 +22,10 @@ public static class BackendCarcassApiDependencyInjection
         endpoints.UseRightsEndpoints(logger, debugMode);
         endpoints.UseUserRightsEndpoints(logger, debugMode);
 
-        if (debugMode) logger.Information("{MethodName} Finished", nameof(UseBackendCarcassApiEndpoints));
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Finished", nameof(UseBackendCarcassApiEndpoints));
+        }
 
         return true;
     }

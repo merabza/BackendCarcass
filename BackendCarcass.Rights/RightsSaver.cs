@@ -41,15 +41,22 @@ public sealed class RightsSaver
             foreach (var drr in changedRights)
             {
                 if (drr.Parent is null || drr.Child is null)
+                {
                     throw new Exception("SaveRightsChanges: parent or child keys are not valid");
+                }
 
                 var parentKey = await _repo.DataTypeKeyById(drr.Parent.DtId, cancellationToken);
                 var childKey = await _repo.DataTypeKeyById(drr.Child.DtId, cancellationToken);
 
                 if (parentKey is null || childKey is null)
+                {
                     throw new Exception("SaveRightsChanges: parent or child keys are not valid");
+                }
 
-                if (!allowPairs.Contains(new Tuple<string, string>(parentKey, childKey))) continue;
+                if (!allowPairs.Contains(new Tuple<string, string>(parentKey, childKey)))
+                {
+                    continue;
+                }
 
                 var mmj = await _repo.GetOneManyToManyJoin(drr.Parent.DtId, drr.Parent.DKey, drr.Child.DtId,
                     drr.Child.DKey, cancellationToken);
@@ -58,11 +65,16 @@ public sealed class RightsSaver
                 {
                     if (!await _repo.CreateAndSaveOneManyToManyJoin(drr.Parent.DtId, drr.Parent.DKey, drr.Child.DtId,
                             drr.Child.DKey, cancellationToken))
+                    {
                         return false;
+                    }
                 }
                 else if (mmj != null && !drr.Checked)
                 {
-                    if (await _repo.RemoveOneManyToManyJoin(mmj, cancellationToken)) continue;
+                    if (await _repo.RemoveOneManyToManyJoin(mmj, cancellationToken))
+                    {
+                        continue;
+                    }
 
                     return false;
                 }

@@ -32,7 +32,10 @@ public static class RightsEndpoints
 {
     public static bool UseRightsEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
     {
-        if (debugMode) logger.Information("{MethodName} Started", nameof(UseRightsEndpoints));
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Started", nameof(UseRightsEndpoints));
+        }
 
         var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Rights.RightsBase)
             .RequireAuthorization().AddEndpointFilter<UserMustHaveRightsEditorRightsFilter>();
@@ -43,7 +46,10 @@ public static class RightsEndpoints
         group.MapPost(CarcassApiRoutes.Rights.SaveData, SaveData);
         group.MapPost(CarcassApiRoutes.Rights.Optimize, Optimize);
 
-        if (debugMode) logger.Information("{MethodName} Finished", nameof(UseRightsEndpoints));
+        if (debugMode)
+        {
+            logger.Information("{MethodName} Finished", nameof(UseRightsEndpoints));
+        }
 
         return true;
     }
@@ -115,7 +121,10 @@ public static class RightsEndpoints
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(SaveDataCommandHandler)} from {nameof(SaveData)}");
-        if (changesForSave is null) return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
+        if (changesForSave is null)
+        {
+            return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
+        }
 
         var commandRequest = new SaveDataRequestCommand(changesForSave);
         var result = await mediator.Send(commandRequest, cancellationToken);

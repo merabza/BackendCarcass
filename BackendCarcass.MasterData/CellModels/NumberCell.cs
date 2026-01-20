@@ -15,7 +15,7 @@ public /*open*/ class NumberCell : MixedCell
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
     public Err? IsPositiveErr { get; set; }
 
-    public new static NumberCell Create(string fieldName, string? caption, bool visible = true, string? typeName = null)
+    public static new NumberCell Create(string fieldName, string? caption, bool visible = true, string? typeName = null)
     {
         return new NumberCell(fieldName, caption, visible, typeName);
     }

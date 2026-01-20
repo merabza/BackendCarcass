@@ -24,7 +24,10 @@ public sealed class LoginCommandHandler : LoginCommandHandlerBase, ICommandHandl
         CancellationToken cancellationToken)
     {
         var tryLoginResult = await _loginService.TryToLogin(request.UserName!, request.Password!, cancellationToken);
-        if (tryLoginResult.IsT1) return tryLoginResult.AsT1;
+        if (tryLoginResult.IsT1)
+        {
+            return tryLoginResult.AsT1;
+        }
 
         var user = tryLoginResult.AsT0.User;
         var appUserModel = new LoginResponse(user.Id, user.UserName!, user.Email!, tryLoginResult.AsT0.Token,

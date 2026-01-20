@@ -21,8 +21,11 @@ public sealed class GridModelQueryHandler : IQueryHandler<GridModelRequestQuery,
 
     public async Task<OneOf<string, Err[]>> Handle(GridModelRequestQuery request, CancellationToken cancellationToken)
     {
-        var res = await _repository.GridModel(request.GridName, cancellationToken);
-        if (res == null) return new[] { DataTypesApiErrors.GridNotFound(request.GridName) };
+        string? res = await _repository.GridModel(request.GridName, cancellationToken);
+        if (res == null)
+        {
+            return new[] { DataTypesApiErrors.GridNotFound(request.GridName) };
+        }
 
         return res;
     }

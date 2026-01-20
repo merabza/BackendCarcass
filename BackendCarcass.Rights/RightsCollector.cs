@@ -54,14 +54,21 @@ public sealed class RightsCollector
             var entResult = await GetRetValues(dataType, userName, cancellationToken);
 
             if (entResult.IsT1)
+            {
                 errors.AddRange(entResult.AsT1);
+            }
             else
+            {
                 dataTypeModel.ReturnValues = entResult.AsT0;
+            }
 
             dataTypeModels.Add(dataTypeModel);
         }
 
-        if (errors.Count > 0) return errors.ToArray();
+        if (errors.Count > 0)
+        {
+            return errors.ToArray();
+        }
 
         return dataTypeModels;
     }
@@ -149,7 +156,9 @@ public sealed class RightsCollector
         }
 
         if (dt.DtTable != _unitOfWork.GetTableName<Role>())
+        {
             return await _rvRepo.GetAllReturnValues(dt, cancellationToken);
+        }
 
         var minLevel = await UserMinLevel(userName, cancellationToken);
         return await _repo.GetRoleReturnValues(minLevel, cancellationToken);
@@ -183,8 +192,10 @@ public sealed class RightsCollector
         var userDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<User>(), cancellationToken);
 
         if (viewStyle == ERightsEditorViewStyle.NormalView)
+        {
             return await _repo.HalfChecksNormalView(userDataId, userName, roleDataId, mmjDataId, dtDataId, dataTypeId,
                 dataKey, cancellationToken);
+        }
 
         return await _repo.HalfChecksReverseView(userDataId, userName, roleDataId, mmjDataId, dtDataId, dataTypeId,
             dataKey, cancellationToken);

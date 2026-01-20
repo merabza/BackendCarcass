@@ -10,44 +10,44 @@ public static class LinqExtensions
 {
     private static PropertyInfo GetPropertyInfo(Type objType, string name)
     {
-        var properties = objType.GetProperties();
-        var matchedProperty = properties.FirstOrDefault(p => p.Name == name);
+        PropertyInfo[] properties = objType.GetProperties();
+        PropertyInfo? matchedProperty = properties.FirstOrDefault(p => p.Name == name);
         return matchedProperty ?? throw new ArgumentException("Invalid Argument", nameof(name));
     }
 
     private static PropertyInfo GetPropertyInfo(Type objType, Type propObjType)
     {
-        var properties = objType.GetProperties();
-        var matchedProperty = properties.FirstOrDefault(p => p.PropertyType == propObjType);
+        PropertyInfo[] properties = objType.GetProperties();
+        PropertyInfo? matchedProperty = properties.FirstOrDefault(p => p.PropertyType == propObjType);
         return matchedProperty ?? throw new ArgumentException("Invalid Argument", nameof(propObjType));
     }
 
     private static LambdaExpression GetOrderExpression(Type objType, MemberInfo pi)
     {
-        var paramExpr = Expression.Parameter(objType);
-        var propAccess = Expression.PropertyOrField(paramExpr, pi.Name);
-        var expr = Expression.Lambda(propAccess, paramExpr);
+        ParameterExpression paramExpr = Expression.Parameter(objType);
+        MemberExpression propAccess = Expression.PropertyOrField(paramExpr, pi.Name);
+        LambdaExpression expr = Expression.Lambda(propAccess, paramExpr);
         return expr;
     }
 
     private static LambdaExpression GetOrderExpression(Type objType, MemberInfo piNav, MemberInfo piName)
     {
-        var paramExpr = Expression.Parameter(objType);
-        var propAccess = Expression.PropertyOrField(paramExpr, piNav.Name);
-        var propAccess2 = Expression.PropertyOrField(propAccess, piName.Name);
-        var expr = Expression.Lambda(propAccess2, paramExpr);
+        ParameterExpression paramExpr = Expression.Parameter(objType);
+        MemberExpression propAccess = Expression.PropertyOrField(paramExpr, piNav.Name);
+        MemberExpression propAccess2 = Expression.PropertyOrField(propAccess, piName.Name);
+        LambdaExpression expr = Expression.Lambda(propAccess2, paramExpr);
         return expr;
     }
 
     public static IEnumerable<T> OrderBy<T>(this IEnumerable<T> query, string name, bool ascending)
     {
-        var propInfo = GetPropertyInfo(typeof(T), name);
-        var expr = GetOrderExpression(typeof(T), propInfo);
-        var methodName = ascending ? nameof(Enumerable.OrderBy) : nameof(Enumerable.OrderByDescending);
-        var method = typeof(Enumerable).GetMethods()
-                         .FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == 2) ??
-                     throw new Exception($"cannot find method {methodName}");
-        var genericMethod = method.MakeGenericMethod(typeof(T), propInfo.PropertyType);
+        PropertyInfo propInfo = GetPropertyInfo(typeof(T), name);
+        LambdaExpression expr = GetOrderExpression(typeof(T), propInfo);
+        string methodName = ascending ? nameof(Enumerable.OrderBy) : nameof(Enumerable.OrderByDescending);
+        MethodInfo method = typeof(Enumerable).GetMethods()
+                                .FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == 2) ??
+                            throw new Exception($"cannot find method {methodName}");
+        MethodInfo genericMethod = method.MakeGenericMethod(typeof(T), propInfo.PropertyType);
         var result = (IEnumerable<T>?)genericMethod.Invoke(null, [query, expr.Compile()]);
         return result ?? throw new Exception("OrderBy result is not null");
     }
@@ -59,7 +59,7 @@ public static class LinqExtensions
         PropertyInfo propInfo;
         if (propObjType is not null)
         {
-            var navigatorPropInfo = GetPropertyInfo(typeof(T), propObjType);
+            PropertyInfo navigatorPropInfo = GetPropertyInfo(typeof(T), propObjType);
             propInfo = GetPropertyInfo(propObjType, name);
             expr = GetOrderExpression(typeof(T), navigatorPropInfo, propInfo);
         }
@@ -73,14 +73,14 @@ public static class LinqExtensions
             expr = GetOrderExpression(typeof(T), propInfo);
         }
 
-        var methodName = ascending ? nameof(Queryable.OrderBy) : nameof(Queryable.OrderByDescending);
-        var method =
+        string methodName = ascending ? nameof(Queryable.OrderBy) : nameof(Queryable.OrderByDescending);
+        MethodInfo method =
             typeof(Queryable).GetMethods().FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == 2) ??
             throw new Exception($"cannot find method {methodName}");
         //var genericMethod = propObjType is null
         //    ? method.MakeGenericMethod(typeof(T), propInfo.PropertyType)
         //    : method.MakeGenericMethod(propObjType, propInfo.PropertyType);
-        var genericMethod = method.MakeGenericMethod(typeof(T), propInfo.PropertyType);
+        MethodInfo genericMethod = method.MakeGenericMethod(typeof(T), propInfo.PropertyType);
         var result = (IQueryable<T>?)genericMethod.Invoke(null, [query, expr]);
         return result ?? throw new Exception("OrderBy result is not null");
     }

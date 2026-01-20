@@ -54,7 +54,10 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         CancellationToken cancellationToken = default)
     {
         var appRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
-        if (appRole?.Name is not null) return new RoleCrudData(appRole.Name, appRole.RoleName, appRole.Level);
+        if (appRole?.Name is not null)
+        {
+            return new RoleCrudData(appRole.Name, appRole.RoleName, appRole.Level);
+        }
 
         return new[] { MasterDataApiErrors.CannotFindRole };
     }
@@ -66,7 +69,10 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         var appRole = new AppRole(role.RolKey, role.RolName, role.RolLevel);
         //შევქმნათ როლი
         var createResult = await _roleManager.CreateAsync(appRole);
-        if (!createResult.Succeeded) return ConvertError(createResult);
+        if (!createResult.Succeeded)
+        {
+            return ConvertError(createResult);
+        }
 
         _justCreated = appRole;
         return null;
@@ -76,16 +82,25 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         CancellationToken cancellationToken = default)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
-        if (oldRole is null) return new[] { MasterDataApiErrors.CannotFindRole };
+        if (oldRole is null)
+        {
+            return new[] { MasterDataApiErrors.CannotFindRole };
+        }
 
         var role = (RoleCrudData)crudDataNewVersion;
         oldRole.RoleName = role.RolName;
         oldRole.Level = role.RolLevel;
 
         var updateResult = await _roleManager.UpdateAsync(oldRole);
-        if (!updateResult.Succeeded) return ConvertError(updateResult);
+        if (!updateResult.Succeeded)
+        {
+            return ConvertError(updateResult);
+        }
 
-        if (oldRole.RoleName == role.RolKey) return null;
+        if (oldRole.RoleName == role.RolKey)
+        {
+            return null;
+        }
 
         var setRoleResult = await _roleManager.SetRoleNameAsync(oldRole, role.RolKey);
         return ConvertError(setRoleResult);
@@ -94,7 +109,10 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
     protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         var oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
-        if (oldRole is null) return new[] { MasterDataApiErrors.CannotFindRole };
+        if (oldRole is null)
+        {
+            return new[] { MasterDataApiErrors.CannotFindRole };
+        }
 
         var deleteResult = await _roleManager.DeleteAsync(oldRole);
         return ConvertError(deleteResult);

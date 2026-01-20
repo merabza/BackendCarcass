@@ -28,31 +28,32 @@ public sealed class ReturnValuesLoader
         CancellationToken cancellationToken = default)
     {
         var resultList = new Dictionary<string, IEnumerable<SrvModel>>();
-        var tableDataTypes = await _rvRepo.GetDataTypesByTableNames(_tableNames, cancellationToken);
+        List<DataTypeModelForRvs> tableDataTypes =
+            await _rvRepo.GetDataTypesByTableNames(_tableNames, cancellationToken);
         var errors = new List<Err>();
 
         //ჩაიტვირთოს ყველა ცხრილი სათითაოდ
-        foreach (var dt in tableDataTypes)
+        foreach (DataTypeModelForRvs dt in tableDataTypes)
         {
             var loader =
                 new MasterDataReturnValuesLoader(dt,
                     _rvRepo); // _returnValuesLoaderCreator.CreateReturnValuesLoaderLoader(dt);
-            var tableResult = await loader.GetSimpleReturnValues(cancellationToken);
+            OneOf<IEnumerable<SrvModel>, Err[]> tableResult = await loader.GetSimpleReturnValues(cancellationToken);
             if (tableResult.IsT1)
             {
                 errors.AddRange(tableResult.AsT1);
             }
             else
             {
-                var res = tableResult.AsT0;
+                IEnumerable<SrvModel>? res = tableResult.AsT0;
                 resultList.Add(dt.DtTable, res);
             }
         }
 
-        var tablesWithoutDataType = _tableNames.Except(tableDataTypes.Select(x => x.DtTable));
-        foreach (var tableName in tablesWithoutDataType)
+        IEnumerable<string> tablesWithoutDataType = _tableNames.Except(tableDataTypes.Select(x => x.DtTable));
+        foreach (string tableName in tablesWithoutDataType)
         {
-            var loader = _returnValuesLoaderCreator.CreateReturnValuesLoaderLoader(tableName);
+            IReturnValuesLoader? loader = _returnValuesLoaderCreator.CreateReturnValuesLoaderLoader(tableName);
             if (loader is null)
             {
                 errors.Add(MasterDataApiErrors
@@ -60,19 +61,22 @@ public sealed class ReturnValuesLoader
                 continue;
             }
 
-            var tableResult = await loader.GetSimpleReturnValues(cancellationToken);
+            OneOf<IEnumerable<SrvModel>, Err[]> tableResult = await loader.GetSimpleReturnValues(cancellationToken);
             if (tableResult.IsT1)
             {
                 errors.AddRange(tableResult.AsT1);
             }
             else
             {
-                var res = tableResult.AsT0;
+                IEnumerable<SrvModel>? res = tableResult.AsT0;
                 resultList.Add(tableName, res);
             }
         }
 
-        if (errors.Count > 0) return errors.ToArray();
+        if (errors.Count > 0)
+        {
+            return errors.ToArray();
+        }
 
         return resultList;
     }

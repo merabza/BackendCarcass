@@ -2,9 +2,13 @@
 using System.Threading.Tasks;
 using BackendCarcass.Identity;
 using BackendCarcass.Rights;
+using LanguageExt;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using SystemTools.DomainShared.Repositories;
+using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Api.Filters;
 
@@ -27,15 +31,18 @@ public sealed class UserTableRightsFilter : IEndpointFilter
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-        var routeData = context.HttpContext.Request.RouteValues;
-        routeData.TryGetValue("tableName", out var tableName);
-        var strTableName = tableName?.ToString() ?? string.Empty;
+        RouteValueDictionary routeData = context.HttpContext.Request.RouteValues;
+        routeData.TryGetValue("tableName", out object? tableName);
+        string strTableName = tableName?.ToString() ?? string.Empty;
 
         var rightsDeterminer = new RightsDeterminer(_repo, _unitOfWork, _logger, _currentUser);
-        var checkTableRightsResult = await rightsDeterminer.CheckTableRights(_currentUser.Name,
+        Option<BadRequest<Err[]>> checkTableRightsResult = await rightsDeterminer.CheckTableRights(_currentUser.Name,
             context.HttpContext.Request.Method, new TableKeyName { TableName = strTableName }, CancellationToken.None);
 
-        if (checkTableRightsResult.IsSome) return checkTableRightsResult;
+        if (checkTableRightsResult.IsSome)
+        {
+            return checkTableRightsResult;
+        }
 
         return await next(context);
     }

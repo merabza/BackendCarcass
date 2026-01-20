@@ -242,7 +242,9 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
         if (user == null || string.IsNullOrWhiteSpace(appUser.UserName) ||
             string.IsNullOrWhiteSpace(appUser.NormalizedUserName) || string.IsNullOrWhiteSpace(appUser.Email) ||
             string.IsNullOrWhiteSpace(appUser.NormalizedEmail) || string.IsNullOrWhiteSpace(appUser.PasswordHash))
+        {
             return IdentityResult.Failed();
+        }
 
         user.FirstName = appUser.FirstName;
         user.LastName = appUser.LastName;
@@ -282,7 +284,10 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
     public async Task AddToRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
     {
         var role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
-        if (role == null) return;
+        if (role == null)
+        {
+            return;
+        }
 
         await _repo.UserAddToRoleAsync(user.Id, role.RolId);
     }
@@ -290,11 +295,17 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
     public async Task RemoveFromRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
     {
         var role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
-        if (role == null) return;
+        if (role == null)
+        {
+            return;
+        }
 
         var match = await _repo.RolesByUsers.FirstOrDefaultAsync(
             ru => ru.PKey == user.UserName && ru.CKey == role.RolKey, cancellationToken);
-        if (match == null) return;
+        if (match == null)
+        {
+            return;
+        }
 
         _repo.RemoveUserFromRole(match);
     }
@@ -308,7 +319,10 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
     public async Task<bool> IsInRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
     {
         var role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
-        if (role == null) return false;
+        if (role == null)
+        {
+            return false;
+        }
 
         var roleByUser =
             await _repo.RolesByUsers.FirstOrDefaultAsync(ru => ru.PKey == user.UserName && ru.CKey == role.RolKey,

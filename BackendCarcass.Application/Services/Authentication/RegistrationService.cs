@@ -26,12 +26,18 @@ public class RegistrationService : LoginBase, IScopeServiceCarcassApplication
         //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი
         var user = await UserMgr.FindByNameAsync(registerParameters.UserName);
         //თუ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
-        if (user != null) return new[] { AuthenticationApiErrors.UserAlreadyExists };
+        if (user != null)
+        {
+            return new[] { AuthenticationApiErrors.UserAlreadyExists };
+        }
 
         //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი
         user = await UserMgr.FindByEmailAsync(registerParameters.Email);
         //თუ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
-        if (user != null) return new[] { AuthenticationApiErrors.EmailAlreadyExists };
+        if (user != null)
+        {
+            return new[] { AuthenticationApiErrors.EmailAlreadyExists };
+        }
 
         //1. შევქმნათ ახალი მომხმარებელი
         user = new AppUser(registerParameters.UserName, registerParameters.FirstName, registerParameters.LastName)
@@ -40,7 +46,10 @@ public class RegistrationService : LoginBase, IScopeServiceCarcassApplication
         };
         var result = await UserMgr.CreateAsync(user, registerParameters.Password);
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
-        if (!result.Succeeded) return new[] { AuthenticationApiErrors.MoreComplexPasswordIsRequired };
+        if (!result.Succeeded)
+        {
+            return new[] { AuthenticationApiErrors.MoreComplexPasswordIsRequired };
+        }
 
         return await LoginProcess(user, registerParameters.Password, cancellationToken);
     }

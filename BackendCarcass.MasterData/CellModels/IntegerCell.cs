@@ -79,7 +79,10 @@ public /*open*/ class IntegerCell : NumberCell
         {
             errors = ValidateByType<short>(errors, value, "მოკლე მთელი");
 
-            if (value is not short shortValue) return errors;
+            if (value is not short shortValue)
+            {
+                return errors;
+            }
 
             testIntValue = shortValue;
         }
@@ -87,14 +90,23 @@ public /*open*/ class IntegerCell : NumberCell
         {
             errors = ValidateByType<int>(errors, value, "მთელი");
 
-            if (value is not int intValue) return errors;
+            if (value is not int intValue)
+            {
+                return errors;
+            }
 
             testIntValue = intValue;
         }
 
-        if (MinValRule is not null && testIntValue < MinValRule.Val) errors.Add(MinValRule.Err);
+        if (MinValRule is not null && testIntValue < MinValRule.Val)
+        {
+            errors.Add(MinValRule.Err);
+        }
 
-        if (IsPositiveErr is not null && testIntValue <= 0) errors.Add(IsPositiveErr.Value);
+        if (IsPositiveErr is not null && testIntValue <= 0)
+        {
+            errors.Add(IsPositiveErr.Value);
+        }
 
         return errors;
     }

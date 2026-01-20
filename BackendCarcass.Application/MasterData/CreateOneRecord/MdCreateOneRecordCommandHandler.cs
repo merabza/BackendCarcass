@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.LibCrud;
 using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.Models;
 using BackendCarcassContracts.Errors;
@@ -30,14 +31,18 @@ public sealed class
         // ReSharper disable once using
         // ReSharper disable once DisposableConstructor
         using var reader = new StreamReader(request.HttpRequest.Body);
-        var body = await reader.ReadToEndAsync(cancellationToken);
+        string body = await reader.ReadToEndAsync(cancellationToken);
 
         var crudData = new MasterDataCrudData(body);
-        var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
-        if (createMasterDataCrudResult.IsT1) return createMasterDataCrudResult.AsT1;
+        OneOf<CrudBase, Err[]> createMasterDataCrudResult =
+            _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+        if (createMasterDataCrudResult.IsT1)
+        {
+            return createMasterDataCrudResult.AsT1;
+        }
 
-        var masterDataCruder = createMasterDataCrudResult.AsT0;
-        var result = await masterDataCruder.Create(crudData, cancellationToken);
+        CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
+        OneOf<ICrudData, Err[]> result = await masterDataCruder.Create(crudData, cancellationToken);
         return result.Match<OneOf<MasterDataCrudLoadedData, Err[]>>(rcd => (MasterDataCrudLoadedData)rcd,
             y => Err.RecreateErrors(y, MasterDataApiErrors.CannotCreateNewRecord));
     }

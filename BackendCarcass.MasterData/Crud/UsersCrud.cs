@@ -55,7 +55,9 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
     {
         var appUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (appUser?.UserName is not null && appUser.Email is not null)
+        {
             return new UserCrudData(appUser.UserName, appUser.FirstName, appUser.LastName, appUser.Email);
+        }
 
         return new[] { MasterDataApiErrors.CannotFindUser };
     }
@@ -68,7 +70,10 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
 
         //შევქმნათ როლი
         var createResult = await _userManager.CreateAsync(appUser);
-        if (!createResult.Succeeded) return ConvertError(createResult);
+        if (!createResult.Succeeded)
+        {
+            return ConvertError(createResult);
+        }
 
         _justCreated = appUser;
         return null;
@@ -78,7 +83,10 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         CancellationToken cancellationToken = default)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
-        if (oldUser is null) return new[] { MasterDataApiErrors.CannotFindUser };
+        if (oldUser is null)
+        {
+            return new[] { MasterDataApiErrors.CannotFindUser };
+        }
 
         var user = (UserCrudData)crudDataNewVersion;
         oldUser.UserName = user.UserName;
@@ -87,15 +95,24 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         oldUser.LastName = user.LastName;
 
         var updateResult = await _userManager.UpdateAsync(oldUser);
-        if (!updateResult.Succeeded) return ConvertError(updateResult);
+        if (!updateResult.Succeeded)
+        {
+            return ConvertError(updateResult);
+        }
 
         if (oldUser.UserName != user.UserName)
         {
             var setUserNameResult = await _userManager.SetUserNameAsync(oldUser, user.UserName);
-            if (!setUserNameResult.Succeeded) return ConvertError(setUserNameResult);
+            if (!setUserNameResult.Succeeded)
+            {
+                return ConvertError(setUserNameResult);
+            }
         }
 
-        if (oldUser.Email == user.Email) return null;
+        if (oldUser.Email == user.Email)
+        {
+            return null;
+        }
 
         var setEmailResult = await _userManager.SetEmailAsync(oldUser, user.Email);
         return ConvertError(setEmailResult);
@@ -104,7 +121,10 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
     protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
-        if (oldUser is null) return new[] { MasterDataApiErrors.CannotFindUser };
+        if (oldUser is null)
+        {
+            return new[] { MasterDataApiErrors.CannotFindUser };
+        }
 
         var deleteResult = await _userManager.DeleteAsync(oldUser);
         return ConvertError(deleteResult);

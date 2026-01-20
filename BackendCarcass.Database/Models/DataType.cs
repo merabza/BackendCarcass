@@ -93,7 +93,10 @@ public sealed class DataType : IDataType, IMyEquatable
 
     public bool UpdateTo(IDataType data)
     {
-        if (data is not DataType newData) return false;
+        if (data is not DataType newData)
+        {
+            return false;
+        }
 
         //DtKey = newData.DtKey;
         DtName = newData.DtName;
@@ -110,7 +113,10 @@ public sealed class DataType : IDataType, IMyEquatable
 
     public bool EqualsTo(IDataType data)
     {
-        if (data is not DataType other) return false;
+        if (data is not DataType other)
+        {
+            return false;
+        }
 
         return
             //DtKey == other.DtKey && 

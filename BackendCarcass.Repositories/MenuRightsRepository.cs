@@ -83,8 +83,12 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
 
         var res2 = res.ToArray();
         foreach (var dataType in res2)
-        foreach (var dataTypeToCrudRight in dtCrudRights.Where(w => w.DtTable == dataType.DtTable))
-            SetDataTypeCrudRight(dataTypeToCrudRight.CrtKey, dataType);
+        {
+            foreach (var dataTypeToCrudRight in dtCrudRights.Where(w => w.DtTable == dataType.DtTable))
+            {
+                SetDataTypeCrudRight(dataTypeToCrudRight.CrtKey, dataType);
+            }
+        }
 
         return [.. res2];
     }
@@ -130,7 +134,10 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
 
     private static void SetDataTypeCrudRight(string crtKey, DataTypesResponse dataType)
     {
-        if (!Enum.TryParse(crtKey, out ECrudOperationType crudType)) return;
+        if (!Enum.TryParse(crtKey, out ECrudOperationType crudType))
+        {
+            return;
+        }
 
         switch (crudType)
         {

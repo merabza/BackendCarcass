@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using BackendCarcass.MasterData.CellModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,24 +13,34 @@ public sealed class GridModel
 
     public static GridModel? DeserializeGridModel(string dtGridRulesJson)
     {
-        var jo = JObject.Parse(dtGridRulesJson);
+        JObject jo = JObject.Parse(dtGridRulesJson);
         var jCommands = (JArray?)jo["cells"];
-        if (jCommands is null) return null;
+        if (jCommands is null)
+        {
+            return null;
+        }
 
         var gridModel = new GridModel();
-        foreach (var jt in jCommands)
+        foreach (JToken jt in jCommands)
         {
-            var cJson = jt.ToString();
-            var strTypeName = jt["typeName"]?.Value<string>();
-            if (strTypeName is null) continue;
+            string cJson = jt.ToString();
+            string? strTypeName = jt["typeName"]?.Value<string>();
+            if (strTypeName is null)
+            {
+                continue;
+            }
 
-            var cellTypeName = $"{strTypeName}{nameof(Cell)}";
-            var method = typeof(JsonConvert).GetMethod(nameof(JsonConvert.DeserializeObject), 1, [typeof(string)]);
+            string cellTypeName = $"{strTypeName}{nameof(Cell)}";
+            MethodInfo? method =
+                typeof(JsonConvert).GetMethod(nameof(JsonConvert.DeserializeObject), 1, [typeof(string)]);
             var genType = Type.GetType($"BackendCarcass.MasterData.{nameof(CellModels)}.{cellTypeName}");
-            if (genType is null) continue;
+            if (genType is null)
+            {
+                continue;
+            }
 
-            var generic = method?.MakeGenericMethod(genType);
-            var cellObject = generic?.Invoke(null, [cJson]) ?? throw new Exception($"{cellTypeName} is null");
+            MethodInfo? generic = method?.MakeGenericMethod(genType);
+            object cellObject = generic?.Invoke(null, [cJson]) ?? throw new Exception($"{cellTypeName} is null");
             gridModel.Cells.Add((Cell)cellObject);
 
             //if (!Enum.TryParse<ECellTypeName>(strTypeName, out var cellType))

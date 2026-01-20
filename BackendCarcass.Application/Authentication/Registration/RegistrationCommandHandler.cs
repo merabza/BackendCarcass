@@ -33,7 +33,10 @@ public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
             Password = request.Password!
         };
         var tryLoginResult = await _registrationService.TryToRegister(registerParameters, cancellationToken);
-        if (tryLoginResult.IsT1) return tryLoginResult.AsT1;
+        if (tryLoginResult.IsT1)
+        {
+            return tryLoginResult.AsT1;
+        }
 
         var user = tryLoginResult.AsT0.User;
         var appUserModel = new LoginResponse(user.Id, user.UserName!, user.Email!, tryLoginResult.AsT0.Token,

@@ -38,7 +38,9 @@ public abstract class CrudBase
         {
             const string methodName = nameof(GetOne);
             if (_logger.IsEnabled(LogLevel.Error))
+            {
                 _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
+            }
 
             throw;
         }
@@ -55,7 +57,10 @@ public abstract class CrudBase
             try
             {
                 var result = await CreateData(crudDataForCreate, cancellationToken);
-                if (result.IsSome) return (Err[])result;
+                if (result.IsSome)
+                {
+                    return (Err[])result;
+                }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
@@ -67,15 +72,21 @@ public abstract class CrudBase
                 if (e.InnerException is not null)
                 {
                     if (_logger.IsEnabled(LogLevel.Error))
+                    {
                         _logger.LogError(e.InnerException, "Error occurred executing {MethodName}.", methodName);
+                    }
 
                     if (e.InnerException.Message.StartsWith("Cannot insert duplicate key row in object",
                             StringComparison.Ordinal))
+                    {
                         return new[] { SystemToolsErrors.SuchARecordAlreadyExists };
+                    }
                 }
 
                 if (_logger.IsEnabled(LogLevel.Error))
+                {
                     _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
+                }
 
                 return new[] { SystemToolsErrors.UnexpectedApiException(e) };
             }
@@ -83,7 +94,9 @@ public abstract class CrudBase
         catch (Exception e)
         {
             if (_logger.IsEnabled(LogLevel.Error))
+            {
                 _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
+            }
 
             return new[] { SystemToolsErrors.UnexpectedApiException(e) };
         }
@@ -99,11 +112,17 @@ public abstract class CrudBase
             try
             {
                 var updateDataResult = await UpdateData(id, crudDataNewVersion, cancellationToken);
-                if (updateDataResult.IsSome) return updateDataResult;
+                if (updateDataResult.IsSome)
+                {
+                    return updateDataResult;
+                }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 var afterUpdateDataResult = await AfterUpdateData(cancellationToken);
-                if (afterUpdateDataResult.IsSome) return afterUpdateDataResult;
+                if (afterUpdateDataResult.IsSome)
+                {
+                    return afterUpdateDataResult;
+                }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
@@ -131,7 +150,10 @@ public abstract class CrudBase
             try
             {
                 var result = await DeleteData(id, cancellationToken);
-                if (result.IsSome) return result;
+                if (result.IsSome)
+                {
+                    return result;
+                }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
@@ -143,15 +165,21 @@ public abstract class CrudBase
                 if (e.InnerException is not null)
                 {
                     if (_logger.IsEnabled(LogLevel.Error))
+                    {
                         _logger.LogError(e.InnerException, "Error occurred executing {MethodName}.", methodName);
+                    }
 
                     if (e.InnerException.Message.StartsWith(
                             "The DELETE statement conflicted with the REFERENCE constraint", StringComparison.Ordinal))
+                    {
                         return new[] { SystemToolsErrors.TheEntryHasBeenUsedAndCannotBeDeleted };
+                    }
                 }
 
                 if (_logger.IsEnabled(LogLevel.Error))
+                {
                     _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
+                }
 
                 return new[] { SystemToolsErrors.UnexpectedApiException(e) };
             }

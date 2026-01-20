@@ -63,9 +63,15 @@ public sealed class DateCell : MixedCell
     {
         var errors = ValidateByType<DateTime>(base.Validate(value), value, "თარიღის");
 
-        if (value is not DateTime dateTimeValue) return errors;
+        if (value is not DateTime dateTimeValue)
+        {
+            return errors;
+        }
 
-        if (MinValRule is not null && dateTimeValue < MinValRule.Val) errors.Add(MinValRule.Err);
+        if (MinValRule is not null && dateTimeValue < MinValRule.Val)
+        {
+            errors.Add(MinValRule.Err);
+        }
 
         return errors;
     }

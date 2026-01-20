@@ -23,7 +23,9 @@ public /*open*/ class Cell
     {
         if (!sourceCellTypeName.EndsWith(nameof(Cell), StringComparison.Ordinal) ||
             sourceCellTypeName.Length <= nameof(Cell).Length)
+        {
             throw new Exception($"Invalid Cell Type Name {sourceCellTypeName}");
+        }
 
         return sourceCellTypeName[..^4];
     }
