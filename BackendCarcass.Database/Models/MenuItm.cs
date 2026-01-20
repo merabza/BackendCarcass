@@ -50,10 +50,7 @@ public sealed class MenuItm : IDataType, IMyEquatable
 
     public bool UpdateTo(IDataType data)
     {
-        if (data is not MenuItm newData)
-        {
-            return false;
-        }
+        if (data is not MenuItm newData) return false;
 
         MenKey = newData.MenKey;
         MenLinkKey = newData.MenLinkKey;
@@ -82,10 +79,7 @@ public sealed class MenuItm : IDataType, IMyEquatable
 
     public bool EqualsTo(IDataType data)
     {
-        if (data is not MenuItm other)
-        {
-            return false;
-        }
+        if (data is not MenuItm other) return false;
 
         return MenKey == other.MenKey && MenName == other.MenName && Equals(MenValue, other.MenValue) &&
                MenLinkKey == other.MenLinkKey && MenGroupId == other.MenGroupId && SortId == other.SortId &&

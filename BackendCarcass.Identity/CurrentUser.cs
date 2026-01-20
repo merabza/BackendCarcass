@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
@@ -23,10 +24,10 @@ public sealed class CurrentUser : ICurrentUser
 
     private T GetClaimValue<T>(string type) where T : IConvertible
     {
-        string? value = _httpContext.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == type)?.Value;
+        var value = _httpContext.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == type)?.Value;
 
         return value != null
-            ? (T)Convert.ChangeType(value, typeof(T), System.Globalization.CultureInfo.InvariantCulture)
+            ? (T)Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture)
             : throw new UnauthorizedAccessException($"{type} claim not found");
     }
 

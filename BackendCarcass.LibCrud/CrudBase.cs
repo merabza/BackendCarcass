@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.LibCrud.Models;
 using LanguageExt;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using SystemTools.DomainShared.Repositories;
@@ -39,9 +38,7 @@ public abstract class CrudBase
         {
             const string methodName = nameof(GetOne);
             if (_logger.IsEnabled(LogLevel.Error))
-            {
                 _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
-            }
 
             throw;
         }
@@ -54,14 +51,11 @@ public abstract class CrudBase
         try
         {
             // ReSharper disable once using
-            await using IDbContextTransaction transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
-                Option<Err[]> result = await CreateData(crudDataForCreate, cancellationToken);
-                if (result.IsSome)
-                {
-                    return (Err[])result;
-                }
+                var result = await CreateData(crudDataForCreate, cancellationToken);
+                if (result.IsSome) return (Err[])result;
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
@@ -73,21 +67,15 @@ public abstract class CrudBase
                 if (e.InnerException is not null)
                 {
                     if (_logger.IsEnabled(LogLevel.Error))
-                    {
                         _logger.LogError(e.InnerException, "Error occurred executing {MethodName}.", methodName);
-                    }
 
                     if (e.InnerException.Message.StartsWith("Cannot insert duplicate key row in object",
                             StringComparison.Ordinal))
-                    {
                         return new[] { SystemToolsErrors.SuchARecordAlreadyExists };
-                    }
                 }
 
                 if (_logger.IsEnabled(LogLevel.Error))
-                {
                     _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
-                }
 
                 return new[] { SystemToolsErrors.UnexpectedApiException(e) };
             }
@@ -95,9 +83,7 @@ public abstract class CrudBase
         catch (Exception e)
         {
             if (_logger.IsEnabled(LogLevel.Error))
-            {
                 _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
-            }
 
             return new[] { SystemToolsErrors.UnexpectedApiException(e) };
         }
@@ -109,21 +95,15 @@ public abstract class CrudBase
         try
         {
             // ReSharper disable once using
-            await using IDbContextTransaction transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
-                Option<Err[]> updateDataResult = await UpdateData(id, crudDataNewVersion, cancellationToken);
-                if (updateDataResult.IsSome)
-                {
-                    return updateDataResult;
-                }
+                var updateDataResult = await UpdateData(id, crudDataNewVersion, cancellationToken);
+                if (updateDataResult.IsSome) return updateDataResult;
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                Option<Err[]> afterUpdateDataResult = await AfterUpdateData(cancellationToken);
-                if (afterUpdateDataResult.IsSome)
-                {
-                    return afterUpdateDataResult;
-                }
+                var afterUpdateDataResult = await AfterUpdateData(cancellationToken);
+                if (afterUpdateDataResult.IsSome) return afterUpdateDataResult;
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
@@ -147,14 +127,11 @@ public abstract class CrudBase
         try
         {
             // ReSharper disable once using
-            await using IDbContextTransaction transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
-                Option<Err[]> result = await DeleteData(id, cancellationToken);
-                if (result.IsSome)
-                {
-                    return result;
-                }
+                var result = await DeleteData(id, cancellationToken);
+                if (result.IsSome) return result;
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
@@ -166,21 +143,15 @@ public abstract class CrudBase
                 if (e.InnerException is not null)
                 {
                     if (_logger.IsEnabled(LogLevel.Error))
-                    {
                         _logger.LogError(e.InnerException, "Error occurred executing {MethodName}.", methodName);
-                    }
 
                     if (e.InnerException.Message.StartsWith(
                             "The DELETE statement conflicted with the REFERENCE constraint", StringComparison.Ordinal))
-                    {
                         return new[] { SystemToolsErrors.TheEntryHasBeenUsedAndCannotBeDeleted };
-                    }
                 }
 
                 if (_logger.IsEnabled(LogLevel.Error))
-                {
                     _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
-                }
 
                 return new[] { SystemToolsErrors.UnexpectedApiException(e) };
             }

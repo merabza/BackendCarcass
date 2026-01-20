@@ -10,10 +10,7 @@ public sealed class TableKeyName
     public async ValueTask<string?> GetTableKey(IUserRightsRepository repo,
         CancellationToken cancellationToken = default)
     {
-        if (TableName is not null)
-        {
-            return await repo.KeyByTableName(TableName, cancellationToken);
-        }
+        if (TableName is not null) return await repo.KeyByTableName(TableName, cancellationToken);
 
         return null;
     }

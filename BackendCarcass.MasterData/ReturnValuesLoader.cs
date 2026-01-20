@@ -50,7 +50,7 @@ public sealed class ReturnValuesLoader
         }
 
         var tablesWithoutDataType = _tableNames.Except(tableDataTypes.Select(x => x.DtTable));
-        foreach (string tableName in tablesWithoutDataType)
+        foreach (var tableName in tablesWithoutDataType)
         {
             var loader = _returnValuesLoaderCreator.CreateReturnValuesLoaderLoader(tableName);
             if (loader is null)
@@ -72,10 +72,7 @@ public sealed class ReturnValuesLoader
             }
         }
 
-        if (errors.Count > 0)
-        {
-            return errors.ToArray();
-        }
+        if (errors.Count > 0) return errors.ToArray();
 
         return resultList;
     }

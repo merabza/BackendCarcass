@@ -31,11 +31,8 @@ public sealed class AppUser : IdentityUser<int>
     {
         // authentication successful so generate jwt token
         var tokenHandler = new JwtSecurityTokenHandler();
-        byte[] key = Encoding.ASCII.GetBytes(secret);
-        if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Email))
-        {
-            return null;
-        }
+        var key = Encoding.ASCII.GetBytes(secret);
+        if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Email)) return null;
 
         var claims = new List<Claim>
         {
@@ -43,10 +40,7 @@ public sealed class AppUser : IdentityUser<int>
             new(ClaimTypes.Name, UserName),
             new(ClaimTypes.Email, Email)
         };
-        if (roles is not null)
-        {
-            claims.AddRange(roles.Select(s => new Claim(ClaimTypes.Role, s)));
-        }
+        if (roles is not null) claims.AddRange(roles.Select(s => new Claim(ClaimTypes.Role, s)));
 
         claims.Add(new Claim(ClaimTypes.SerialNumber, serialNumber.ToString(CultureInfo.InvariantCulture)));
 
@@ -57,7 +51,7 @@ public sealed class AppUser : IdentityUser<int>
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
-        SecurityToken? token = tokenHandler.CreateToken(tokenDescriptor);
+        var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
 }

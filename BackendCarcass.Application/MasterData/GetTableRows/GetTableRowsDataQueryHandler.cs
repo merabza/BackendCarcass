@@ -27,10 +27,7 @@ public sealed class GetTableRowsDataQueryHandler : IQueryHandler<GetTableRowsDat
     {
         var filterSortRequestObject = FilterSortRequestFactory.Create(request.FilterSortRequest);
 
-        if (filterSortRequestObject == null)
-        {
-            return new[] { CommonErrors.IncorrectData };
-        }
+        if (filterSortRequestObject == null) return new[] { CommonErrors.IncorrectData };
 
         //var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(request.tableName);
         //var result = await loader.GetTableRowsData(filterSortRequestObject, cancellationToken);
@@ -38,10 +35,7 @@ public sealed class GetTableRowsDataQueryHandler : IQueryHandler<GetTableRowsDat
         //    r => r, e => e);
 
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
-        if (createMasterDataCrudResult.IsT1)
-        {
-            return createMasterDataCrudResult.AsT1;
-        }
+        if (createMasterDataCrudResult.IsT1) return createMasterDataCrudResult.AsT1;
 
         var masterDataCruder = createMasterDataCrudResult.AsT0;
 

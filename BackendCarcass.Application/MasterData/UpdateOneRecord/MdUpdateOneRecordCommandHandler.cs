@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.LibCrud;
 using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.Models;
 using BackendCarcassContracts.Errors;
-using LanguageExt;
 using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
 using SystemTools.SystemToolsShared.Errors;
@@ -34,21 +31,17 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
         // ReSharper disable once using
         // ReSharper disable once DisposableConstructor
         using var reader = new StreamReader(request.HttpRequest.Body);
-        string body = await reader.ReadToEndAsync(cancellationToken);
+        var body = await reader.ReadToEndAsync(cancellationToken);
 
         var crudData = new MasterDataCrudData(body);
-        OneOf<CrudBase, Err[]> createMasterDataCrudResult =
-            _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
-        if (createMasterDataCrudResult.IsT1)
-        {
-            return createMasterDataCrudResult.AsT1;
-        }
+        var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+        if (createMasterDataCrudResult.IsT1) return createMasterDataCrudResult.AsT1;
 
-        CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
-        Option<Err[]> result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
+        var masterDataCruder = createMasterDataCrudResult.AsT0;
+        var result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
         return result.Match<OneOf<Unit, Err[]>>(y =>
         {
-            List<Err> errors = y.ToList();
+            var errors = y.ToList();
             errors.Add(MasterDataApiErrors.CannotUpdateNewRecord);
             return errors.ToArray();
         }, () => new Unit());

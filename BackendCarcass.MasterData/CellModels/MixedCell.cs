@@ -44,20 +44,14 @@ public /*open*/ class MixedCell : Cell
     public override List<Err> Validate(object? value)
     {
         List<Err> errors = [];
-        if (IsRequiredErr is not null && value is null)
-        {
-            errors.Add(IsRequiredErr.Value);
-        }
+        if (IsRequiredErr is not null && value is null) errors.Add(IsRequiredErr.Value);
 
         return errors;
     }
 
     protected List<Err> ValidateByType<T>(List<Err> errors, object? value, string typeName)
     {
-        if (value is T)
-        {
-            return errors;
-        }
+        if (value is T) return errors;
 
         errors.Add(CarcassMasterDataErrors.MustBeBoolean(FieldName, Caption, typeName));
 

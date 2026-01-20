@@ -25,22 +25,15 @@ public static class AuthenticationEndpoints
 {
     public static bool UseAuthenticationEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(UseAuthenticationEndpoints));
-        }
+        if (debugMode) logger.Information("{MethodName} Started", nameof(UseAuthenticationEndpoints));
 
-        RouteGroupBuilder group = endpoints
-            .MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
+        var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
             .RequireCors(CorsDependencyInjection.MyAllowSpecificOrigins);
 
         group.MapPost(CarcassApiRoutes.Authentication.Registration, Registration);
         group.MapPost(CarcassApiRoutes.Authentication.Login, Login);
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(UseAuthenticationEndpoints));
-        }
+        if (debugMode) logger.Information("{MethodName} Finished", nameof(UseAuthenticationEndpoints));
 
         return true;
     }
@@ -58,10 +51,7 @@ public static class AuthenticationEndpoints
         [FromBody] RegistrationRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(RegistrationCommandHandler)} from {nameof(Registration)}");
-        if (request is null)
-        {
-            return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
-        }
+        if (request is null) return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
 
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);
@@ -79,10 +69,7 @@ public static class AuthenticationEndpoints
         [FromBody] LoginRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(LoginCommandHandler)} from {nameof(Login)}");
-        if (request is null)
-        {
-            return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
-        }
+        if (request is null) return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
 
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);

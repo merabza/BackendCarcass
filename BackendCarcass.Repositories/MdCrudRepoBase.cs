@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using BackendCarcass.Database;
 using BackendCarcass.Db;
@@ -8,7 +6,6 @@ using BackendCarcass.MasterData;
 using BackendCarcassContracts.Errors;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using OneOf;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -18,19 +15,14 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
 {
     public OneOf<IQueryable<IDataType>, Err[]> Load()
     {
-        IEntityType? vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
-        if (vvv == null)
-        {
-            return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
-        }
+        var vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
+        if (vvv == null) return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
 
-        MethodInfo? setMethod = carcassContext.GetType().GetMethod("Set", []);
+        var setMethod = carcassContext.GetType().GetMethod("Set", []);
         if (setMethod == null)
-        {
             return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(tableName) }; //ცხრილს არ აქვს მეთოდი Set
-        }
 
-        object? result = setMethod.MakeGenericMethod(vvv.ClrType).Invoke(carcassContext, null);
+        var result = setMethod.MakeGenericMethod(vvv.ClrType).Invoke(carcassContext, null);
         return result == null
             ? new[] { MasterDataApiErrors.SetMethodReturnsNullForTable(tableName) } //ცხრილის Set მეთოდი აბრუნებს null-ს
             : OneOf<IQueryable<IDataType>, Err[]>.FromT0((IQueryable<IDataType>)result);
@@ -45,22 +37,17 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
 
     public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
-        IEntityType? vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
-        if (vvv == null)
-        {
-            return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
-        }
+        var vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
+        if (vvv == null) return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
 
         var q = (IQueryable<IDataType>?)carcassContext.GetType().GetMethod("Set")?.MakeGenericMethod(vvv.ClrType)
             .Invoke(carcassContext, null);
-        IDataType? idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id);
+        var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id);
         if (idt == null)
-        {
             return new[]
             {
                 MasterDataApiErrors.RecordNotFound(tableName, id)
             }; //ბაზაში ვერ ვიპოვეთ მოწოდებული იდენტიფიკატორის შესაბამისი ჩანაწერი. RecordNotFound
-        }
 
         idt.UpdateTo(newItem);
 
@@ -71,21 +58,16 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
 
     public async ValueTask<Option<Err[]>> Delete(int id)
     {
-        OneOf<IQueryable<IDataType>, Err[]> entResult = Load();
-        if (entResult.IsT1)
-        {
-            return entResult.AsT1;
-        }
+        var entResult = Load();
+        if (entResult.IsT1) return entResult.AsT1;
 
-        List<IDataType> res = await entResult.AsT0.ToListAsync(); // S6966: Await ToListAsync instead.
-        IDataType? idt = res.SingleOrDefault(w => w.Id == id);
+        var res = await entResult.AsT0.ToListAsync(); // S6966: Await ToListAsync instead.
+        var idt = res.SingleOrDefault(w => w.Id == id);
         if (idt == null)
-        {
             return new[]
             {
                 MasterDataApiErrors.RecordNotFound(tableName, id)
             }; //ბაზაში ვერ ვიპოვეთ მოწოდებული იდენტიფიკატორის შესაბამისი ჩანაწერი. RecordNotFound
-        }
 
         carcassContext.Remove(id);
         await carcassContext.SaveChangesAsync();

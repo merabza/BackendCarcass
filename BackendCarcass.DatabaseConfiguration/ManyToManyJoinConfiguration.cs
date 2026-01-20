@@ -13,10 +13,10 @@ public sealed class ManyToManyJoinConfiguration : IEntityTypeConfiguration<ManyT
 
     public void Configure(EntityTypeBuilder<ManyToManyJoin> builder)
     {
-        string tableName = nameof(ManyToManyJoin).Pluralize();
+        var tableName = nameof(ManyToManyJoin).Pluralize();
         builder.ToTable(tableName);
 
-        string dataTypeConstraintName = tableName.CreateConstraintName(nameof(DataType));
+        var dataTypeConstraintName = tableName.CreateConstraintName(nameof(DataType));
 
         builder.HasKey(e => e.MmjId);
         builder.HasIndex(e => new { e.PtId, e.PKey, e.CtId, e.CKey }).IsUnique();

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using BackendCarcass.Application.Services.Authentication;
 using BackendCarcass.Application.Services.Authentication.Models;
-using BackendCarcass.MasterData.Models;
 using BackendCarcassContracts.V1.Responses;
 using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
@@ -33,14 +32,10 @@ public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
             LastName = request.LastName!,
             Password = request.Password!
         };
-        OneOf<LoginResult, Err[]> tryLoginResult =
-            await _registrationService.TryToRegister(registerParameters, cancellationToken);
-        if (tryLoginResult.IsT1)
-        {
-            return tryLoginResult.AsT1;
-        }
+        var tryLoginResult = await _registrationService.TryToRegister(registerParameters, cancellationToken);
+        if (tryLoginResult.IsT1) return tryLoginResult.AsT1;
 
-        AppUser user = tryLoginResult.AsT0.User;
+        var user = tryLoginResult.AsT0.User;
         var appUserModel = new LoginResponse(user.Id, user.UserName!, user.Email!, tryLoginResult.AsT0.Token,
             user.FirstName, user.LastName, string.Empty);
         return appUserModel;
