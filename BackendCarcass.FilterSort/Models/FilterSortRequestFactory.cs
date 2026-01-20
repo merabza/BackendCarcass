@@ -12,8 +12,8 @@ public static class FilterSortRequestFactory
 
     public static FilterSortRequest? Create(string strFilterSortRequest)
     {
-        byte[] data = Convert.FromBase64String(strFilterSortRequest);
-        string decodedString = Encoding.UTF8.GetString(data);
+        var data = Convert.FromBase64String(strFilterSortRequest);
+        var decodedString = Encoding.UTF8.GetString(data);
 
         return JsonSerializer.Deserialize<FilterSortRequest>(HttpUtility.UrlDecode(decodedString), JsonOptions);
     }

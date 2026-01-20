@@ -42,10 +42,7 @@ public sealed class IdentityRepository : IIdentityRepository
         try
         {
             var oldUser = await _carcassContext.Users.SingleOrDefaultAsync(u => u.UsrId == userId, cancellationToken);
-            if (oldUser == null)
-            {
-                return IdentityResult.Failed();
-            }
+            if (oldUser == null) return IdentityResult.Failed();
 
             _carcassContext.Remove(oldUser);
             await _carcassContext.SaveChangesAsync(cancellationToken);
@@ -64,10 +61,7 @@ public sealed class IdentityRepository : IIdentityRepository
         try
         {
             var oldUser = await _carcassContext.Users.SingleOrDefaultAsync(r => r.UsrId == userId, cancellationToken);
-            if (oldUser == null)
-            {
-                return IdentityResult.Failed();
-            }
+            if (oldUser == null) return IdentityResult.Failed();
 
             oldUser.UserName = user.UserName;
             oldUser.NormalizedUserName = user.NormalizedUserName;
@@ -93,10 +87,7 @@ public sealed class IdentityRepository : IIdentityRepository
         try
         {
             var oldRole = await _carcassContext.Roles.SingleOrDefaultAsync(r => r.RolId == roleId, cancellationToken);
-            if (oldRole == null)
-            {
-                return IdentityResult.Failed();
-            }
+            if (oldRole == null) return IdentityResult.Failed();
 
             _carcassContext.Remove(oldRole);
             await _carcassContext.SaveChangesAsync(cancellationToken);
@@ -197,10 +188,7 @@ public sealed class IdentityRepository : IIdentityRepository
         try
         {
             var oldRole = await _carcassContext.Roles.SingleOrDefaultAsync(r => r.RolId == roleId, cancellationToken);
-            if (oldRole == null)
-            {
-                return IdentityResult.Failed();
-            }
+            if (oldRole == null) return IdentityResult.Failed();
 
             oldRole.RolKey = role.Name;
             oldRole.RolName = role.RoleName;

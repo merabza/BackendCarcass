@@ -25,7 +25,7 @@ public sealed class MainMenuQueryHandler : IQueryHandler<MainMenuRequestQuery, M
     public async Task<OneOf<MainMenuModel, Err[]>> Handle(MainMenuRequestQuery request,
         CancellationToken cancellationToken)
     {
-        MainMenuModel mainMenuModel = await _mdRepo.MainMenu(_currentUser.Name, cancellationToken);
+        var mainMenuModel = await _mdRepo.MainMenu(_currentUser.Name, cancellationToken);
 
         return mainMenuModel;
     }

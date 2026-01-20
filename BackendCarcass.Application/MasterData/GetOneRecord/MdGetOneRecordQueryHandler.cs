@@ -25,10 +25,7 @@ public sealed class MdGetOneRecordQueryHandler : IQueryHandler<MdGetOneRecordReq
         CancellationToken cancellationToken)
     {
         var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
-        if (createMasterDataCrudResult.IsT1)
-        {
-            return createMasterDataCrudResult.AsT1.ToArray();
-        }
+        if (createMasterDataCrudResult.IsT1) return createMasterDataCrudResult.AsT1.ToArray();
 
         var masterDataCruder = createMasterDataCrudResult.AsT0;
         var result = await masterDataCruder.GetOne(request.Id, cancellationToken);

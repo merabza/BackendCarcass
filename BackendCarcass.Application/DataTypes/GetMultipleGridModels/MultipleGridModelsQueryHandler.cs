@@ -30,31 +30,21 @@ public sealed class
         //დამზადდეს ჩასატვირთი მოდელების შესაბამისი ცხრილების სახელების სია.
         //სიის დამზადება საჭიროა იმისათვის, რომ შესაძლებელი გახდეს მისი მეორედ გავლა
         //პირველი გავლისას მოწმდება უფლებები
-        List<string?> gridNames = request.Grids.Where(w => !string.IsNullOrWhiteSpace(w)).Distinct().ToList();
-        if (gridNames.Count == 0)
-        {
-            return new[] { DataTypesApiErrors.NoGridNamesInUriQuery };
-        }
+        var gridNames = request.Grids.Where(w => !string.IsNullOrWhiteSpace(w)).Distinct().ToList();
+        if (gridNames.Count == 0) return new[] { DataTypesApiErrors.NoGridNamesInUriQuery };
 
         List<Err> errors = [];
         //ხოლო მეორე გავლისას ხდება უშუალოდ საჭირო ინფორმაციის ჩატვირთვა
-        foreach (string? gridName in gridNames)
+        foreach (var gridName in gridNames)
         {
-            string? res = await _repository.GridModel(gridName!, cancellationToken);
+            var res = await _repository.GridModel(gridName!, cancellationToken);
             if (res != null)
-            {
                 resultList.Add(gridName!, res);
-            }
             else
-            {
                 errors.Add(DataTypesApiErrors.GridNotFound(gridName!));
-            }
         }
 
-        if (errors.Count > 0)
-        {
-            return errors.ToArray();
-        }
+        if (errors.Count > 0) return errors.ToArray();
 
         return resultList;
     }

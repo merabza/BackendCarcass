@@ -26,10 +26,7 @@ public static class UserRightsEndpoints
 {
     public static bool UseUserRightsEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(UseUserRightsEndpoints));
-        }
+        if (debugMode) logger.Information("{MethodName} Started", nameof(UseUserRightsEndpoints));
 
         var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase)
             .RequireAuthorization();
@@ -40,10 +37,7 @@ public static class UserRightsEndpoints
         group.MapDelete(CarcassApiRoutes.UserRights.DeleteCurrentUser, DeleteCurrentUser);
         group.MapGet(CarcassApiRoutes.UserRights.MainMenu, MainMenu);
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(UseUserRightsEndpoints));
-        }
+        if (debugMode) logger.Information("{MethodName} Finished", nameof(UseUserRightsEndpoints));
 
         return true;
     }
@@ -70,10 +64,7 @@ public static class UserRightsEndpoints
         [FromBody] ChangeProfileRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ChangeProfileCommandHandler)} from {nameof(ChangeProfile)}");
-        if (request is null)
-        {
-            return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
-        }
+        if (request is null) return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
 
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);
@@ -91,10 +82,7 @@ public static class UserRightsEndpoints
         [FromBody] ChangePasswordRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ChangePasswordCommandHandler)} from {nameof(ChangePassword)}");
-        if (request is null)
-        {
-            return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
-        }
+        if (request is null) return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
 
         var command = request.AdaptTo();
         var result = await mediator.Send(command, cancellationToken);

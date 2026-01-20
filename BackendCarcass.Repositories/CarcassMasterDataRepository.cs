@@ -3,7 +3,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Database;
-using BackendCarcass.Database.Models;
 using BackendCarcass.MasterData;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
@@ -64,9 +63,8 @@ public /*open*/ class CarcassMasterDataRepository : ICarcassMasterDataRepository
     public async Task<GridModel?> GetDataTypeGridRulesByTableName(string tableName,
         CancellationToken cancellationToken = default)
     {
-        DataType? dataType =
-            await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
-        string? dtGridRulesJson = dataType?.DtGridRulesJson;
+        var dataType = await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
+        var dtGridRulesJson = dataType?.DtGridRulesJson;
 
         return dtGridRulesJson == null ? null : GridModel.DeserializeGridModel(dtGridRulesJson);
     }
@@ -84,8 +82,7 @@ public /*open*/ class CarcassMasterDataRepository : ICarcassMasterDataRepository
     public async Task<string?> GetSortFieldNameByTableName(string tableName,
         CancellationToken cancellationToken = default)
     {
-        DataType? dataType =
-            await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
+        var dataType = await _context.DataTypes.SingleOrDefaultAsync(s => s.DtTable == tableName, cancellationToken);
         return dataType?.DtNameFieldName;
     }
 

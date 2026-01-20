@@ -36,10 +36,7 @@ public sealed class Role : IDataType, IMyEquatable
 
     public bool UpdateTo(IDataType data)
     {
-        if (data is not Role newData)
-        {
-            return false;
-        }
+        if (data is not Role newData) return false;
 
         RolKey = newData.RolKey;
         RolName = newData.RolName;
@@ -54,10 +51,7 @@ public sealed class Role : IDataType, IMyEquatable
 
     public bool EqualsTo(IDataType data)
     {
-        if (data is not Role other)
-        {
-            return false;
-        }
+        if (data is not Role other) return false;
 
         return RolKey == other.RolKey && RolName == other.RolName && RolLevel == other.RolLevel &&
                RolNormalizedKey == other.RolNormalizedKey;

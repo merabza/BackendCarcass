@@ -101,10 +101,7 @@ public sealed class RightsRepository : IRightsRepository
     {
         var mmj = await ManyToManyJoin(manyToManyJoinModel.PtId, manyToManyJoinModel.PKey, manyToManyJoinModel.CtId,
             manyToManyJoinModel.CKey, cancellationToken);
-        if (mmj is null)
-        {
-            return false;
-        }
+        if (mmj is null) return false;
 
         _carcassContext.ManyToManyJoins.Remove(mmj);
         return true;

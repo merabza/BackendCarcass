@@ -29,10 +29,7 @@ public static class DataTypesEndpoints
 {
     public static bool UseDataTypesEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(UseDataTypesEndpoints));
-        }
+        if (debugMode) logger.Information("{MethodName} Started", nameof(UseDataTypesEndpoints));
 
         var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.DataTypes.DataTypesBase)
             .RequireAuthorization();
@@ -41,10 +38,7 @@ public static class DataTypesEndpoints
         group.MapGet(CarcassApiRoutes.DataTypes.GridModel, GridModel);
         group.MapGet(CarcassApiRoutes.DataTypes.MultipleGridModels, MultipleGridModels);
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(UseDataTypesEndpoints));
-        }
+        if (debugMode) logger.Information("{MethodName} Finished", nameof(UseDataTypesEndpoints));
 
         return true;
     }

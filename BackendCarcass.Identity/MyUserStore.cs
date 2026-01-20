@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Database.Models;
 using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -76,9 +75,8 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     async Task<AppRole?> IRoleStore<AppRole>.FindByIdAsync(string roleId, CancellationToken cancellationToken)
     {
-        Role? role =
-            await _repo.Roles.FirstOrDefaultAsync(u => u.RolId.ToString(CultureInfo.InvariantCulture) == roleId,
-                cancellationToken);
+        var role = await _repo.Roles.FirstOrDefaultAsync(u => u.RolId.ToString(CultureInfo.InvariantCulture) == roleId,
+            cancellationToken);
         return role == null
             ? null // throw new Exception($"Role with by roleId={roleId} does not exists")
             : new AppRole(role.RolKey, role.RolName, role.RolLevel)
@@ -90,7 +88,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
     async Task<AppRole?> IRoleStore<AppRole>.FindByNameAsync(string normalizedRoleName,
         CancellationToken cancellationToken)
     {
-        Role? role = await _repo.Roles.FirstOrDefaultAsync(u => u.RolNormalizedKey == normalizedRoleName,
+        var role = await _repo.Roles.FirstOrDefaultAsync(u => u.RolNormalizedKey == normalizedRoleName,
             cancellationToken);
         return role == null
             ? null //throw new Exception($"Role with by normalizedRoleName={normalizedRoleName} does not exists")
@@ -104,7 +102,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
     {
         get
         {
-            IQueryable<AppUser> ret = _repo.Users.Select(s => new AppUser(s.UserName, s.FirstName, s.LastName)
+            var ret = _repo.Users.Select(s => new AppUser(s.UserName, s.FirstName, s.LastName)
             {
                 Id = s.UsrId,
                 PasswordHash = s.PasswordHash,
@@ -140,8 +138,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     public async Task<AppUser?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
     {
-        User? user =
-            await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail, cancellationToken);
+        var user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail, cancellationToken);
         return user is null
             ? null //throw new Exception($"FindByEmailAsync: AppUser with by normalizedEmail={normalizedEmail} does not exists")
             : new AppUser(user.UserName, user.FirstName, user.LastName)
@@ -177,9 +174,8 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     public async Task<AppUser?> FindByIdAsync(string userId, CancellationToken cancellationToken)
     {
-        User? user =
-            await _repo.Users.FirstOrDefaultAsync(u => u.UsrId.ToString(CultureInfo.InvariantCulture) == userId,
-                cancellationToken);
+        var user = await _repo.Users.FirstOrDefaultAsync(u => u.UsrId.ToString(CultureInfo.InvariantCulture) == userId,
+            cancellationToken);
         return user is null
             ? null //throw new Exception($"AppUser with by userId={userId} does not exists")
             : new AppUser(user.UserName, user.FirstName, user.LastName)
@@ -199,7 +195,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
         //return await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName, cancellationToken);
 
-        User? user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName,
+        var user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName,
             cancellationToken);
         return user == null
             ? null // throw new Exception($"AppUser with by normalizedUserName={normalizedUserName} does not exists")
@@ -242,13 +238,11 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     public async Task<IdentityResult> UpdateAsync(AppUser appUser, CancellationToken cancellationToken)
     {
-        User? user = await _repo.Users.FirstOrDefaultAsync(u => u.UsrId == appUser.Id, cancellationToken);
+        var user = await _repo.Users.FirstOrDefaultAsync(u => u.UsrId == appUser.Id, cancellationToken);
         if (user == null || string.IsNullOrWhiteSpace(appUser.UserName) ||
             string.IsNullOrWhiteSpace(appUser.NormalizedUserName) || string.IsNullOrWhiteSpace(appUser.Email) ||
             string.IsNullOrWhiteSpace(appUser.NormalizedEmail) || string.IsNullOrWhiteSpace(appUser.PasswordHash))
-        {
             return IdentityResult.Failed();
-        }
 
         user.FirstName = appUser.FirstName;
         user.LastName = appUser.LastName;
@@ -268,7 +262,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     public async Task<string?> GetPasswordHashAsync(AppUser appUser, CancellationToken cancellationToken)
     {
-        User? user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == appUser.NormalizedUserName,
+        var user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == appUser.NormalizedUserName,
             cancellationToken);
         return
             user?.PasswordHash; // ??throw new Exception($"GetPasswordHashAsync cannot find AppUser NormalizedUserName={appUser.NormalizedUserName}");
@@ -276,7 +270,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     public async Task<bool> HasPasswordAsync(AppUser appUser, CancellationToken cancellationToken)
     {
-        User? user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == appUser.NormalizedUserName,
+        var user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == appUser.NormalizedUserName,
             cancellationToken);
         return string.IsNullOrWhiteSpace(user?.PasswordHash);
     }
@@ -287,29 +281,20 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     public async Task AddToRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
     {
-        Role? role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
-        if (role == null)
-        {
-            return;
-        }
+        var role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
+        if (role == null) return;
 
         await _repo.UserAddToRoleAsync(user.Id, role.RolId);
     }
 
     public async Task RemoveFromRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
     {
-        Role? role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
-        if (role == null)
-        {
-            return;
-        }
+        var role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
+        if (role == null) return;
 
-        ManyToManyJoin? match = await _repo.RolesByUsers.FirstOrDefaultAsync(
+        var match = await _repo.RolesByUsers.FirstOrDefaultAsync(
             ru => ru.PKey == user.UserName && ru.CKey == role.RolKey, cancellationToken);
-        if (match == null)
-        {
-            return;
-        }
+        if (match == null) return;
 
         _repo.RemoveUserFromRole(match);
     }
@@ -322,13 +307,10 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     public async Task<bool> IsInRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
     {
-        Role? role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
-        if (role == null)
-        {
-            return false;
-        }
+        var role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
+        if (role == null) return false;
 
-        ManyToManyJoin? roleByUser =
+        var roleByUser =
             await _repo.RolesByUsers.FirstOrDefaultAsync(ru => ru.PKey == user.UserName && ru.CKey == role.RolKey,
                 cancellationToken);
         return roleByUser != null;

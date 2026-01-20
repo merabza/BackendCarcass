@@ -9,17 +9,11 @@ public static class CarcassFilterSortDependencyInjection
     public static IServiceCollection AddCarcassFilterSort(this IServiceCollection services, ILogger logger,
         bool debugMode)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(AddCarcassFilterSort));
-        }
+        if (debugMode) logger.Information("{MethodName} Started", nameof(AddCarcassFilterSort));
 
         services.AddSingleton<FilterSortManager>();
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(AddCarcassFilterSort));
-        }
+        if (debugMode) logger.Information("{MethodName} Finished", nameof(AddCarcassFilterSort));
 
         return services;
     }

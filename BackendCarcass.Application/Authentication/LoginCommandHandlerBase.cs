@@ -11,13 +11,10 @@ public /*open*/ class LoginCommandHandlerBase
     //რომ ავტომატურად მოხდეს რეგისტრაციისას ავტორიზაციაც
     protected static async ValueTask<AppUser?> DoLogin(SignInManager<AppUser> signinMgr, AppUser? user, string password)
     {
-        if (user == null)
-        {
-            return null;
-        }
+        if (user == null) return null;
 
         await signinMgr.SignOutAsync();
-        SignInResult result = await signinMgr.PasswordSignInAsync(user, password, true, false);
+        var result = await signinMgr.PasswordSignInAsync(user, password, true, false);
         return result.Succeeded ? user : null;
     }
 }

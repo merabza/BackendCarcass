@@ -41,10 +41,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
     public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
-        if (oldUser == null)
-        {
-            return new[] { MasterDataApiErrors.CannotFindUser };
-        }
+        if (oldUser == null) return new[] { MasterDataApiErrors.CannotFindUser };
 
         var user = (User)newItem;
         oldUser.UserName = user.UserName;
@@ -53,24 +50,15 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         oldUser.LastName = user.LastName;
 
         var updateResult = await _userManager.UpdateAsync(oldUser);
-        if (!updateResult.Succeeded)
-        {
-            return (Err[])ConvertError(updateResult);
-        }
+        if (!updateResult.Succeeded) return (Err[])ConvertError(updateResult);
 
         if (oldUser.UserName != user.UserName)
         {
             var setUserNameResult = await _userManager.SetUserNameAsync(oldUser, user.UserName);
-            if (!setUserNameResult.Succeeded)
-            {
-                return (Err[])ConvertError(setUserNameResult);
-            }
+            if (!setUserNameResult.Succeeded) return (Err[])ConvertError(setUserNameResult);
         }
 
-        if (oldUser.Email == user.Email)
-        {
-            return null;
-        }
+        if (oldUser.Email == user.Email) return null;
 
         var setEmailResult = await _userManager.SetEmailAsync(oldUser, user.Email);
         return (Err[])ConvertError(setEmailResult);
@@ -79,10 +67,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
     public async ValueTask<Option<Err[]>> Delete(int id)
     {
         var oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
-        if (oldUser == null)
-        {
-            return new[] { MasterDataApiErrors.CannotFindUser };
-        }
+        if (oldUser == null) return new[] { MasterDataApiErrors.CannotFindUser };
 
         var deleteResult = await _userManager.DeleteAsync(oldUser);
         return (Err[])ConvertError(deleteResult);

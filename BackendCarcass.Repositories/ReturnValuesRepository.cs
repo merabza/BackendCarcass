@@ -44,40 +44,25 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
     protected async ValueTask<string?> FindParentFieldName(DataTypeModelForRvs dt,
         CancellationToken cancellationToken = default)
     {
-        if (dt.DtParentDataTypeId is null)
-        {
-            return null;
-        }
+        if (dt.DtParentDataTypeId is null) return null;
 
-        DataTypeModelForRvs? parentDataType = await GetDataType(dt.DtParentDataTypeId.Value, cancellationToken);
-        if (parentDataType is null)
-        {
-            return null;
-        }
+        var parentDataType = await GetDataType(dt.DtParentDataTypeId.Value, cancellationToken);
+        if (parentDataType is null) return null;
 
-        IEntityType? parentEntType = GetEntityTypeByTableName(parentDataType.DtTable);
-        if (parentEntType is null)
-        {
-            return null;
-        }
+        var parentEntType = GetEntityTypeByTableName(parentDataType.DtTable);
+        if (parentEntType is null) return null;
 
-        List<IKey> parentPrimaryKeys = parentEntType.GetKeys().Where(w => w.IsPrimaryKey()).ToList();
-        if (parentPrimaryKeys.Count != 1)
-        {
-            return null;
-        }
+        var parentPrimaryKeys = parentEntType.GetKeys().Where(w => w.IsPrimaryKey()).ToList();
+        if (parentPrimaryKeys.Count != 1) return null;
 
-        IKey parentPrimaryKey = parentPrimaryKeys[0];
-        if (parentPrimaryKey.Properties.Count != 1)
-        {
-            return null;
-        }
+        var parentPrimaryKey = parentPrimaryKeys[0];
+        if (parentPrimaryKey.Properties.Count != 1) return null;
 
-        string parentPrimaryKeyFieldName = parentPrimaryKey.Properties[0].Name;
+        var parentPrimaryKeyFieldName = parentPrimaryKey.Properties[0].Name;
 
-        IEntityType? entType = GetEntityTypeByTableName(dt.DtTable);
+        var entType = GetEntityTypeByTableName(dt.DtTable);
 
-        IForeignKey? fn = entType?.GetForeignKeys().SingleOrDefault(x =>
+        var fn = entType?.GetForeignKeys().SingleOrDefault(x =>
             x.Properties.Count == 1 && x.PrincipalEntityType.Name == parentEntType.Name &&
             x.PrincipalKey.Properties[0].Name == parentPrimaryKeyFieldName);
 

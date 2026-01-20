@@ -20,7 +20,7 @@ public sealed class StringCell : MixedCell
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
     public IntRule? MaxLenRule { get; set; }
 
-    public static new StringCell Create(string fieldName, string? caption, bool visible = true, string? typeName = null)
+    public new static StringCell Create(string fieldName, string? caption, bool visible = true, string? typeName = null)
     {
         return new StringCell(fieldName, caption, visible, typeName);
     }
@@ -52,22 +52,15 @@ public sealed class StringCell : MixedCell
 
     public override List<Err> Validate(object? value)
     {
-        List<Err> errMes = ValidateByType<string>(base.Validate(value), value, "სტრიქონის");
+        var errMes = ValidateByType<string>(base.Validate(value), value, "სტრიქონის");
 
-        if (value is not string strValue)
-        {
-            return errMes;
-        }
+        if (value is not string strValue) return errMes;
 
         if (IsRequiredErr is not null && string.IsNullOrEmpty(strValue))
-        {
             errMes.Add(CarcassMasterDataErrors.IsEmpty(FieldName, Caption));
-        }
 
         if (MaxLenRule is not null && strValue.Length > MaxLenRule.Val)
-        {
             errMes.Add(CarcassMasterDataErrors.IsTooLong(FieldName, Caption));
-        }
 
         return errMes;
     }

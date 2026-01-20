@@ -54,7 +54,7 @@ public sealed class DataTypesRepository : IDataTypesRepository
     public async Task<IEnumerable<DataTypeToDataTypeDomModel>> LoadDataTypesToDataTypes(
         CancellationToken cancellationToken = default)
     {
-        string dataTypeKey = _unitOfWork.GetTableName<DataType>();
+        var dataTypeKey = _unitOfWork.GetTableName<DataType>();
         return await (from mmj in _context.ManyToManyJoins
             join pt in _context.DataTypes on mmj.PtId equals pt.DtId
             join ct in _context.DataTypes on mmj.CtId equals ct.DtId

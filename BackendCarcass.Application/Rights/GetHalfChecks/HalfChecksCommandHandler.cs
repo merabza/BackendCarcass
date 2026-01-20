@@ -35,8 +35,8 @@ public sealed class HalfChecksCommandHandler : ICommandHandler<HalfChecksRequest
         CancellationToken cancellationToken)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo, _unitOfWork);
-        List<TypeDataModel> typeDataModels = await rightsCollector.HalfChecks(_currentUser.Name, request.DataTypeId,
-            request.DataKey, request.ViewStyle, cancellationToken);
+        var typeDataModels = await rightsCollector.HalfChecks(_currentUser.Name, request.DataTypeId, request.DataKey,
+            request.ViewStyle, cancellationToken);
         return typeDataModels;
     }
 }

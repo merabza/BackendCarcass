@@ -18,10 +18,7 @@ public static class CarcassIdentityDependencyInjection
     public static IServiceCollection AddCarcassIdentity(this IServiceCollection services, ILogger logger,
         IConfiguration configuration, bool debugMode)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(AddCarcassIdentity));
-        }
+        if (debugMode) logger.Information("{MethodName} Started", nameof(AddCarcassIdentity));
 
         services.AddScoped<IUserStore<AppUser>, MyUserStore>();
         services.AddScoped<IUserPasswordStore<AppUser>, MyUserStore>();
@@ -40,14 +37,14 @@ public static class CarcassIdentityDependencyInjection
         }).AddDefaultTokenProviders();
 
         // configure strongly typed settings objects
-        IConfigurationSection appSettingsSection = configuration.GetSection("IdentitySettings");
+        var appSettingsSection = configuration.GetSection("IdentitySettings");
         services.Configure<IdentitySettings>(appSettingsSection);
 
         // configure jwt authentication
-        IdentitySettings identitySettings = appSettingsSection.Get<IdentitySettings>() ??
-                                            throw new Exception("IdentitySettings is null");
-        string jwtSecret = identitySettings.JwtSecret ?? throw new Exception("jwtSecret is null");
-        byte[] key = Encoding.ASCII.GetBytes(jwtSecret);
+        var identitySettings = appSettingsSection.Get<IdentitySettings>() ??
+                               throw new Exception("IdentitySettings is null");
+        var jwtSecret = identitySettings.JwtSecret ?? throw new Exception("jwtSecret is null");
+        var key = Encoding.ASCII.GetBytes(jwtSecret);
 
         services.AddAuthentication(x =>
         {
@@ -68,28 +65,19 @@ public static class CarcassIdentityDependencyInjection
 
         services.AddAuthorizationBuilder().SetInvokeHandlersAfterFailure(true);
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(AddCarcassIdentity));
-        }
+        if (debugMode) logger.Information("{MethodName} Finished", nameof(AddCarcassIdentity));
 
         return services;
     }
 
     public static bool UseAuthenticationAndAuthorization(this IApplicationBuilder app, ILogger logger, bool debugMode)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(UseAuthenticationAndAuthorization));
-        }
+        if (debugMode) logger.Information("{MethodName} Started", nameof(UseAuthenticationAndAuthorization));
 
         app.UseAuthentication();
         app.UseAuthorization();
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(UseAuthenticationAndAuthorization));
-        }
+        if (debugMode) logger.Information("{MethodName} Finished", nameof(UseAuthenticationAndAuthorization));
 
         return true;
     }

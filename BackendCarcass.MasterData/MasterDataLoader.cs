@@ -26,13 +26,10 @@ public sealed class MasterDataLoader
         var errors = new List<Err>();
 
         //ჩაიტვირთოს ყველა ცხრილი სათითაოდ
-        foreach (string tableName in _tableNames)
+        foreach (var tableName in _tableNames)
         {
             var createMasterDataLoaderResult = _masterDataLoaderCreator.CreateMasterDataLoader(tableName);
-            if (createMasterDataLoaderResult.IsT1)
-            {
-                return createMasterDataLoaderResult.AsT1;
-            }
+            if (createMasterDataLoaderResult.IsT1) return createMasterDataLoaderResult.AsT1;
 
             var loader = createMasterDataLoaderResult.AsT0;
             var tableResult = await loader.GetAllRecords(cancellationToken);
@@ -47,10 +44,7 @@ public sealed class MasterDataLoader
             }
         }
 
-        if (errors.Count > 0)
-        {
-            return errors.ToArray();
-        }
+        if (errors.Count > 0) return errors.ToArray();
 
         return resultList;
     }

@@ -30,15 +30,10 @@ public sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePasswor
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით
         var user = await _userMgr.FindByNameAsync(request.UserName!);
         //თუ არ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
-        if (user == null)
-        {
-            return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
-        }
+        if (user == null) return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
 
         if (user.Id != request.Userid || _currentUser.Name != user.UserName)
-        {
             return new[] { UserRightsErrors.UserAuthenticationFailedThePasswordHasNotBeenChanged };
-        }
 
         var result = await _userMgr.ChangePasswordAsync(user, request.OldPassword!, request.NewPassword!);
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
