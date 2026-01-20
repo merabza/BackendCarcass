@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using LibCrud.Models;
+using BackendCarcass.LibCrud.Models;
 
-namespace CarcassFilterSort.Models;
+namespace BackendCarcass.FilterSort.Models;
 
 public record FilterSortObject(
     int TabWindowId,

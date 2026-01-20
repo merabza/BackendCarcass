@@ -1,13 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using CarcassIdentity;
-using CarcassRepositories;
-using CarcassRepositories.Models;
-using MediatRMessagingAbstractions;
+using BackendCarcass.Identity;
+using BackendCarcass.Repositories;
+using BackendCarcass.Repositories.Models;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace Carcass.Application.UserRights.GetMainMenu;
+namespace BackendCarcass.Application.UserRights.GetMainMenu;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MainMenuQueryHandler : IQueryHandler<MainMenuRequestQuery, MainMenuModel>

@@ -1,4 +1,4 @@
-﻿namespace Carcass.Application.Services.Authentication.Models;
+﻿namespace BackendCarcass.Application.Services.Authentication.Models;
 
 public class RegisterParameters
 {

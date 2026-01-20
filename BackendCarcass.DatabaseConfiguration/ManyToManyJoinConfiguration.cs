@@ -1,10 +1,10 @@
-﻿using Carcass.Database.Models;
-using DatabaseToolsShared;
+﻿using BackendCarcass.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SystemToolsShared;
+using SystemTools.DatabaseToolsShared;
+using SystemTools.SystemToolsShared;
 
-namespace Carcass.DatabaseConfiguration;
+namespace BackendCarcass.DatabaseConfiguration;
 
 public sealed class ManyToManyJoinConfiguration : IEntityTypeConfiguration<ManyToManyJoin>
 {
@@ -13,10 +13,10 @@ public sealed class ManyToManyJoinConfiguration : IEntityTypeConfiguration<ManyT
 
     public void Configure(EntityTypeBuilder<ManyToManyJoin> builder)
     {
-        var tableName = nameof(ManyToManyJoin).Pluralize();
+        string tableName = nameof(ManyToManyJoin).Pluralize();
         builder.ToTable(tableName);
 
-        var dataTypeConstraintName = tableName.CreateConstraintName(nameof(DataType));
+        string dataTypeConstraintName = tableName.CreateConstraintName(nameof(DataType));
 
         builder.HasKey(e => e.MmjId);
         builder.HasIndex(e => new { e.PtId, e.PKey, e.CtId, e.CKey }).IsUnique();

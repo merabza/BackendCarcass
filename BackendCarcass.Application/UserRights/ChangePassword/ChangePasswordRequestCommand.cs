@@ -1,6 +1,6 @@
-﻿using MediatRMessagingAbstractions;
+﻿using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.UserRights.ChangePassword;
+namespace BackendCarcass.Application.UserRights.ChangePassword;
 
 public sealed class ChangePasswordRequestCommand : ICommand
 {

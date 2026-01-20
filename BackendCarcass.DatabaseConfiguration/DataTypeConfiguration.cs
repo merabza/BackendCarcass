@@ -1,9 +1,9 @@
-﻿using Carcass.Database.Models;
-using DatabaseToolsShared;
+﻿using BackendCarcass.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SystemTools.DatabaseToolsShared;
 
-namespace Carcass.DatabaseConfiguration;
+namespace BackendCarcass.DatabaseConfiguration;
 
 public sealed class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
 {

@@ -4,13 +4,13 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Carcass.Database.Models;
-using CarcassMasterData.Models;
+using BackendCarcass.Database.Models;
+using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace CarcassIdentity;
+namespace BackendCarcass.Identity;
 
 public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<AppUser>, IUserRoleStore<AppUser>,
     IQueryableUserStore<AppUser>, IQueryableRoleStore<AppRole>

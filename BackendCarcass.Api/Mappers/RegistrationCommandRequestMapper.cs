@@ -1,7 +1,7 @@
-﻿using BackendCarcassContracts.V1.Requests;
-using Carcass.Application.Authentication.Registration;
+﻿using BackendCarcass.Application.Authentication.Registration;
+using BackendCarcassContracts.V1.Requests;
 
-namespace BackendCarcassApi.Mappers;
+namespace BackendCarcass.Api.Mappers;
 
 public static class RegistrationCommandRequestMapper
 {

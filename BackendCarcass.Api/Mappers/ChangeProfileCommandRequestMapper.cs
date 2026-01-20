@@ -1,7 +1,7 @@
-﻿using BackendCarcassContracts.V1.Requests;
-using Carcass.Application.UserRights.ChangeProfile;
+﻿using BackendCarcass.Application.UserRights.ChangeProfile;
+using BackendCarcassContracts.V1.Requests;
 
-namespace BackendCarcassApi.Mappers;
+namespace BackendCarcass.Api.Mappers;
 
 public static class ChangeProfileCommandRequestMapper
 {

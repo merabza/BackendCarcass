@@ -1,7 +1,7 @@
 ﻿using BackendCarcassContracts.V1.Responses;
-using MediatRMessagingAbstractions;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.Authentication.Registration;
+namespace BackendCarcass.Application.Authentication.Registration;
 
 public sealed class RegistrationRequestCommand : ICommand<LoginResponse>
 {

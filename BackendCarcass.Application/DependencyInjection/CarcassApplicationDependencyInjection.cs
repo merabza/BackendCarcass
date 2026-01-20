@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace Carcass.Application.DependencyInjection;
+namespace BackendCarcass.Application.DependencyInjection;
 
 public static class CarcassApplicationDependencyInjection
 {

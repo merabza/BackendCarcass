@@ -1,14 +1,14 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Application.Services.Authentication;
+using BackendCarcass.Application.Services.Authentication.Models;
+using BackendCarcass.MasterData.Models;
 using BackendCarcassContracts.V1.Responses;
-using Carcass.Application.Services.Authentication;
-using Carcass.Application.Services.Authentication.Models;
-using CarcassMasterData.Models;
-using MediatRMessagingAbstractions;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace Carcass.Application.Authentication.Registration;
+namespace BackendCarcass.Application.Authentication.Registration;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,

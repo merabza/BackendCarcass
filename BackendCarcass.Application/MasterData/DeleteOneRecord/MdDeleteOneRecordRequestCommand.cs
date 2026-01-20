@@ -1,6 +1,6 @@
-﻿using MediatRMessagingAbstractions;
+﻿using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.MasterData.DeleteOneRecord;
+namespace BackendCarcass.Application.MasterData.DeleteOneRecord;
 
 public sealed class MdDeleteOneRecordRequestCommand : ICommand
 {

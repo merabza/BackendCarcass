@@ -1,6 +1,6 @@
-﻿using MediatRMessagingAbstractions;
+﻿using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.DataTypes.GetGridModel;
+namespace BackendCarcass.Application.DataTypes.GetGridModel;
 
 public sealed class GridModelRequestQuery : IQuery<string>
 {

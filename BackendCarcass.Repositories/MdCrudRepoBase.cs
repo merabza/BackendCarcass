@@ -1,33 +1,36 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using BackendCarcass.Database;
+using BackendCarcass.Db;
+using BackendCarcass.MasterData;
 using BackendCarcassContracts.Errors;
-using Carcass.Database;
-using CarcassDb;
-using CarcassMasterData;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace CarcassRepositories;
+namespace BackendCarcass.Repositories;
 
 public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string tableName) : IMdCrudRepo
 {
     public OneOf<IQueryable<IDataType>, Err[]> Load()
     {
-        var vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
+        IEntityType? vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
         if (vvv == null)
         {
             return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
         }
 
-        var setMethod = carcassContext.GetType().GetMethod("Set", []);
+        MethodInfo? setMethod = carcassContext.GetType().GetMethod("Set", []);
         if (setMethod == null)
         {
             return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(tableName) }; //ცხრილს არ აქვს მეთოდი Set
         }
 
-        var result = setMethod.MakeGenericMethod(vvv.ClrType).Invoke(carcassContext, null);
+        object? result = setMethod.MakeGenericMethod(vvv.ClrType).Invoke(carcassContext, null);
         return result == null
             ? new[] { MasterDataApiErrors.SetMethodReturnsNullForTable(tableName) } //ცხრილის Set მეთოდი აბრუნებს null-ს
             : OneOf<IQueryable<IDataType>, Err[]>.FromT0((IQueryable<IDataType>)result);
@@ -42,7 +45,7 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
 
     public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
-        var vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
+        IEntityType? vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
         if (vvv == null)
         {
             return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
@@ -50,7 +53,7 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
 
         var q = (IQueryable<IDataType>?)carcassContext.GetType().GetMethod("Set")?.MakeGenericMethod(vvv.ClrType)
             .Invoke(carcassContext, null);
-        var idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id); 
+        IDataType? idt = q?.AsEnumerable().SingleOrDefault(w => w.Id == id);
         if (idt == null)
         {
             return new[]
@@ -68,14 +71,14 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
 
     public async ValueTask<Option<Err[]>> Delete(int id)
     {
-        var entResult = Load();
+        OneOf<IQueryable<IDataType>, Err[]> entResult = Load();
         if (entResult.IsT1)
         {
             return entResult.AsT1;
         }
 
-        var res = await entResult.AsT0.ToListAsync(); // S6966: Await ToListAsync instead.
-        var idt = res.SingleOrDefault(w => w.Id == id);
+        List<IDataType> res = await entResult.AsT0.ToListAsync(); // S6966: Await ToListAsync instead.
+        IDataType? idt = res.SingleOrDefault(w => w.Id == id);
         if (idt == null)
         {
             return new[]

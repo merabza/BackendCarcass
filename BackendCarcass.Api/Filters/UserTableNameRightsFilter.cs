@@ -1,12 +1,15 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using CarcassIdentity;
-using CarcassRights;
-using DomainShared.Repositories;
+using BackendCarcass.Identity;
+using BackendCarcass.Rights;
+using LanguageExt;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
+using SystemTools.DomainShared.Repositories;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace BackendCarcassApi.Filters;
+namespace BackendCarcass.Api.Filters;
 
 public /*open*/ class UserTableNameRightsFilter : IEndpointFilter
 {
@@ -17,8 +20,8 @@ public /*open*/ class UserTableNameRightsFilter : IEndpointFilter
     private readonly IUnitOfWork _unitOfWork;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    protected UserTableNameRightsFilter(ILogger logger, string[] tableKeys,
-        ICurrentUser currentUser, IUserRightsRepository repo, IUnitOfWork unitOfWork)
+    protected UserTableNameRightsFilter(ILogger logger, string[] tableKeys, ICurrentUser currentUser,
+        IUserRightsRepository repo, IUnitOfWork unitOfWork)
     {
         _logger = logger;
         _tableKeys = tableKeys;
@@ -32,8 +35,9 @@ public /*open*/ class UserTableNameRightsFilter : IEndpointFilter
         foreach (string tableKey in _tableKeys)
         {
             var rightsDeterminer = new RightsDeterminer(_repo, _unitOfWork, _logger, _currentUser);
-            var checkTableRightsResult = await rightsDeterminer.CheckTableRights(_currentUser.Name,
-                context.HttpContext.Request.Method, new TableKeyName { TableName = tableKey }, CancellationToken.None);
+            Option<BadRequest<Err[]>> checkTableRightsResult =
+                await rightsDeterminer.CheckTableRights(_currentUser.Name, context.HttpContext.Request.Method,
+                    new TableKeyName { TableName = tableKey }, CancellationToken.None);
             if (checkTableRightsResult.IsSome)
             {
                 return checkTableRightsResult;

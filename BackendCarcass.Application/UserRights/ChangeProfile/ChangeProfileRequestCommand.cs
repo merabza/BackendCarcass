@@ -1,6 +1,6 @@
-﻿using MediatRMessagingAbstractions;
+﻿using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.UserRights.ChangeProfile;
+namespace BackendCarcass.Application.UserRights.ChangeProfile;
 
 public sealed class ChangeProfileRequestCommand : ICommand
 {

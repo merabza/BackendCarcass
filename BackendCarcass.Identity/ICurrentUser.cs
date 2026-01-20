@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CarcassIdentity;
+namespace BackendCarcass.Identity;
 
 public interface ICurrentUser
 {

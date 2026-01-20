@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using LanguageExt;
 using Microsoft.AspNetCore.Identity;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace CarcassRepositories;
+namespace BackendCarcass.Repositories;
 
 public /*open*/ class IdentityCrudBase
 {

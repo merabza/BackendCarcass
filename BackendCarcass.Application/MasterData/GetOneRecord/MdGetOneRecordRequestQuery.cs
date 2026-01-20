@@ -1,7 +1,7 @@
-﻿using CarcassMasterData.Models;
-using MediatRMessagingAbstractions;
+﻿using BackendCarcass.MasterData.Models;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.MasterData.GetOneRecord;
+namespace BackendCarcass.Application.MasterData.GetOneRecord;
 
 public sealed class MdGetOneRecordRequestQuery : IQuery<MasterDataCrudLoadedData>
 {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using CarcassFilterSort.Models;
-using CarcassIdentity;
+using BackendCarcass.FilterSort.Models;
+using BackendCarcass.Identity;
 
-namespace CarcassFilterSort;
+namespace BackendCarcass.FilterSort;
 
 public sealed class FilterSortManager
 {

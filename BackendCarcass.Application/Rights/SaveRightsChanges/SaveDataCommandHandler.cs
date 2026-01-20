@@ -1,14 +1,14 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using CarcassIdentity;
-using CarcassRights;
-using DomainShared.Repositories;
-using MediatRMessagingAbstractions;
+using BackendCarcass.Identity;
+using BackendCarcass.Rights;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.DomainShared.Repositories;
+using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace Carcass.Application.Rights.SaveRightsChanges;
+namespace BackendCarcass.Application.Rights.SaveRightsChanges;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class SaveDataCommandHandler : ICommandHandler<SaveDataRequestCommand, bool>

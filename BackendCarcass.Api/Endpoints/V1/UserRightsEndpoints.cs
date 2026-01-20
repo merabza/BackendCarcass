@@ -1,16 +1,15 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcassApi.Mappers;
+using BackendCarcass.Api.Mappers;
+using BackendCarcass.Application.UserRights.ChangePassword;
+using BackendCarcass.Application.UserRights.ChangeProfile;
+using BackendCarcass.Application.UserRights.DeleteCurrentUser;
+using BackendCarcass.Application.UserRights.GetMainMenu;
+using BackendCarcass.Repositories.Models;
 using BackendCarcassContracts.Errors;
 using BackendCarcassContracts.V1.Requests;
 using BackendCarcassContracts.V1.Routes;
-using Carcass.Application.UserRights.ChangePassword;
-using Carcass.Application.UserRights.ChangeProfile;
-using Carcass.Application.UserRights.DeleteCurrentUser;
-using Carcass.Application.UserRights.GetMainMenu;
-using CarcassRepositories.Models;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -18,9 +17,9 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Serilog;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace BackendCarcassApi.Endpoints.V1;
+namespace BackendCarcass.Api.Endpoints.V1;
 
 // ReSharper disable once UnusedType.Global
 public static class UserRightsEndpoints

@@ -1,4 +1,4 @@
-﻿namespace CarcassRepositories.Models;
+﻿namespace BackendCarcass.Repositories.Models;
 
 public sealed class DataTypeToCrudRight
 {

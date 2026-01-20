@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Carcass.Database.Models;
-using CarcassMasterData.Models;
+using BackendCarcass.Database.Models;
+using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace CarcassIdentity;
+namespace BackendCarcass.Identity;
 
 public interface IIdentityRepository
 {

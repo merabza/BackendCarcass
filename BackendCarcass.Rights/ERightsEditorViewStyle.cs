@@ -1,4 +1,4 @@
-﻿namespace CarcassRights;
+﻿namespace BackendCarcass.Rights;
 
 public enum ERightsEditorViewStyle
 {

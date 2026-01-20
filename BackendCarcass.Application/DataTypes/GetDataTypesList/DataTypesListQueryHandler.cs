@@ -1,14 +1,14 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Application.Authentication;
+using BackendCarcass.Identity;
+using BackendCarcass.Repositories;
 using BackendCarcassContracts.V1.Responses;
-using Carcass.Application.Authentication;
-using CarcassIdentity;
-using CarcassRepositories;
-using MediatRMessagingAbstractions;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace Carcass.Application.DataTypes.GetDataTypesList;
+namespace BackendCarcass.Application.DataTypes.GetDataTypesList;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class DataTypesListQueryHandler : LoginCommandHandlerBase,

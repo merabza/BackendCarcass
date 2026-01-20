@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Carcass.Database.QueryModels;
+using BackendCarcass.Database.QueryModels;
 
-namespace CarcassRepositories.Models;
+namespace BackendCarcass.Repositories.Models;
 
 public sealed class MainMenuModel
 {

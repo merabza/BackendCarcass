@@ -1,7 +1,7 @@
 ﻿using BackendCarcassContracts.V1.Responses;
-using MediatRMessagingAbstractions;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.DataTypes.GetDataTypesList;
+namespace BackendCarcass.Application.DataTypes.GetDataTypesList;
 
 public sealed class DataTypesRequestQuery : IQuery<DataTypesResponse[]>
 {

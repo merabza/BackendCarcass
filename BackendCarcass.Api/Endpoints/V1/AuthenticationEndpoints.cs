@@ -1,14 +1,13 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcassApi.Mappers;
+using BackendCarcass.Api.Mappers;
+using BackendCarcass.Application.Authentication.Login;
+using BackendCarcass.Application.Authentication.Registration;
 using BackendCarcassContracts.Errors;
 using BackendCarcassContracts.V1.Requests;
 using BackendCarcassContracts.V1.Responses;
 using BackendCarcassContracts.V1.Routes;
-using Carcass.Application.Authentication.Login;
-using Carcass.Application.Authentication.Registration;
 using CorsTools.DependencyInjection;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -17,9 +16,9 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Serilog;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace BackendCarcassApi.Endpoints.V1;
+namespace BackendCarcass.Api.Endpoints.V1;
 
 // ReSharper disable once UnusedType.Global
 public static class AuthenticationEndpoints
@@ -31,7 +30,8 @@ public static class AuthenticationEndpoints
             logger.Information("{MethodName} Started", nameof(UseAuthenticationEndpoints));
         }
 
-        var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
+        RouteGroupBuilder group = endpoints
+            .MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
             .RequireCors(CorsDependencyInjection.MyAllowSpecificOrigins);
 
         group.MapPost(CarcassApiRoutes.Authentication.Registration, Registration);

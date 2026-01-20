@@ -1,9 +1,8 @@
-using System;
-using BackendCarcassApi.Endpoints.V1;
+using BackendCarcass.Api.Endpoints.V1;
 using Microsoft.AspNetCore.Routing;
 using Serilog;
 
-namespace BackendCarcassApi.DependencyInjection;
+namespace BackendCarcass.Api.DependencyInjection;
 
 // ReSharper disable once UnusedType.Global
 public static class BackendCarcassApiDependencyInjection

@@ -1,7 +1,7 @@
-﻿using MediatRMessagingAbstractions;
-using Microsoft.Extensions.Primitives;
+﻿using Microsoft.Extensions.Primitives;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.MasterData.GetMultipleTablesRows;
+namespace BackendCarcass.Application.MasterData.GetMultipleTablesRows;
 
 public sealed class MdGetTablesRequestQuery : IQuery<MdGetTablesQueryResponse>
 {

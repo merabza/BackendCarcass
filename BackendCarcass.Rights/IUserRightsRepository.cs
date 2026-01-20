@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace CarcassRights;
+namespace BackendCarcass.Rights;
 
 public interface IUserRightsRepository
 {

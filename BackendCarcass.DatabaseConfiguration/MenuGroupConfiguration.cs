@@ -1,8 +1,8 @@
-﻿using Carcass.Database.Models;
+﻿using BackendCarcass.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Carcass.DatabaseConfiguration;
+namespace BackendCarcass.DatabaseConfiguration;
 
 public sealed class MenuGroupConfiguration : IEntityTypeConfiguration<MenuGroup>
 {

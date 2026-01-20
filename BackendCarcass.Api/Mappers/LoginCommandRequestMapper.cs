@@ -1,7 +1,7 @@
-﻿using BackendCarcassContracts.V1.Requests;
-using Carcass.Application.Authentication.Login;
+﻿using BackendCarcass.Application.Authentication.Login;
+using BackendCarcassContracts.V1.Requests;
 
-namespace BackendCarcassApi.Mappers;
+namespace BackendCarcass.Api.Mappers;
 
 public static class LoginCommandRequestMapper
 {

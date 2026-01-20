@@ -1,18 +1,17 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcassApi.Filters;
+using BackendCarcass.Api.Filters;
+using BackendCarcass.Application.MasterData.CreateOneRecord;
+using BackendCarcass.Application.MasterData.DeleteOneRecord;
+using BackendCarcass.Application.MasterData.GetLookupTables;
+using BackendCarcass.Application.MasterData.GetMultipleTablesRows;
+using BackendCarcass.Application.MasterData.GetOneRecord;
+using BackendCarcass.Application.MasterData.GetTableRows;
+using BackendCarcass.Application.MasterData.UpdateOneRecord;
+using BackendCarcass.LibCrud.Models;
+using BackendCarcass.MasterData.Models;
 using BackendCarcassContracts.V1.Routes;
-using Carcass.Application.MasterData.CreateOneRecord;
-using Carcass.Application.MasterData.DeleteOneRecord;
-using Carcass.Application.MasterData.GetLookupTables;
-using Carcass.Application.MasterData.GetMultipleTablesRows;
-using Carcass.Application.MasterData.GetOneRecord;
-using Carcass.Application.MasterData.GetTableRows;
-using Carcass.Application.MasterData.UpdateOneRecord;
-using CarcassMasterData.Models;
-using LibCrud.Models;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -21,9 +20,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
 using Serilog;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace BackendCarcassApi.Endpoints.V1;
+namespace BackendCarcass.Api.Endpoints.V1;
 
 //უნივერსალური მექანიზმი ნებისმიერი ცხრილის ჩასატვირთად და დასარედაქტირებლად ბაზაში.
 

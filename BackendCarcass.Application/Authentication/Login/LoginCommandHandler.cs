@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Application.Services.Authentication;
+using BackendCarcass.Application.Services.Authentication.Models;
+using BackendCarcass.MasterData.Models;
 using BackendCarcassContracts.V1.Responses;
-using Carcass.Application.Services.Authentication;
-using Carcass.Application.Services.Authentication.Models;
-using CarcassMasterData.Models;
-using MediatRMessagingAbstractions;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace Carcass.Application.Authentication.Login;
+namespace BackendCarcass.Application.Authentication.Login;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class LoginCommandHandler : LoginCommandHandlerBase, ICommandHandler<LoginRequestCommand, LoginResponse>

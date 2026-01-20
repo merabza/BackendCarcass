@@ -1,16 +1,17 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
+using BackendCarcass.Database.Models;
+using BackendCarcass.Db;
+using BackendCarcass.MasterData;
+using BackendCarcass.MasterData.Models;
 using BackendCarcassContracts.Errors;
-using Carcass.Database.Models;
-using CarcassDb;
-using CarcassMasterData;
-using CarcassMasterData.Models;
 using LanguageExt;
 using Microsoft.AspNetCore.Identity;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace CarcassRepositories;
+namespace BackendCarcass.Repositories;
 
 public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
 {
@@ -39,7 +40,7 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
 
     public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
-        var oldRole = await _roleManager.FindByIdAsync(id.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        var oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole == null)
         {
             return new[] { MasterDataApiErrors.CannotFindRole };
@@ -66,7 +67,7 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
 
     public async ValueTask<Option<Err[]>> Delete(int id)
     {
-        var oldRole = await _roleManager.FindByIdAsync(id.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        var oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole == null)
         {
             return new[] { MasterDataApiErrors.CannotFindRole };

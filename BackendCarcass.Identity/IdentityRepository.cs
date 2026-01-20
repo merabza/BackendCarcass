@@ -2,15 +2,15 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Carcass.Database;
-using Carcass.Database.Models;
-using CarcassMasterData.Models;
-using DomainShared.Repositories;
+using BackendCarcass.Database;
+using BackendCarcass.Database.Models;
+using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SystemTools.DomainShared.Repositories;
 
-namespace CarcassIdentity;
+namespace BackendCarcass.Identity;
 
 public sealed class IdentityRepository : IIdentityRepository
 {
@@ -36,42 +36,6 @@ public sealed class IdentityRepository : IIdentityRepository
         _carcassContext.ManyToManyJoins.Include(i => i.ParentDataTypeNavigation).Include(i => i.ChildDataTypeNavigation)
             .Where(w => w.ParentDataTypeNavigation.DtTable == _unitOfWork.GetTableName<User>() &&
                         w.ChildDataTypeNavigation.DtTable == _unitOfWork.GetTableName<Role>());
-
-    public async ValueTask<IdentityResult> CreateUserAsync(AppUser appUser,
-        CancellationToken cancellationToken = default)
-    {
-        if (string.IsNullOrWhiteSpace(appUser.UserName) || string.IsNullOrWhiteSpace(appUser.NormalizedUserName) ||
-            string.IsNullOrWhiteSpace(appUser.Email) || string.IsNullOrWhiteSpace(appUser.NormalizedEmail) ||
-            string.IsNullOrWhiteSpace(appUser.PasswordHash))
-        {
-            _logger.Log(LogLevel.Error, "Invalid appUser");
-            return IdentityResult.Failed();
-        }
-
-        try
-        {
-            var user = new User
-            {
-                UserName = appUser.UserName,
-                NormalizedUserName = appUser.NormalizedUserName,
-                Email = appUser.Email,
-                NormalizedEmail = appUser.NormalizedEmail,
-                PasswordHash = appUser.PasswordHash,
-                FullName = appUser.FullName,
-                FirstName = appUser.FirstName,
-                LastName = appUser.LastName
-            };
-            _carcassContext.Users.Add(user);
-            await _carcassContext.SaveChangesAsync(cancellationToken);
-            appUser.Id = user.UsrId;
-            return IdentityResult.Success;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "An exception occurred while creating a user.");
-            return IdentityResult.Failed();
-        }
-    }
 
     public async Task<IdentityResult> RemoveUserAsync(int userId, CancellationToken cancellationToken = default)
     {
@@ -124,6 +88,73 @@ public sealed class IdentityRepository : IIdentityRepository
         }
     }
 
+    public async ValueTask<IdentityResult> RemoveRoleAsync(int roleId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var oldRole = await _carcassContext.Roles.SingleOrDefaultAsync(r => r.RolId == roleId, cancellationToken);
+            if (oldRole == null)
+            {
+                return IdentityResult.Failed();
+            }
+
+            _carcassContext.Remove(oldRole);
+            await _carcassContext.SaveChangesAsync(cancellationToken);
+            return IdentityResult.Success;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An exception occurred while removing a role.");
+            return IdentityResult.Failed();
+        }
+    }
+
+    public Task UserAddToRoleAsync(int userId, int roleRId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void RemoveUserFromRole(ManyToManyJoin match)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async ValueTask<IdentityResult> CreateUserAsync(AppUser appUser,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(appUser.UserName) || string.IsNullOrWhiteSpace(appUser.NormalizedUserName) ||
+            string.IsNullOrWhiteSpace(appUser.Email) || string.IsNullOrWhiteSpace(appUser.NormalizedEmail) ||
+            string.IsNullOrWhiteSpace(appUser.PasswordHash))
+        {
+            _logger.Log(LogLevel.Error, "Invalid appUser");
+            return IdentityResult.Failed();
+        }
+
+        try
+        {
+            var user = new User
+            {
+                UserName = appUser.UserName,
+                NormalizedUserName = appUser.NormalizedUserName,
+                Email = appUser.Email,
+                NormalizedEmail = appUser.NormalizedEmail,
+                PasswordHash = appUser.PasswordHash,
+                FullName = appUser.FullName,
+                FirstName = appUser.FirstName,
+                LastName = appUser.LastName
+            };
+            _carcassContext.Users.Add(user);
+            await _carcassContext.SaveChangesAsync(cancellationToken);
+            appUser.Id = user.UsrId;
+            return IdentityResult.Success;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An exception occurred while creating a user.");
+            return IdentityResult.Failed();
+        }
+    }
+
     public async ValueTask<IdentityResult> CreateRoleAsync(AppRole appRole,
         CancellationToken cancellationToken = default)
     {
@@ -150,27 +181,6 @@ public sealed class IdentityRepository : IIdentityRepository
         catch (Exception e)
         {
             _logger.LogError(e, "An exception occurred while creating a role.");
-            return IdentityResult.Failed();
-        }
-    }
-
-    public async ValueTask<IdentityResult> RemoveRoleAsync(int roleId, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var oldRole = await _carcassContext.Roles.SingleOrDefaultAsync(r => r.RolId == roleId, cancellationToken);
-            if (oldRole == null)
-            {
-                return IdentityResult.Failed();
-            }
-
-            _carcassContext.Remove(oldRole);
-            await _carcassContext.SaveChangesAsync(cancellationToken);
-            return IdentityResult.Success;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "An exception occurred while removing a role.");
             return IdentityResult.Failed();
         }
     }
@@ -205,15 +215,5 @@ public sealed class IdentityRepository : IIdentityRepository
             _logger.LogError(e, "An exception occurred while updating a role.");
             return IdentityResult.Failed();
         }
-    }
-
-    public Task UserAddToRoleAsync(int userId, int roleRId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void RemoveUserFromRole(ManyToManyJoin match)
-    {
-        throw new NotImplementedException();
     }
 }

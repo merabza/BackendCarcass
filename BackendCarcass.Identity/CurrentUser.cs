@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace CarcassIdentity;
+namespace BackendCarcass.Identity;
 
 public sealed class CurrentUser : ICurrentUser
 {

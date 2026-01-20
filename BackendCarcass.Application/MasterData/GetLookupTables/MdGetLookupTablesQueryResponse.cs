@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using CarcassMasterData.Models;
+using BackendCarcass.MasterData.Models;
 
-namespace Carcass.Application.MasterData.GetLookupTables;
+namespace BackendCarcass.Application.MasterData.GetLookupTables;
 
 public sealed record MdGetLookupTablesQueryResponse(Dictionary<string, IEnumerable<SrvModel>> Srv);

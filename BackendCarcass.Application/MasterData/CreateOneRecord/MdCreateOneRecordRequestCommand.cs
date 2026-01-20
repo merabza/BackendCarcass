@@ -1,8 +1,8 @@
-﻿using CarcassMasterData.Models;
-using MediatRMessagingAbstractions;
+﻿using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Http;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.MasterData.CreateOneRecord;
+namespace BackendCarcass.Application.MasterData.CreateOneRecord;
 
 public sealed class MdCreateOneRecordRequestCommand : ICommand<MasterDataCrudLoadedData>
 {

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using CarcassMasterData.Models;
+using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace Carcass.Application.Authentication;
+namespace BackendCarcass.Application.Authentication;
 
 public /*open*/ class LoginCommandHandlerBase
 {

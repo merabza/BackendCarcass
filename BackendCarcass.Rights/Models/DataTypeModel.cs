@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using CarcassMasterData.Models;
+using BackendCarcass.MasterData.Models;
 
-namespace CarcassRights.Models;
+namespace BackendCarcass.Rights.Models;
 
 public sealed class DataTypeModel
 {

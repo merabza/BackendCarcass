@@ -1,7 +1,7 @@
-﻿using BackendCarcassContracts.V1.Requests;
-using Carcass.Application.UserRights.ChangePassword;
+﻿using BackendCarcass.Application.UserRights.ChangePassword;
+using BackendCarcassContracts.V1.Requests;
 
-namespace BackendCarcassApi.Mappers;
+namespace BackendCarcass.Api.Mappers;
 
 public static class ChangePasswordCommandRequestMapper
 {

@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.FilterSort.Models;
+using BackendCarcass.LibCrud.Models;
+using BackendCarcass.MasterData;
 using BackendCarcassContracts.Errors;
-using CarcassFilterSort.Models;
-using CarcassMasterData;
-using LibCrud.Models;
-using MediatRMessagingAbstractions;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace Carcass.Application.MasterData.GetTableRows;
+namespace BackendCarcass.Application.MasterData.GetTableRows;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class GetTableRowsDataQueryHandler : IQueryHandler<GetTableRowsDataRequestQuery, TableRowsData>

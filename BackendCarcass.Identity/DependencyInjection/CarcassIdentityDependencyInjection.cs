@@ -1,7 +1,7 @@
 using System;
 using System.Text;
-using CarcassIdentity.Models;
-using CarcassMasterData.Models;
+using BackendCarcass.Identity.Models;
+using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
-namespace CarcassIdentity.DependencyInjection;
+namespace BackendCarcass.Identity.DependencyInjection;
 
 // ReSharper disable once UnusedType.Global
 public static class CarcassIdentityDependencyInjection

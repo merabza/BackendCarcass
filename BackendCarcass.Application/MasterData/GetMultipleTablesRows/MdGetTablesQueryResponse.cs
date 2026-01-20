@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Carcass.Application.MasterData.GetMultipleTablesRows;
+namespace BackendCarcass.Application.MasterData.GetMultipleTablesRows;
 
 public sealed class MdGetTablesQueryResponse
 {

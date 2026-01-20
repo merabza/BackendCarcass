@@ -1,16 +1,16 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.MasterData;
 using BackendCarcassContracts.Errors;
-using CarcassMasterData;
 using MediatR;
-using MediatRMessagingAbstractions;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SystemToolsShared.Errors;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace Carcass.Application.MasterData.DeleteOneRecord;
+namespace BackendCarcass.Application.MasterData.DeleteOneRecord;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MdDeleteOneRecordCommandHandler : ICommandHandler<MdDeleteOneRecordRequestCommand>

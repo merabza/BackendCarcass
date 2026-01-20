@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Application.Services.Authentication.Models;
+using BackendCarcass.Identity.Models;
+using BackendCarcass.MasterData.Models;
+using BackendCarcass.Repositories;
 using BackendCarcassContracts.Errors;
-using Carcass.Application.Services.Authentication.Models;
-using CarcassIdentity.Models;
-using CarcassMasterData.Models;
-using CarcassRepositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace Carcass.Application.Services.Authentication;
+namespace BackendCarcass.Application.Services.Authentication;
 
 public class LoginBase
 {

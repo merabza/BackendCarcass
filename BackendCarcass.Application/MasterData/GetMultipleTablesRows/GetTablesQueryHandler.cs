@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassMasterData;
-using MediatRMessagingAbstractions;
+using BackendCarcass.MasterData;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace Carcass.Application.MasterData.GetMultipleTablesRows;
+namespace BackendCarcass.Application.MasterData.GetMultipleTablesRows;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class GetTablesQueryHandler : IQueryHandler<MdGetTablesRequestQuery, MdGetTablesQueryResponse>

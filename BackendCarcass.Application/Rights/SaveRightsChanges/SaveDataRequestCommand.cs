@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using CarcassRights.Models;
-using MediatRMessagingAbstractions;
+using BackendCarcass.Rights.Models;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.Rights.SaveRightsChanges;
+namespace BackendCarcass.Application.Rights.SaveRightsChanges;
 
 public sealed class SaveDataRequestCommand : ICommand<bool>
 {

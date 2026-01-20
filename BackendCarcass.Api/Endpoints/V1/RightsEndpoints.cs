@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcassApi.Filters;
+using BackendCarcass.Api.Filters;
+using BackendCarcass.Application.Rights.GetChildrenTree;
+using BackendCarcass.Application.Rights.GetHalfChecks;
+using BackendCarcass.Application.Rights.GetParentsTree;
+using BackendCarcass.Application.Rights.SaveRightsChanges;
+using BackendCarcass.Rights;
+using BackendCarcass.Rights.Models;
 using BackendCarcassContracts.Errors;
 using BackendCarcassContracts.V1.Routes;
-using Carcass.Application.Rights.GetChildrenTree;
-using Carcass.Application.Rights.GetHalfChecks;
-using Carcass.Application.Rights.GetParentsTree;
-using Carcass.Application.Rights.SaveRightsChanges;
-using CarcassRights;
-using CarcassRights.Models;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -19,9 +18,9 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Serilog;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace BackendCarcassApi.Endpoints.V1;
+namespace BackendCarcass.Api.Endpoints.V1;
 
 //კონტროლერი -> აქ რეალიზებულია უფლებების ფორმის მუშაობისათვის საჭირო ყველა ქმედება
 //[Authorize]

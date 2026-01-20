@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace CarcassFilterSort.DependencyInjection;
+namespace BackendCarcass.FilterSort.DependencyInjection;
 
 // ReSharper disable once UnusedType.Global
 public static class CarcassFilterSortDependencyInjection

@@ -1,9 +1,9 @@
-﻿using CarcassIdentity;
-using CarcassRights;
-using DomainShared.Repositories;
+﻿using BackendCarcass.Identity;
+using BackendCarcass.Rights;
 using Microsoft.Extensions.Logging;
+using SystemTools.DomainShared.Repositories;
 
-namespace BackendCarcassApi.Filters;
+namespace BackendCarcass.Api.Filters;
 
 public sealed class UserMustHaveRightsEditorRightsFilter : UserMenuRightsFilter
 {

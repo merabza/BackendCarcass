@@ -1,6 +1,6 @@
-﻿using LibCrud.Models;
-using MediatRMessagingAbstractions;
+﻿using BackendCarcass.LibCrud.Models;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.MasterData.GetTableRows;
+namespace BackendCarcass.Application.MasterData.GetTableRows;
 
 public record GetTableRowsDataRequestQuery(string TableName, string FilterSortRequest) : IQuery<TableRowsData>;

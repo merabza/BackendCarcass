@@ -1,8 +1,8 @@
-﻿using BackendCarcassContracts.Errors;
-using Carcass.Application.Authentication.Registration;
+﻿using BackendCarcass.Application.Authentication.Registration;
+using BackendCarcassContracts.Errors;
 using FluentValidation;
 
-namespace BackendCarcassApi.Validators;
+namespace BackendCarcass.Api.Validators;
 
 // ReSharper disable once UnusedMember.Global
 public sealed class RegistrationCommandValidator : AbstractValidator<RegistrationRequestCommand>

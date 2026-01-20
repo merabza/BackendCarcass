@@ -1,7 +1,7 @@
-﻿using Carcass.Database;
-using RepositoriesShared;
+﻿using BackendCarcass.Database;
+using SystemTools.RepositoriesShared;
 
-namespace Carcass.Persistence;
+namespace BackendCarcass.Persistence;
 
 public class CarcassUnitOfWork : UnitOfWork
 {

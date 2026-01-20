@@ -1,3 +1,3 @@
-﻿namespace CarcassFilterSort;
+﻿namespace BackendCarcass.FilterSort;
 
 public sealed class FilterSortIdentifierEqualityComparer;

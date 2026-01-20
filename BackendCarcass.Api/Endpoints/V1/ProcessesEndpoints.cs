@@ -1,5 +1,4 @@
-﻿using System;
-using BackendCarcassContracts.V1.Responses;
+﻿using BackendCarcassContracts.V1.Responses;
 using BackendCarcassContracts.V1.Routes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using Serilog;
 
-namespace BackendCarcassApi.Endpoints.V1;
+namespace BackendCarcass.Api.Endpoints.V1;
 
 //კონტროლერი -> გამოიყენება გაშვებული პროცესების მიმდინარეობის გასაკონტროლებლად.
 //რადგან ჯერჯერობით გაშვებული პროცესები არ გვაქვს, ეს კონტროლერი ჯერ-ჯერობით საჭირო არ არის.

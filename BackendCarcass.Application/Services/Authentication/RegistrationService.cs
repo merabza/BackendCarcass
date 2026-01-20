@@ -1,15 +1,15 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Application.Services.Authentication.Models;
+using BackendCarcass.Identity.Models;
+using BackendCarcass.MasterData.Models;
 using BackendCarcassContracts.Errors;
-using Carcass.Application.Services.Authentication.Models;
-using CarcassIdentity.Models;
-using CarcassMasterData.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace Carcass.Application.Services.Authentication;
+namespace BackendCarcass.Application.Services.Authentication;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public class RegistrationService : LoginBase, IScopeServiceCarcassApplication

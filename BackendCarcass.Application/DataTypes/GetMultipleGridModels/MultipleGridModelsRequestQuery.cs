@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using MediatRMessagingAbstractions;
 using Microsoft.Extensions.Primitives;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.DataTypes.GetMultipleGridModels;
+namespace BackendCarcass.Application.DataTypes.GetMultipleGridModels;
 
 public sealed class MultipleGridModelsRequestQuery : IQuery<Dictionary<string, string>>
 {

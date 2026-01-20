@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Carcass.Database;
-using Carcass.Database.Models;
-using CarcassMappers;
-using CarcassMasterData.Models;
-using CarcassRights;
-using CarcassRights.Models;
+using BackendCarcass.Database;
+using BackendCarcass.Database.Models;
+using BackendCarcass.Mappers;
+using BackendCarcass.MasterData.Models;
+using BackendCarcass.Rights;
+using BackendCarcass.Rights.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
 
-namespace CarcassRepositories;
+namespace BackendCarcass.Repositories;
 
 public sealed class RightsRepository : IRightsRepository
 {
@@ -57,66 +57,6 @@ public sealed class RightsRepository : IRightsRepository
     {
         var users = await _carcassContext.Users.ToListAsync(cancellationToken);
         return users.Select(x => x.AdaptTo()).ToList();
-    }
-
-    public Task<List<ReturnValueModel>> GetRoleReturnValues(int minLevel, CancellationToken cancellationToken = default)
-    {
-        return _carcassContext.Roles.Where(w => w.RolLevel >= minLevel)
-            .Select(role => new ReturnValueModel { Id = role.RolId, Key = role.RolKey, Name = role.RolName })
-            .ToListAsync(cancellationToken);
-    }
-
-    public Task<List<DataTypeModelForRvs>> ParentsDataTypesNormalView(int dtDataId, string dataTypeKey, int userDataId,
-        string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
-    {
-        var result = from dt in _carcassContext.DataTypes
-            join pc in ManyToManyJoinsPc(dtDataId, dataTypeKey, dtDataId) on dt.DtTable equals pc
-            join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtTable equals pcc2
-            select new DataTypeModelForRvs(dt.DtId, dt.DtTable, dt.DtName, dt.DtIdFieldName, dt.DtKeyFieldName,
-                dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
-                dt.DtManyToManyJoinChildDataTypeId);
-        return result.ToListAsync(cancellationToken);
-    }
-
-    public Task<List<DataTypeModelForRvs>> ParentsDataTypesReverseView(int dtDataId, int userDataId, string userName,
-        int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
-    {
-        var result = from dt in _carcassContext.DataTypes
-            join dr in _carcassContext.ManyToManyJoins on new { a = dt.DtTable, b = dtDataId, c = dtDataId } equals
-                new { a = dr.CKey, b = dr.PtId, c = dr.CtId }
-            join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtTable equals pcc3
-            select new DataTypeModelForRvs(dt.DtId, dt.DtTable, dt.DtName, dt.DtIdFieldName, dt.DtKeyFieldName,
-                dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
-                dt.DtManyToManyJoinChildDataTypeId);
-        return result.ToListAsync(cancellationToken);
-    }
-
-    public Task<List<DataTypeModelForRvs>> ChildrenDataTypesNormalView(int dtDataId, string parentTypeKey,
-        int userDataId, string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
-    {
-        var result = from dt in _carcassContext.DataTypes
-            join pc in ManyToManyJoinsPc(dtDataId, parentTypeKey, dtDataId) on dt.DtTable equals pc
-            join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtTable equals pcc3
-            select new DataTypeModelForRvs(dt.DtId, dt.DtTable, dt.DtName, dt.DtIdFieldName, dt.DtKeyFieldName,
-                dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
-                dt.DtManyToManyJoinChildDataTypeId);
-        return result.ToListAsync(cancellationToken);
-    }
-
-    public Task<List<DataTypeModelForRvs>> ChildrenDataTypesReverseView(int dtDataId, string parentTypeKey,
-        int userDataId, string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
-    {
-        var result = from dt in _carcassContext.DataTypes
-            join cp in ManyToManyJoinsCp(dtDataId, parentTypeKey, dtDataId) on dt.DtTable equals cp
-            join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
-                dt.DtTable equals pcc2
-            select new DataTypeModelForRvs(dt.DtId, dt.DtTable, dt.DtName, dt.DtIdFieldName, dt.DtKeyFieldName,
-                dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
-                dt.DtManyToManyJoinChildDataTypeId);
-        return result.ToListAsync(cancellationToken);
     }
 
     public Task<List<TypeDataModel>> HalfChecksNormalView(int userDataId, string userName, int roleDataId,
@@ -221,6 +161,66 @@ public sealed class RightsRepository : IRightsRepository
             where r.CtId == mmjDataId && r.PtId == childTypeId && r1.PtId == parentTypeId && r1.PKey == parentKey &&
                   drt.PtId == childTypeId2 && drt.CtId == childTypeId3
             select new Tuple<string, string>(drt.PKey, drt.CKey)).ToList();
+    }
+
+    public Task<List<ReturnValueModel>> GetRoleReturnValues(int minLevel, CancellationToken cancellationToken = default)
+    {
+        return _carcassContext.Roles.Where(w => w.RolLevel >= minLevel)
+            .Select(role => new ReturnValueModel { Id = role.RolId, Key = role.RolKey, Name = role.RolName })
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task<List<DataTypeModelForRvs>> ParentsDataTypesNormalView(int dtDataId, string dataTypeKey, int userDataId,
+        string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
+    {
+        var result = from dt in _carcassContext.DataTypes
+            join pc in ManyToManyJoinsPc(dtDataId, dataTypeKey, dtDataId) on dt.DtTable equals pc
+            join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
+                dt.DtTable equals pcc2
+            select new DataTypeModelForRvs(dt.DtId, dt.DtTable, dt.DtName, dt.DtIdFieldName, dt.DtKeyFieldName,
+                dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
+                dt.DtManyToManyJoinChildDataTypeId);
+        return result.ToListAsync(cancellationToken);
+    }
+
+    public Task<List<DataTypeModelForRvs>> ParentsDataTypesReverseView(int dtDataId, int userDataId, string userName,
+        int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
+    {
+        var result = from dt in _carcassContext.DataTypes
+            join dr in _carcassContext.ManyToManyJoins on new { a = dt.DtTable, b = dtDataId, c = dtDataId } equals
+                new { a = dr.CKey, b = dr.PtId, c = dr.CtId }
+            join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
+                dt.DtTable equals pcc3
+            select new DataTypeModelForRvs(dt.DtId, dt.DtTable, dt.DtName, dt.DtIdFieldName, dt.DtKeyFieldName,
+                dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
+                dt.DtManyToManyJoinChildDataTypeId);
+        return result.ToListAsync(cancellationToken);
+    }
+
+    public Task<List<DataTypeModelForRvs>> ChildrenDataTypesNormalView(int dtDataId, string parentTypeKey,
+        int userDataId, string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
+    {
+        var result = from dt in _carcassContext.DataTypes
+            join pc in ManyToManyJoinsPc(dtDataId, parentTypeKey, dtDataId) on dt.DtTable equals pc
+            join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
+                dt.DtTable equals pcc3
+            select new DataTypeModelForRvs(dt.DtId, dt.DtTable, dt.DtName, dt.DtIdFieldName, dt.DtKeyFieldName,
+                dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
+                dt.DtManyToManyJoinChildDataTypeId);
+        return result.ToListAsync(cancellationToken);
+    }
+
+    public Task<List<DataTypeModelForRvs>> ChildrenDataTypesReverseView(int dtDataId, string parentTypeKey,
+        int userDataId, string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
+    {
+        var result = from dt in _carcassContext.DataTypes
+            join cp in ManyToManyJoinsCp(dtDataId, parentTypeKey, dtDataId) on dt.DtTable equals cp
+            join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
+                dt.DtTable equals pcc2
+            select new DataTypeModelForRvs(dt.DtId, dt.DtTable, dt.DtName, dt.DtIdFieldName, dt.DtKeyFieldName,
+                dt.DtNameFieldName, dt.DtParentDataTypeId, dt.DtManyToManyJoinParentDataTypeId,
+                dt.DtManyToManyJoinChildDataTypeId);
+        return result.ToListAsync(cancellationToken);
     }
 
     private Task<ManyToManyJoin?> ManyToManyJoin(int parentDtId, string parentDKey, int childDtId, string childDKey,

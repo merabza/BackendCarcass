@@ -2,16 +2,16 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassIdentity;
-using CarcassMasterData;
-using CarcassRights;
-using CarcassRights.Models;
-using DomainShared.Repositories;
-using MediatRMessagingAbstractions;
+using BackendCarcass.Identity;
+using BackendCarcass.MasterData;
+using BackendCarcass.Rights;
+using BackendCarcass.Rights.Models;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.DomainShared.Repositories;
+using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace Carcass.Application.Rights.GetParentsTree;
+namespace BackendCarcass.Application.Rights.GetParentsTree;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class ParentsTreeDataQueryHandler : IQueryHandler<ParentsTreeDataRequestQuery, List<DataTypeModel>>

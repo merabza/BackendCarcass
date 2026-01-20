@@ -1,8 +1,8 @@
-﻿using BackendCarcassContracts.Errors;
-using Carcass.Application.Authentication.Login;
+﻿using BackendCarcass.Application.Authentication.Login;
+using BackendCarcassContracts.Errors;
 using FluentValidation;
 
-namespace BackendCarcassApi.Validators;
+namespace BackendCarcass.Api.Validators;
 
 // ReSharper disable once UnusedType.Global
 public sealed class LoginCommandValidator : AbstractValidator<LoginRequestCommand>

@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\SystemTools\RepositoriesShared\RepositoriesShared.csproj" />
+    <ProjectReference Include="..\..\SystemTools\SystemTools.RepositoriesShared\SystemTools.RepositoriesShared.csproj" />
+    <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
     <ProjectReference Include="..\Carcass.Database\Carcass.Database.csproj" />
   </ItemGroup>
 

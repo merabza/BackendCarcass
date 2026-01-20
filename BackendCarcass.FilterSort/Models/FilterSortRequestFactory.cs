@@ -2,9 +2,9 @@
 using System.Text;
 using System.Text.Json;
 using System.Web;
-using LibCrud.Models;
+using BackendCarcass.LibCrud.Models;
 
-namespace CarcassFilterSort.Models;
+namespace BackendCarcass.FilterSort.Models;
 
 public static class FilterSortRequestFactory
 {

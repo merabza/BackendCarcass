@@ -1,8 +1,8 @@
-﻿using BackendCarcassContracts.Errors;
-using Carcass.Application.UserRights.ChangeProfile;
+﻿using BackendCarcass.Application.UserRights.ChangeProfile;
+using BackendCarcassContracts.Errors;
 using FluentValidation;
 
-namespace BackendCarcassApi.Validators;
+namespace BackendCarcass.Api.Validators;
 
 // ReSharper disable once UnusedType.Global
 public sealed class ChangeProfileCommandValidator : AbstractValidator<ChangeProfileRequestCommand>

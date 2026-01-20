@@ -2,14 +2,14 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Carcass.Database;
-using Carcass.Database.Models;
-using CarcassRights;
+using BackendCarcass.Database;
+using BackendCarcass.Database.Models;
+using BackendCarcass.Rights;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace CarcassRepositories;
+namespace BackendCarcass.Repositories;
 
 public sealed class UserRightsRepository : IUserRightsRepository
 {
@@ -66,17 +66,6 @@ public sealed class UserRightsRepository : IUserRightsRepository
             keyByTableName, cancellationToken);
     }
 
-    public async Task<OneOf<bool, Err[]>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
-        string keyByTableName, int dataCrudRightDtId, ECrudOperationType crudType,
-        CancellationToken cancellationToken = default)
-    {
-        return await _context.ManyToManyJoins.AnyAsync(
-            w => w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataTypeDtId && w.CKey == keyByTableName,
-            cancellationToken) && await _context.ManyToManyJoins.AnyAsync(
-            w => w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataCrudRightDtId &&
-                 w.CKey == keyByTableName + '.' + Enum.GetName(crudType), cancellationToken);
-    }
-
     //public bool CheckUserRightToClaim(IEnumerable<Claim> userClaims, string claimName)
     //{
     //    return GetRoles(userClaims).Any(roleName => CheckRoleRightToClaim(roleName, claimName));
@@ -95,6 +84,17 @@ public sealed class UserRightsRepository : IUserRightsRepository
     {
         return await _context.DataTypes.Where(w => w.DtTable == tableName).Select(s => s.DtId)
             .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<OneOf<bool, Err[]>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
+        string keyByTableName, int dataCrudRightDtId, ECrudOperationType crudType,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.ManyToManyJoins.AnyAsync(
+            w => w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataTypeDtId && w.CKey == keyByTableName,
+            cancellationToken) && await _context.ManyToManyJoins.AnyAsync(
+            w => w.PtId == roleDtId && w.PKey == roleName && w.CtId == dataCrudRightDtId &&
+                 w.CKey == keyByTableName + '.' + Enum.GetName(crudType), cancellationToken);
     }
 
     private Task<bool> GetManyToManyJoinsPccOne(int parentTypeId, string parentKey, int childTypeId, int childTypeId2,

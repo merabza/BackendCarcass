@@ -1,6 +1,6 @@
-﻿using MediatRMessagingAbstractions;
+﻿using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.UserRights.DeleteCurrentUser;
+namespace BackendCarcass.Application.UserRights.DeleteCurrentUser;
 
 public sealed class DeleteCurrentUserRequestCommand : ICommand
 {

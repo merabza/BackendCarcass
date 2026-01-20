@@ -1,7 +1,7 @@
-﻿using MediatRMessagingAbstractions;
-using Microsoft.Extensions.Primitives;
+﻿using Microsoft.Extensions.Primitives;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.MasterData.GetLookupTables;
+namespace BackendCarcass.Application.MasterData.GetLookupTables;
 
 public sealed class MdGetLookupTablesRequestQuery : IQuery<MdGetLookupTablesQueryResponse>
 {

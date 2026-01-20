@@ -1,7 +1,7 @@
 ﻿using BackendCarcassContracts.V1.Responses;
-using MediatRMessagingAbstractions;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.Authentication.Login;
+namespace BackendCarcass.Application.Authentication.Login;
 
 public sealed class LoginRequestCommand : ICommand<LoginResponse>
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using CarcassMasterData.Models;
+using BackendCarcass.MasterData.Models;
 
-namespace Carcass.Application.Services.Authentication.Models;
+namespace BackendCarcass.Application.Services.Authentication.Models;
 
 public class LoginResult
 {

@@ -1,16 +1,16 @@
-using System;
-using CarcassIdentity;
-using CarcassMasterData;
-using CarcassRights;
+using BackendCarcass.Identity;
+using BackendCarcass.MasterData;
+using BackendCarcass.Rights;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace CarcassRepositories.DependencyInjection;
+namespace BackendCarcass.Repositories.DependencyInjection;
 
 // ReSharper disable once UnusedType.Global
 public static class CarcassRepositoriesDependencyInjection
 {
-    public static IServiceCollection AddCarcassRepositories(this IServiceCollection services, ILogger logger, bool debugMode)
+    public static IServiceCollection AddCarcassRepositories(this IServiceCollection services, ILogger logger,
+        bool debugMode)
     {
         if (debugMode)
         {

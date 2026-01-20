@@ -1,7 +1,7 @@
-﻿using Carcass.Database.Models;
-using CarcassRights.Models;
+﻿using BackendCarcass.Database.Models;
+using BackendCarcass.Rights.Models;
 
-namespace CarcassMappers;
+namespace BackendCarcass.Mappers;
 
 public static class CarcassMainMappers
 {

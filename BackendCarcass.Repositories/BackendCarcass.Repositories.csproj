@@ -7,6 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
+        <ProjectReference Include="..\BackendCarcass.Identity\BackendCarcass.Identity.csproj" />
+        <ProjectReference Include="..\BackendCarcass.Mappers\BackendCarcass.Mappers.csproj" />
+        <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />
+        <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
         <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
         <ProjectReference Include="..\CarcassIdentity\CarcassIdentity.csproj" />
         <ProjectReference Include="..\CarcassMappers\CarcassMappers.csproj" />

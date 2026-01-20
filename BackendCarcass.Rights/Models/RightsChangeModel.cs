@@ -1,4 +1,4 @@
-﻿namespace CarcassRights.Models;
+﻿namespace BackendCarcass.Rights.Models;
 
 public sealed class RightsChangeModel
 {

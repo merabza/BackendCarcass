@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using CarcassRights;
-using CarcassRights.Models;
-using MediatRMessagingAbstractions;
+using BackendCarcass.Rights;
+using BackendCarcass.Rights.Models;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.Rights.GetHalfChecks;
+namespace BackendCarcass.Application.Rights.GetHalfChecks;
 
 public sealed class HalfChecksRequestCommand : ICommand<List<TypeDataModel>>
 {

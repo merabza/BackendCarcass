@@ -1,8 +1,8 @@
-﻿using CarcassMasterData.Models;
+﻿using BackendCarcass.MasterData.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Carcass.DatabaseConfiguration;
+namespace BackendCarcass.DatabaseConfiguration;
 
 public sealed class SimpleReturnValueModelConfiguration : IEntityTypeConfiguration<SrvModel>
 {

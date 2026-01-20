@@ -1,3 +1,3 @@
-﻿namespace Carcass.Application;
+﻿namespace BackendCarcass.Application;
 
 public interface IScopeServiceCarcassApplication;

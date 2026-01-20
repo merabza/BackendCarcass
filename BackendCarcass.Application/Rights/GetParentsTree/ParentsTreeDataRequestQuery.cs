@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using CarcassRights;
-using CarcassRights.Models;
-using MediatRMessagingAbstractions;
+using BackendCarcass.Rights;
+using BackendCarcass.Rights.Models;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.Rights.GetParentsTree;
+namespace BackendCarcass.Application.Rights.GetParentsTree;
 
 public sealed class ParentsTreeDataRequestQuery : IQuery<List<DataTypeModel>>
 {

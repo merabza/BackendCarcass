@@ -1,4 +1,11 @@
-﻿using BackendCarcassContracts.V1.Responses;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using BackendCarcass.Application.DataTypes.GetDataTypesList;
+using BackendCarcass.Application.DataTypes.GetGridModel;
+using BackendCarcass.Application.DataTypes.GetMultipleGridModels;
+using BackendCarcassContracts.V1.Responses;
 using BackendCarcassContracts.V1.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -6,18 +13,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using Carcass.Application.DataTypes.GetDataTypesList;
-using Carcass.Application.DataTypes.GetGridModel;
-using Carcass.Application.DataTypes.GetMultipleGridModels;
 using Serilog;
-using SystemToolsShared.Errors;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace BackendCarcassApi.Endpoints.V1;
+namespace BackendCarcass.Api.Endpoints.V1;
 
 //შესასვლელი წერტილი -> გამოიყენება DataTypes ცხრილის ინფორმაციის ჩასატვირთად
 //ცალკე ხდება ცხრილების მოდელების მიღება, რომელიც ასევე DataTypes ცხრილში ინახება
@@ -28,7 +27,6 @@ namespace BackendCarcassApi.Endpoints.V1;
 // ReSharper disable once UnusedType.Global
 public static class DataTypesEndpoints
 {
-
     public static bool UseDataTypesEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
     {
         if (debugMode)

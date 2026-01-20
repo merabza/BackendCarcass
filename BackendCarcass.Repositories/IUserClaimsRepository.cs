@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CarcassRepositories;
+namespace BackendCarcass.Repositories;
 
 public interface IUserClaimsRepository
 {

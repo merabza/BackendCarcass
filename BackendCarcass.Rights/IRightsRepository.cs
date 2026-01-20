@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CarcassMasterData.Models;
-using CarcassRights.Models;
+using BackendCarcass.MasterData.Models;
+using BackendCarcass.Rights.Models;
 
-namespace CarcassRights;
+namespace BackendCarcass.Rights;
 
 public interface IRightsRepository
 {

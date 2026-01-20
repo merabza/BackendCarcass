@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Carcass.Database.Models;
-using CarcassRights.Models;
-using DomainShared.Repositories;
+using BackendCarcass.Database.Models;
+using BackendCarcass.Rights.Models;
 using Microsoft.Extensions.Logging;
+using SystemTools.DomainShared.Repositories;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
-namespace CarcassRights;
+namespace BackendCarcass.Rights;
 
 public sealed class RightsSaver
 {
@@ -29,24 +29,24 @@ public sealed class RightsSaver
     {
         try
         {
-            var dataTypeTableName = _unitOfWork.GetTableName<DataType>();
-            var dtDataId = await _repo.DataTypeIdByTableName(dataTypeTableName, cancellationToken);
-            var mmjDataId =
+            string dataTypeTableName = _unitOfWork.GetTableName<DataType>();
+            int dtDataId = await _repo.DataTypeIdByTableName(dataTypeTableName, cancellationToken);
+            int mmjDataId =
                 await _repo.DataTypeIdByTableName($"{dataTypeTableName}{dataTypeTableName}", cancellationToken);
-            var roleDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<Role>(), cancellationToken);
-            var userDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<User>(), cancellationToken);
-            var allowPairs = await _repo.ManyToManyJoinsPcc4(userDataId, userName, roleDataId, mmjDataId, dtDataId,
-                dtDataId, cancellationToken);
+            int roleDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<Role>(), cancellationToken);
+            int userDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<User>(), cancellationToken);
+            List<Tuple<string, string>> allowPairs = await _repo.ManyToManyJoinsPcc4(userDataId, userName, roleDataId,
+                mmjDataId, dtDataId, dtDataId, cancellationToken);
 
-            foreach (var drr in changedRights)
+            foreach (RightsChangeModel drr in changedRights)
             {
                 if (drr.Parent is null || drr.Child is null)
                 {
                     throw new Exception("SaveRightsChanges: parent or child keys are not valid");
                 }
 
-                var parentKey = await _repo.DataTypeKeyById(drr.Parent.DtId, cancellationToken);
-                var childKey = await _repo.DataTypeKeyById(drr.Child.DtId, cancellationToken);
+                string? parentKey = await _repo.DataTypeKeyById(drr.Parent.DtId, cancellationToken);
+                string? childKey = await _repo.DataTypeKeyById(drr.Child.DtId, cancellationToken);
 
                 if (parentKey is null || childKey is null)
                 {
@@ -58,8 +58,8 @@ public sealed class RightsSaver
                     continue;
                 }
 
-                var mmj = await _repo.GetOneManyToManyJoin(drr.Parent.DtId, drr.Parent.DKey, drr.Child.DtId,
-                    drr.Child.DKey, cancellationToken);
+                ManyToManyJoinModel? mmj = await _repo.GetOneManyToManyJoin(drr.Parent.DtId, drr.Parent.DKey,
+                    drr.Child.DtId, drr.Child.DKey, cancellationToken);
 
                 if (mmj == null && drr.Checked)
                 {

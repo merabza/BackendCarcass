@@ -1,7 +1,7 @@
-﻿using MediatRMessagingAbstractions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using SystemTools.MediatRMessagingAbstractions;
 
-namespace Carcass.Application.MasterData.UpdateOneRecord;
+namespace BackendCarcass.Application.MasterData.UpdateOneRecord;
 
 public sealed class MdUpdateOneRecordRequestCommand : ICommand
 {

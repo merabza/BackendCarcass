@@ -1,8 +1,8 @@
-﻿using BackendCarcassContracts.Errors;
-using Carcass.Application.UserRights.ChangePassword;
+﻿using BackendCarcass.Application.UserRights.ChangePassword;
+using BackendCarcassContracts.Errors;
 using FluentValidation;
 
-namespace BackendCarcassApi.Validators;
+namespace BackendCarcass.Api.Validators;
 
 // ReSharper disable once UnusedType.Global
 public sealed class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordRequestCommand>

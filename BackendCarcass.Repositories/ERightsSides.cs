@@ -1,4 +1,4 @@
-﻿namespace CarcassRepositories;
+﻿namespace BackendCarcass.Repositories;
 
 public enum ERightsSides
 {

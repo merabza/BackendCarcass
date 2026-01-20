@@ -1,16 +1,16 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Identity;
+using BackendCarcass.MasterData.Models;
+using BackendCarcass.Repositories;
 using BackendCarcassContracts.Errors;
-using CarcassIdentity;
-using CarcassMasterData.Models;
-using CarcassRepositories;
 using MediatR;
-using MediatRMessagingAbstractions;
 using Microsoft.AspNetCore.Identity;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace Carcass.Application.UserRights.DeleteCurrentUser;
+namespace BackendCarcass.Application.UserRights.DeleteCurrentUser;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurrentUserRequestCommand>

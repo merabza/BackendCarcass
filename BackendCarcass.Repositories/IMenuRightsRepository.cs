@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Repositories.Models;
 using BackendCarcassContracts.V1.Responses;
-using CarcassRepositories.Models;
 
-namespace CarcassRepositories;
+namespace BackendCarcass.Repositories;
 
 public interface IMenuRightsRepository
 {

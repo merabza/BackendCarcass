@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Repositories;
 using BackendCarcassContracts.Errors;
-using CarcassRepositories;
-using MediatRMessagingAbstractions;
 using OneOf;
-using SystemToolsShared.Errors;
+using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SystemToolsShared.Errors;
 
-namespace Carcass.Application.DataTypes.GetMultipleGridModels;
+namespace BackendCarcass.Application.DataTypes.GetMultipleGridModels;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class
@@ -30,7 +30,7 @@ public sealed class
         //დამზადდეს ჩასატვირთი მოდელების შესაბამისი ცხრილების სახელების სია.
         //სიის დამზადება საჭიროა იმისათვის, რომ შესაძლებელი გახდეს მისი მეორედ გავლა
         //პირველი გავლისას მოწმდება უფლებები
-        var gridNames = request.Grids.Where(w => !string.IsNullOrWhiteSpace(w)).Distinct().ToList();
+        List<string?> gridNames = request.Grids.Where(w => !string.IsNullOrWhiteSpace(w)).Distinct().ToList();
         if (gridNames.Count == 0)
         {
             return new[] { DataTypesApiErrors.NoGridNamesInUriQuery };
@@ -38,9 +38,9 @@ public sealed class
 
         List<Err> errors = [];
         //ხოლო მეორე გავლისას ხდება უშუალოდ საჭირო ინფორმაციის ჩატვირთვა
-        foreach (var gridName in gridNames)
+        foreach (string? gridName in gridNames)
         {
-            var res = await _repository.GridModel(gridName!, cancellationToken);
+            string? res = await _repository.GridModel(gridName!, cancellationToken);
             if (res != null)
             {
                 resultList.Add(gridName!, res);
