@@ -35,7 +35,7 @@ public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurr
         }
 
         var usersMdRepo = new UsersMdRepo(_userMgr);
-        var user = await _userMgr.FindByNameAsync(request.UserName!);
+        AppUser? user = await _userMgr.FindByNameAsync(request.UserName!);
         //თუ არ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user == null)
         {

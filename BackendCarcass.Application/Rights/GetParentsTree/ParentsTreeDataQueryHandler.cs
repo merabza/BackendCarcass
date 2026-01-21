@@ -35,7 +35,8 @@ public sealed class ParentsTreeDataQueryHandler : IQueryHandler<ParentsTreeDataR
         CancellationToken cancellationToken)
     {
         var rightsCollector = new RightsCollector(_repo, _rvRepo, _unitOfWork);
-        var result = await rightsCollector.ParentsTreeData(_currentUser.Name, request.ViewStyle, cancellationToken);
+        OneOf<List<DataTypeModel>, Err[]> result =
+            await rightsCollector.ParentsTreeData(_currentUser.Name, request.ViewStyle, cancellationToken);
 
         return result.Match<OneOf<List<DataTypeModel>, Err[]>>(r => r, e => e.ToArray());
     }

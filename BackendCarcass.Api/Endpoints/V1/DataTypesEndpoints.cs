@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
+using OneOf;
 using Serilog;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -34,8 +35,8 @@ public static class DataTypesEndpoints
             logger.Information("{MethodName} Started", nameof(UseDataTypesEndpoints));
         }
 
-        var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.DataTypes.DataTypesBase)
-            .RequireAuthorization();
+        RouteGroupBuilder group = endpoints
+            .MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.DataTypes.DataTypesBase).RequireAuthorization();
 
         group.MapGet(CarcassApiRoutes.DataTypes.DataTypesList, DataTypesList);
         group.MapGet(CarcassApiRoutes.DataTypes.GridModel, GridModel);
@@ -61,7 +62,7 @@ public static class DataTypesEndpoints
     {
         Debug.WriteLine($"Call {nameof(DataTypesListQueryHandler)} from {nameof(DataTypesList)}");
         var query = new DataTypesRequestQuery();
-        var result = await mediator.Send(query, cancellationToken);
+        OneOf<DataTypesResponse[], Err[]> result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<DataTypesResponse[]>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
@@ -79,7 +80,7 @@ public static class DataTypesEndpoints
     {
         Debug.WriteLine($"Call {nameof(GridModelQueryHandler)} from {nameof(GridModel)}");
         var query = new GridModelRequestQuery(gridName);
-        var result = await mediator.Send(query, cancellationToken);
+        OneOf<string, Err[]> result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<string>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
@@ -105,7 +106,7 @@ public static class DataTypesEndpoints
     {
         Debug.WriteLine($"Call {nameof(MultipleGridModelsQueryHandler)} from {nameof(MultipleGridModels)}");
         var query = new MultipleGridModelsRequestQuery(grids);
-        var result = await mediator.Send(query, cancellationToken);
+        OneOf<Dictionary<string, string>, Err[]> result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<Dictionary<string, string>>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }

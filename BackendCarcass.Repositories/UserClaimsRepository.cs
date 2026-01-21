@@ -22,9 +22,9 @@ public class UserClaimsRepository : IUserClaimsRepository
 
     public async Task<List<string>> UserAppClaims(string userName, CancellationToken cancellationToken = default)
     {
-        var userDataTypeId = await DataTypeIdByKey(_unitOfWork.GetTableName<User>(), cancellationToken);
-        var roleDataTypeId = await DataTypeIdByKey(_unitOfWork.GetTableName<Role>(), cancellationToken);
-        var appClaimDataTypeId = await DataTypeIdByKey(_unitOfWork.GetTableName<AppClaim>(), cancellationToken);
+        int userDataTypeId = await DataTypeIdByKey(_unitOfWork.GetTableName<User>(), cancellationToken);
+        int roleDataTypeId = await DataTypeIdByKey(_unitOfWork.GetTableName<Role>(), cancellationToken);
+        int appClaimDataTypeId = await DataTypeIdByKey(_unitOfWork.GetTableName<AppClaim>(), cancellationToken);
 
         return await Task.FromResult(ManyToManyJoinsPcc(userDataTypeId, userName, roleDataTypeId, appClaimDataTypeId)
             .ToList());

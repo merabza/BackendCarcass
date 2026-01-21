@@ -41,8 +41,10 @@ public sealed class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValu
         if (dt.DtManyToManyJoinParentDataTypeId is not null && dt.DtManyToManyJoinChildDataTypeId is not null)
         {
             //ეს ის ვარიანტია, როცა მონაცემთა ტიპების წყვილისგან უნდა შედგეს დასაბრუნებელი ინფორმაცია
-            var parentDataType = await GetDataType(dt.DtManyToManyJoinParentDataTypeId.Value, cancellationToken);
-            var childDataType = await GetDataType(dt.DtManyToManyJoinChildDataTypeId.Value, cancellationToken);
+            DataTypeModelForRvs? parentDataType =
+                await GetDataType(dt.DtManyToManyJoinParentDataTypeId.Value, cancellationToken);
+            DataTypeModelForRvs? childDataType =
+                await GetDataType(dt.DtManyToManyJoinChildDataTypeId.Value, cancellationToken);
 
             if (parentDataType is not null && childDataType is not null &&
                 IsIdentifier(parentDataType.DtKeyFieldName) && IsIdentifier(childDataType.DtKeyFieldName) &&
@@ -66,7 +68,7 @@ public sealed class SqlReturnValuesRepository(CarcassDbContext ctx) : ReturnValu
                  (dt.DtNameFieldName is null || IsIdentifier(dt.DtNameFieldName)))
         {
             //ინფორმაციის დაბრუნება უნდა მოხდეს ერთი ცხრილიდან
-            var parentFieldName = await FindParentFieldName(dt, cancellationToken);
+            string? parentFieldName = await FindParentFieldName(dt, cancellationToken);
 
             strSql =
                 $"SELECT {dt.DtIdFieldName} AS id, {dt.DtKeyFieldName ?? "NULL"} AS [key], {dt.DtNameFieldName ?? "NULL"} AS [name], {parentFieldName ?? "NULL"} AS parentId FROM {dt.DtTable}";

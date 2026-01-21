@@ -28,7 +28,7 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
     {
         // ReSharper disable once using
 #pragma warning disable CA2000
-        var scope = Services.CreateScope();
+        IServiceScope scope = Services.CreateScope();
 #pragma warning restore CA2000
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -41,7 +41,7 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
     {
         // ReSharper disable once using
 #pragma warning disable CA2000
-        var scope = Services.CreateScope();
+        IServiceScope scope = Services.CreateScope();
 #pragma warning restore CA2000
         var carcassMasterDataRepository = scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();

@@ -49,35 +49,35 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
             return null;
         }
 
-        var parentDataType = await GetDataType(dt.DtParentDataTypeId.Value, cancellationToken);
+        DataTypeModelForRvs? parentDataType = await GetDataType(dt.DtParentDataTypeId.Value, cancellationToken);
         if (parentDataType is null)
         {
             return null;
         }
 
-        var parentEntType = GetEntityTypeByTableName(parentDataType.DtTable);
+        IEntityType? parentEntType = GetEntityTypeByTableName(parentDataType.DtTable);
         if (parentEntType is null)
         {
             return null;
         }
 
-        var parentPrimaryKeys = parentEntType.GetKeys().Where(w => w.IsPrimaryKey()).ToList();
+        List<IKey> parentPrimaryKeys = parentEntType.GetKeys().Where(w => w.IsPrimaryKey()).ToList();
         if (parentPrimaryKeys.Count != 1)
         {
             return null;
         }
 
-        var parentPrimaryKey = parentPrimaryKeys[0];
+        IKey parentPrimaryKey = parentPrimaryKeys[0];
         if (parentPrimaryKey.Properties.Count != 1)
         {
             return null;
         }
 
-        var parentPrimaryKeyFieldName = parentPrimaryKey.Properties[0].Name;
+        string parentPrimaryKeyFieldName = parentPrimaryKey.Properties[0].Name;
 
-        var entType = GetEntityTypeByTableName(dt.DtTable);
+        IEntityType? entType = GetEntityTypeByTableName(dt.DtTable);
 
-        var fn = entType?.GetForeignKeys().SingleOrDefault(x =>
+        IForeignKey? fn = entType?.GetForeignKeys().SingleOrDefault(x =>
             x.Properties.Count == 1 && x.PrincipalEntityType.Name == parentEntType.Name &&
             x.PrincipalKey.Properties[0].Name == parentPrimaryKeyFieldName);
 

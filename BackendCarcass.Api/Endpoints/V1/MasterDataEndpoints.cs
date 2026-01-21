@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
+using OneOf;
 using Serilog;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -36,8 +37,8 @@ public static class MasterDataEndpoints
             logger.Information("{MethodName} Started", nameof(UseMasterDataEndpoints));
         }
 
-        var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.MasterData.MasterDataBase)
-            .RequireAuthorization();
+        RouteGroupBuilder group = endpoints
+            .MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.MasterData.MasterDataBase).RequireAuthorization();
 
         //group.MapGet(CarcassApiRoutes.MasterData.All, AllRecords).AddEndpointFilter<UserTableRightsFilter>();
         group.MapGet(CarcassApiRoutes.MasterData.GetTables, GetTables);
@@ -89,7 +90,7 @@ public static class MasterDataEndpoints
     {
         Debug.WriteLine($"Call {nameof(GetTablesQueryHandler)} from {nameof(GetTables)}");
         var query = new MdGetTablesRequestQuery(tables);
-        var result = await mediator.Send(query, cancellationToken);
+        OneOf<MdGetTablesQueryResponse, Err[]> result = await mediator.Send(query, cancellationToken);
 
         // Explicitly specify the type arguments for the Match method to resolve CS0411
         return result.Match<Results<Ok<MdGetTablesQueryResponse>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
@@ -112,7 +113,7 @@ public static class MasterDataEndpoints
     {
         Debug.WriteLine($"Call {nameof(GetLookupTablesQueryHandler)} from {nameof(GetTables)}");
         var query = new MdGetLookupTablesRequestQuery(tables);
-        var result = await mediator.Send(query, cancellationToken);
+        OneOf<MdGetLookupTablesQueryResponse, Err[]> result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<MdGetLookupTablesQueryResponse>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
@@ -124,7 +125,7 @@ public static class MasterDataEndpoints
     {
         Debug.WriteLine($"Call {nameof(GetTableRowsDataQueryHandler)} from {nameof(GetTableRowsData)}");
         var queryNotes = new GetTableRowsDataRequestQuery(tableName, filterSortRequest);
-        var resultNotes = await mediator.Send(queryNotes, cancellationToken);
+        OneOf<TableRowsData, Err[]> resultNotes = await mediator.Send(queryNotes, cancellationToken);
         return resultNotes.Match<Results<Ok<TableRowsData>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
@@ -144,7 +145,7 @@ public static class MasterDataEndpoints
     {
         Debug.WriteLine($"Call {nameof(MdGetOneRecordQueryHandler)} from {nameof(MdGetOneRecord)}");
         var query = new MdGetOneRecordRequestQuery(tableName, id);
-        var result = await mediator.Send(query, cancellationToken);
+        OneOf<MasterDataCrudLoadedData, Err[]> result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<MasterDataCrudLoadedData>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
@@ -163,7 +164,7 @@ public static class MasterDataEndpoints
     {
         Debug.WriteLine($"Call {nameof(MdCreateOneRecordCommandHandler)} from {nameof(MdCreateOneRecord)}");
         var commandRequest = new MdCreateOneRecordRequestCommand(tableName, request);
-        var result = await mediator.Send(commandRequest, cancellationToken);
+        OneOf<MasterDataCrudLoadedData, Err[]> result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match<Results<Ok<MasterDataCrudLoadedData>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
@@ -184,7 +185,7 @@ public static class MasterDataEndpoints
     {
         Debug.WriteLine($"Call {nameof(MdUpdateOneRecordCommandHandler)} from {nameof(MdUpdateOneRecord)}");
         var commandRequest = new MdUpdateOneRecordRequestCommand(tableName, request, id);
-        var result = await mediator.Send(commandRequest, cancellationToken);
+        OneOf<Unit, Err[]> result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match<Results<NoContent, BadRequest<Err[]>>>(_ => TypedResults.NoContent(),
             errors => TypedResults.BadRequest(errors));
     }
@@ -204,7 +205,7 @@ public static class MasterDataEndpoints
     {
         Debug.WriteLine($"Call {nameof(MdDeleteOneRecordCommandHandler)} from {nameof(MdDeleteOneRecord)}");
         var commandRequest = new MdDeleteOneRecordRequestCommand(tableName, id);
-        var result = await mediator.Send(commandRequest, cancellationToken);
+        OneOf<Unit, Err[]> result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match<Results<NoContent, BadRequest<Err[]>>>(_ => TypedResults.NoContent(),
             errors => TypedResults.BadRequest(errors));
     }

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
@@ -14,8 +16,8 @@ public static class CarcassApplicationDependencyInjection
             logger.Information("{MethodName} Started", nameof(AddScopedAllCarcassApplicationServices));
         }
 
-        var assembly = typeof(IScopeServiceCarcassApplication).Assembly;
-        foreach (var type in assembly.ExportedTypes.Where(x =>
+        Assembly assembly = typeof(IScopeServiceCarcassApplication).Assembly;
+        foreach (Type type in assembly.ExportedTypes.Where(x =>
                      typeof(IScopeServiceCarcassApplication).IsAssignableFrom(x) &&
                      x is { IsInterface: false, IsAbstract: false }))
         {

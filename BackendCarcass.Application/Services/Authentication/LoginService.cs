@@ -25,7 +25,7 @@ public class LoginService : LoginBase, IScopeServiceCarcassApplication
         CancellationToken cancellationToken = default)
     {
         //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი
-        var user = await UserMgr.FindByNameAsync(userName);
+        AppUser? user = await UserMgr.FindByNameAsync(userName);
 
         return await LoginProcess(user, password, cancellationToken);
     }

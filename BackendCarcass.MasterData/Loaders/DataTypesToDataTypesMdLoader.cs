@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.MasterData.Models;
 using OneOf;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -11,7 +12,8 @@ public sealed class DataTypesToDataTypesMdLoader(IDataTypesRepository dataTypesR
     public async ValueTask<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
-        var result = await dataTypesRepository.LoadDataTypesToDataTypes(cancellationToken);
+        IEnumerable<DataTypeToDataTypeDomModel> result =
+            await dataTypesRepository.LoadDataTypesToDataTypes(cancellationToken);
         return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(result);
     }
 }

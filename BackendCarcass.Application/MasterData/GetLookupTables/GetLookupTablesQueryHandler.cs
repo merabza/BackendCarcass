@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.MasterData;
+using BackendCarcass.MasterData.Models;
 using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
 using SystemTools.SystemToolsShared.Errors;
@@ -32,7 +33,7 @@ public sealed class
         List<string> tableNames = request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()
             .ToList()!;
         var mdLoader = new ReturnValuesLoader(tableNames, _rvRepo, _returnValuesLoaderCreator);
-        var loaderResult = await mdLoader.Run(cancellationToken);
+        OneOf<Dictionary<string, IEnumerable<SrvModel>>, Err[]> loaderResult = await mdLoader.Run(cancellationToken);
         return loaderResult.Match<OneOf<MdGetLookupTablesQueryResponse, Err[]>>(
             r => new MdGetLookupTablesQueryResponse(r), e => e.ToArray());
     }

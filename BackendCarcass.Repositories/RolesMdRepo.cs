@@ -33,14 +33,14 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         var role = (Role)newItem;
         var appRole = new AppRole(role.RolKey, role.RolName, role.RolLevel);
         //შევქმნათ როლი
-        var result = await _roleManager.CreateAsync(appRole);
+        IdentityResult result = await _roleManager.CreateAsync(appRole);
         role.RolId = appRole.Id;
         return (Err[])ConvertError(result);
     }
 
     public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
-        var oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
+        AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole == null)
         {
             return new[] { MasterDataApiErrors.CannotFindRole };
@@ -50,7 +50,7 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         oldRole.RoleName = role.RolName;
         oldRole.Level = role.RolLevel;
 
-        var updateResult = await _roleManager.UpdateAsync(oldRole);
+        IdentityResult updateResult = await _roleManager.UpdateAsync(oldRole);
         if (!updateResult.Succeeded)
         {
             return (Err[])ConvertError(updateResult);
@@ -61,19 +61,19 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
             return null;
         }
 
-        var setRoleResult = await _roleManager.SetRoleNameAsync(oldRole, role.RolKey);
+        IdentityResult setRoleResult = await _roleManager.SetRoleNameAsync(oldRole, role.RolKey);
         return (Err[])ConvertError(setRoleResult);
     }
 
     public async ValueTask<Option<Err[]>> Delete(int id)
     {
-        var oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
+        AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole == null)
         {
             return new[] { MasterDataApiErrors.CannotFindRole };
         }
 
-        var deleteResult = await _roleManager.DeleteAsync(oldRole);
+        IdentityResult deleteResult = await _roleManager.DeleteAsync(oldRole);
         return (Err[])ConvertError(deleteResult);
     }
 }

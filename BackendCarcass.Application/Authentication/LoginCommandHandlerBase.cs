@@ -17,7 +17,7 @@ public /*open*/ class LoginCommandHandlerBase
         }
 
         await signinMgr.SignOutAsync();
-        var result = await signinMgr.PasswordSignInAsync(user, password, true, false);
+        SignInResult result = await signinMgr.PasswordSignInAsync(user, password, true, false);
         return result.Succeeded ? user : null;
     }
 }

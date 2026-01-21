@@ -24,7 +24,7 @@ public class RegistrationService : LoginBase, IScopeServiceCarcassApplication
         CancellationToken cancellationToken = default)
     {
         //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი
-        var user = await UserMgr.FindByNameAsync(registerParameters.UserName);
+        AppUser? user = await UserMgr.FindByNameAsync(registerParameters.UserName);
         //თუ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user != null)
         {
@@ -44,7 +44,7 @@ public class RegistrationService : LoginBase, IScopeServiceCarcassApplication
         {
             Email = registerParameters.Email
         };
-        var result = await UserMgr.CreateAsync(user, registerParameters.Password);
+        IdentityResult result = await UserMgr.CreateAsync(user, registerParameters.Password);
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
         if (!result.Succeeded)
         {

@@ -28,7 +28,7 @@ public sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePasswor
         CancellationToken cancellationToken)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით
-        var user = await _userMgr.FindByNameAsync(request.UserName!);
+        AppUser? user = await _userMgr.FindByNameAsync(request.UserName!);
         //თუ არ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user == null)
         {
@@ -40,7 +40,7 @@ public sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePasswor
             return new[] { UserRightsErrors.UserAuthenticationFailedThePasswordHasNotBeenChanged };
         }
 
-        var result = await _userMgr.ChangePasswordAsync(user, request.OldPassword!, request.NewPassword!);
+        IdentityResult result = await _userMgr.ChangePasswordAsync(user, request.OldPassword!, request.NewPassword!);
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
         return !result.Succeeded ? new[] { UserRightsErrors.FailedToChangePassword } : new Unit();
     }

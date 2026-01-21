@@ -1,12 +1,15 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.LibCrud;
 using BackendCarcass.MasterData;
 using BackendCarcassContracts.Errors;
-using MediatR;
+using LanguageExt;
 using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
 using SystemTools.SystemToolsShared.Errors;
+using Unit = MediatR.Unit;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -25,17 +28,18 @@ public sealed class MdDeleteOneRecordCommandHandler : ICommandHandler<MdDeleteOn
     public async Task<OneOf<Unit, Err[]>> Handle(MdDeleteOneRecordRequestCommand request,
         CancellationToken cancellationToken)
     {
-        var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+        OneOf<CrudBase, Err[]> createMasterDataCrudResult =
+            _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
             return createMasterDataCrudResult.AsT1;
         }
 
-        var masterDataCruder = createMasterDataCrudResult.AsT0;
-        var result = await masterDataCruder.Delete(request.Id, cancellationToken);
+        CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
+        Option<Err[]> result = await masterDataCruder.Delete(request.Id, cancellationToken);
         return result.Match<OneOf<Unit, Err[]>>(y =>
         {
-            var errors = y.ToList();
+            List<Err> errors = y.ToList();
             errors.Add(MasterDataApiErrors.CannotDeleteNewRecord);
             return errors.ToArray();
         }, () => new Unit());

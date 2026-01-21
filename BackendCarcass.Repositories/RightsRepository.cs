@@ -55,14 +55,14 @@ public sealed class RightsRepository : IRightsRepository
 
     public async Task<List<UserModel>> GetUsers(CancellationToken cancellationToken = default)
     {
-        var users = await _carcassContext.Users.ToListAsync(cancellationToken);
+        List<User> users = await _carcassContext.Users.ToListAsync(cancellationToken);
         return users.Select(x => x.AdaptTo()).ToList();
     }
 
     public Task<List<TypeDataModel>> HalfChecksNormalView(int userDataId, string userName, int roleDataId,
         int mmjDataId, int dtDataId, int dataTypeId, string dataKey, CancellationToken cancellationToken = default)
     {
-        var normViewResult = (from dr in _carcassContext.ManyToManyJoins
+        IQueryable<TypeDataModel>? normViewResult = (from dr in _carcassContext.ManyToManyJoins
             join dt in _carcassContext.DataTypes on dr.CtId equals dt.DtId
             join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
                 dt.DtTable equals pcc3
@@ -74,7 +74,7 @@ public sealed class RightsRepository : IRightsRepository
     public Task<List<TypeDataModel>> HalfChecksReverseView(int userDataId, string userName, int roleDataId,
         int mmjDataId, int dtDataId, int dataTypeId, string dataKey, CancellationToken cancellationToken = default)
     {
-        var result = (from dr in _carcassContext.ManyToManyJoins
+        IQueryable<TypeDataModel>? result = (from dr in _carcassContext.ManyToManyJoins
             join dt in _carcassContext.DataTypes on dr.PtId equals dt.DtId
             join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
                 dt.DtTable equals pcc2
@@ -92,15 +92,15 @@ public sealed class RightsRepository : IRightsRepository
     public async Task<ManyToManyJoinModel?> GetOneManyToManyJoin(int parentDtId, string parentDKey, int childDtId,
         string childDKey, CancellationToken cancellationToken = default)
     {
-        var mmj = await ManyToManyJoin(parentDtId, parentDKey, childDtId, childDKey, cancellationToken);
+        ManyToManyJoin? mmj = await ManyToManyJoin(parentDtId, parentDKey, childDtId, childDKey, cancellationToken);
         return mmj?.AdaptTo();
     }
 
     public async Task<bool> RemoveOneManyToManyJoin(ManyToManyJoinModel manyToManyJoinModel,
         CancellationToken cancellationToken = default)
     {
-        var mmj = await ManyToManyJoin(manyToManyJoinModel.PtId, manyToManyJoinModel.PKey, manyToManyJoinModel.CtId,
-            manyToManyJoinModel.CKey, cancellationToken);
+        ManyToManyJoin? mmj = await ManyToManyJoin(manyToManyJoinModel.PtId, manyToManyJoinModel.PKey,
+            manyToManyJoinModel.CtId, manyToManyJoinModel.CKey, cancellationToken);
         if (mmj is null)
         {
             return false;
@@ -113,7 +113,7 @@ public sealed class RightsRepository : IRightsRepository
     public async Task<bool> CreateAndSaveOneManyToManyJoin(int parentDtId, string parentDKey, int childDtId,
         string childDKey, CancellationToken cancellationToken = default)
     {
-        var parentDataType =
+        DataType? parentDataType =
             await _carcassContext.DataTypes.SingleOrDefaultAsync(x => x.DtId == parentDtId, cancellationToken);
         if (parentDataType is null)
         {
@@ -121,7 +121,7 @@ public sealed class RightsRepository : IRightsRepository
             return false;
         }
 
-        var childDataType =
+        DataType? childDataType =
             await _carcassContext.DataTypes.SingleOrDefaultAsync(x => x.DtId == childDtId, cancellationToken);
         if (childDataType is null)
         {
@@ -154,7 +154,7 @@ public sealed class RightsRepository : IRightsRepository
         int childTypeId, int mmjDataId, int childTypeId2, int childTypeId3,
         CancellationToken cancellationToken = default)
     {
-        var manyToManyJoins = await _carcassContext.ManyToManyJoins.ToListAsync(cancellationToken);
+        List<ManyToManyJoin> manyToManyJoins = await _carcassContext.ManyToManyJoins.ToListAsync(cancellationToken);
         return (from r in manyToManyJoins
             join r1 in manyToManyJoins on new { t = r.PtId, i = r.PKey } equals new { t = r1.CtId, i = r1.CKey }
             join drt in manyToManyJoins on r.CKey equals drt.PKey + "." + drt.CKey
@@ -173,7 +173,7 @@ public sealed class RightsRepository : IRightsRepository
     public Task<List<DataTypeModelForRvs>> ParentsDataTypesNormalView(int dtDataId, string dataTypeKey, int userDataId,
         string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
     {
-        var result = from dt in _carcassContext.DataTypes
+        IQueryable<DataTypeModelForRvs> result = from dt in _carcassContext.DataTypes
             join pc in ManyToManyJoinsPc(dtDataId, dataTypeKey, dtDataId) on dt.DtTable equals pc
             join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
                 dt.DtTable equals pcc2
@@ -186,7 +186,7 @@ public sealed class RightsRepository : IRightsRepository
     public Task<List<DataTypeModelForRvs>> ParentsDataTypesReverseView(int dtDataId, int userDataId, string userName,
         int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
     {
-        var result = from dt in _carcassContext.DataTypes
+        IQueryable<DataTypeModelForRvs> result = from dt in _carcassContext.DataTypes
             join dr in _carcassContext.ManyToManyJoins on new { a = dt.DtTable, b = dtDataId, c = dtDataId } equals
                 new { a = dr.CKey, b = dr.PtId, c = dr.CtId }
             join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
@@ -200,7 +200,7 @@ public sealed class RightsRepository : IRightsRepository
     public Task<List<DataTypeModelForRvs>> ChildrenDataTypesNormalView(int dtDataId, string parentTypeKey,
         int userDataId, string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
     {
-        var result = from dt in _carcassContext.DataTypes
+        IQueryable<DataTypeModelForRvs> result = from dt in _carcassContext.DataTypes
             join pc in ManyToManyJoinsPc(dtDataId, parentTypeKey, dtDataId) on dt.DtTable equals pc
             join pcc3 in ManyToManyJoinsPcc3(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
                 dt.DtTable equals pcc3
@@ -213,7 +213,7 @@ public sealed class RightsRepository : IRightsRepository
     public Task<List<DataTypeModelForRvs>> ChildrenDataTypesReverseView(int dtDataId, string parentTypeKey,
         int userDataId, string userName, int roleDataId, int mmjDataId, CancellationToken cancellationToken = default)
     {
-        var result = from dt in _carcassContext.DataTypes
+        IQueryable<DataTypeModelForRvs> result = from dt in _carcassContext.DataTypes
             join cp in ManyToManyJoinsCp(dtDataId, parentTypeKey, dtDataId) on dt.DtTable equals cp
             join pcc2 in ManyToManyJoinsPcc2(userDataId, userName, roleDataId, mmjDataId, dtDataId, dtDataId) on
                 dt.DtTable equals pcc2

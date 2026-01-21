@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using OneOf;
 using Serilog;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -37,7 +38,7 @@ public static class RightsEndpoints
             logger.Information("{MethodName} Started", nameof(UseRightsEndpoints));
         }
 
-        var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Rights.RightsBase)
+        RouteGroupBuilder group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Rights.RightsBase)
             .RequireAuthorization().AddEndpointFilter<UserMustHaveRightsEditorRightsFilter>();
 
         group.MapGet(CarcassApiRoutes.Rights.ParentsTreeData, ParentsTreeData);
@@ -66,7 +67,7 @@ public static class RightsEndpoints
     {
         Debug.WriteLine($"Call {nameof(ParentsTreeDataQueryHandler)} from {nameof(ParentsTreeData)}");
         var query = new ParentsTreeDataRequestQuery((ERightsEditorViewStyle)viewStyle);
-        var result = await mediator.Send(query, cancellationToken);
+        OneOf<List<DataTypeModel>, Err[]> result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<List<DataTypeModel>>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
@@ -83,7 +84,7 @@ public static class RightsEndpoints
     {
         Debug.WriteLine($"Call {nameof(ChildrenTreeDataCommandHandler)} from {nameof(ChildrenTreeData)}");
         var query = new ChildrenTreeDataRequestCommand(dataTypeKey, (ERightsEditorViewStyle)viewStyle);
-        var result = await mediator.Send(query, cancellationToken);
+        OneOf<List<DataTypeModel>, Err[]> result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<List<DataTypeModel>>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
@@ -102,7 +103,7 @@ public static class RightsEndpoints
     {
         Debug.WriteLine($"Call {nameof(HalfChecksCommandHandler)} from {nameof(HalfChecks)}");
         var query = new HalfChecksRequestCommand(dataTypeId, dataKey, (ERightsEditorViewStyle)viewStyle);
-        var result = await mediator.Send(query, cancellationToken);
+        OneOf<List<TypeDataModel>, Err[]> result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<List<TypeDataModel>>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
@@ -127,7 +128,7 @@ public static class RightsEndpoints
         }
 
         var commandRequest = new SaveDataRequestCommand(changesForSave);
-        var result = await mediator.Send(commandRequest, cancellationToken);
+        OneOf<bool, Err[]> result = await mediator.Send(commandRequest, cancellationToken);
         return result.Match<Results<Ok<bool>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }

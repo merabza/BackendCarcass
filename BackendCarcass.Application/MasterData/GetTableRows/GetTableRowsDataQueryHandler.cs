@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.FilterSort.Models;
+using BackendCarcass.LibCrud;
 using BackendCarcass.LibCrud.Models;
 using BackendCarcass.MasterData;
 using BackendCarcassContracts.Errors;
@@ -25,7 +26,7 @@ public sealed class GetTableRowsDataQueryHandler : IQueryHandler<GetTableRowsDat
     public async Task<OneOf<TableRowsData, Err[]>> Handle(GetTableRowsDataRequestQuery request,
         CancellationToken cancellationToken)
     {
-        var filterSortRequestObject = FilterSortRequestFactory.Create(request.FilterSortRequest);
+        FilterSortRequest? filterSortRequestObject = FilterSortRequestFactory.Create(request.FilterSortRequest);
 
         if (filterSortRequestObject == null)
         {
@@ -37,15 +38,17 @@ public sealed class GetTableRowsDataQueryHandler : IQueryHandler<GetTableRowsDat
         //return result.Match<OneOf<TableRowsData, Err[]>>(
         //    r => r, e => e);
 
-        var createMasterDataCrudResult = _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+        OneOf<CrudBase, Err[]> createMasterDataCrudResult =
+            _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
             return createMasterDataCrudResult.AsT1;
         }
 
-        var masterDataCruder = createMasterDataCrudResult.AsT0;
+        CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
 
-        var result = await masterDataCruder.GetTableRowsData(filterSortRequestObject, cancellationToken);
+        OneOf<TableRowsData, Err[]> result =
+            await masterDataCruder.GetTableRowsData(filterSortRequestObject, cancellationToken);
         return result.Match<OneOf<TableRowsData, Err[]>>(r => r, e => e.ToArray());
     }
 }

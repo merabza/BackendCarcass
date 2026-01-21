@@ -41,7 +41,7 @@ public sealed class IdentityRepository : IIdentityRepository
     {
         try
         {
-            var oldUser = await _carcassContext.Users.SingleOrDefaultAsync(u => u.UsrId == userId, cancellationToken);
+            User? oldUser = await _carcassContext.Users.SingleOrDefaultAsync(u => u.UsrId == userId, cancellationToken);
             if (oldUser == null)
             {
                 return IdentityResult.Failed();
@@ -63,7 +63,7 @@ public sealed class IdentityRepository : IIdentityRepository
     {
         try
         {
-            var oldUser = await _carcassContext.Users.SingleOrDefaultAsync(r => r.UsrId == userId, cancellationToken);
+            User? oldUser = await _carcassContext.Users.SingleOrDefaultAsync(r => r.UsrId == userId, cancellationToken);
             if (oldUser == null)
             {
                 return IdentityResult.Failed();
@@ -92,7 +92,7 @@ public sealed class IdentityRepository : IIdentityRepository
     {
         try
         {
-            var oldRole = await _carcassContext.Roles.SingleOrDefaultAsync(r => r.RolId == roleId, cancellationToken);
+            Role? oldRole = await _carcassContext.Roles.SingleOrDefaultAsync(r => r.RolId == roleId, cancellationToken);
             if (oldRole == null)
             {
                 return IdentityResult.Failed();
@@ -196,7 +196,7 @@ public sealed class IdentityRepository : IIdentityRepository
 
         try
         {
-            var oldRole = await _carcassContext.Roles.SingleOrDefaultAsync(r => r.RolId == roleId, cancellationToken);
+            Role? oldRole = await _carcassContext.Roles.SingleOrDefaultAsync(r => r.RolId == roleId, cancellationToken);
             if (oldRole == null)
             {
                 return IdentityResult.Failed();

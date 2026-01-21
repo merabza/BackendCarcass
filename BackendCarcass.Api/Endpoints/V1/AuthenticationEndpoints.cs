@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using OneOf;
 using Serilog;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -30,7 +31,8 @@ public static class AuthenticationEndpoints
             logger.Information("{MethodName} Started", nameof(UseAuthenticationEndpoints));
         }
 
-        var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
+        RouteGroupBuilder group = endpoints
+            .MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
             .RequireCors(CorsDependencyInjection.MyAllowSpecificOrigins);
 
         group.MapPost(CarcassApiRoutes.Authentication.Registration, Registration);
@@ -62,8 +64,8 @@ public static class AuthenticationEndpoints
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
         }
 
-        var command = request.AdaptTo();
-        var result = await mediator.Send(command, cancellationToken);
+        RegistrationRequestCommand command = request.AdaptTo();
+        OneOf<LoginResponse, Err[]> result = await mediator.Send(command, cancellationToken);
         return result.Match<Results<Ok<LoginResponse>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
@@ -83,8 +85,8 @@ public static class AuthenticationEndpoints
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
         }
 
-        var command = request.AdaptTo();
-        var result = await mediator.Send(command, cancellationToken);
+        LoginRequestCommand command = request.AdaptTo();
+        OneOf<LoginResponse, Err[]> result = await mediator.Send(command, cancellationToken);
         return result.Match<Results<Ok<LoginResponse>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }

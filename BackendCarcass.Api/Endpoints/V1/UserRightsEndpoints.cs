@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using OneOf;
 using Serilog;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -31,8 +32,8 @@ public static class UserRightsEndpoints
             logger.Information("{MethodName} Started", nameof(UseUserRightsEndpoints));
         }
 
-        var group = endpoints.MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase)
-            .RequireAuthorization();
+        RouteGroupBuilder group = endpoints
+            .MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase).RequireAuthorization();
 
         group.MapGet(CarcassApiRoutes.UserRights.IsCurrentUserValid, IsCurrentUserValid);
         group.MapPut(CarcassApiRoutes.UserRights.ChangeProfile, ChangeProfile);
@@ -75,8 +76,8 @@ public static class UserRightsEndpoints
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
         }
 
-        var command = request.AdaptTo();
-        var result = await mediator.Send(command, cancellationToken);
+        ChangeProfileRequestCommand command = request.AdaptTo();
+        OneOf<Unit, Err[]> result = await mediator.Send(command, cancellationToken);
         return result.Match<Results<Ok, BadRequest<Err[]>>>(_ => TypedResults.Ok(),
             errors => TypedResults.BadRequest(errors));
     }
@@ -96,8 +97,8 @@ public static class UserRightsEndpoints
             return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
         }
 
-        var command = request.AdaptTo();
-        var result = await mediator.Send(command, cancellationToken);
+        ChangePasswordRequestCommand command = request.AdaptTo();
+        OneOf<Unit, Err[]> result = await mediator.Send(command, cancellationToken);
         return result.Match<Results<Ok, BadRequest<Err[]>>>(_ => TypedResults.Ok(),
             errors => TypedResults.BadRequest(errors));
     }
@@ -118,7 +119,7 @@ public static class UserRightsEndpoints
     {
         Debug.WriteLine($"Call {nameof(DeleteCurrentUserCommandHandler)} from {nameof(DeleteCurrentUser)}");
         var command = new DeleteCurrentUserRequestCommand { UserName = userName };
-        var result = await mediator.Send(command, cancellationToken);
+        OneOf<Unit, Err[]> result = await mediator.Send(command, cancellationToken);
         return result.Match<Results<Ok, BadRequest<Err[]>>>(_ => TypedResults.Ok(),
             errors => TypedResults.BadRequest(errors));
     }
@@ -135,7 +136,7 @@ public static class UserRightsEndpoints
     {
         Debug.WriteLine($"Call {nameof(MainMenuQueryHandler)} from {nameof(MainMenu)}");
         var query = new MainMenuRequestQuery();
-        var result = await mediator.Send(query, cancellationToken);
+        OneOf<MainMenuModel, Err[]> result = await mediator.Send(query, cancellationToken);
         return result.Match<Results<Ok<MainMenuModel>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }

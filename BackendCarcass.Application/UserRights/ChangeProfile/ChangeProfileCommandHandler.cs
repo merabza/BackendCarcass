@@ -29,7 +29,7 @@ public sealed class ChangeProfileCommandHandler : ICommandHandler<ChangeProfileR
         CancellationToken cancellationToken)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით
-        var user = await _userMgr.FindByNameAsync(_currentUser.Name);
+        AppUser? user = await _userMgr.FindByNameAsync(_currentUser.Name);
 
         //თუ არ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user == null)
@@ -44,7 +44,7 @@ public sealed class ChangeProfileCommandHandler : ICommandHandler<ChangeProfileR
 
         user.FirstName = request.FirstName!;
         user.LastName = request.LastName!;
-        var result = await _userMgr.UpdateAsync(user);
+        IdentityResult result = await _userMgr.UpdateAsync(user);
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
         return !result.Succeeded ? new[] { UserRightsErrors.FailedToSaveUserInformation } : new Unit();
     }

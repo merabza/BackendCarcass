@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Application.Services.Authentication;
+using BackendCarcass.Application.Services.Authentication.Models;
+using BackendCarcass.MasterData.Models;
 using BackendCarcassContracts.V1.Responses;
 using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
@@ -23,13 +25,14 @@ public sealed class LoginCommandHandler : LoginCommandHandlerBase, ICommandHandl
     public async Task<OneOf<LoginResponse, Err[]>> Handle(LoginRequestCommand request,
         CancellationToken cancellationToken)
     {
-        var tryLoginResult = await _loginService.TryToLogin(request.UserName!, request.Password!, cancellationToken);
+        OneOf<LoginResult, Err[]> tryLoginResult =
+            await _loginService.TryToLogin(request.UserName!, request.Password!, cancellationToken);
         if (tryLoginResult.IsT1)
         {
             return tryLoginResult.AsT1;
         }
 
-        var user = tryLoginResult.AsT0.User;
+        AppUser user = tryLoginResult.AsT0.User;
         var appUserModel = new LoginResponse(user.Id, user.UserName!, user.Email!, tryLoginResult.AsT0.Token,
             tryLoginResult.AsT0.Roles.Aggregate(string.Empty,
                 (cur, next) => cur + (string.IsNullOrEmpty(cur) ? string.Empty : ", ") + next), user.FirstName,

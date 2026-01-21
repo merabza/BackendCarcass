@@ -6,7 +6,9 @@ using BackendCarcass.Rights;
 using BackendCarcassContracts.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using OneOf;
 using SystemTools.DomainShared.Repositories;
+using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Api.Filters;
 
@@ -32,7 +34,7 @@ public /*open*/ class UserMenuRightsFilter : IEndpointFilter
     {
         //შემოწმდეს აქვს თუ არა მიმდინარე მომხმარებელს _claimName-ის შესაბამისი სპეციალური უფლება
         var rightsDeterminer = new RightsDeterminer(_repo, _unitOfWork, _logger, _currentUser);
-        var result = await rightsDeterminer.HasUserRightRole(_menuNames, CancellationToken.None);
+        OneOf<bool, Err[]> result = await rightsDeterminer.HasUserRightRole(_menuNames, CancellationToken.None);
         if (result.IsT1)
         {
             return Results.BadRequest(result.AsT1);

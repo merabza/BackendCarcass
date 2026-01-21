@@ -33,14 +33,14 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         var user = (User)newItem;
         var appUser = new AppUser(user.UserName, user.FirstName, user.LastName) { Email = user.Email };
         //შევქმნათ მომხმარებელი
-        var result = await _userManager.CreateAsync(appUser);
+        IdentityResult result = await _userManager.CreateAsync(appUser);
         user.UsrId = appUser.Id;
         return (Err[])ConvertError(result);
     }
 
     public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
     {
-        var oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
+        AppUser? oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldUser == null)
         {
             return new[] { MasterDataApiErrors.CannotFindUser };
@@ -52,7 +52,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         oldUser.FirstName = user.FirstName;
         oldUser.LastName = user.LastName;
 
-        var updateResult = await _userManager.UpdateAsync(oldUser);
+        IdentityResult updateResult = await _userManager.UpdateAsync(oldUser);
         if (!updateResult.Succeeded)
         {
             return (Err[])ConvertError(updateResult);
@@ -60,7 +60,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
 
         if (oldUser.UserName != user.UserName)
         {
-            var setUserNameResult = await _userManager.SetUserNameAsync(oldUser, user.UserName);
+            IdentityResult setUserNameResult = await _userManager.SetUserNameAsync(oldUser, user.UserName);
             if (!setUserNameResult.Succeeded)
             {
                 return (Err[])ConvertError(setUserNameResult);
@@ -72,19 +72,19 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
             return null;
         }
 
-        var setEmailResult = await _userManager.SetEmailAsync(oldUser, user.Email);
+        IdentityResult setEmailResult = await _userManager.SetEmailAsync(oldUser, user.Email);
         return (Err[])ConvertError(setEmailResult);
     }
 
     public async ValueTask<Option<Err[]>> Delete(int id)
     {
-        var oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
+        AppUser? oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldUser == null)
         {
             return new[] { MasterDataApiErrors.CannotFindUser };
         }
 
-        var deleteResult = await _userManager.DeleteAsync(oldUser);
+        IdentityResult deleteResult = await _userManager.DeleteAsync(oldUser);
         return (Err[])ConvertError(deleteResult);
     }
 }
