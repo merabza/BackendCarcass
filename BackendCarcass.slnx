@@ -28,4 +28,5 @@
   <Project Path="BackendCarcass.Repositories/BackendCarcass.Repositories.csproj" />
   <Project Path="BackendCarcass.Rights/BackendCarcass.Rights.csproj" />
   <Project Path="BackendCarcass.LibCrud/BackendCarcass.LibCrud.csproj" />
+  <Project Path="BackendCarcass/BackendCarcass.csproj" />
 </Solution>

@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>AppCliTools</PackageId>
+        <Version>1.0.0</Version>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BackendCarcass.Api\BackendCarcass.Api.csproj" />
+      <ProjectReference Include="..\BackendCarcass.Application\BackendCarcass.Application.csproj" />
+      <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
+      <ProjectReference Include="..\BackendCarcass.Db\BackendCarcass.Db.csproj" />
+      <ProjectReference Include="..\BackendCarcass.FilterSort\BackendCarcass.FilterSort.csproj" />
+      <ProjectReference Include="..\BackendCarcass.Identity\BackendCarcass.Identity.csproj" />
+      <ProjectReference Include="..\BackendCarcass.LibCrud\BackendCarcass.LibCrud.csproj" />
+      <ProjectReference Include="..\BackendCarcass.Mappers\BackendCarcass.Mappers.csproj" />
+      <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />
+      <ProjectReference Include="..\BackendCarcass.Repositories\BackendCarcass.Repositories.csproj" />
+      <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
+    </ItemGroup>
+
+
+</Project>
