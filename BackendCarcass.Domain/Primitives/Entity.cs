@@ -2,7 +2,9 @@ using System;
 
 namespace BackendCarcass.Domain.Primitives;
 
+#pragma warning disable S4035
 public abstract class Entity<TId> : IEquatable<Entity<TId>> where TId : notnull
+#pragma warning restore S4035
 {
     protected Entity(TId id)
     {
