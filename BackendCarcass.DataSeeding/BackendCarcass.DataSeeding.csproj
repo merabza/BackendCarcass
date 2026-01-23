@@ -7,13 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CarcassDb\CarcassDb.csproj" />
-        <ProjectReference Include="..\CarcassDom\CarcassDom.csproj" />
-        <ProjectReference Include="..\CarcassMasterDataDom\CarcassMasterDataDom.csproj" />
+        <Folder Include="Comparers\" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Comparers\" />
+      <PackageReference Include="Microsoft.Extensions.Identity.Core" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\SystemTools\SystemTools.DatabaseToolsShared\SystemTools.DatabaseToolsShared.csproj" />
+      <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
     </ItemGroup>
 
 </Project>

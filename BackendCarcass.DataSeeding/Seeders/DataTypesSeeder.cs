@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CarcassDataSeeding.Models;
-using CarcassDb.Factories;
-using CarcassDb.Models;
-using CarcassMasterDataDom.CellModels;
-using DatabaseToolsShared;
-using SystemToolsShared;
+using BackendCarcass.Database.Factories;
+using BackendCarcass.Database.Models;
+using BackendCarcass.DataSeeding.Models;
+using BackendCarcass.MasterData.CellModels;
+using SystemTools.DatabaseToolsShared;
+using SystemTools.DomainShared.Repositories;
+using SystemTools.SystemToolsShared;
 
-namespace CarcassDataSeeding.Seeders;
+namespace BackendCarcass.DataSeeding.Seeders;
 
 public /*open*/
     class DataTypesSeeder : DataSeeder<DataType, DataTypeSeederModel>
@@ -17,8 +18,9 @@ public /*open*/
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public DataTypesSeeder(ICarcassDataSeederRepository carcassRepo, string dataSeedFolder, IDataSeederRepository repo,
-        ESeedDataType seedDataType = ESeedDataType.OnlyRules, List<string>? keyFieldNamesList = null) : base(
-        dataSeedFolder, repo, seedDataType, keyFieldNamesList)
+        IUnitOfWork unitOfWork, ESeedDataType seedDataType = ESeedDataType.OnlyRules,
+        List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, unitOfWork, seedDataType,
+        keyFieldNamesList)
     {
         CarcassRepo = carcassRepo;
     }
@@ -55,7 +57,10 @@ public /*open*/
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtParentDataTypeIdDtKey != null))
         {
             var oneRec = dataTypesList.SingleOrDefault(s => s.DtTable == dataTypeSeederModel.DtTable);
-            if (oneRec == null) continue;
+            if (oneRec == null)
+            {
+                continue;
+            }
 
             oneRec.DtParentDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtParentDataTypeIdDtKey!);
             forUpdate.Add(oneRec);
@@ -65,7 +70,10 @@ public /*open*/
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtManyToManyJoinParentDataTypeKey != null))
         {
             var oneRec = dataTypesList.SingleOrDefault(s => s.DtTable == dataTypeSeederModel.DtTable);
-            if (oneRec == null) continue;
+            if (oneRec == null)
+            {
+                continue;
+            }
 
             oneRec.DtManyToManyJoinParentDataTypeId =
                 tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinParentDataTypeKey!);
@@ -76,7 +84,10 @@ public /*open*/
         foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtManyToManyJoinChildDataTypeKey != null))
         {
             var oneRec = dataTypesList.SingleOrDefault(s => s.DtTable == dataTypeSeederModel.DtTable);
-            if (oneRec == null) continue;
+            if (oneRec == null)
+            {
+                continue;
+            }
 
             oneRec.DtManyToManyJoinChildDataTypeId =
                 tempData.GetIntIdByKey<DataType>(dataTypeSeederModel.DtManyToManyJoinChildDataTypeKey!);
@@ -95,14 +106,14 @@ public /*open*/
     protected virtual bool SetParentDataTypes()
     {
         var tempData = DataSeederTempData.Instance;
-        var dataTypeTableName = CarcassRepo.GetTableName<DataType>();
-        var crudRightTypeTableName = CarcassRepo.GetTableName<CrudRightType>();
+        var dataTypeTableName = UnitOfWork.GetTableName<DataType>();
+        var crudRightTypeTableName = UnitOfWork.GetTableName<CrudRightType>();
         var dataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeTableName);
 
         var dtdt = new Tuple<int, int>[]
         {
-            new(tempData.GetIntIdByKey<DataType>(CarcassRepo.GetTableName<MenuItm>()),
-                tempData.GetIntIdByKey<DataType>(CarcassRepo.GetTableName<MenuGroup>()))
+            new(tempData.GetIntIdByKey<DataType>(UnitOfWork.GetTableName<MenuItm>()),
+                tempData.GetIntIdByKey<DataType>(UnitOfWork.GetTableName<MenuGroup>()))
         };
 
         var dtdtdt = new Tuple<int, int, int>[]
@@ -126,12 +137,12 @@ public /*open*/
 
             //AppClaim
             DataTypeFactory.Create("სპეციალური უფლებები", "სპეციალური უფლება", "სპეციალური უფლების",
-                CarcassRepo.GetTableName<AppClaim>(), nameof(AppClaim.AclId).UnCapitalize(), null,
+                UnitOfWork.GetTableName<AppClaim>(), nameof(AppClaim.AclId).UnCapitalize(), null,
                 nameof(AppClaim.AclKey).UnCapitalize(), null, nameof(AppClaim.AclName).UnCapitalize(), null),
 
             //DataType
             DataTypeFactory.Create("მონაცემთა ტიპები", "მონაცემთა ტიპი", "მონაცემთა ტიპის",
-                CarcassRepo.GetTableName<DataType>(), nameof(DataType.DtId).UnCapitalize(), null,
+                UnitOfWork.GetTableName<DataType>(), nameof(DataType.DtId).UnCapitalize(), null,
                 nameof(DataType.DtTable).UnCapitalize(), "ცხრილი", nameof(DataType.DtName).UnCapitalize(), null,
                 GetTextBoxCell(nameof(DataType.DtNameNominative).UnCapitalize(), "სახელობითი"),
                 GetTextBoxCell(nameof(DataType.DtNameGenitive).UnCapitalize(), "მიცემითი"),
@@ -139,47 +150,47 @@ public /*open*/
                 GetTextBoxCell(nameof(DataType.DtKeyFieldName).UnCapitalize(), "კოდი ველის სახელი"),
                 GetTextBoxCell(nameof(DataType.DtNameFieldName).UnCapitalize(), "სახელი ველის სახელი"),
                 GetMdComboCell(nameof(DataType.DtParentDataTypeId).UnCapitalize(), "უფლებების მშობელი",
-                    CarcassRepo.GetTableName<DataType>())),
+                    UnitOfWork.GetTableName<DataType>())),
 
             //dataTypeToCrudTypeModel
             DataTypeFactory.CreatePseudo("მონაცემების ცვლილებაზე უფლებები", "მონაცემების ცვლილებაზე უფლება",
-                "მონაცემების ცვლილებაზე უფლების", CarcassRepo.GetTableName<DataType>(),
-                CarcassRepo.GetTableName<CrudRightType>()),
+                "მონაცემების ცვლილებაზე უფლების", UnitOfWork.GetTableName<DataType>(),
+                UnitOfWork.GetTableName<CrudRightType>()),
 
             //CrudRightType
             DataTypeFactory.Create("მონაცემების ცვლილებაზე უფლებების ტიპები", "მონაცემების ცვლილებაზე უფლების ტიპი",
-                "მონაცემების ცვლილებაზე უფლების ტიპის", CarcassRepo.GetTableName<CrudRightType>(),
+                "მონაცემების ცვლილებაზე უფლების ტიპის", UnitOfWork.GetTableName<CrudRightType>(),
                 nameof(CrudRightType.CrtId).UnCapitalize(), null, nameof(CrudRightType.CrtKey).UnCapitalize(), null,
                 nameof(CrudRightType.CrtName).UnCapitalize(), null),
 
             //DataTypeToDataTypeModel
-            DataTypeFactory.CreatePseudo("უფლებები", "უფლება", "უფლების", CarcassRepo.GetTableName<DataType>(),
-                CarcassRepo.GetTableName<DataType>()),
+            DataTypeFactory.CreatePseudo("უფლებები", "უფლება", "უფლების", UnitOfWork.GetTableName<DataType>(),
+                UnitOfWork.GetTableName<DataType>()),
 
             //MenuGroup
             DataTypeFactory.Create("მენიუს ჯგუფები", "მენიუს ჯგუფი", "მენიუს ჯგუფის",
-                CarcassRepo.GetTableName<MenuGroup>(), nameof(MenuGroup.MengId).UnCapitalize(), null,
+                UnitOfWork.GetTableName<MenuGroup>(), nameof(MenuGroup.MengId).UnCapitalize(), null,
                 nameof(MenuGroup.MengKey).UnCapitalize(), null, nameof(MenuGroup.MengName).UnCapitalize(), null,
                 GetSortIdCell(), GetTextBoxCell(nameof(MenuGroup.MengIconName).UnCapitalize(), "ხატულა")),
 
             //MenuItm
-            DataTypeFactory.Create("მენიუ", "მენიუ", "მენიუს", CarcassRepo.GetTableName<MenuItm>(),
+            DataTypeFactory.Create("მენიუ", "მენიუ", "მენიუს", UnitOfWork.GetTableName<MenuItm>(),
                 nameof(MenuItm.MenId).UnCapitalize(), null, nameof(MenuItm.MenKey).UnCapitalize(), null,
                 nameof(MenuItm.MenName).UnCapitalize(), null, GetSortIdCell(),
                 GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
                 GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი",
-                    CarcassRepo.GetTableName<MenuGroup>()),
+                    UnitOfWork.GetTableName<MenuGroup>()),
                 GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
                 GetTextBoxCell(nameof(MenuItm.MenIconName).UnCapitalize(), "ხატულა")),
 
             //Role
-            DataTypeFactory.Create("როლები", "როლი", "როლის", CarcassRepo.GetTableName<Role>(),
+            DataTypeFactory.Create("როლები", "როლი", "როლის", UnitOfWork.GetTableName<Role>(),
                 nameof(Role.RolId).UnCapitalize(), null, nameof(Role.RolKey).UnCapitalize(), null,
                 nameof(Role.RolName).UnCapitalize(), null,
                 GetIntegerCell(nameof(Role.RolLevel).UnCapitalize(), "დონე")),
 
             //User
-            DataTypeFactory.Create("მომხმარებლები", "მომხმარებელი", "მომხმარებლის", CarcassRepo.GetTableName<User>(),
+            DataTypeFactory.Create("მომხმარებლები", "მომხმარებელი", "მომხმარებლის", UnitOfWork.GetTableName<User>(),
                 nameof(User.UsrId).UnCapitalize(), null, nameof(User.NormalizedUserName).UnCapitalize(),
                 "მომხმარებლის სახელი ნორმალიზებული", nameof(User.FullName).UnCapitalize(), "სრული სახელი",
                 GetTextBoxCell(nameof(User.UserName).UnCapitalize(), "მომხმარებლის სახელი"),
@@ -194,8 +205,8 @@ public /*open*/
     protected static Cell GetTextBoxCell(string fieldName, string caption, bool allowNull = false)
     {
         return allowNull
-            ? Cell.String(fieldName, caption).Nullable().Default()
-            : Cell.String(fieldName, caption).Required($"{caption} შევსებული უნდა იყოს").Default();
+            ? Cell.CreateStringCell(fieldName, caption).Nullable().Default()
+            : Cell.CreateStringCell(fieldName, caption).Required($"{caption} შევსებული უნდა იყოს").Default();
     }
 
     protected static Cell GetDatePickerCell(string fieldName, string caption, bool allowNull = false)
@@ -216,15 +227,15 @@ public /*open*/
     protected static Cell GetIntegerCell(string fieldName, string caption, bool allowNull = false, bool isShort = false)
     {
         var res = allowNull
-            ? Cell.Integer(fieldName, caption).Nullable().Min(0)
-            : Cell.Integer(fieldName, caption).Required($"{caption} შევსებული უნდა იყოს").Default();
-        return isShort ? res.Short() : res;
+            ? Cell.CreateIntegerCell(fieldName, caption).Nullable().Min(0)
+            : Cell.CreateIntegerCell(fieldName, caption).Required($"{caption} შევსებული უნდა იყოს").Default();
+        return isShort ? res.UseShortCell() : res;
     }
 
     protected static Cell GetSortIdCell()
     {
-        return Cell.Integer("sortId", "რიგითი ნომერი").Required("რიგითი ნომერი შევსებული უნდა იყოს").Default(-1).Min(-1)
-            .SortId();
+        return Cell.CreateIntegerCell("sortId", "რიგითი ნომერი").Required("რიგითი ნომერი შევსებული უნდა იყოს")
+            .Default(-1).Min(-1).SortId();
     }
 
     protected static Cell GetMdComboCell(string fieldName, string caption, string dtTable, bool allowNull = false)
@@ -239,7 +250,7 @@ public /*open*/
         bool isShort = false)
     {
         var res = Cell.RsLookup(fieldName, caption, rowSource).Default();
-        return isShort ? res.Short() : res;
+        return isShort ? res.UseShortCell() : res;
     }
 
     protected static Cell GetCheckBoxCell(string fieldName, string caption)

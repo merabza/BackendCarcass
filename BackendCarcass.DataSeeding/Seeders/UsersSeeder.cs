@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CarcassDataSeeding.Models;
-using CarcassDb.Models;
-using CarcassMasterDataDom.Models;
-using DatabaseToolsShared;
+using BackendCarcass.Database.Models;
+using BackendCarcass.DataSeeding.Models;
+using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Identity;
+using SystemTools.DatabaseToolsShared;
+using SystemTools.DomainShared.Repositories;
 
-namespace CarcassDataSeeding.Seeders;
+namespace BackendCarcass.DataSeeding.Seeders;
 
 public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
 {
@@ -16,8 +17,9 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public UsersSeeder(UserManager<AppUser> userManager, string secretDataFolder, string dataSeedFolder,
-        IDataSeederRepository repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson,
-        List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, seedDataType, keyFieldNamesList)
+        IDataSeederRepository repo, IUnitOfWork unitOfWork, ESeedDataType seedDataType = ESeedDataType.OnlyJson,
+        List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, unitOfWork, seedDataType,
+        keyFieldNamesList)
     {
         _userManager = userManager;
         _secretDataFolder = secretDataFolder;
@@ -36,7 +38,9 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
         }).Where(w => w.existingUser == null && w.existingEmail == null).Select(s => s.userModel);
 
         if (userToCreate.Any(userModel => !CreateUser(userModel)))
+        {
             return false;
+        }
 
         DataSeederTempData.Instance.SaveIntIdKeys<User>(DataSeederRepo.GetAll<User>()
             .ToDictionary(k => k.Key, v => v.Id));
@@ -65,7 +69,9 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
         var result = _userManager.CreateAsync(user, userModel.Password).Result;
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
         if (result.Succeeded)
+        {
             return true;
+        }
 
         throw new Exception($"User {userModel.UserName} with email {userModel.Email} can not be created.");
     }

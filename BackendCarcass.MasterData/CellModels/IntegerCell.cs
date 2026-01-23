@@ -58,7 +58,7 @@ public /*open*/ class IntegerCell : NumberCell
     }
 
     //public საჭიროა DataTypesSeeder-ისთვის
-    public IntegerCell Default(int defaultValue = default)
+    public IntegerCell Default(int defaultValue = 0)
     {
         Def = defaultValue;
         return this;
@@ -111,7 +111,7 @@ public /*open*/ class IntegerCell : NumberCell
         return errors;
     }
 
-    public IntegerCell CreateShortCell()
+    public IntegerCell UseShortCell()
     {
         IsShort = true;
         return this;

@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CarcassDb;
-using CarcassDb.Models;
+using BackendCarcass.Database;
+using BackendCarcass.Database.Models;
 using Microsoft.Extensions.Logging;
-using RepositoriesDom;
-using SystemToolsShared;
+using SystemTools.SystemToolsShared;
 
-namespace CarcassDataSeeding;
+namespace BackendCarcass.DataSeeding;
 
-public /*open*/ class CarcassDataSeederRepository : AbstractRepository, ICarcassDataSeederRepository
+public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
 {
     private readonly CarcassDbContext _context;
     private readonly ILogger<CarcassDataSeederRepository> _logger;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CarcassDataSeederRepository(CarcassDbContext ctx, ILogger<CarcassDataSeederRepository> logger) : base(ctx)
+    public CarcassDataSeederRepository(CarcassDbContext ctx, ILogger<CarcassDataSeederRepository> logger)
     {
         _context = ctx;
         _logger = logger;
@@ -33,8 +32,7 @@ public /*open*/ class CarcassDataSeederRepository : AbstractRepository, ICarcass
             foreach (var tdt in dtdt)
             {
                 var dt = _context.DataTypes.SingleOrDefault(s => s.DtId == tdt.Item1);
-                if (dt != null)
-                    dt.DtParentDataTypeId = tdt.Item2;
+                dt?.DtParentDataTypeId = tdt.Item2;
             }
 
             return SaveChanges();
@@ -53,11 +51,8 @@ public /*open*/ class CarcassDataSeederRepository : AbstractRepository, ICarcass
             foreach (var tdt in dtdtdt)
             {
                 var dt = _context.DataTypes.SingleOrDefault(s => s.DtId == tdt.Item1);
-                if (dt == null)
-                    continue;
-
-                dt.DtManyToManyJoinParentDataTypeId = tdt.Item2;
-                dt.DtManyToManyJoinChildDataTypeId = tdt.Item3;
+                dt?.DtManyToManyJoinParentDataTypeId = tdt.Item2;
+                dt?.DtManyToManyJoinChildDataTypeId = tdt.Item3;
             }
 
             return SaveChanges();

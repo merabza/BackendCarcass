@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CarcassDataSeeding.Models;
-using CarcassDb.Models;
-using CarcassMasterDataDom.Models;
-using DatabaseToolsShared;
+using BackendCarcass.Database.Models;
+using BackendCarcass.DataSeeding.Models;
+using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Identity;
+using SystemTools.DatabaseToolsShared;
+using SystemTools.DomainShared.Repositories;
 
-namespace CarcassDataSeeding.Seeders;
+namespace BackendCarcass.DataSeeding.Seeders;
 
 public /*open*/
     class RolesSeeder : DataSeeder<Role, RoleSeederModel>
@@ -17,8 +18,9 @@ public /*open*/
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public RolesSeeder(RoleManager<AppRole> roleManager, string secretDataFolder, string dataSeedFolder,
-        IDataSeederRepository repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson,
-        List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, seedDataType, keyFieldNamesList)
+        IDataSeederRepository repo, IUnitOfWork unitOfWork, ESeedDataType seedDataType = ESeedDataType.OnlyJson,
+        List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, unitOfWork, seedDataType,
+        keyFieldNamesList)
     {
         _roleManager = roleManager;
         _secretDataFolder = secretDataFolder;
@@ -38,12 +40,16 @@ public /*open*/
 
         //თუ არ არსებობს ადმინის როლი, შევქმნათ იგი
         if (!(rolesToCreate.Any(x => x.Level <= 10) || rolesToCreate.Any(x =>
-                x.RoleKey.Equals("admin", StringComparison.CurrentCultureIgnoreCase) ||
-                x.RoleKey.Equals("administrator", StringComparison.CurrentCultureIgnoreCase))))
+                x.RoleKey.Equals("admin", StringComparison.OrdinalIgnoreCase) ||
+                x.RoleKey.Equals("administrator", StringComparison.OrdinalIgnoreCase))))
+        {
             rolesToCreate.Add(new RoleModel { Level = 10, RoleKey = "admin", RoleName = "ადმინისტრატორი" });
+        }
 
         if (rolesToCreate.Any(roleModel => !CreateRole(roleModel)))
+        {
             return false;
+        }
 
         DataSeederTempData.Instance.SaveIntIdKeys<Role>(DataSeederRepo.GetAll<Role>()
             .ToDictionary(k => k.Key, v => v.Id));

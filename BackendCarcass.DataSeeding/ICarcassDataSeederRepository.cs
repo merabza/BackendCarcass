@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using CarcassDb.Models;
-using RepositoriesDom;
+using BackendCarcass.Database.Models;
 
-namespace CarcassDataSeeding;
+namespace BackendCarcass.DataSeeding;
 
-public interface ICarcassDataSeederRepository : IAbstractRepository
+public interface ICarcassDataSeederRepository
 {
     List<ManyToManyJoin> GetManyToManyJoins(int parentDataTypeId, int childDataTypeId);
     bool SetDtParentDataTypes(Tuple<int, int>[] dtdt);

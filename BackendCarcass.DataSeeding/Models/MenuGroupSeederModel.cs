@@ -1,4 +1,4 @@
-namespace CarcassDataSeeding.Models;
+namespace BackendCarcass.DataSeeding.Models;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MenuGroupSeederModel

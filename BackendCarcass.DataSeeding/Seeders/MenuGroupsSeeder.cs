@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CarcassDataSeeding.Models;
-using CarcassDb.Models;
-using DatabaseToolsShared;
+using BackendCarcass.Database.Models;
+using BackendCarcass.DataSeeding.Models;
+using SystemTools.DatabaseToolsShared;
+using SystemTools.DomainShared.Repositories;
 
-namespace CarcassDataSeeding.Seeders;
+namespace BackendCarcass.DataSeeding.Seeders;
 
 public /*open*/
     class MenuGroupsSeeder : DataSeeder<MenuGroup, MenuGroupSeederModel>
@@ -13,9 +14,9 @@ public /*open*/
     public const string MasterData = nameof(MasterData);
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MenuGroupsSeeder(string dataSeedFolder, IDataSeederRepository repo,
+    public MenuGroupsSeeder(string dataSeedFolder, IDataSeederRepository repo, IUnitOfWork unitOfWork,
         ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
-        dataSeedFolder, repo, seedDataType, keyFieldNamesList)
+        dataSeedFolder, repo, unitOfWork, seedDataType, keyFieldNamesList)
     {
     }
 

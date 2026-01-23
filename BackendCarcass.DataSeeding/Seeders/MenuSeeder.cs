@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CarcassDataSeeding.Models;
-using CarcassDb.Models;
-using DatabaseToolsShared;
+using BackendCarcass.Database.Models;
+using BackendCarcass.DataSeeding.Models;
+using SystemTools.DatabaseToolsShared;
+using SystemTools.DomainShared.Repositories;
 
-namespace CarcassDataSeeding.Seeders;
+namespace BackendCarcass.DataSeeding.Seeders;
 
 public /*open*/
     class MenuSeeder : DataSeeder<MenuItm, MenuItmSeederModel>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MenuSeeder(string dataSeedFolder, IDataSeederRepository repo,
+    public MenuSeeder(string dataSeedFolder, IDataSeederRepository repo, IUnitOfWork unitOfWork,
         ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
-        dataSeedFolder, repo, seedDataType, keyFieldNamesList)
+        dataSeedFolder, repo, unitOfWork, seedDataType, keyFieldNamesList)
     {
     }
 
@@ -49,7 +50,7 @@ public /*open*/
             {
                 MenKey = "DataTypes",
                 MenName = "DataTypes - მონაცემთა ტიპები",
-                MenValue = DataSeederRepo.GetTableName<DataType>(),
+                MenValue = UnitOfWork.GetTableName<DataType>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 7,
                 MenLinkKey = mdList
@@ -58,7 +59,7 @@ public /*open*/
             {
                 MenKey = "Users",
                 MenName = "მომხმარებლები",
-                MenValue = DataSeederRepo.GetTableName<User>(),
+                MenValue = UnitOfWork.GetTableName<User>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 17,
                 MenLinkKey = mdList
@@ -67,7 +68,7 @@ public /*open*/
             {
                 MenKey = "MenuEditor",
                 MenName = "MenuEditor - მენიუს რედაქტორი",
-                MenValue = DataSeederRepo.GetTableName<MenuItm>(),
+                MenValue = UnitOfWork.GetTableName<MenuItm>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 4,
                 MenLinkKey = mdList
@@ -76,7 +77,7 @@ public /*open*/
             {
                 MenKey = "MenuGroups",
                 MenName = "MenuGroups - მენიუს ჯგუფები",
-                MenValue = DataSeederRepo.GetTableName<MenuGroup>(),
+                MenValue = UnitOfWork.GetTableName<MenuGroup>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 4,
                 MenLinkKey = mdList
@@ -85,7 +86,7 @@ public /*open*/
             {
                 MenKey = "Roles",
                 MenName = "როლები",
-                MenValue = DataSeederRepo.GetTableName<Role>(),
+                MenValue = UnitOfWork.GetTableName<Role>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 0,
                 MenLinkKey = mdList
@@ -105,7 +106,7 @@ public /*open*/
             {
                 MenKey = "CrudRightTypes",
                 MenName = "მონაცემების ცვლილებაზე უფლებების ტიპები",
-                MenValue = DataSeederRepo.GetTableName<CrudRightType>(),
+                MenValue = UnitOfWork.GetTableName<CrudRightType>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 0,
                 MenLinkKey = mdList

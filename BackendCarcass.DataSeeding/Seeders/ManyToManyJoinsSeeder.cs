@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CarcassDataSeeding.Comparers;
-using CarcassDataSeeding.Models;
-using CarcassDb.Models;
-using CarcassMasterDataDom;
-using CarcassMasterDataDom.CellModels;
-using DatabaseToolsShared;
+using BackendCarcass.Database.Models;
+using BackendCarcass.DataSeeding.Comparers;
+using BackendCarcass.DataSeeding.Models;
+using BackendCarcass.MasterData;
+using BackendCarcass.MasterData.CellModels;
+using SystemTools.DatabaseToolsShared;
+using SystemTools.DomainShared.Repositories;
+using Enumerable = System.Linq.Enumerable;
 
-namespace CarcassDataSeeding.Seeders;
+namespace BackendCarcass.DataSeeding.Seeders;
 
 public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToManyJoinSeederModel>
 {
@@ -18,8 +20,9 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ManyToManyJoinsSeeder(string secretDataFolder, ICarcassDataSeederRepository carcassRepo,
-        string dataSeedFolder, IDataSeederRepository repo, ESeedDataType seedDataType = ESeedDataType.OnlyJson,
-        List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, seedDataType, keyFieldNamesList)
+        string dataSeedFolder, IDataSeederRepository repo, IUnitOfWork unitOfWork,
+        ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
+        dataSeedFolder, repo, unitOfWork, seedDataType, keyFieldNamesList)
     {
         _secretDataFolder = secretDataFolder;
         _carcassRepo = carcassRepo;
@@ -43,8 +46,8 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         //                                      && Repo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
 
         var manyToManyJoinsList = new List<ManyToManyJoin>();
-        var dataTypeTableName = _carcassRepo.GetTableName<DataType>();
-        var crudRightTypeTableName = _carcassRepo.GetTableName<CrudRightType>();
+        var dataTypeTableName = UnitOfWork.GetTableName<DataType>();
+        var crudRightTypeTableName = UnitOfWork.GetTableName<CrudRightType>();
         manyToManyJoinsList.AddRange(GetThirdPartRights($"{dataTypeTableName}{dataTypeTableName}", dataTypeTableName,
             dataTypeTableName));
 
@@ -58,9 +61,8 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
         var existingManyToManyJoins = DataSeederRepo.GetAll<ManyToManyJoin>();
 
-        return !DataSeederRepo.CreateEntities(manyToManyJoinsList
-            .Except(existingManyToManyJoins, new ManyToManyJoinComparer()).Distinct(new ManyToManyJoinComparer())
-            .ToList())
+        return !DataSeederRepo.CreateEntities(Enumerable.ToList(manyToManyJoinsList
+            .Except(existingManyToManyJoins, new ManyToManyJoinComparer()).Distinct(new ManyToManyJoinComparer())))
             ? throw new Exception("manyToManyJoinsList entities cannot be created")
             : DataSeederRepo.RemoveNeedlessRecords(GetMenuToDataTypesNeedLess());
     }
@@ -93,17 +95,17 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
     public override List<ManyToManyJoin> CreateListByRules()
     {
-        return CreateMustListByRules().Distinct(new ManyToManyJoinComparer()).ToList();
+        return CreateMustListByRules().Distinct<ManyToManyJoin>(new ManyToManyJoinComparer()).ToList();
     }
 
     protected virtual List<ManyToManyJoin> CreateMustListByRules()
     {
-        var dataTypeTableName = _carcassRepo.GetTableName<DataType>();
-        var userTableName = _carcassRepo.GetTableName<User>();
-        var roleTableName = _carcassRepo.GetTableName<Role>();
-        var menuGroupTableName = _carcassRepo.GetTableName<MenuGroup>();
-        var menuTableName = _carcassRepo.GetTableName<MenuItm>();
-        var crudRightTypeTableName = _carcassRepo.GetTableName<CrudRightType>();
+        var dataTypeTableName = UnitOfWork.GetTableName<DataType>();
+        var userTableName = UnitOfWork.GetTableName<User>();
+        var roleTableName = UnitOfWork.GetTableName<Role>();
+        var menuGroupTableName = UnitOfWork.GetTableName<MenuGroup>();
+        var menuTableName = UnitOfWork.GetTableName<MenuItm>();
+        var crudRightTypeTableName = UnitOfWork.GetTableName<CrudRightType>();
 
         var tempData = DataSeederTempData.Instance;
         var dataTypeDataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeTableName);
@@ -246,7 +248,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         var tempData = DataSeederTempData.Instance;
 
         var pairDataTypeId = tempData.GetIntIdByKey<DataType>(pairDKey);
-        var roleDataTypeId = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<Role>());
+        var roleDataTypeId = tempData.GetIntIdByKey<DataType>(UnitOfWork.GetTableName<Role>());
         var firstDataTypeId = tempData.GetIntIdByKey<DataType>(firstDKey);
         var secondDataTypeId = tempData.GetIntIdByKey<DataType>(secondDKey);
 
@@ -262,8 +264,8 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
     {
         var tempData = DataSeederTempData.Instance;
 
-        var dataTypeDt = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<DataType>());
-        var dataTypeRol = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<Role>());
+        var dataTypeDt = tempData.GetIntIdByKey<DataType>(UnitOfWork.GetTableName<DataType>());
+        var dataTypeRol = tempData.GetIntIdByKey<DataType>(UnitOfWork.GetTableName<Role>());
 
         var existingDataTypes = DataSeederRepo.GetAll<DataType>();
 
@@ -277,8 +279,8 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
     {
         var tempData = DataSeederTempData.Instance;
 
-        var dataTypeMenuGroup = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<MenuGroup>());
-        var dataTypeRol = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<Role>());
+        var dataTypeMenuGroup = tempData.GetIntIdByKey<DataType>(UnitOfWork.GetTableName<MenuGroup>());
+        var dataTypeRol = tempData.GetIntIdByKey<DataType>(UnitOfWork.GetTableName<Role>());
 
         var existingMenuGroups = DataSeederRepo.GetAll<MenuGroup>();
 
@@ -292,8 +294,8 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
     {
         var tempData = DataSeederTempData.Instance;
 
-        var dataTypeMenu = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<MenuItm>());
-        var dataTypeRol = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<Role>());
+        var dataTypeMenu = tempData.GetIntIdByKey<DataType>(UnitOfWork.GetTableName<MenuItm>());
+        var dataTypeRol = tempData.GetIntIdByKey<DataType>(UnitOfWork.GetTableName<Role>());
 
         var existingMenuItems = DataSeederRepo.GetAll<MenuItm>();
 
@@ -306,8 +308,8 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
     private List<ManyToManyJoin> GetMenuToDataTypes()
     {
         var tempData = DataSeederTempData.Instance;
-        var dtMen = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<MenuItm>());
-        var dtDt = tempData.GetIntIdByKey<DataType>(_carcassRepo.GetTableName<DataType>());
+        var dtMen = tempData.GetIntIdByKey<DataType>(UnitOfWork.GetTableName<MenuItm>());
+        var dtDt = tempData.GetIntIdByKey<DataType>(UnitOfWork.GetTableName<DataType>());
 
         var res = new List<ManyToManyJoin>();
         var existingMenu = DataSeederRepo.GetAll<MenuItm>();
@@ -318,11 +320,17 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         {
             var dataType = existingDataTypes.SingleOrDefault(s => s.DtTable == miItm.MenValue);
             if (dataType == null)
+            {
                 continue;
+            }
+
             res.Add(new ManyToManyJoin { PtId = dtMen, PKey = miItm.MenKey, CtId = dtDt, CKey = dataType.DtTable });
             var gm = dataType.DtGridRulesJson is null ? null : GridModel.DeserializeGridModel(dataType.DtGridRulesJson);
             if (gm == null)
+            {
                 continue;
+            }
+
             foreach (var cell in gm.Cells)
             {
                 var dtTable = cell switch
@@ -333,11 +341,15 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
                 };
 
                 if (dtTable is null)
+                {
                     continue;
+                }
 
                 dataType = existingDataTypes.SingleOrDefault(s => s.DtTable == dtTable);
                 if (dataType == null)
+                {
                     continue;
+                }
 
                 res.Add(new ManyToManyJoin { PtId = dtMen, PKey = miItm.MenKey, CtId = dtDt, CKey = dataType.DtTable });
             }
@@ -348,8 +360,8 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
     private List<ManyToManyJoin> GetMenuToDataTypesNeedLess()
     {
-        var menuDKey = _carcassRepo.GetTableName<MenuItm>();
-        var dataTypeDKey = _carcassRepo.GetTableName<DataType>();
+        var menuDKey = UnitOfWork.GetTableName<MenuItm>();
+        var dataTypeDKey = UnitOfWork.GetTableName<DataType>();
 
         var tempData = DataSeederTempData.Instance;
         var dtMen = tempData.GetIntIdByKey<DataType>(menuDKey);

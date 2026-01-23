@@ -1,4 +1,4 @@
-namespace CarcassDataSeeding.Models;
+namespace BackendCarcass.DataSeeding.Models;
 
 public sealed class UserSeederModel
 {
