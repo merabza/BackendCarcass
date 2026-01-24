@@ -9,13 +9,9 @@ namespace BackendCarcass.Repositories.DependencyInjection;
 // ReSharper disable once UnusedType.Global
 public static class CarcassRepositoriesDependencyInjection
 {
-    public static IServiceCollection AddCarcassRepositories(this IServiceCollection services, ILogger logger,
-        bool debugMode)
+    public static IServiceCollection AddCarcassRepositories(this IServiceCollection services, ILogger? debugLogger)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(AddCarcassRepositories));
-        }
+        debugLogger?.Information("{MethodName} Started", nameof(AddCarcassRepositories));
 
         services.AddScoped<IIdentityRepository, IdentityRepository>();
         services.AddScoped<IMenuRightsRepository, MenuRightsRepository>();
@@ -24,10 +20,7 @@ public static class CarcassRepositoriesDependencyInjection
         services.AddScoped<IRightsRepository, RightsRepository>();
         services.AddScoped<IUserClaimsRepository, UserClaimsRepository>();
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(AddCarcassRepositories));
-        }
+        debugLogger?.Information("{MethodName} Finished", nameof(AddCarcassRepositories));
 
         return services;
     }

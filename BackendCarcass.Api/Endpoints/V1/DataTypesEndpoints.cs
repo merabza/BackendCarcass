@@ -28,12 +28,9 @@ namespace BackendCarcass.Api.Endpoints.V1;
 // ReSharper disable once UnusedType.Global
 public static class DataTypesEndpoints
 {
-    public static bool UseDataTypesEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
+    public static bool UseDataTypesEndpoints(this IEndpointRouteBuilder endpoints, ILogger? debugLogger)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(UseDataTypesEndpoints));
-        }
+        debugLogger?.Information("{MethodName} Started", nameof(UseDataTypesEndpoints));
 
         RouteGroupBuilder group = endpoints
             .MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.DataTypes.DataTypesBase).RequireAuthorization();
@@ -42,10 +39,7 @@ public static class DataTypesEndpoints
         group.MapGet(CarcassApiRoutes.DataTypes.GridModel, GridModel);
         group.MapGet(CarcassApiRoutes.DataTypes.MultipleGridModels, MultipleGridModels);
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(UseDataTypesEndpoints));
-        }
+        debugLogger?.Information("{MethodName} Finished", nameof(UseDataTypesEndpoints));
 
         return true;
     }

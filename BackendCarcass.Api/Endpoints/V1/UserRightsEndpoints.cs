@@ -25,12 +25,9 @@ namespace BackendCarcass.Api.Endpoints.V1;
 // ReSharper disable once UnusedType.Global
 public static class UserRightsEndpoints
 {
-    public static bool UseUserRightsEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
+    public static bool UseUserRightsEndpoints(this IEndpointRouteBuilder endpoints, ILogger? debugLogger)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(UseUserRightsEndpoints));
-        }
+        debugLogger?.Information("{MethodName} Started", nameof(UseUserRightsEndpoints));
 
         RouteGroupBuilder group = endpoints
             .MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase).RequireAuthorization();
@@ -41,10 +38,7 @@ public static class UserRightsEndpoints
         group.MapDelete(CarcassApiRoutes.UserRights.DeleteCurrentUser, DeleteCurrentUser);
         group.MapGet(CarcassApiRoutes.UserRights.MainMenu, MainMenu);
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(UseUserRightsEndpoints));
-        }
+        debugLogger?.Information("{MethodName} Finished", nameof(UseUserRightsEndpoints));
 
         return true;
     }

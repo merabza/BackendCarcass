@@ -15,13 +15,10 @@ namespace BackendCarcass.Identity.DependencyInjection;
 // ReSharper disable once UnusedType.Global
 public static class CarcassIdentityDependencyInjection
 {
-    public static IServiceCollection AddCarcassIdentity(this IServiceCollection services, ILogger logger,
-        IConfiguration configuration, bool debugMode)
+    public static IServiceCollection AddCarcassIdentity(this IServiceCollection services, ILogger? debugLogger,
+        IConfiguration configuration)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(AddCarcassIdentity));
-        }
+        debugLogger?.Information("{MethodName} Started", nameof(AddCarcassIdentity));
 
         services.AddScoped<IUserStore<AppUser>, MyUserStore>();
         services.AddScoped<IUserPasswordStore<AppUser>, MyUserStore>();
@@ -68,28 +65,19 @@ public static class CarcassIdentityDependencyInjection
 
         services.AddAuthorizationBuilder().SetInvokeHandlersAfterFailure(true);
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(AddCarcassIdentity));
-        }
+        debugLogger?.Information("{MethodName} Finished", nameof(AddCarcassIdentity));
 
         return services;
     }
 
-    public static bool UseAuthenticationAndAuthorization(this IApplicationBuilder app, ILogger logger, bool debugMode)
+    public static bool UseAuthenticationAndAuthorization(this IApplicationBuilder app, ILogger? debugLogger)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(UseAuthenticationAndAuthorization));
-        }
+        debugLogger?.Information("{MethodName} Started", nameof(UseAuthenticationAndAuthorization));
 
         app.UseAuthentication();
         app.UseAuthorization();
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(UseAuthenticationAndAuthorization));
-        }
+        debugLogger?.Information("{MethodName} Finished", nameof(UseAuthenticationAndAuthorization));
 
         return true;
     }

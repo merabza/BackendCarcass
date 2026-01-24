@@ -7,25 +7,18 @@ namespace BackendCarcass.Api.DependencyInjection;
 // ReSharper disable once UnusedType.Global
 public static class BackendCarcassApiDependencyInjection
 {
-    public static bool UseBackendCarcassApiEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger,
-        bool debugMode)
+    public static bool UseBackendCarcassApiEndpoints(this IEndpointRouteBuilder endpoints, ILogger? debugLogger)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(UseBackendCarcassApiEndpoints));
-        }
+        debugLogger?.Information("{MethodName} Started", nameof(UseBackendCarcassApiEndpoints));
 
-        endpoints.UseAuthenticationEndpoints(logger, debugMode);
-        endpoints.UseDataTypesEndpoints(logger, debugMode);
-        endpoints.UseMasterDataEndpoints(logger, debugMode);
-        endpoints.UseProcessesEndpoints(logger, debugMode);
-        endpoints.UseRightsEndpoints(logger, debugMode);
-        endpoints.UseUserRightsEndpoints(logger, debugMode);
+        endpoints.UseAuthenticationEndpoints(debugLogger);
+        endpoints.UseDataTypesEndpoints(debugLogger);
+        endpoints.UseMasterDataEndpoints(debugLogger);
+        endpoints.UseProcessesEndpoints(debugLogger);
+        endpoints.UseRightsEndpoints(debugLogger);
+        endpoints.UseUserRightsEndpoints(debugLogger);
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(UseBackendCarcassApiEndpoints));
-        }
+        debugLogger?.Information("{MethodName} Finished", nameof(UseBackendCarcassApiEndpoints));
 
         return true;
     }

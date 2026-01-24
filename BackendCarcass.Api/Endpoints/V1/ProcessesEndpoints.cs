@@ -18,21 +18,15 @@ namespace BackendCarcass.Api.Endpoints.V1;
 // ReSharper disable once UnusedType.Global
 public static class ProcessesEndpoints
 {
-    public static bool UseProcessesEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
+    public static bool UseProcessesEndpoints(this IEndpointRouteBuilder endpoints, ILogger? debugLogger)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(UseProcessesEndpoints));
-        }
+        debugLogger?.Information("{MethodName} Started", nameof(UseProcessesEndpoints));
 
         endpoints.MapGet(
             CarcassApiRoutes.ApiBase + CarcassApiRoutes.Processes.ProcessesBase + CarcassApiRoutes.Processes.Status,
             Status).RequireAuthorization();
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(UseProcessesEndpoints));
-        }
+        debugLogger?.Information("{MethodName} Finished", nameof(UseProcessesEndpoints));
 
         return true;
     }

@@ -9,12 +9,9 @@ namespace BackendCarcass.Application.DependencyInjection;
 public static class CarcassApplicationDependencyInjection
 {
     public static IServiceCollection AddScopedAllCarcassApplicationServices(this IServiceCollection services,
-        ILogger logger, bool debugMode)
+        ILogger? debugLogger)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(AddScopedAllCarcassApplicationServices));
-        }
+        debugLogger?.Information("{MethodName} Started", nameof(AddScopedAllCarcassApplicationServices));
 
         Assembly assembly = typeof(IScopeServiceCarcassApplication).Assembly;
         foreach (Type type in assembly.ExportedTypes.Where(x =>
@@ -24,10 +21,7 @@ public static class CarcassApplicationDependencyInjection
             services.AddScoped(type);
         }
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(AddScopedAllCarcassApplicationServices));
-        }
+        debugLogger?.Information("{MethodName} Finished", nameof(AddScopedAllCarcassApplicationServices));
 
         return services;
     }

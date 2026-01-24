@@ -24,12 +24,9 @@ namespace BackendCarcass.Api.Endpoints.V1;
 // ReSharper disable once UnusedType.Global
 public static class AuthenticationEndpoints
 {
-    public static bool UseAuthenticationEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
+    public static bool UseAuthenticationEndpoints(this IEndpointRouteBuilder endpoints, ILogger? debugLogger)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(UseAuthenticationEndpoints));
-        }
+        debugLogger?.Information("{MethodName} Started", nameof(UseAuthenticationEndpoints));
 
         RouteGroupBuilder group = endpoints
             .MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
@@ -38,10 +35,7 @@ public static class AuthenticationEndpoints
         group.MapPost(CarcassApiRoutes.Authentication.Registration, Registration);
         group.MapPost(CarcassApiRoutes.Authentication.Login, Login);
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(UseAuthenticationEndpoints));
-        }
+        debugLogger?.Information("{MethodName} Finished", nameof(UseAuthenticationEndpoints));
 
         return true;
     }

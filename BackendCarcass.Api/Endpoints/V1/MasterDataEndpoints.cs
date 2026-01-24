@@ -30,12 +30,9 @@ namespace BackendCarcass.Api.Endpoints.V1;
 // ReSharper disable once UnusedType.Global
 public static class MasterDataEndpoints
 {
-    public static bool UseMasterDataEndpoints(this IEndpointRouteBuilder endpoints, ILogger logger, bool debugMode)
+    public static bool UseMasterDataEndpoints(this IEndpointRouteBuilder endpoints, ILogger? debugLogger)
     {
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Started", nameof(UseMasterDataEndpoints));
-        }
+        debugLogger?.Information("{MethodName} Started", nameof(UseMasterDataEndpoints));
 
         RouteGroupBuilder group = endpoints
             .MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.MasterData.MasterDataBase).RequireAuthorization();
@@ -51,10 +48,7 @@ public static class MasterDataEndpoints
         group.MapDelete(CarcassApiRoutes.MasterData.Delete, MdDeleteOneRecord)
             .AddEndpointFilter<UserTableRightsFilter>();
 
-        if (debugMode)
-        {
-            logger.Information("{MethodName} Finished", nameof(UseMasterDataEndpoints));
-        }
+        debugLogger?.Information("{MethodName} Finished", nameof(UseMasterDataEndpoints));
 
         return true;
     }
