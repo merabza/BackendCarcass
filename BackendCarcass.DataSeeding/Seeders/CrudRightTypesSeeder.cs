@@ -2,6 +2,7 @@
 using System.Linq;
 using BackendCarcass.Database.Models;
 using BackendCarcass.DataSeeding.Models;
+using BackendCarcass.Rights;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.DomainShared.Repositories;
 
