@@ -6,7 +6,6 @@ namespace BackendCarcass.DataSeeding;
 
 public sealed class DataSeederTempData
 {
-    private static DataSeederTempData? _instance;
     private static readonly Lock SyncRoot = new();
 
     private readonly Dictionary<Type, Dictionary<string, int>> _keyIdIntDictionary = [];
@@ -41,17 +40,17 @@ public sealed class DataSeederTempData
     {
         get
         {
-            if (_instance != null)
+            if (field != null)
             {
-                return _instance;
+                return field;
             }
 
             lock (SyncRoot) //thread safe singleton
             {
-                _instance = new DataSeederTempData();
+                field = new DataSeederTempData();
             }
 
-            return _instance;
+            return field;
         }
     }
 
@@ -99,12 +98,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyInt4IdIntDictionary[typeof(T)].TryGetValue(key, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+        return _keyInt4IdIntDictionary[typeof(T)].TryGetValue(key, out int value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public int GetIntIdByKey<T>(int key1, int key2, int key3, int key4, int key5, int key6)
@@ -115,7 +111,7 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyInt6IdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+        if (_keyInt6IdIntDictionary[typeof(T)].TryGetValue(key, out int value))
         {
             return value;
         }
@@ -131,12 +127,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyInt5IdIntDictionary[typeof(T)].TryGetValue(key, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+        return _keyInt5IdIntDictionary[typeof(T)].TryGetValue(key, out int value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public void SaveIntIdKeys<T>(Dictionary<Tuple<int, int, short>, int> dict)
@@ -171,12 +164,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyInt3IdIntDictionary[typeof(T)].TryGetValue(key, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+        return _keyInt3IdIntDictionary[typeof(T)].TryGetValue(key, out int value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public int GetIntIdByKey<T>(int key1, int key2, short key3)
@@ -187,12 +177,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyInt2ShortIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+        return _keyInt2ShortIdIntDictionary[typeof(T)].TryGetValue(key, out int value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public void SaveIntIdKeys<T>(Dictionary<Tuple<string, short>, int> dict)
@@ -215,12 +202,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyStringShortIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+        return _keyStringShortIdIntDictionary[typeof(T)].TryGetValue(key, out int value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public void SaveIntIdKeys<T>(Dictionary<Tuple<string, int>, int> dict)
@@ -245,12 +229,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyStringIntIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+        return _keyStringIntIdIntDictionary[typeof(T)].TryGetValue(key, out int value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public void SaveIntIdKeys<T>(Dictionary<Tuple<int, string>, int> dict)
@@ -273,12 +254,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyIntStringIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+        return _keyIntStringIdIntDictionary[typeof(T)].TryGetValue(key, out int value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public void SaveIntIdKeys<T>(Dictionary<Tuple<int, DateTime>, int> dict)
@@ -301,7 +279,7 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyIntDatetimeIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
+        if (_keyIntDatetimeIdIntDictionary[typeof(T)].TryGetValue(key, out int value))
         {
             return value;
         }
@@ -342,12 +320,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyIntIntIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+        return _keyIntIntIdIntDictionary[typeof(T)].TryGetValue(key, out int value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public int GetIntIdByKey<T>(int key1, short key2)
@@ -358,12 +333,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyIntShortIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+        return _keyIntShortIdIntDictionary[typeof(T)].TryGetValue(key, out int value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public int? GetIntNullableIdByKey<T>(string? key1, int? key2)
@@ -415,12 +387,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyIntIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+        return _keyIntIdIntDictionary[typeof(T)].TryGetValue(key, out int value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public void SaveShortIdKeys<T>(Dictionary<string, short> dict)
@@ -454,12 +423,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyIdShortDictionary[typeof(T)].TryGetValue(key, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+        return _keyIdShortDictionary[typeof(T)].TryGetValue(key, out short value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public int GetIntIdByKey<T>(string key)
@@ -469,12 +435,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_keyIdIntDictionary[typeof(T)].TryGetValue(key, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
+        return _keyIdIntDictionary[typeof(T)].TryGetValue(key, out int value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {key}");
     }
 
     public void SaveOldIntIdsDictToIntIds<T>(Dictionary<int, int> dict)
@@ -496,12 +459,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_oldIntIdsDictToIntIds[typeof(T)].TryGetValue(oldId, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {oldId}");
+        return _oldIntIdsDictToIntIds[typeof(T)].TryGetValue(oldId, out int value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {oldId}");
     }
 
     public void SaveOldShortIdsDictToShortIds<T>(Dictionary<short, short> dict)
@@ -523,12 +483,9 @@ public sealed class DataSeederTempData
             throw new Exception($"Cannot get Keys for key {typeof(T)}");
         }
 
-        if (_oldShortIdsDictToShortIds[typeof(T)].TryGetValue(oldId, out var value))
-        {
-            return value;
-        }
-
-        throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {oldId}");
+        return _oldShortIdsDictToShortIds[typeof(T)].TryGetValue(oldId, out short value)
+            ? value
+            : throw new Exception($"Cannot get Id for key {typeof(T).Name} and key {oldId}");
     }
 
     //public void SaveOldDatetimeIdsDictToDatetimeIds<T>(Dictionary<DateTime, DateTime> dict)
