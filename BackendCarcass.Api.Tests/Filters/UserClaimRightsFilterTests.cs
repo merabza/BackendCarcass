@@ -39,10 +39,10 @@ public class UserClaimRightsFilterTests
     public async Task InvokeAsync_WhenUserHasClaim_ShouldCallNextDelegate()
     {
         // Arrange
-        var filter = CreateFilter();
+        TestableUserClaimRightsFilter filter = CreateFilter();
         var context = Substitute.For<EndpointFilterInvocationContext>();
-        var nextCalled = false;
-        var expectedResult = Results.Ok();
+        bool nextCalled = false;
+        IResult expectedResult = Results.Ok();
 
         async ValueTask<object?> next(EndpointFilterInvocationContext ctx)
         {
@@ -56,7 +56,7 @@ public class UserClaimRightsFilterTests
         filter.SetupRightsDeterminerResult(true);
 
         // Act
-        var result = await filter.InvokeAsync(context, next);
+        object? result = await filter.InvokeAsync(context, next);
 
         // Assert
         Assert.True(nextCalled);
@@ -67,9 +67,9 @@ public class UserClaimRightsFilterTests
     public async Task InvokeAsync_WhenUserDoesNotHaveClaim_ShouldReturnBadRequestWithInsufficientRights()
     {
         // Arrange
-        var filter = CreateFilter();
+        TestableUserClaimRightsFilter filter = CreateFilter();
         var context = Substitute.For<EndpointFilterInvocationContext>();
-        var nextCalled = false;
+        bool nextCalled = false;
 
         EndpointFilterDelegate next = async ctx =>
         {
@@ -83,7 +83,7 @@ public class UserClaimRightsFilterTests
         filter.SetupRightsDeterminerResult(false);
 
         // Act
-        var result = await filter.InvokeAsync(context, next);
+        object? result = await filter.InvokeAsync(context, next);
 
         // Assert
         Assert.False(nextCalled);
@@ -100,9 +100,9 @@ public class UserClaimRightsFilterTests
     public async Task InvokeAsync_WhenRightsCheckReturnsErrors_ShouldReturnBadRequestWithErrors()
     {
         // Arrange
-        var filter = CreateFilter();
+        TestableUserClaimRightsFilter filter = CreateFilter();
         var context = Substitute.For<EndpointFilterInvocationContext>();
-        var nextCalled = false;
+        bool nextCalled = false;
 
         EndpointFilterDelegate next = async ctx =>
         {
@@ -111,7 +111,7 @@ public class UserClaimRightsFilterTests
             return Results.Ok();
         };
 
-        var expectedErrors = new[]
+        Err[] expectedErrors = new[]
         {
             RightsApiErrors.ErrorWhenDeterminingRights,
             new Err { ErrorCode = "AdditionalError", ErrorMessage = "Additional error occurred" }
@@ -122,7 +122,7 @@ public class UserClaimRightsFilterTests
         filter.SetupRightsDeterminerResult(expectedErrors);
 
         // Act
-        var result = await filter.InvokeAsync(context, next);
+        object? result = await filter.InvokeAsync(context, next);
 
         // Assert
         Assert.False(nextCalled);
@@ -139,12 +139,12 @@ public class UserClaimRightsFilterTests
     public async Task InvokeAsync_WithDifferentClaimNames_ShouldCheckCorrectClaim()
     {
         // Arrange
-        var customClaimName = "CustomClaim";
+        string customClaimName = "CustomClaim";
         var filter = new TestableUserClaimRightsFilter(customClaimName, _mockRepo, _mockUnitOfWork, _mockLogger,
             _mockCurrentUser);
 
         var context = Substitute.For<EndpointFilterInvocationContext>();
-        var nextCalled = false;
+        bool nextCalled = false;
 
         EndpointFilterDelegate next = async ctx =>
         {
@@ -169,9 +169,9 @@ public class UserClaimRightsFilterTests
     public async Task InvokeAsync_WhenUserHasMultipleRoles_ShouldCheckRights()
     {
         // Arrange
-        var filter = CreateFilter();
+        TestableUserClaimRightsFilter filter = CreateFilter();
         var context = Substitute.For<EndpointFilterInvocationContext>();
-        var expectedResult = Results.Ok();
+        IResult expectedResult = Results.Ok();
 
         async ValueTask<object?> Next(EndpointFilterInvocationContext ctx)
         {
@@ -184,7 +184,7 @@ public class UserClaimRightsFilterTests
         filter.SetupRightsDeterminerResult(true);
 
         // Act
-        var result = await filter.InvokeAsync(context, Next);
+        object? result = await filter.InvokeAsync(context, Next);
 
         // Assert
         // Roles property was successfully stubbed with multiple roles
@@ -195,9 +195,9 @@ public class UserClaimRightsFilterTests
     public async Task InvokeAsync_WhenNextDelegateReturnsCustomResult_ShouldReturnThatResult()
     {
         // Arrange
-        var filter = CreateFilter();
+        TestableUserClaimRightsFilter filter = CreateFilter();
         var context = Substitute.For<EndpointFilterInvocationContext>();
-        var customResult = Results.Created("/api/resource/123", new { Id = 123 });
+        IResult customResult = Results.Created("/api/resource/123", new { Id = 123 });
 
         async ValueTask<object?> Next(EndpointFilterInvocationContext ctx)
         {
@@ -210,7 +210,7 @@ public class UserClaimRightsFilterTests
         filter.SetupRightsDeterminerResult(true);
 
         // Act
-        var result = await filter.InvokeAsync(context, Next);
+        object? result = await filter.InvokeAsync(context, Next);
 
         // Assert
         Assert.Equal(customResult, result);
@@ -220,9 +220,9 @@ public class UserClaimRightsFilterTests
     public async Task InvokeAsync_WhenUserHasNoClaim_ShouldNotCallNextDelegate()
     {
         // Arrange
-        var filter = CreateFilter();
+        TestableUserClaimRightsFilter filter = CreateFilter();
         var context = Substitute.For<EndpointFilterInvocationContext>();
-        var nextCalled = false;
+        bool nextCalled = false;
 
         async ValueTask<object?> Next(EndpointFilterInvocationContext ctx)
         {
@@ -275,7 +275,7 @@ public class UserClaimRightsFilterTests
                 return await base.InvokeAsync(context, next);
             }
 
-            var result = _mockResult.Value;
+            OneOf<bool, Err[]> result = _mockResult.Value;
             if (result.IsT1)
             {
                 return Results.BadRequest(result.AsT1);
@@ -287,7 +287,6 @@ public class UserClaimRightsFilterTests
             }
 
             return await next(context);
-
         }
     }
 }

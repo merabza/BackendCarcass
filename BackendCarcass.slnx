@@ -8,6 +8,7 @@
     <File Path="Directory.Packages.props" />
   </Folder>
   <Folder Name="/SystemTools/">
+    <Project Path="../SystemTools/SystemTools.DatabaseToolsShared/SystemTools.DatabaseToolsShared.csproj" />
     <Project Path="../SystemTools/SystemTools.ApiContracts/SystemTools.ApiContracts.csproj" />
     <Project Path="../SystemTools/SystemTools.DomainShared/SystemTools.DomainShared.csproj" />
     <Project Path="../SystemTools/SystemTools.MediatRMessagingAbstractions/SystemTools.MediatRMessagingAbstractions.csproj" />
@@ -20,6 +21,7 @@
   <Folder Name="/WebSystemTools/">
     <Project Path="../WebSystemTools/CorsTools/CorsTools.csproj" />
   </Folder>
+  <Project Path="BackendCarcass.DataSeeding/BackendCarcass.DataSeeding.csproj" />
   <Project Path="BackendCarcass.Api/BackendCarcass.Api.csproj" />
   <Project Path="BackendCarcass.Application/BackendCarcass.Application.csproj" />
   <Project Path="BackendCarcass.Database/BackendCarcass.Database.csproj" />
