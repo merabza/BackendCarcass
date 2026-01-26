@@ -54,9 +54,10 @@ public /*open*/
         var forUpdate = new List<DataType>();
 
         //DtParentDataTypeIdDtKey => DtParentDataTypeId
-        foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtParentDataTypeIdDtKey != null))
+        foreach (DataTypeSeederModel dataTypeSeederModel in dataTypesSeedData.Where(w =>
+                     w.DtParentDataTypeIdDtKey != null))
         {
-            var oneRec = dataTypesList.SingleOrDefault(s => s.DtTable == dataTypeSeederModel.DtTable);
+            DataType? oneRec = dataTypesList.SingleOrDefault(s => s.DtTable == dataTypeSeederModel.DtTable);
             if (oneRec == null)
             {
                 continue;
@@ -67,9 +68,10 @@ public /*open*/
         }
 
         //DtManyToManyJoinParentDataTypeKey => DtManyToManyJoinParentDataTypeId
-        foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtManyToManyJoinParentDataTypeKey != null))
+        foreach (DataTypeSeederModel dataTypeSeederModel in dataTypesSeedData.Where(w =>
+                     w.DtManyToManyJoinParentDataTypeKey != null))
         {
-            var oneRec = dataTypesList.SingleOrDefault(s => s.DtTable == dataTypeSeederModel.DtTable);
+            DataType? oneRec = dataTypesList.SingleOrDefault(s => s.DtTable == dataTypeSeederModel.DtTable);
             if (oneRec == null)
             {
                 continue;
@@ -81,9 +83,10 @@ public /*open*/
         }
 
         //DtManyToManyJoinChildDataTypeKey => DtManyToManyJoinChildDataTypeId
-        foreach (var dataTypeSeederModel in dataTypesSeedData.Where(w => w.DtManyToManyJoinChildDataTypeKey != null))
+        foreach (DataTypeSeederModel dataTypeSeederModel in dataTypesSeedData.Where(w =>
+                     w.DtManyToManyJoinChildDataTypeKey != null))
         {
-            var oneRec = dataTypesList.SingleOrDefault(s => s.DtTable == dataTypeSeederModel.DtTable);
+            DataType? oneRec = dataTypesList.SingleOrDefault(s => s.DtTable == dataTypeSeederModel.DtTable);
             if (oneRec == null)
             {
                 continue;
@@ -99,16 +102,16 @@ public /*open*/
 
     protected virtual bool RemoveRedundantDataTypes()
     {
-        var toRemoveTableNames = new[] { "dataRights", "dataRightTypes", "forms" };
+        string[] toRemoveTableNames = new[] { "dataRights", "dataRightTypes", "forms" };
         return CarcassRepo.RemoveRedundantDataTypesByTableNames(toRemoveTableNames);
     }
 
     protected virtual bool SetParentDataTypes()
     {
         var tempData = DataSeederTempData.Instance;
-        var dataTypeTableName = UnitOfWork.GetTableName<DataType>();
-        var crudRightTypeTableName = UnitOfWork.GetTableName<CrudRightType>();
-        var dataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeTableName);
+        string dataTypeTableName = UnitOfWork.GetTableName<DataType>();
+        string crudRightTypeTableName = UnitOfWork.GetTableName<CrudRightType>();
+        int dataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeTableName);
 
         var dtdt = new Tuple<int, int>[]
         {
@@ -131,7 +134,7 @@ public /*open*/
     {
         //var appClaimDKey = ECarcassDataTypeKeys.AppClaim.ToDtKey();
         //var crudRightTypeDKey = ECarcassDataTypeKeys.CrudRightType.ToDtKey();
-        var newDataTypes = new[]
+        DataType[] newDataTypes = new[]
         {
             //carcass used
 
@@ -226,7 +229,7 @@ public /*open*/
     //GetNumberColumn(3,"mrPosition","პოზიცია")
     protected static Cell GetIntegerCell(string fieldName, string caption, bool allowNull = false, bool isShort = false)
     {
-        var res = allowNull
+        IntegerCell res = allowNull
             ? Cell.CreateIntegerCell(fieldName, caption).Nullable().Min(0)
             : Cell.CreateIntegerCell(fieldName, caption).Required($"{caption} შევსებული უნდა იყოს").Default();
         return isShort ? res.UseShortCell() : res;
@@ -240,7 +243,7 @@ public /*open*/
 
     protected static Cell GetMdComboCell(string fieldName, string caption, string dtTable, bool allowNull = false)
     {
-        var cell = Cell.MdLookup(fieldName, caption, dtTable).Default();
+        MdLookupCell cell = Cell.MdLookup(fieldName, caption, dtTable).Default();
         return allowNull
             ? cell.Nullable()
             : cell.Positive($"{caption} არჩეული უნდა იყოს").Required($"{caption} არჩეული უნდა იყოს");
@@ -249,7 +252,7 @@ public /*open*/
     protected static Cell GetComboCellWithRowSource(string fieldName, string caption, string rowSource,
         bool isShort = false)
     {
-        var res = Cell.RsLookup(fieldName, caption, rowSource).Default();
+        RsLookupCell res = Cell.RsLookup(fieldName, caption, rowSource).Default();
         return isShort ? res.UseShortCell() : res;
     }
 

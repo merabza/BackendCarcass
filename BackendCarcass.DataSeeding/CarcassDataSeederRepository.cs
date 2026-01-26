@@ -29,9 +29,9 @@ public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
     {
         try
         {
-            foreach (var tdt in dtdt)
+            foreach (Tuple<int, int> tdt in dtdt)
             {
-                var dt = _context.DataTypes.SingleOrDefault(s => s.DtId == tdt.Item1);
+                DataType? dt = _context.DataTypes.SingleOrDefault(s => s.DtId == tdt.Item1);
                 dt?.DtParentDataTypeId = tdt.Item2;
             }
 
@@ -48,9 +48,9 @@ public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
     {
         try
         {
-            foreach (var tdt in dtdtdt)
+            foreach (Tuple<int, int, int> tdt in dtdtdt)
             {
-                var dt = _context.DataTypes.SingleOrDefault(s => s.DtId == tdt.Item1);
+                DataType? dt = _context.DataTypes.SingleOrDefault(s => s.DtId == tdt.Item1);
                 dt?.DtManyToManyJoinParentDataTypeId = tdt.Item2;
                 dt?.DtManyToManyJoinChildDataTypeId = tdt.Item3;
             }
