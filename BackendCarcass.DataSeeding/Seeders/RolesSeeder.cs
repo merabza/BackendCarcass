@@ -30,9 +30,9 @@ public /*open*/
     {
         DataSeederTempData.Instance.SaveIntIdKeys<Role>(savedData.ToDictionary(k => k.RolKey, v => v.RolId));
 
-        var existingRoles = DataSeederRepo.GetAll<Role>();
+        List<Role> existingRoles = DataSeederRepo.GetAll<Role>();
 
-        var rolesToCreate = GetRoleModels()
+        List<RoleModel> rolesToCreate = GetRoleModels()
             .Select(roleModel => new
             {
                 roleModel, existingRole = existingRoles.SingleOrDefault(sd => sd.RolKey == roleModel.RoleKey)
@@ -67,8 +67,8 @@ public /*open*/
     private bool CreateRole(RoleModel roleModel)
     {
         //შევქმნათ როლი
-        var result = _roleManager.CreateAsync(new AppRole(roleModel.RoleKey, roleModel.RoleName, roleModel.Level))
-            .Result;
+        IdentityResult result = _roleManager
+            .CreateAsync(new AppRole(roleModel.RoleKey, roleModel.RoleName, roleModel.Level)).Result;
         return result.Succeeded ? true : throw new Exception($"Role {roleModel.RoleName} can not be created.");
     }
 

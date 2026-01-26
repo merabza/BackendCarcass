@@ -27,7 +27,7 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
 
     public override bool AdditionalCheck(List<UserSeederModel> jsonData, List<User> savedData)
     {
-        var userToCreate = GetAppUserModels().Select(userModel => new
+        IEnumerable<UserModel> userToCreate = GetAppUserModels().Select(userModel => new
         {
             userModel,
             existingUser =
@@ -66,7 +66,7 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
     {
         //1. შევქმნათ ახალი მომხმარებელი
         var user = new AppUser(userModel.UserName, userModel.FirstName, userModel.LastName) { Email = userModel.Email };
-        var result = _userManager.CreateAsync(user, userModel.Password).Result;
+        IdentityResult result = _userManager.CreateAsync(user, userModel.Password).Result;
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
         if (result.Succeeded)
         {
