@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SystemTools.DatabaseToolsShared;
 
-namespace BackendCarcass.DatabaseConfiguration;
+namespace BackendCarcass.Database.Configuration;
 
 public sealed class DataTypeConfiguration : IEntityTypeConfiguration<DataType>
 {

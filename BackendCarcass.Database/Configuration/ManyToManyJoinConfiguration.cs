@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;
 
-namespace BackendCarcass.DatabaseConfiguration;
+namespace BackendCarcass.Database.Configuration;
 
 public sealed class ManyToManyJoinConfiguration : IEntityTypeConfiguration<ManyToManyJoin>
 {

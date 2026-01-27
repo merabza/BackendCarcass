@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BackendCarcass.DatabaseConfiguration;
+namespace BackendCarcass.Database.Configuration;
 
 public sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
 {

@@ -28,6 +28,6 @@ public /*open*/ class CarcassDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(CarcassDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly( typeof(CarcassDbContext).Assembly);
     }
 }
