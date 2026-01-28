@@ -11,13 +11,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.Identity.Core" />
+        <PackageReference Include="Microsoft.Extensions.Identity.Core" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\SystemTools\SystemTools.DatabaseToolsShared\SystemTools.DatabaseToolsShared.csproj" />
-      <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
-      <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
+        <ProjectReference
+            Include="..\..\SystemTools\SystemTools.DatabaseToolsShared\SystemTools.DatabaseToolsShared.csproj" />
+        <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
+        <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
     </ItemGroup>
 
 </Project>

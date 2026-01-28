@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\SystemTools\SystemTools.RepositoriesShared\SystemTools.RepositoriesShared.csproj" />
-    <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference
+            Include="..\..\SystemTools\SystemTools.RepositoriesShared\SystemTools.RepositoriesShared.csproj" />
+        <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
+    </ItemGroup>
 
 </Project>
