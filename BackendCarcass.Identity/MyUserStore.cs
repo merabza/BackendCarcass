@@ -112,7 +112,11 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
                 Email = s.Email,
                 NormalizedEmail = s.NormalizedEmail
             });
-            _logger.LogInformation("User count: {UserCount}", ret.Count().ToString(CultureInfo.InvariantCulture));
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("User count: {UserCount}", ret.Count().ToString(CultureInfo.InvariantCulture));
+            }
+
             return ret;
         }
     }
