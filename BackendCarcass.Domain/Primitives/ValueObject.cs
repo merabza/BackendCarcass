@@ -1,35 +1,37 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
 
-namespace BackendCarcass.Domain.Primitives;
+//namespace BackendCarcass.Domain.Primitives;
 
-public abstract class ValueObject : IEquatable<ValueObject>
-{
-    public bool Equals(ValueObject? other)
-    {
-        return Equals((object?)other);
-    }
+//public abstract class ValueObject : IEquatable<ValueObject>
+//{
+//    public bool Equals(ValueObject? other)
+//    {
+//        return Equals((object?)other);
+//    }
 
-    protected abstract IEnumerable<object> GetEqualityComponents();
+//    protected abstract IEnumerable<object> GetEqualityComponents();
 
-    public override bool Equals(object? obj)
-    {
-        if (obj is null || obj.GetType() != GetType())
-        {
-            return false;
-        }
+//    public override bool Equals(object? obj)
+//    {
+//        if (obj is null || obj.GetType() != GetType())
+//        {
+//            return false;
+//        }
 
-        return obj is ValueObject valueObject &&
-               GetEqualityComponents().SequenceEqual(valueObject.GetEqualityComponents());
-    }
+//        return obj is ValueObject valueObject &&
+//               GetEqualityComponents().SequenceEqual(valueObject.GetEqualityComponents());
+//    }
 
-    public override int GetHashCode()
-    {
-        return GetEqualityComponents().Select(obj => obj.GetHashCode()).Aggregate((x, y) => x ^ y);
-    }
+//    public override int GetHashCode()
+//    {
+//        return GetEqualityComponents().Select(obj => obj.GetHashCode()).Aggregate((x, y) => x ^ y);
+//    }
 
-    public static bool operator ==(ValueObject? left, ValueObject? right) => Equals(left, right);
+//    public static bool operator ==(ValueObject? left, ValueObject? right) => Equals(left, right);
 
-    public static bool operator !=(ValueObject? left, ValueObject? right) => !Equals(left, right);
-}
+//    public static bool operator !=(ValueObject? left, ValueObject? right) => !Equals(left, right);
+//}
+
+
