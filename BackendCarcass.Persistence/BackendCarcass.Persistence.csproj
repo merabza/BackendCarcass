@@ -6,10 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference
-            Include="..\..\SystemTools\SystemTools.RepositoriesShared\SystemTools.RepositoriesShared.csproj" />
-        <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
-    </ItemGroup>
-
 </Project>
