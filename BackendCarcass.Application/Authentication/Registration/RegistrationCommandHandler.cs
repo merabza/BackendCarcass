@@ -41,7 +41,7 @@ public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
         }
 
         AppUser user = tryLoginResult.AsT0.User;
-        var appUserModel = new LoginResponse(user.Id, user.UserName!, user.Email!, tryLoginResult.AsT0.Token,
+        var appUserModel = new LoginResponse(user.Id, 1, user.UserName!, user.Email!, tryLoginResult.AsT0.Token,
             user.FirstName, user.LastName, string.Empty);
         return appUserModel;
     }

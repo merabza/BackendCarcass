@@ -33,7 +33,7 @@ public sealed class LoginCommandHandler : LoginCommandHandlerBase, ICommandHandl
         }
 
         AppUser user = tryLoginResult.AsT0.User;
-        var appUserModel = new LoginResponse(user.Id, user.UserName!, user.Email!, tryLoginResult.AsT0.Token,
+        var appUserModel = new LoginResponse(user.Id, 1, user.UserName!, user.Email!, tryLoginResult.AsT0.Token,
             tryLoginResult.AsT0.Roles.Aggregate(string.Empty,
                 (cur, next) => cur + (string.IsNullOrEmpty(cur) ? string.Empty : ", ") + next), user.FirstName,
             user.LastName, tryLoginResult.AsT0.AppClaims);
