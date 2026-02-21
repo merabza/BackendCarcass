@@ -12,10 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassContracts\BackendCarcassContracts.csproj" />
+        <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassShared.BackendCarcassContracts\BackendCarcassShared.BackendCarcassContracts.csproj" />
         <ProjectReference Include="..\..\SystemTools\SystemTools.DomainShared\SystemTools.DomainShared.csproj" />
-        <ProjectReference
-            Include="..\..\SystemTools\SystemTools.SystemToolsShared\SystemTools.SystemToolsShared.csproj" />
+        <ProjectReference Include="..\..\SystemTools\SystemTools.SystemToolsShared\SystemTools.SystemToolsShared.csproj" />
         <ProjectReference Include="..\BackendCarcass.LibCrud\BackendCarcass.LibCrud.csproj" />
     </ItemGroup>
 

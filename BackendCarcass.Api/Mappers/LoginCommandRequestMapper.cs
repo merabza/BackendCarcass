@@ -1,5 +1,5 @@
 ﻿using BackendCarcass.Application.Authentication.Login;
-using BackendCarcassContracts.V1.Requests;
+using BackendCarcassShared.BackendCarcassContracts.V1.Requests;
 
 namespace BackendCarcass.Api.Mappers;
 

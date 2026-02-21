@@ -11,7 +11,7 @@ using BackendCarcass.Application.MasterData.GetTableRows;
 using BackendCarcass.Application.MasterData.UpdateOneRecord;
 using BackendCarcass.LibCrud.Models;
 using BackendCarcass.MasterData.Models;
-using BackendCarcassContracts.V1.Routes;
+using BackendCarcassShared.BackendCarcassContracts.V1.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

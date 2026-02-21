@@ -1,5 +1,5 @@
-﻿using BackendCarcassContracts.V1.Responses;
-using BackendCarcassContracts.V1.Routes;
+﻿using BackendCarcassShared.BackendCarcassContracts.V1.Responses;
+using BackendCarcassShared.BackendCarcassContracts.V1.Routes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;

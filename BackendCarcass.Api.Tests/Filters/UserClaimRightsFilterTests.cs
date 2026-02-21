@@ -1,7 +1,7 @@
 using BackendCarcass.Api.Filters;
 using BackendCarcass.Identity;
 using BackendCarcass.Rights;
-using BackendCarcassContracts.Errors;
+using BackendCarcassShared.BackendCarcassContracts.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
@@ -71,7 +71,7 @@ public class UserClaimRightsFilterTests
         var context = Substitute.For<EndpointFilterInvocationContext>();
         bool nextCalled = false;
 
-        EndpointFilterDelegate next = async ctx =>
+        EndpointFilterDelegate next = async _ =>
         {
             nextCalled = true;
             await Task.CompletedTask;
@@ -104,18 +104,18 @@ public class UserClaimRightsFilterTests
         var context = Substitute.For<EndpointFilterInvocationContext>();
         bool nextCalled = false;
 
-        EndpointFilterDelegate next = async ctx =>
+        EndpointFilterDelegate next = async _ =>
         {
             nextCalled = true;
             await Task.CompletedTask;
             return Results.Ok();
         };
 
-        Err[] expectedErrors = new[]
-        {
+        Err[] expectedErrors =
+        [
             RightsApiErrors.ErrorWhenDeterminingRights,
-            new Err { ErrorCode = "AdditionalError", ErrorMessage = "Additional error occurred" }
-        };
+            new() { ErrorCode = "AdditionalError", ErrorMessage = "Additional error occurred" }
+        ];
 
         _mockCurrentUser.Roles.Returns(["TestRole"]);
 
@@ -132,7 +132,7 @@ public class UserClaimRightsFilterTests
         Assert.NotNull(badRequest);
         Assert.NotNull(badRequest.Value);
         Assert.Equal(2, badRequest.Value.Length);
-        Assert.Equal(expectedErrors, badRequest!.Value);
+        Assert.Equal(expectedErrors, badRequest.Value);
     }
 
     [Fact]
@@ -146,7 +146,7 @@ public class UserClaimRightsFilterTests
         var context = Substitute.For<EndpointFilterInvocationContext>();
         bool nextCalled = false;
 
-        EndpointFilterDelegate next = async ctx =>
+        EndpointFilterDelegate next = async _ =>
         {
             nextCalled = true;
             await Task.CompletedTask;

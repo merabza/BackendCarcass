@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/BackendCarcassShared/">
-    <Project Path="../BackendCarcassShared/BackendCarcassContracts/BackendCarcassContracts.csproj" />
+    <Project Path="../BackendCarcassShared/BackendCarcassShared.BackendCarcassContracts/BackendCarcassShared.BackendCarcassContracts.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
@@ -20,7 +20,7 @@
     <Project Path="BackendCarcass.Api.Tests/BackendCarcass.Api.Tests.csproj" Id="c8a6466c-df01-41bf-9ca5-c68b1a582be9" />
   </Folder>
   <Folder Name="/WebSystemTools/">
-    <Project Path="../WebSystemTools/CorsTools/CorsTools.csproj" />
+    <Project Path="../WebSystemTools/WebSystemTools.CorsTools/WebSystemTools.CorsTools.csproj" />
   </Folder>
   <Project Path="BackendCarcass.DataSeeding/BackendCarcass.DataSeeding.csproj" />
   <Project Path="BackendCarcass.Api/BackendCarcass.Api.csproj" />

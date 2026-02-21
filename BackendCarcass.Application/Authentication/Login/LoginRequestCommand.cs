@@ -1,4 +1,4 @@
-﻿using BackendCarcassContracts.V1.Responses;
+﻿using BackendCarcassShared.BackendCarcassContracts.V1.Responses;
 using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.Authentication.Login;

@@ -13,9 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassContracts\BackendCarcassContracts.csproj" />
-        <ProjectReference
-            Include="..\..\SystemTools\SystemTools.MediatRMessagingAbstractions\SystemTools.MediatRMessagingAbstractions.csproj" />
+        <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassShared.BackendCarcassContracts\BackendCarcassShared.BackendCarcassContracts.csproj" />
+        <ProjectReference Include="..\..\SystemTools\SystemTools.MediatRMessagingAbstractions\SystemTools.MediatRMessagingAbstractions.csproj" />
         <ProjectReference Include="..\BackendCarcass.FilterSort\BackendCarcass.FilterSort.csproj" />
         <ProjectReference Include="..\BackendCarcass.Identity\BackendCarcass.Identity.csproj" />
         <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />

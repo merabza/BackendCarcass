@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Repositories;
-using BackendCarcassContracts.Errors;
+using BackendCarcassShared.BackendCarcassContracts.Errors;
 using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
 using SystemTools.SystemToolsShared.Errors;

@@ -5,7 +5,7 @@ using BackendCarcass.FilterSort.Models;
 using BackendCarcass.LibCrud;
 using BackendCarcass.LibCrud.Models;
 using BackendCarcass.MasterData;
-using BackendCarcassContracts.Errors;
+using BackendCarcassShared.BackendCarcassContracts.Errors;
 using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
 using SystemTools.SystemToolsShared.Errors;

@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 using BackendCarcass.Api.Mappers;
 using BackendCarcass.Application.Authentication.Login;
 using BackendCarcass.Application.Authentication.Registration;
-using BackendCarcassContracts.Errors;
-using BackendCarcassContracts.V1.Requests;
-using BackendCarcassContracts.V1.Responses;
-using BackendCarcassContracts.V1.Routes;
-using CorsTools.DependencyInjection;
+using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassShared.BackendCarcassContracts.V1.Requests;
+using BackendCarcassShared.BackendCarcassContracts.V1.Responses;
+using BackendCarcassShared.BackendCarcassContracts.V1.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +17,7 @@ using Microsoft.AspNetCore.Routing;
 using OneOf;
 using Serilog;
 using SystemTools.SystemToolsShared.Errors;
+using WebSystemTools.CorsTools.DependencyInjection;
 
 namespace BackendCarcass.Api.Endpoints.V1;
 
