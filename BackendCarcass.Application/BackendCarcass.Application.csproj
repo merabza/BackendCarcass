@@ -1,20 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <ImplicitUsings>disable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
     <ItemGroup>
-        <Compile Remove="Repositories\**" />
-        <EmbeddedResource Remove="Repositories\**" />
-        <None Remove="Repositories\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassShared.BackendCarcassContracts\BackendCarcassShared.BackendCarcassContracts.csproj" />
-        <ProjectReference Include="..\..\SystemTools\SystemTools.MediatRMessagingAbstractions\SystemTools.MediatRMessagingAbstractions.csproj" />
+        <ProjectReference
+            Include="..\..\BackendCarcassShared\BackendCarcassShared.BackendCarcassContracts\BackendCarcassShared.BackendCarcassContracts.csproj" />
+        <ProjectReference
+            Include="..\..\SystemTools\SystemTools.MediatRMessagingAbstractions\SystemTools.MediatRMessagingAbstractions.csproj" />
         <ProjectReference Include="..\BackendCarcass.FilterSort\BackendCarcass.FilterSort.csproj" />
         <ProjectReference Include="..\BackendCarcass.Identity\BackendCarcass.Identity.csproj" />
         <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />

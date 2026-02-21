@@ -1,11 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <ImplicitUsings>disable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\BackendCarcass.Identity\BackendCarcass.Identity.csproj" />
         <ProjectReference Include="..\BackendCarcass.LibCrud\BackendCarcass.LibCrud.csproj" />
