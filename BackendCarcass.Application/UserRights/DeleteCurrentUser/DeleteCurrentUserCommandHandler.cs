@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using BackendCarcass.Identity;
 using BackendCarcass.MasterData.Models;
 using BackendCarcass.Repositories;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassContracts.Errors;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using OneOf;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BackendCarcass.LibCrud;
 using BackendCarcass.LibCrud.Models;
 using BackendCarcass.MasterData.Models;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassContracts.Errors;
 using LanguageExt;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

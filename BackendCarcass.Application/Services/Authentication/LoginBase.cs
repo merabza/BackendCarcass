@@ -5,7 +5,7 @@ using BackendCarcass.Application.Services.Authentication.Models;
 using BackendCarcass.Identity.Models;
 using BackendCarcass.MasterData.Models;
 using BackendCarcass.Repositories;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassContracts.Errors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using OneOf;

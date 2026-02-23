@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Repositories;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassContracts.Errors;
 using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
 using SystemTools.SystemToolsShared.Errors;

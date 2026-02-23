@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BackendCarcass.LibCrud;
 using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.Models;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassContracts.Errors;
 using LanguageExt;
 using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
