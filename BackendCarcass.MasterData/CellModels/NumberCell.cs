@@ -1,4 +1,4 @@
-﻿using BackendCarcassContracts.Errors;
+﻿using BackendCarcassShared.BackendCarcassContracts.Errors;
 using Newtonsoft.Json;
 using SystemTools.SystemToolsShared.Errors;
 

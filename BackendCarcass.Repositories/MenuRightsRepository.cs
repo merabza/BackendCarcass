@@ -8,7 +8,7 @@ using BackendCarcass.Database.Models;
 using BackendCarcass.Database.QueryModels;
 using BackendCarcass.Repositories.Models;
 using BackendCarcass.Rights;
-using BackendCarcassContracts.V1.Responses;
+using BackendCarcassShared.BackendCarcassContracts.V1.Responses;
 using Microsoft.EntityFrameworkCore;
 using SystemTools.DomainShared.Repositories;
 

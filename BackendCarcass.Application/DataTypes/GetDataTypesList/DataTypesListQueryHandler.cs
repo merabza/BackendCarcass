@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using BackendCarcass.Application.Authentication;
 using BackendCarcass.Identity;
 using BackendCarcass.Repositories;
-using BackendCarcassContracts.V1.Responses;
+using BackendCarcassShared.BackendCarcassContracts.V1.Responses;
 using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
 using SystemTools.SystemToolsShared.Errors;

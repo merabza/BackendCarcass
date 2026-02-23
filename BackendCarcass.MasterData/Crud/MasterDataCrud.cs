@@ -10,7 +10,7 @@ using BackendCarcass.LibCrud.Models;
 using BackendCarcass.MasterData.CellModels;
 using BackendCarcass.MasterData.Models;
 using BackendCarcass.MasterData.SortIdStuff;
-using BackendCarcassContracts.Errors;
+using BackendCarcassShared.BackendCarcassContracts.Errors;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -284,7 +284,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             return OneOf<IDataType, Err[]>.FromT0(idt);
         }
 
-        errors.Add(MasterDataApiErrors.EntryNotFound);
+        errors.Add(MasterDataApiErrors.EntryNotFound());
         return errors.ToArray();
     }
 

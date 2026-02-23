@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Repositories.Models;
-using BackendCarcassContracts.V1.Responses;
+using BackendCarcassShared.BackendCarcassContracts.V1.Responses;
 
 namespace BackendCarcass.Repositories;
 

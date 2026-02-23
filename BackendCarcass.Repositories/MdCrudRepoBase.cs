@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BackendCarcass.Database;
 using BackendCarcass.Db;
 using BackendCarcass.MasterData;
-using BackendCarcassContracts.Errors;
+using BackendCarcassShared.BackendCarcassContracts.Errors;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;

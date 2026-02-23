@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Database.Models;
 using BackendCarcass.Identity;
-using BackendCarcassContracts.Errors;
+using BackendCarcassShared.BackendCarcassContracts.Errors;
 using LanguageExt;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
