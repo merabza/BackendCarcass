@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using BackendCarcass.MasterData.Validation;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassShared.Contracts.Errors;
 using Newtonsoft.Json;
 using SystemTools.SystemToolsShared.Errors;
 

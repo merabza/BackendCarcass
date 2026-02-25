@@ -10,7 +10,7 @@ using BackendCarcass.LibCrud.Models;
 using BackendCarcass.MasterData.CellModels;
 using BackendCarcass.MasterData.Models;
 using BackendCarcass.MasterData.SortIdStuff;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;

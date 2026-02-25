@@ -5,7 +5,7 @@ using BackendCarcass.Database.Models;
 using BackendCarcass.Db;
 using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.Models;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;
 using Microsoft.AspNetCore.Identity;
 using OneOf;
