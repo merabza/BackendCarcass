@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using BackendCarcass.Application.Services.Authentication.Models;
 using BackendCarcass.Identity.Models;
 using BackendCarcass.MasterData.Models;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassShared.Contracts.Errors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using OneOf;

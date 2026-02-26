@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Identity;
 using BackendCarcass.Rights;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassShared.Contracts.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using OneOf;

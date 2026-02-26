@@ -1,7 +1,7 @@
 ﻿//using System.Linq;
 //using System.Threading;
 //using System.Threading.Tasks;
-//using BackendCarcassContracts.Errors;
+//using Contracts.Errors;
 //using CarcassDom;
 //using CarcassIdentity;
 //using CarcassRights;

@@ -6,7 +6,7 @@
 
     <ItemGroup>
         <ProjectReference
-            Include="..\..\BackendCarcassShared\BackendCarcassShared.BackendCarcassContracts\BackendCarcassShared.BackendCarcassContracts.csproj" />
+            Include="..\..\BackendCarcassShared\BackendCarcassShared.Contracts\BackendCarcassShared.Contracts.csproj" />
         <ProjectReference Include="..\..\WebSystemTools\WebSystemTools.CorsTools\WebSystemTools.CorsTools.csproj" />
         <ProjectReference Include="..\BackendCarcass.Application\BackendCarcass.Application.csproj" />
         <ProjectReference Include="..\BackendCarcass.LibCrud\BackendCarcass.LibCrud.csproj" />

@@ -1,5 +1,5 @@
 ﻿using BackendCarcass.Application.Authentication.Login;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassShared.Contracts.Errors;
 using FluentValidation;
 
 namespace BackendCarcass.Api.Validators;

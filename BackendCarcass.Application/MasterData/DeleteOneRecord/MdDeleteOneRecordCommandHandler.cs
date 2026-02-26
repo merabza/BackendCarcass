@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.LibCrud;
 using BackendCarcass.MasterData;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;
 using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
