@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/BackendCarcassShared/">
-    <Project Path="../BackendCarcassShared/BackendCarcassShared.BackendCarcassContracts/BackendCarcassShared.BackendCarcassContracts.csproj" />
+    <Project Path="../BackendCarcassShared/BackendCarcassShared.Contracts/BackendCarcassShared.Contracts.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />

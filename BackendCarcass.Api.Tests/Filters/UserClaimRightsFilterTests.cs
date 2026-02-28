@@ -1,7 +1,8 @@
+using System.Threading.Tasks;
 using BackendCarcass.Api.Filters;
 using BackendCarcass.Identity;
 using BackendCarcass.Rights;
-using BackendCarcassShared.BackendCarcassContracts.Errors;
+using BackendCarcassShared.Contracts.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
