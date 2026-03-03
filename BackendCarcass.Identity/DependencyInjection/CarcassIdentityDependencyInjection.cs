@@ -44,6 +44,8 @@ public static class CarcassIdentityDependencyInjection
         IdentitySettings identitySettings = appSettingsSection.Get<IdentitySettings>() ??
                                             throw new Exception("IdentitySettings is null");
         string jwtSecret = identitySettings.JwtSecret ?? throw new Exception("jwtSecret is null");
+        string jwtIssuer = identitySettings.Issuer ?? throw new Exception("Issuer is null");
+        string jwtAudience = identitySettings.Audience ?? throw new Exception("Audience is null");
         byte[] key = Encoding.ASCII.GetBytes(jwtSecret);
 
         services.AddAuthentication(x =>
@@ -57,9 +59,12 @@ public static class CarcassIdentityDependencyInjection
             x.SaveToken = true;
             x.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true, IssuerSigningKey = new SymmetricSecurityKey(key)
-                //ValidateIssuer = false,
-                //ValidateAudience = false
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidIssuer = jwtIssuer,
+                ValidateAudience = true,
+                ValidAudience = jwtAudience
             };
         });
 
