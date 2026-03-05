@@ -65,7 +65,10 @@ public class LoginBase
             return new[] { CarcassApiErrors.ParametersAreInvalid };
         }
 
-        string? token = user.CreateJwToken(_identitySettings.Value.JwtSecret, 0, roles);
+        string? issuer = _identitySettings.Value.Issuer;
+        string? audience = _identitySettings.Value.Audience;
+
+        string? token = user.CreateJwToken(_identitySettings.Value.JwtSecret, 0, roles, issuer, audience);
         if (token is null)
         {
             return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };

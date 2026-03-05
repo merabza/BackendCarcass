@@ -27,7 +27,8 @@ public sealed class AppUser : IdentityUser<int>
     public string FirstName { get; set; }
     public string LastName { get; set; }
 
-    public string? CreateJwToken(string secret, int serialNumber, IList<string>? roles = null)
+    public string? CreateJwToken(string secret, int serialNumber, IList<string>? roles = null, string? issuer = null,
+        string? audience = null)
     {
         // authentication successful so generate jwt token
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -54,6 +55,8 @@ public sealed class AppUser : IdentityUser<int>
         {
             Subject = new ClaimsIdentity(claims.ToArray()),
             Expires = DateTime.UtcNow.AddDays(7),
+            Issuer = issuer,
+            Audience = audience,
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
