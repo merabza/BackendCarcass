@@ -6,11 +6,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference
-            Include="..\..\BackendCarcassShared\BackendCarcassShared.Contracts\BackendCarcassShared.Contracts.csproj" />
+        <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassShared.Contracts\BackendCarcassShared.Contracts.csproj" />
         <ProjectReference Include="..\..\SystemTools\SystemTools.DomainShared\SystemTools.DomainShared.csproj" />
-        <ProjectReference
-            Include="..\..\SystemTools\SystemTools.SystemToolsShared\SystemTools.SystemToolsShared.csproj" />
+        <ProjectReference Include="..\..\SystemTools\SystemTools.SystemToolsShared\SystemTools.SystemToolsShared.csproj" />
         <ProjectReference Include="..\BackendCarcass.LibCrud\BackendCarcass.LibCrud.csproj" />
     </ItemGroup>
 
