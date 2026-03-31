@@ -7,20 +7,20 @@ using BackendCarcass.Database.Models;
 using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.Models;
 using Microsoft.EntityFrameworkCore;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.SystemToolsShared;
 
 namespace BackendCarcass.Repositories;
 
 public sealed class DataTypesRepository : IDataTypesRepository
 {
     private readonly CarcassDbContext _context;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDatabaseAbstraction _databaseAbstraction;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public DataTypesRepository(CarcassDbContext context, IUnitOfWork unitOfWork)
+    public DataTypesRepository(CarcassDbContext context, IDatabaseAbstraction databaseAbstraction)
     {
         _context = context;
-        _unitOfWork = unitOfWork;
+        _databaseAbstraction = databaseAbstraction;
     }
 
     public async Task<IEnumerable<MenuToCrudTypeDomModel>> LoadMenuToCrudTypes(
@@ -31,8 +31,8 @@ public sealed class DataTypesRepository : IDataTypesRepository
                 join ct in _context.DataTypes on mmj.CtId equals ct.DtId
                 join p in _context.Menu on mmj.PKey equals p.MenKey
                 join c in _context.CrudRightTypes on mmj.CKey equals c.CrtKey
-                where pt.DtTable == _unitOfWork.GetTableName<MenuItm>() &&
-                      ct.DtTable == _unitOfWork.GetTableName<CrudRightType>()
+                where pt.DtTable == _databaseAbstraction.GetTableName<MenuItm>() &&
+                      ct.DtTable == _databaseAbstraction.GetTableName<CrudRightType>()
                 select new MenuToCrudTypeDomModel(mmj.MmjId, mmj.PKey + "." + mmj.CKey, p.MenName + "." + c.CrtName))
             .ToListAsync(cancellationToken);
     }
@@ -45,8 +45,8 @@ public sealed class DataTypesRepository : IDataTypesRepository
             join ct in _context.DataTypes on mmj.CtId equals ct.DtId
             join p in _context.DataTypes on mmj.PKey equals p.DtTable
             join c in _context.CrudRightTypes on mmj.CKey equals c.CrtKey
-            where pt.DtTable == _unitOfWork.GetTableName<DataType>() &&
-                  ct.DtTable == _unitOfWork.GetTableName<CrudRightType>()
+            where pt.DtTable == _databaseAbstraction.GetTableName<DataType>() &&
+                  ct.DtTable == _databaseAbstraction.GetTableName<CrudRightType>()
             select new DataTypeToCrudTypeDomModel(mmj.MmjId, mmj.PKey + "." + mmj.CKey, p.DtName + "." + c.CrtName,
                 p.DtId)).ToListAsync(cancellationToken);
     }
@@ -54,7 +54,7 @@ public sealed class DataTypesRepository : IDataTypesRepository
     public async Task<IEnumerable<DataTypeToDataTypeDomModel>> LoadDataTypesToDataTypes(
         CancellationToken cancellationToken = default)
     {
-        string dataTypeKey = _unitOfWork.GetTableName<DataType>();
+        string dataTypeKey = _databaseAbstraction.GetTableName<DataType>();
         return await (from mmj in _context.ManyToManyJoins
             join pt in _context.DataTypes on mmj.PtId equals pt.DtId
             join ct in _context.DataTypes on mmj.CtId equals ct.DtId

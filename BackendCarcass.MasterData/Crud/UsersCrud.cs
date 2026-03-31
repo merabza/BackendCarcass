@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.Domain.Abstractions;
+using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.MasterData.Crud;
@@ -23,24 +24,24 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
     private AppUser? _justCreated;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public UsersCrud(ILogger logger, UserManager<AppUser> userManager, IUnitOfWork unitOfWork) : base(logger,
-        unitOfWork)
+    public UsersCrud(ILogger logger, UserManager<AppUser> userManager, IUnitOfWork unitOfWork,
+        IDatabaseAbstraction databaseAbstraction) : base(logger, unitOfWork, databaseAbstraction)
     {
         _userManager = userManager;
     }
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async ValueTask<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(
+    public async ValueTask<OneOf<IEnumerable<IDataType>, Error[]>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
         List<AppUser> users = await _userManager.Users.ToListAsync(cancellationToken);
-        return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(users
+        return OneOf<IEnumerable<IDataType>, Error[]>.FromT0(users
             .Where(x => x.UserName is not null && x.Email is not null)
             .Select(x => new UserCrudData(x.UserName!, x.FirstName, x.LastName, x.Email!)));
     }
 
-    public override async ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+    public override async ValueTask<OneOf<TableRowsData, Error[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken = default)
     {
         IQueryable<AppUser> users = _userManager.Users;
@@ -51,7 +52,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, rows.Select(s => s.EditFields()).ToList());
     }
 
-    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id,
+    protected override async Task<OneOf<ICrudData, Error[]>> GetOneData(int id,
         CancellationToken cancellationToken = default)
     {
         AppUser? appUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
@@ -63,7 +64,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return new[] { MasterDataApiErrors.CannotFindUser };
     }
 
-    protected override async ValueTask<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
+    protected override async ValueTask<Option<Error[]>> CreateData(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default)
     {
         var user = (UserCrudData)crudDataForCreate;
@@ -80,7 +81,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return null;
     }
 
-    protected override async ValueTask<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+    protected override async ValueTask<Option<Error[]>> UpdateData(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default)
     {
         AppUser? oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
@@ -119,7 +120,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return ConvertError(setEmailResult);
     }
 
-    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
+    protected override async Task<Option<Error[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         AppUser? oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldUser is null)
@@ -131,10 +132,10 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return ConvertError(deleteResult);
     }
 
-    private static Option<Err[]> ConvertError(IdentityResult result)
+    private static Option<Error[]> ConvertError(IdentityResult result)
     {
         return result.Succeeded
             ? null
-            : result.Errors.Select(x => new Err { ErrorCode = x.Code, ErrorMessage = x.Description }).ToArray();
+            : result.Errors.Select(x => new Error { Code = x.Code, Name = x.Description }).ToArray();
     }
 }

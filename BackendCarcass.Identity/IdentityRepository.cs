@@ -8,24 +8,25 @@ using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.SystemToolsShared;
 
 namespace BackendCarcass.Identity;
 
 public sealed class IdentityRepository : IIdentityRepository
 {
     private readonly CarcassDbContext _carcassContext;
+    private readonly IDatabaseAbstraction _databaseAbstraction;
 
     //private readonly IDataTypeKeys _dataTypeKeys;
     private readonly ILogger<IdentityRepository> _logger;
-    private readonly IUnitOfWork _unitOfWork;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public IdentityRepository(CarcassDbContext ctx, IUnitOfWork unitOfWork, ILogger<IdentityRepository> logger)
+    public IdentityRepository(CarcassDbContext ctx, IDatabaseAbstraction databaseAbstraction,
+        ILogger<IdentityRepository> logger)
     {
         _carcassContext = ctx;
         _logger = logger;
-        _unitOfWork = unitOfWork;
+        _databaseAbstraction = databaseAbstraction;
         //_dataTypeKeys = dataTypeKeys;
     }
 
@@ -34,8 +35,8 @@ public sealed class IdentityRepository : IIdentityRepository
 
     public IQueryable<ManyToManyJoin> RolesByUsers =>
         _carcassContext.ManyToManyJoins.Include(i => i.ParentDataTypeNavigation).Include(i => i.ChildDataTypeNavigation)
-            .Where(w => w.ParentDataTypeNavigation.DtTable == _unitOfWork.GetTableName<User>() &&
-                        w.ChildDataTypeNavigation.DtTable == _unitOfWork.GetTableName<Role>());
+            .Where(w => w.ParentDataTypeNavigation.DtTable == _databaseAbstraction.GetTableName<User>() &&
+                        w.ChildDataTypeNavigation.DtTable == _databaseAbstraction.GetTableName<Role>());
 
     public async Task<IdentityResult> RemoveUserAsync(int userId, CancellationToken cancellationToken = default)
     {

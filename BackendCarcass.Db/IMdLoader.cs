@@ -7,5 +7,5 @@ namespace BackendCarcass.Db;
 
 public interface IMdLoader
 {
-    OneOf<IQueryable<IDataType>, Err[]> Load();
+    OneOf<IQueryable<IDataType>, Error[]> Load();
 }

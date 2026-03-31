@@ -21,7 +21,7 @@ public /*open*/ class IntegerCell : NumberCell
     public int? Def { get; set; }
 
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public Err? IsIntegerErr { get; set; }
+    public Error? IsIntegerErr { get; set; }
 
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
     public IntRule? MinValRule { get; set; }
@@ -70,9 +70,9 @@ public /*open*/ class IntegerCell : NumberCell
         return this;
     }
 
-    public override List<Err> Validate(object? value)
+    public override List<Error> Validate(object? value)
     {
-        List<Err> errors = base.Validate(value);
+        List<Error> errors = base.Validate(value);
 
         int testIntValue;
         if (IsShort)
@@ -105,7 +105,7 @@ public /*open*/ class IntegerCell : NumberCell
 
         if (IsPositiveErr is not null && testIntValue <= 0)
         {
-            errors.Add(IsPositiveErr.Value);
+            errors.Add(IsPositiveErr);
         }
 
         return errors;

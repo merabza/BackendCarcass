@@ -22,10 +22,10 @@ public sealed class MdGetOneRecordQueryHandler : IQueryHandler<MdGetOneRecordReq
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
 
-    public async Task<OneOf<MasterDataCrudLoadedData, Err[]>> Handle(MdGetOneRecordRequestQuery request,
+    public async Task<OneOf<MasterDataCrudLoadedData, Error[]>> Handle(MdGetOneRecordRequestQuery request,
         CancellationToken cancellationToken)
     {
-        OneOf<CrudBase, Err[]> createMasterDataCrudResult =
+        OneOf<CrudBase, Error[]> createMasterDataCrudResult =
             _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
@@ -33,7 +33,8 @@ public sealed class MdGetOneRecordQueryHandler : IQueryHandler<MdGetOneRecordReq
         }
 
         CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
-        OneOf<ICrudData, Err[]> result = await masterDataCruder.GetOne(request.Id, cancellationToken);
-        return result.Match<OneOf<MasterDataCrudLoadedData, Err[]>>(r => (MasterDataCrudLoadedData)r, e => e.ToArray());
+        OneOf<ICrudData, Error[]> result = await masterDataCruder.GetOne(request.Id, cancellationToken);
+        return result.Match<OneOf<MasterDataCrudLoadedData, Error[]>>(r => (MasterDataCrudLoadedData)r,
+            e => e.ToArray());
     }
 }

@@ -7,7 +7,7 @@ namespace BackendCarcass.Db;
 
 public interface IMdCrudRepo : IMdLoader
 {
-    Task<Option<Err[]>> Create(IDataType newItem);
-    ValueTask<Option<Err[]>> Update(int id, IDataType newItem);
-    ValueTask<Option<Err[]>> Delete(int id);
+    Task<Option<Error[]>> Create(IDataType newItem);
+    ValueTask<Option<Error[]>> Update(int id, IDataType newItem);
+    ValueTask<Option<Error[]>> Delete(int id);
 }

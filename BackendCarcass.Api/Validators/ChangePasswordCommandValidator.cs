@@ -14,7 +14,7 @@ public sealed class ChangePasswordCommandValidator : AbstractValidator<ChangePas
         RuleFor(x => x.UserName).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
             .WithMessage(AuthenticationApiErrors.IsEmptyUserNameErrMessage).MaximumLength(UserNameMaxLength)
             .WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
-            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr(UserNameMaxLength).ErrorMessage);
+            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr(UserNameMaxLength).Name);
         RuleFor(x => x.OldPassword).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
             .WithMessage(AuthenticationApiErrors.IsEmptyOldPasswordErrMessage);
         RuleFor(x => x.NewPassword).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)

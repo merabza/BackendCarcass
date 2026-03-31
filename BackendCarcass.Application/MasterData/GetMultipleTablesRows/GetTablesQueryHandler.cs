@@ -20,14 +20,14 @@ public sealed class GetTablesQueryHandler : IQueryHandler<MdGetTablesRequestQuer
         _masterDataLoaderCreator = masterDataLoaderCreator;
     }
 
-    public async Task<OneOf<MdGetTablesQueryResponse, Err[]>> Handle(MdGetTablesRequestQuery request,
+    public async Task<OneOf<MdGetTablesQueryResponse, Error[]>> Handle(MdGetTablesRequestQuery request,
         CancellationToken cancellationToken)
     {
         List<string> tableNames = request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()
             .ToList()!;
         var mdLoader = new MasterDataLoader(tableNames, _masterDataLoaderCreator);
-        OneOf<Dictionary<string, IEnumerable<dynamic>>, Err[]> loaderResult = await mdLoader.Run(cancellationToken);
-        return loaderResult.Match<OneOf<MdGetTablesQueryResponse, Err[]>>(r => new MdGetTablesQueryResponse(r),
+        OneOf<Dictionary<string, IEnumerable<dynamic>>, Error[]> loaderResult = await mdLoader.Run(cancellationToken);
+        return loaderResult.Match<OneOf<MdGetTablesQueryResponse, Error[]>>(r => new MdGetTablesQueryResponse(r),
             e => e.ToArray());
     }
 }

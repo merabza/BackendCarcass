@@ -9,10 +9,10 @@ namespace BackendCarcass.MasterData.Loaders;
 
 public sealed class MenuToCrudTypesMdLoader(IDataTypesRepository dataTypesRepository) : IMasterDataLoader
 {
-    public async ValueTask<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(
+    public async ValueTask<OneOf<IEnumerable<IDataType>, Error[]>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
         IEnumerable<MenuToCrudTypeDomModel> result = await dataTypesRepository.LoadMenuToCrudTypes(cancellationToken);
-        return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(result);
+        return OneOf<IEnumerable<IDataType>, Error[]>.FromT0(result);
     }
 }

@@ -29,7 +29,7 @@ public class LoginBase
         _userClaimsRepository = userClaimsRepository;
     }
 
-    public async Task<OneOf<LoginResult, Err[]>> LoginProcess(AppUser? user, string password,
+    public async Task<OneOf<LoginResult, Error[]>> LoginProcess(AppUser? user, string password,
         CancellationToken cancellationToken = default)
     {
         if (user == null)

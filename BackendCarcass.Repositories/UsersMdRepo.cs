@@ -23,22 +23,22 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         _userManager = userManager;
     }
 
-    public OneOf<IQueryable<IDataType>, Err[]> Load()
+    public OneOf<IQueryable<IDataType>, Error[]> Load()
     {
-        return OneOf<IQueryable<IDataType>, Err[]>.FromT0(_userManager.Users.Cast<IDataType>());
+        return OneOf<IQueryable<IDataType>, Error[]>.FromT0(_userManager.Users.Cast<IDataType>());
     }
 
-    public async Task<Option<Err[]>> Create(IDataType newItem)
+    public async Task<Option<Error[]>> Create(IDataType newItem)
     {
         var user = (User)newItem;
         var appUser = new AppUser(user.UserName, user.FirstName, user.LastName) { Email = user.Email };
         //შევქმნათ მომხმარებელი
         IdentityResult result = await _userManager.CreateAsync(appUser);
         user.UsrId = appUser.Id;
-        return (Err[])ConvertError(result);
+        return (Error[])ConvertError(result);
     }
 
-    public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
+    public async ValueTask<Option<Error[]>> Update(int id, IDataType newItem)
     {
         AppUser? oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldUser == null)
@@ -55,7 +55,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         IdentityResult updateResult = await _userManager.UpdateAsync(oldUser);
         if (!updateResult.Succeeded)
         {
-            return (Err[])ConvertError(updateResult);
+            return (Error[])ConvertError(updateResult);
         }
 
         if (oldUser.UserName != user.UserName)
@@ -63,7 +63,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
             IdentityResult setUserNameResult = await _userManager.SetUserNameAsync(oldUser, user.UserName);
             if (!setUserNameResult.Succeeded)
             {
-                return (Err[])ConvertError(setUserNameResult);
+                return (Error[])ConvertError(setUserNameResult);
             }
         }
 
@@ -73,10 +73,10 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         }
 
         IdentityResult setEmailResult = await _userManager.SetEmailAsync(oldUser, user.Email);
-        return (Err[])ConvertError(setEmailResult);
+        return (Error[])ConvertError(setEmailResult);
     }
 
-    public async ValueTask<Option<Err[]>> Delete(int id)
+    public async ValueTask<Option<Error[]>> Delete(int id)
     {
         AppUser? oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldUser == null)
@@ -85,6 +85,6 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         }
 
         IdentityResult deleteResult = await _userManager.DeleteAsync(oldUser);
-        return (Err[])ConvertError(deleteResult);
+        return (Error[])ConvertError(deleteResult);
     }
 }

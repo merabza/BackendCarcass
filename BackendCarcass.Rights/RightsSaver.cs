@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using BackendCarcass.Database.Models;
 using BackendCarcass.Rights.Models;
 using Microsoft.Extensions.Logging;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.Domain.Abstractions;
+using SystemTools.SystemToolsShared;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -13,15 +14,18 @@ namespace BackendCarcass.Rights;
 
 public sealed class RightsSaver
 {
+    private readonly IDatabaseAbstraction _databaseAbstraction;
     private readonly ILogger _logger;
     private readonly IRightsRepository _repo;
     private readonly IUnitOfWork _unitOfWork;
 
-    public RightsSaver(ILogger logger, IRightsRepository repo, IUnitOfWork unitOfWork)
+    public RightsSaver(ILogger logger, IRightsRepository repo, IUnitOfWork unitOfWork,
+        IDatabaseAbstraction databaseAbstraction)
     {
         _logger = logger;
         _repo = repo;
         _unitOfWork = unitOfWork;
+        _databaseAbstraction = databaseAbstraction;
     }
 
     public async Task<bool> SaveRightsChanges(string userName, List<RightsChangeModel> changedRights,
@@ -29,12 +33,14 @@ public sealed class RightsSaver
     {
         try
         {
-            string dataTypeTableName = _unitOfWork.GetTableName<DataType>();
+            string dataTypeTableName = _databaseAbstraction.GetTableName<DataType>();
             int dtDataId = await _repo.DataTypeIdByTableName(dataTypeTableName, cancellationToken);
             int mmjDataId =
                 await _repo.DataTypeIdByTableName($"{dataTypeTableName}{dataTypeTableName}", cancellationToken);
-            int roleDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<Role>(), cancellationToken);
-            int userDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<User>(), cancellationToken);
+            int roleDataId =
+                await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+            int userDataId =
+                await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<User>(), cancellationToken);
             List<Tuple<string, string>> allowPairs = await _repo.ManyToManyJoinsPcc4(userDataId, userName, roleDataId,
                 mmjDataId, dtDataId, dtDataId, cancellationToken);
 

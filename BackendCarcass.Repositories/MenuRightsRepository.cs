@@ -10,7 +10,7 @@ using BackendCarcass.Repositories.Models;
 using BackendCarcass.Rights;
 using BackendCarcassShared.Contracts.V1.Responses;
 using Microsoft.EntityFrameworkCore;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.SystemToolsShared;
 
 namespace BackendCarcass.Repositories;
 
@@ -18,13 +18,13 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
 {
     // ReSharper disable once ReplaceWithPrimaryConstructorParameter
     private readonly CarcassDbContext _carcassContext;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDatabaseAbstraction _databaseAbstraction;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MenuRightsRepository(CarcassDbContext context, IUnitOfWork unitOfWork)
+    public MenuRightsRepository(CarcassDbContext context, IDatabaseAbstraction databaseAbstraction)
     {
         _carcassContext = context;
-        _unitOfWork = unitOfWork;
+        _databaseAbstraction = databaseAbstraction;
     }
 
     public async Task<MainMenuModel> MainMenu(string userName, CancellationToken cancellationToken = default)
@@ -63,9 +63,9 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
 
     public async Task<DataTypesResponse[]> DataTypes(string userName, CancellationToken cancellationToken = default)
     {
-        int dataTypeDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<DataType>(), cancellationToken);
-        int roleDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<Role>(), cancellationToken);
-        int userDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<User>(), cancellationToken);
+        int dataTypeDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<DataType>(), cancellationToken);
+        int roleDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+        int userDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<User>(), cancellationToken);
 
         IEnumerable<string> qPccDt = ManyToManyJoinsPcc(userDtId, userName, roleDtId, dataTypeDtId);
 
@@ -96,10 +96,10 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
     private async Task<IQueryable<MenuGroupModel>> MenuGroups(string userName,
         CancellationToken cancellationToken = default)
     {
-        int menuGroupsDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<MenuGroup>(), cancellationToken);
-        int menuDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<MenuItm>(), cancellationToken);
-        int roleDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<Role>(), cancellationToken);
-        int userDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<User>(), cancellationToken);
+        int menuGroupsDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<MenuGroup>(), cancellationToken);
+        int menuDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<MenuItm>(), cancellationToken);
+        int roleDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+        int userDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<User>(), cancellationToken);
 
         IQueryable<int>? mngIdsDist = (from m in _carcassContext.Menu
             join mg in _carcassContext.MenuGroups on m.MenGroupId equals mg.MengId
@@ -117,10 +117,10 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
     private async Task<IQueryable<MenuItmModel>> MenuItems(string userName,
         CancellationToken cancellationToken = default)
     {
-        int menuGroupsDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<MenuGroup>(), cancellationToken);
-        int menuDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<MenuItm>(), cancellationToken);
-        int roleDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<Role>(), cancellationToken);
-        int userDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<User>(), cancellationToken);
+        int menuGroupsDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<MenuGroup>(), cancellationToken);
+        int menuDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<MenuItm>(), cancellationToken);
+        int roleDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+        int userDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<User>(), cancellationToken);
 
         return from m in _carcassContext.Menu
             join mg in _carcassContext.MenuGroups on m.MenGroupId equals mg.MengId
@@ -159,10 +159,11 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
     private async Task<IQueryable<DataTypeToCrudRight>> DataTypeCrudRights(string userName,
         CancellationToken cancellationToken = default)
     {
-        int userDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<User>(), cancellationToken);
-        int roleDtId = await DataTypeIdByKey(_unitOfWork.GetTableName<Role>(), cancellationToken);
+        int userDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<User>(), cancellationToken);
+        int roleDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
         int dataTypeToCrudTypeDtId =
-            await DataTypeIdByKey($"{_unitOfWork.GetTableName<DataType>()}{_unitOfWork.GetTableName<CrudRightType>()}",
+            await DataTypeIdByKey(
+                $"{_databaseAbstraction.GetTableName<DataType>()}{_databaseAbstraction.GetTableName<CrudRightType>()}",
                 cancellationToken);
 
         return from dt in _carcassContext.DataTypes

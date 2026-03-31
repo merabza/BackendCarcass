@@ -49,18 +49,18 @@ public static class AuthenticationEndpoints
     //   მაგრამ სამწუხაროდ უფლებების არქონის გამო პრაქტიკულად შეეძლება მხოლოდ თავისი ინფორმაციის ცვლილება
     //   ან თავისივე რეგისტრაციის წაშლა
     // POST api/v1/authentication/registration
-    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<Err[]>>> Registration(
+    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<Error[]>>> Registration(
         [FromBody] RegistrationRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(RegistrationCommandHandler)} from {nameof(Registration)}");
         if (request is null)
         {
-            return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
+            return TypedResults.BadRequest(Error.Create(CarcassApiErrors.RequestIsEmpty));
         }
 
         RegistrationRequestCommand command = request.AdaptTo();
-        OneOf<LoginResponse, Err[]> result = await mediator.Send(command, cancellationToken);
-        return result.Match<Results<Ok<LoginResponse>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
+        OneOf<LoginResponse, Error[]> result = await mediator.Send(command, cancellationToken);
+        return result.Match<Results<Ok<LoginResponse>, BadRequest<Error[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
 
@@ -70,18 +70,18 @@ public static class AuthenticationEndpoints
     //მოქმედება -> სხვადასხვა შემოწმებების შემდეგ ცდილობს მომხმარებლის ავტორიზებას
     //   წარმატებული ავტორიზების შემთხვევაში იქმნება JwT, რომელიც მომხმარებლის ინფორმაციასთან ერთად გადაეწოდება გამომძახებელს
     // POST api/authentication/login
-    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<Err[]>>> Login(
+    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<Error[]>>> Login(
         [FromBody] LoginRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(LoginCommandHandler)} from {nameof(Login)}");
         if (request is null)
         {
-            return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
+            return TypedResults.BadRequest(Error.Create(CarcassApiErrors.RequestIsEmpty));
         }
 
         LoginRequestCommand command = request.AdaptTo();
-        OneOf<LoginResponse, Err[]> result = await mediator.Send(command, cancellationToken);
-        return result.Match<Results<Ok<LoginResponse>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
+        OneOf<LoginResponse, Error[]> result = await mediator.Send(command, cancellationToken);
+        return result.Match<Results<Ok<LoginResponse>, BadRequest<Error[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
 }

@@ -86,7 +86,7 @@ public sealed class UserRightsRepository : IUserRightsRepository
             .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<OneOf<bool, Err[]>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
+    public async Task<OneOf<bool, Error[]>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
         string keyByTableName, int dataCrudRightDtId, ECrudOperationType crudType,
         CancellationToken cancellationToken = default)
     {

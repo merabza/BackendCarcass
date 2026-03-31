@@ -5,26 +5,28 @@ using System.Threading.Tasks;
 using BackendCarcass.Database;
 using BackendCarcass.Database.Models;
 using Microsoft.EntityFrameworkCore;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.SystemToolsShared;
 
 namespace BackendCarcass.Repositories;
 
 public class UserClaimsRepository : IUserClaimsRepository
 {
     private readonly CarcassDbContext _carcassContext;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDatabaseAbstraction _databaseAbstraction;
 
-    public UserClaimsRepository(CarcassDbContext carcassContext, IUnitOfWork unitOfWork)
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public UserClaimsRepository(CarcassDbContext carcassContext, IDatabaseAbstraction databaseAbstraction)
     {
         _carcassContext = carcassContext;
-        _unitOfWork = unitOfWork;
+        _databaseAbstraction = databaseAbstraction;
     }
 
     public async Task<List<string>> UserAppClaims(string userName, CancellationToken cancellationToken = default)
     {
-        int userDataTypeId = await DataTypeIdByKey(_unitOfWork.GetTableName<User>(), cancellationToken);
-        int roleDataTypeId = await DataTypeIdByKey(_unitOfWork.GetTableName<Role>(), cancellationToken);
-        int appClaimDataTypeId = await DataTypeIdByKey(_unitOfWork.GetTableName<AppClaim>(), cancellationToken);
+        int userDataTypeId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<User>(), cancellationToken);
+        int roleDataTypeId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+        int appClaimDataTypeId =
+            await DataTypeIdByKey(_databaseAbstraction.GetTableName<AppClaim>(), cancellationToken);
 
         return await Task.FromResult(ManyToManyJoinsPcc(userDataTypeId, userName, roleDataTypeId, appClaimDataTypeId)
             .ToList());

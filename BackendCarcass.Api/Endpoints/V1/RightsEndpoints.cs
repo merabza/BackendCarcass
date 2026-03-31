@@ -56,13 +56,13 @@ public static class RightsEndpoints
     //   თუ აქვს ხდება მხოლოდ იმ ინფორმაციის ჩატვირთვა და დაბრუნება, რაზეც უფლება აქვს მიმდინარე მომხმარებელს
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("getparentstreedata/{viewStyle}")]
-    private static async Task<Results<Ok<List<DataTypeModel>>, BadRequest<Err[]>>> ParentsTreeData(int viewStyle,
+    private static async Task<Results<Ok<List<DataTypeModel>>, BadRequest<Error[]>>> ParentsTreeData(int viewStyle,
         IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ParentsTreeDataQueryHandler)} from {nameof(ParentsTreeData)}");
         var query = new ParentsTreeDataRequestQuery((ERightsEditorViewStyle)viewStyle);
-        OneOf<List<DataTypeModel>, Err[]> result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<List<DataTypeModel>>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
+        OneOf<List<DataTypeModel>, Error[]> result = await mediator.Send(query, cancellationToken);
+        return result.Match<Results<Ok<List<DataTypeModel>>, BadRequest<Error[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
 
@@ -73,13 +73,13 @@ public static class RightsEndpoints
     //   თუ აქვს ხდება მხოლოდ იმ ინფორმაციის ჩატვირთვა და დაბრუნება, რაზეც უფლება აქვს მიმდინარე მომხმარებელს
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("getchildrentreedata/{dataTypeKey}/{viewStyle}")]
-    private static async Task<Results<Ok<List<DataTypeModel>>, BadRequest<Err[]>>> ChildrenTreeData(string dataTypeKey,
-        int viewStyle, IMediator mediator, CancellationToken cancellationToken = default)
+    private static async Task<Results<Ok<List<DataTypeModel>>, BadRequest<Error[]>>> ChildrenTreeData(
+        string dataTypeKey, int viewStyle, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ChildrenTreeDataCommandHandler)} from {nameof(ChildrenTreeData)}");
         var query = new ChildrenTreeDataRequestCommand(dataTypeKey, (ERightsEditorViewStyle)viewStyle);
-        OneOf<List<DataTypeModel>, Err[]> result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<List<DataTypeModel>>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
+        OneOf<List<DataTypeModel>, Error[]> result = await mediator.Send(query, cancellationToken);
+        return result.Match<Results<Ok<List<DataTypeModel>>, BadRequest<Error[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
 
@@ -92,13 +92,13 @@ public static class RightsEndpoints
     //   თუ აქვს ხდება მხოლოდ იმ ინფორმაციის ჩატვირთვა და დაბრუნება, რაზეც უფლება აქვს მიმდინარე მომხმარებელს
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("halfchecks/{dataTypeId}/{dataKey}/{viewStyle}")]
-    private static async Task<Results<Ok<List<TypeDataModel>>, BadRequest<Err[]>>> HalfChecks(int dataTypeId,
+    private static async Task<Results<Ok<List<TypeDataModel>>, BadRequest<Error[]>>> HalfChecks(int dataTypeId,
         string dataKey, int viewStyle, IMediator mediator, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(HalfChecksCommandHandler)} from {nameof(HalfChecks)}");
         var query = new HalfChecksRequestCommand(dataTypeId, dataKey, (ERightsEditorViewStyle)viewStyle);
-        OneOf<List<TypeDataModel>, Err[]> result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<List<TypeDataModel>>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
+        OneOf<List<TypeDataModel>, Error[]> result = await mediator.Send(query, cancellationToken);
+        return result.Match<Results<Ok<List<TypeDataModel>>, BadRequest<Error[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
 
@@ -111,19 +111,19 @@ public static class RightsEndpoints
     //   რაზეც უფლება აქვს ისინი ინახება.
     //   საბოლოოდ ამ უფლებების შემოწმება ხდება რეპოზიტორიის მხარეს.
     //[HttpPost("savedata")]
-    private static async ValueTask<Results<Ok<bool>, BadRequest<Err[]>>> SaveData(
+    private static async ValueTask<Results<Ok<bool>, BadRequest<Error[]>>> SaveData(
         [FromBody] List<RightsChangeModel>? changesForSave, IMediator mediator,
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(SaveDataCommandHandler)} from {nameof(SaveData)}");
         if (changesForSave is null)
         {
-            return TypedResults.BadRequest(Err.Create(CarcassApiErrors.RequestIsEmpty));
+            return TypedResults.BadRequest(Error.Create(CarcassApiErrors.RequestIsEmpty));
         }
 
         var commandRequest = new SaveDataRequestCommand(changesForSave);
-        OneOf<bool, Err[]> result = await mediator.Send(commandRequest, cancellationToken);
-        return result.Match<Results<Ok<bool>, BadRequest<Err[]>>>(res => TypedResults.Ok(res),
+        OneOf<bool, Error[]> result = await mediator.Send(commandRequest, cancellationToken);
+        return result.Match<Results<Ok<bool>, BadRequest<Error[]>>>(res => TypedResults.Ok(res),
             errors => TypedResults.BadRequest(errors));
     }
 

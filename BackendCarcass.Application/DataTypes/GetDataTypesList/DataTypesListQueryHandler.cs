@@ -24,7 +24,7 @@ public sealed class DataTypesListQueryHandler : LoginCommandHandlerBase,
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<DataTypesResponse[], Err[]>> Handle(DataTypesRequestQuery request,
+    public async Task<OneOf<DataTypesResponse[], Error[]>> Handle(DataTypesRequestQuery request,
         CancellationToken cancellationToken)
     {
         DataTypesResponse[] res = await _repository.DataTypes(_currentUser.Name, cancellationToken);

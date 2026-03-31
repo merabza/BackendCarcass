@@ -7,10 +7,10 @@ namespace BackendCarcass.Repositories;
 
 public /*open*/ class IdentityCrudBase
 {
-    protected static Option<Err[]> ConvertError(IdentityResult result)
+    protected static Option<Error[]> ConvertError(IdentityResult result)
     {
         return result.Succeeded
             ? null
-            : result.Errors.Select(x => new Err { ErrorCode = x.Code, ErrorMessage = x.Description }).ToArray();
+            : result.Errors.Select(x => new Error { Code = x.Code, Name = x.Description }).ToArray();
     }
 }

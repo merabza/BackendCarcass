@@ -26,7 +26,7 @@ public sealed class RegistrationCommandValidator : AbstractValidator<Registratio
         RuleFor(x => x.UserName).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
             .WithMessage(AuthenticationApiErrors.IsEmptyUserNameErrMessage).MaximumLength(UserNameMaxLength)
             .WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
-            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr(UserNameMaxLength).ErrorCode);
+            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr(UserNameMaxLength).Code);
         RuleFor(x => x.Password).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
             .WithMessage(AuthenticationApiErrors.IsEmptyPasswordErrMessage);
         RuleFor(x => x.ConfirmPassword).Equal(x => x.Password)

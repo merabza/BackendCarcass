@@ -25,7 +25,7 @@ public sealed class ChangeProfileCommandHandler : ICommandHandler<ChangeProfileR
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<Unit, Err[]>> Handle(ChangeProfileRequestCommand request,
+    public async Task<OneOf<Unit, Error[]>> Handle(ChangeProfileRequestCommand request,
         CancellationToken cancellationToken)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით

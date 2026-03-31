@@ -24,13 +24,13 @@ public sealed class ReturnValuesLoader
         _tableNames = tableNames;
     }
 
-    public async Task<OneOf<Dictionary<string, IEnumerable<SrvModel>>, Err[]>> Run(
+    public async Task<OneOf<Dictionary<string, IEnumerable<SrvModel>>, Error[]>> Run(
         CancellationToken cancellationToken = default)
     {
         var resultList = new Dictionary<string, IEnumerable<SrvModel>>();
         List<DataTypeModelForRvs> tableDataTypes =
             await _rvRepo.GetDataTypesByTableNames(_tableNames, cancellationToken);
-        var errors = new List<Err>();
+        var errors = new List<Error>();
 
         //ჩაიტვირთოს ყველა ცხრილი სათითაოდ
         foreach (DataTypeModelForRvs dt in tableDataTypes)
@@ -38,7 +38,7 @@ public sealed class ReturnValuesLoader
             var loader =
                 new MasterDataReturnValuesLoader(dt,
                     _rvRepo); // _returnValuesLoaderCreator.CreateReturnValuesLoaderLoader(dt);
-            OneOf<IEnumerable<SrvModel>, Err[]> tableResult = await loader.GetSimpleReturnValues(cancellationToken);
+            OneOf<IEnumerable<SrvModel>, Error[]> tableResult = await loader.GetSimpleReturnValues(cancellationToken);
             if (tableResult.IsT1)
             {
                 errors.AddRange(tableResult.AsT1);
@@ -61,7 +61,7 @@ public sealed class ReturnValuesLoader
                 continue;
             }
 
-            OneOf<IEnumerable<SrvModel>, Err[]> tableResult = await loader.GetSimpleReturnValues(cancellationToken);
+            OneOf<IEnumerable<SrvModel>, Error[]> tableResult = await loader.GetSimpleReturnValues(cancellationToken);
             if (tableResult.IsT1)
             {
                 errors.AddRange(tableResult.AsT1);

@@ -26,15 +26,15 @@ public sealed class
         _returnValuesLoaderCreator = returnValuesLoaderCreator;
     }
 
-    public async Task<OneOf<MdGetLookupTablesQueryResponse, Err[]>> Handle(MdGetLookupTablesRequestQuery request,
+    public async Task<OneOf<MdGetLookupTablesQueryResponse, Error[]>> Handle(MdGetLookupTablesRequestQuery request,
         CancellationToken cancellationToken)
     {
         //var reqQuery = request.HttpRequest.Query["tables"];
         List<string> tableNames = request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()
             .ToList()!;
         var mdLoader = new ReturnValuesLoader(tableNames, _rvRepo, _returnValuesLoaderCreator);
-        OneOf<Dictionary<string, IEnumerable<SrvModel>>, Err[]> loaderResult = await mdLoader.Run(cancellationToken);
-        return loaderResult.Match<OneOf<MdGetLookupTablesQueryResponse, Err[]>>(
+        OneOf<Dictionary<string, IEnumerable<SrvModel>>, Error[]> loaderResult = await mdLoader.Run(cancellationToken);
+        return loaderResult.Match<OneOf<MdGetLookupTablesQueryResponse, Error[]>>(
             r => new MdGetLookupTablesQueryResponse(r), e => e.ToArray());
     }
 }

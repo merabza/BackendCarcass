@@ -9,7 +9,8 @@ using BackendCarcass.MasterData.Models;
 using BackendCarcass.Rights.Models;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.Domain.Abstractions;
+using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
@@ -18,19 +19,20 @@ namespace BackendCarcass.Rights;
 
 public sealed class RightsCollector
 {
+    private readonly IDatabaseAbstraction _databaseAbstraction;
     private readonly IRightsRepository _repo;
     private readonly IReturnValuesRepository _rvRepo;
-    private readonly IUnitOfWork _unitOfWork;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public RightsCollector(IRightsRepository repo, IReturnValuesRepository rvRepo, IUnitOfWork unitOfWork)
+    public RightsCollector(IRightsRepository repo, IReturnValuesRepository rvRepo, IUnitOfWork unitOfWork,
+        IDatabaseAbstraction databaseAbstraction)
     {
         _repo = repo;
         _rvRepo = rvRepo;
-        _unitOfWork = unitOfWork;
+        _databaseAbstraction = databaseAbstraction;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, Err[]>> ParentsTreeData(string userName,
+    public async Task<OneOf<List<DataTypeModel>, Error[]>> ParentsTreeData(string userName,
         ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
         IEnumerable<DataTypeModelForRvs> dataTypes =
@@ -42,16 +44,17 @@ public sealed class RightsCollector
         return await GetTreeData(userName, dataTypes, cancellationToken);
     }
 
-    private async ValueTask<OneOf<List<DataTypeModel>, Err[]>> GetTreeData(string userName,
+    private async ValueTask<OneOf<List<DataTypeModel>, Error[]>> GetTreeData(string userName,
         IEnumerable<DataTypeModelForRvs> dataTypes, CancellationToken cancellationToken = default)
     {
         var dataTypeModels = new List<DataTypeModel>();
-        var errors = new List<Err>();
+        var errors = new List<Error>();
         foreach (DataTypeModelForRvs dataType in dataTypes)
         {
             var dataTypeModel = new DataTypeModel(dataType.DtId, dataType.DtTable, dataType.DtName,
                 dataType.DtParentDataTypeId);
-            OneOf<List<ReturnValueModel>, Err[]> entResult = await GetRetValues(dataType, userName, cancellationToken);
+            OneOf<List<ReturnValueModel>, Error[]>
+                entResult = await GetRetValues(dataType, userName, cancellationToken);
 
             if (entResult.IsT1)
             {
@@ -73,7 +76,7 @@ public sealed class RightsCollector
         return dataTypeModels;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, Err[]>> ChildrenTreeData(string userName, string dataTypeKey,
+    public async Task<OneOf<List<DataTypeModel>, Error[]>> ChildrenTreeData(string userName, string dataTypeKey,
         ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
         List<DataTypeModelForRvs> dataTypes =
@@ -88,11 +91,13 @@ public sealed class RightsCollector
     private async Task<List<DataTypeModelForRvs>> ParentsDataTypesNormalView(string userName,
         CancellationToken cancellationToken = default)
     {
-        string dataTypeTableName = _unitOfWork.GetTableName<DataType>();
+        string dataTypeTableName = _databaseAbstraction.GetTableName<DataType>();
         int dtDataId = await _repo.DataTypeIdByTableName(dataTypeTableName, cancellationToken);
         int mmjDataId = await _repo.DataTypeIdByTableName($"{dataTypeTableName}{dataTypeTableName}", cancellationToken);
-        int roleDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<Role>(), cancellationToken);
-        int userDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<User>(), cancellationToken);
+        int roleDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+        int userDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<User>(), cancellationToken);
 
         return await _repo.ParentsDataTypesNormalView(dtDataId, dataTypeTableName, userDataId, userName, roleDataId,
             mmjDataId, cancellationToken);
@@ -101,11 +106,13 @@ public sealed class RightsCollector
     private async Task<List<DataTypeModelForRvs>> ParentsDataTypesReverseView(string userName,
         CancellationToken cancellationToken = default)
     {
-        string dataTypeTableName = _unitOfWork.GetTableName<DataType>();
+        string dataTypeTableName = _databaseAbstraction.GetTableName<DataType>();
         int dtDataId = await _repo.DataTypeIdByTableName(dataTypeTableName, cancellationToken);
         int mmjDataId = await _repo.DataTypeIdByTableName($"{dataTypeTableName}{dataTypeTableName}", cancellationToken);
-        int roleDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<Role>(), cancellationToken);
-        int userDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<User>(), cancellationToken);
+        int roleDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+        int userDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<User>(), cancellationToken);
 
         return await _repo.ParentsDataTypesReverseView(dtDataId, userDataId, userName, roleDataId, mmjDataId,
             cancellationToken);
@@ -114,11 +121,13 @@ public sealed class RightsCollector
     private async Task<List<DataTypeModelForRvs>> ChildrenDataTypesNormalView(string userName, string parentTypeKey,
         CancellationToken cancellationToken = default)
     {
-        string dataTypeTableName = _unitOfWork.GetTableName<DataType>();
+        string dataTypeTableName = _databaseAbstraction.GetTableName<DataType>();
         int dtDataId = await _repo.DataTypeIdByTableName(dataTypeTableName, cancellationToken);
         int mmjDataId = await _repo.DataTypeIdByTableName($"{dataTypeTableName}{dataTypeTableName}", cancellationToken);
-        int roleDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<Role>(), cancellationToken);
-        int userDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<User>(), cancellationToken);
+        int roleDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+        int userDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<User>(), cancellationToken);
 
         return await _repo.ChildrenDataTypesNormalView(dtDataId, parentTypeKey, userDataId, userName, roleDataId,
             mmjDataId, cancellationToken);
@@ -127,20 +136,22 @@ public sealed class RightsCollector
     private async Task<List<DataTypeModelForRvs>> ChildrenDataTypesReverseView(string userName, string parentTypeKey,
         CancellationToken cancellationToken = default)
     {
-        string dataTypeTableName = _unitOfWork.GetTableName<DataType>();
+        string dataTypeTableName = _databaseAbstraction.GetTableName<DataType>();
         int dtDataId = await _repo.DataTypeIdByTableName(dataTypeTableName, cancellationToken);
         int mmjDataId = await _repo.DataTypeIdByTableName($"{dataTypeTableName}{dataTypeTableName}", cancellationToken);
-        int roleDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<Role>(), cancellationToken);
-        int userDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<User>(), cancellationToken);
+        int roleDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+        int userDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<User>(), cancellationToken);
 
         return await _repo.ChildrenDataTypesReverseView(dtDataId, parentTypeKey, userDataId, userName, roleDataId,
             mmjDataId, cancellationToken);
     }
 
-    private async Task<OneOf<List<ReturnValueModel>, Err[]>> GetRetValues(DataTypeModelForRvs dt, string userName,
+    private async Task<OneOf<List<ReturnValueModel>, Error[]>> GetRetValues(DataTypeModelForRvs dt, string userName,
         CancellationToken cancellationToken = default)
     {
-        if (dt.DtTable == _unitOfWork.GetTableName<User>())
+        if (dt.DtTable == _databaseAbstraction.GetTableName<User>())
         {
             int minOfLevel = await UserMinLevel(userName, cancellationToken);
             List<Tuple<int, int>> uml = await UsersMinLevels(cancellationToken);
@@ -155,7 +166,7 @@ public sealed class RightsCollector
                 .ToList();
         }
 
-        if (dt.DtTable != _unitOfWork.GetTableName<Role>())
+        if (dt.DtTable != _databaseAbstraction.GetTableName<Role>())
         {
             return await _rvRepo.GetAllReturnValues(dt, cancellationToken);
         }
@@ -166,8 +177,10 @@ public sealed class RightsCollector
 
     private async Task<int> UserMinLevel(string userName, CancellationToken cancellationToken = default)
     {
-        int roleDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<Role>(), cancellationToken);
-        int userDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<User>(), cancellationToken);
+        int roleDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+        int userDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<User>(), cancellationToken);
 
         List<string> drPcs =
             await _repo.ManyToManyJoinsPc(userDataId, userName, roleDataId).ToListAsync(cancellationToken);
@@ -177,8 +190,10 @@ public sealed class RightsCollector
 
     private async Task<List<Tuple<int, int>>> UsersMinLevels(CancellationToken cancellationToken = default)
     {
-        int roleDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<Role>(), cancellationToken);
-        int userDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<User>(), cancellationToken);
+        int roleDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+        int userDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<User>(), cancellationToken);
 
         return await _repo.UsersMinLevels(roleDataId, userDataId, cancellationToken);
     }
@@ -186,11 +201,13 @@ public sealed class RightsCollector
     public async Task<List<TypeDataModel>> HalfChecks(string userName, int dataTypeId, string dataKey,
         ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
-        string dataTypeTableName = _unitOfWork.GetTableName<DataType>();
+        string dataTypeTableName = _databaseAbstraction.GetTableName<DataType>();
         int dtDataId = await _repo.DataTypeIdByTableName(dataTypeTableName, cancellationToken);
         int mmjDataId = await _repo.DataTypeIdByTableName($"{dataTypeTableName}{dataTypeTableName}", cancellationToken);
-        int roleDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<Role>(), cancellationToken);
-        int userDataId = await _repo.DataTypeIdByTableName(_unitOfWork.GetTableName<User>(), cancellationToken);
+        int roleDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+        int userDataId =
+            await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<User>(), cancellationToken);
 
         if (viewStyle == ERightsEditorViewStyle.NormalView)
         {

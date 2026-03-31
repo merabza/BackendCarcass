@@ -27,7 +27,7 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
         _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
     }
 
-    public async Task<OneOf<Unit, Err[]>> Handle(MdUpdateOneRecordRequestCommand request,
+    public async Task<OneOf<Unit, Error[]>> Handle(MdUpdateOneRecordRequestCommand request,
         CancellationToken cancellationToken)
     {
         //ამოვიღოთ მოთხოვნის ტანი
@@ -37,7 +37,7 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
         string body = await reader.ReadToEndAsync(cancellationToken);
 
         var crudData = new MasterDataCrudData(body);
-        OneOf<CrudBase, Err[]> createMasterDataCrudResult =
+        OneOf<CrudBase, Error[]> createMasterDataCrudResult =
             _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
@@ -45,10 +45,10 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
         }
 
         CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
-        Option<Err[]> result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
-        return result.Match<OneOf<Unit, Err[]>>(y =>
+        Option<Error[]> result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
+        return result.Match<OneOf<Unit, Error[]>>(y =>
         {
-            List<Err> errors = y.ToList();
+            List<Error> errors = y.ToList();
             errors.Add(MasterDataApiErrors.CannotUpdateNewRecord);
             return errors.ToArray();
         }, () => new Unit());

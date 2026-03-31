@@ -14,7 +14,7 @@ public sealed class ChangeProfileCommandValidator : AbstractValidator<ChangeProf
         RuleFor(x => x.UserName).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
             .WithMessage(AuthenticationApiErrors.IsEmptyUserNameErrMessage).MaximumLength(UserNameMaxLength)
             .WithErrorCode(CarcassApiErrors.IsLongerThenErrCode)
-            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr(UserNameMaxLength).ErrorCode);
+            .WithMessage(AuthenticationApiErrors.UserNameIsLongerThenErr(UserNameMaxLength).Code);
         RuleFor(x => x.Email).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)
             .WithMessage(AuthenticationApiErrors.IsEmptyEmailErrMessage).EmailAddress()
             .WithErrorCode(AuthenticationApiErrors.InvalidEmailAddressErrCode)

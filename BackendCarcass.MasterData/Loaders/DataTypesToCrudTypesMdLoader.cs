@@ -9,11 +9,11 @@ namespace BackendCarcass.MasterData.Loaders;
 
 public sealed class DataTypesToCrudTypesMdLoader(IDataTypesRepository dataTypesRepository) : IMasterDataLoader
 {
-    public async ValueTask<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(
+    public async ValueTask<OneOf<IEnumerable<IDataType>, Error[]>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
         IEnumerable<DataTypeToCrudTypeDomModel> result =
             await dataTypesRepository.LoadDataTypesToCrudTypes(cancellationToken);
-        return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(result);
+        return OneOf<IEnumerable<IDataType>, Error[]>.FromT0(result);
     }
 }

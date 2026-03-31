@@ -23,22 +23,22 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         _roleManager = roleManager;
     }
 
-    public OneOf<IQueryable<IDataType>, Err[]> Load()
+    public OneOf<IQueryable<IDataType>, Error[]> Load()
     {
-        return OneOf<IQueryable<IDataType>, Err[]>.FromT0(_roleManager.Roles.Cast<IDataType>());
+        return OneOf<IQueryable<IDataType>, Error[]>.FromT0(_roleManager.Roles.Cast<IDataType>());
     }
 
-    public async Task<Option<Err[]>> Create(IDataType newItem)
+    public async Task<Option<Error[]>> Create(IDataType newItem)
     {
         var role = (Role)newItem;
         var appRole = new AppRole(role.RolKey, role.RolName, role.RolLevel);
         //შევქმნათ როლი
         IdentityResult result = await _roleManager.CreateAsync(appRole);
         role.RolId = appRole.Id;
-        return (Err[])ConvertError(result);
+        return (Error[])ConvertError(result);
     }
 
-    public async ValueTask<Option<Err[]>> Update(int id, IDataType newItem)
+    public async ValueTask<Option<Error[]>> Update(int id, IDataType newItem)
     {
         AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole == null)
@@ -53,7 +53,7 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         IdentityResult updateResult = await _roleManager.UpdateAsync(oldRole);
         if (!updateResult.Succeeded)
         {
-            return (Err[])ConvertError(updateResult);
+            return (Error[])ConvertError(updateResult);
         }
 
         if (oldRole.RoleName == role.RolKey)
@@ -62,10 +62,10 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         }
 
         IdentityResult setRoleResult = await _roleManager.SetRoleNameAsync(oldRole, role.RolKey);
-        return (Err[])ConvertError(setRoleResult);
+        return (Error[])ConvertError(setRoleResult);
     }
 
-    public async ValueTask<Option<Err[]>> Delete(int id)
+    public async ValueTask<Option<Error[]>> Delete(int id)
     {
         AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole == null)
@@ -74,6 +74,6 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         }
 
         IdentityResult deleteResult = await _roleManager.DeleteAsync(oldRole);
-        return (Err[])ConvertError(deleteResult);
+        return (Error[])ConvertError(deleteResult);
     }
 }

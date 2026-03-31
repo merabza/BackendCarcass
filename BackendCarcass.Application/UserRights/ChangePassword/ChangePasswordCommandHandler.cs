@@ -24,7 +24,7 @@ public sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePasswor
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<Unit, Err[]>> Handle(ChangePasswordRequestCommand request,
+    public async Task<OneOf<Unit, Error[]>> Handle(ChangePasswordRequestCommand request,
         CancellationToken cancellationToken)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით

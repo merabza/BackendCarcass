@@ -6,6 +6,6 @@ namespace BackendCarcass.MasterData;
 
 public interface IMasterDataLoaderCreator
 {
-    OneOf<IMasterDataLoader, Err[]> CreateMasterDataLoader(string queryName);
-    OneOf<CrudBase, Err[]> CreateMasterDataCrud(string tableName);
+    OneOf<IMasterDataLoader, Error[]> CreateMasterDataLoader(string queryName);
+    OneOf<CrudBase, Error[]> CreateMasterDataCrud(string tableName);
 }

@@ -6,22 +6,25 @@ using LanguageExt;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.Domain.Abstractions;
+using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.LibCrud;
 
 public abstract class CrudBase
 {
+    private readonly IDatabaseAbstraction _databaseAbstraction;
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     // ReSharper disable once BothContextCallDeclaration.Global
-    protected CrudBase(ILogger logger, IUnitOfWork unitOfWork)
+    protected CrudBase(ILogger logger, IUnitOfWork unitOfWork, IDatabaseAbstraction databaseAbstraction)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _databaseAbstraction = databaseAbstraction;
     }
 
     //ასეთი მიდგომა სწორია და არ უნდა შეიცვალოს, რადგან ახალი ჩანაწერის შექმნისას იდენტიფიკატორი მანამ არის 0, სანამ არ მოხდება ბაზაში შენახვა.
@@ -29,7 +32,7 @@ public abstract class CrudBase
     protected virtual int JustCreatedId => 0;
 
     // ReSharper disable once BothContextCallDeclaration.Global
-    public Task<OneOf<ICrudData, Err[]>> GetOne(int id, CancellationToken cancellationToken = default)
+    public Task<OneOf<ICrudData, Error[]>> GetOne(int id, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -47,20 +50,21 @@ public abstract class CrudBase
         }
     }
 
-    public async Task<OneOf<ICrudData, Err[]>> Create(ICrudData crudDataForCreate,
+    public async Task<OneOf<ICrudData, Error[]>> Create(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default)
     {
         const string methodName = nameof(Create);
         try
         {
             // ReSharper disable once using
-            await using IDbContextTransaction transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await using IDbContextTransaction transaction =
+                await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
             try
             {
-                Option<Err[]> result = await CreateData(crudDataForCreate, cancellationToken);
+                Option<Error[]> result = await CreateData(crudDataForCreate, cancellationToken);
                 if (result.IsSome)
                 {
-                    return (Err[])result;
+                    return (Error[])result;
                 }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -103,23 +107,24 @@ public abstract class CrudBase
         }
     }
 
-    public async Task<Option<Err[]>> Update(int id, ICrudData crudDataNewVersion,
+    public async Task<Option<Error[]>> Update(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default)
     {
         try
         {
             // ReSharper disable once using
-            await using IDbContextTransaction transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await using IDbContextTransaction transaction =
+                await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
             try
             {
-                Option<Err[]> updateDataResult = await UpdateData(id, crudDataNewVersion, cancellationToken);
+                Option<Error[]> updateDataResult = await UpdateData(id, crudDataNewVersion, cancellationToken);
                 if (updateDataResult.IsSome)
                 {
                     return updateDataResult;
                 }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                Option<Err[]> afterUpdateDataResult = await AfterUpdateData(cancellationToken);
+                Option<Error[]> afterUpdateDataResult = await AfterUpdateData(cancellationToken);
                 if (afterUpdateDataResult.IsSome)
                 {
                     return afterUpdateDataResult;
@@ -141,16 +146,17 @@ public abstract class CrudBase
         }
     }
 
-    public async Task<Option<Err[]>> Delete(int id, CancellationToken cancellationToken = default)
+    public async Task<Option<Error[]>> Delete(int id, CancellationToken cancellationToken = default)
     {
         const string methodName = nameof(Delete);
         try
         {
             // ReSharper disable once using
-            await using IDbContextTransaction transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await using IDbContextTransaction transaction =
+                await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
             try
             {
-                Option<Err[]> result = await DeleteData(id, cancellationToken);
+                Option<Error[]> result = await DeleteData(id, cancellationToken);
                 if (result.IsSome)
                 {
                     return result;
@@ -191,21 +197,22 @@ public abstract class CrudBase
         }
     }
 
-    protected abstract Task<OneOf<ICrudData, Err[]>> GetOneData(int id, CancellationToken cancellationToken = default);
+    protected abstract Task<OneOf<ICrudData, Error[]>>
+        GetOneData(int id, CancellationToken cancellationToken = default);
 
-    protected abstract ValueTask<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
+    protected abstract ValueTask<Option<Error[]>> CreateData(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default);
 
-    protected abstract ValueTask<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+    protected abstract ValueTask<Option<Error[]>> UpdateData(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default);
 
-    protected virtual ValueTask<Option<Err[]>> AfterUpdateData(CancellationToken cancellationToken = default)
+    protected virtual ValueTask<Option<Error[]>> AfterUpdateData(CancellationToken cancellationToken = default)
     {
-        return ValueTask.FromResult<Option<Err[]>>(null);
+        return ValueTask.FromResult<Option<Error[]>>(null);
     }
 
-    protected abstract Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default);
+    protected abstract Task<Option<Error[]>> DeleteData(int id, CancellationToken cancellationToken = default);
 
-    public abstract ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+    public abstract ValueTask<OneOf<TableRowsData, Error[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken = default);
 }

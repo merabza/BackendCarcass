@@ -25,7 +25,7 @@ public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurr
         _currentUser = currentUser;
     }
 
-    public async Task<OneOf<Unit, Err[]>> Handle(DeleteCurrentUserRequestCommand request,
+    public async Task<OneOf<Unit, Error[]>> Handle(DeleteCurrentUserRequestCommand request,
         CancellationToken cancellationToken)
     {
         //ეს ერთგვარი ტესტია. თუ კოდი აქამდე მოვიდა, მიმდინარე მომხმარებელი ვალიდურია

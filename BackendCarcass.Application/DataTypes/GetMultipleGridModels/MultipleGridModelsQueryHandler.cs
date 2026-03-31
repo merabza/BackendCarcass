@@ -22,7 +22,7 @@ public sealed class
         _repository = repository;
     }
 
-    public async Task<OneOf<Dictionary<string, string>, Err[]>> Handle(MultipleGridModelsRequestQuery request,
+    public async Task<OneOf<Dictionary<string, string>, Error[]>> Handle(MultipleGridModelsRequestQuery request,
         CancellationToken cancellationToken)
     {
         var resultList = new Dictionary<string, string>();
@@ -36,7 +36,7 @@ public sealed class
             return new[] { DataTypesApiErrors.NoGridNamesInUriQuery };
         }
 
-        List<Err> errors = [];
+        List<Error> errors = [];
         //ხოლო მეორე გავლისას ხდება უშუალოდ საჭირო ინფორმაციის ჩატვირთვა
         foreach (string? gridName in gridNames)
         {

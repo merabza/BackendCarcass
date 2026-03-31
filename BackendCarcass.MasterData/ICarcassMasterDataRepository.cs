@@ -15,7 +15,7 @@ public interface ICarcassMasterDataRepository
     //IQueryable? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType);
     MethodInfo? SetMethodInfo();
     IEntityType? GetEntityTypeByTableName(string tableName);
-    Task<Option<Err[]>> Create(IDataType newItem, CancellationToken cancellationToken = default);
+    Task<Option<Error[]>> Create(IDataType newItem, CancellationToken cancellationToken = default);
     Task<GridModel?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken = default);
     void Update(IDataType newItem);
     void Delete(IDataType dataType);

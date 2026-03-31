@@ -7,8 +7,9 @@ using BackendCarcass.MasterData;
 using BackendCarcass.Rights;
 using BackendCarcass.Rights.Models;
 using OneOf;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.Domain.Abstractions;
 using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.Rights.GetParentsTree;
@@ -17,27 +18,29 @@ namespace BackendCarcass.Application.Rights.GetParentsTree;
 public sealed class ParentsTreeDataQueryHandler : IQueryHandler<ParentsTreeDataRequestQuery, List<DataTypeModel>>
 {
     private readonly ICurrentUser _currentUser;
+    private readonly IDatabaseAbstraction _databaseAbstraction;
     private readonly IRightsRepository _repo;
     private readonly IReturnValuesRepository _rvRepo;
     private readonly IUnitOfWork _unitOfWork;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ParentsTreeDataQueryHandler(IRightsRepository repo, IReturnValuesRepository rvRepo, IUnitOfWork unitOfWork,
-        ICurrentUser currentUser)
+        ICurrentUser currentUser, IDatabaseAbstraction databaseAbstraction)
     {
         _repo = repo;
         _rvRepo = rvRepo;
         _currentUser = currentUser;
+        _databaseAbstraction = databaseAbstraction;
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, Err[]>> Handle(ParentsTreeDataRequestQuery request,
+    public async Task<OneOf<List<DataTypeModel>, Error[]>> Handle(ParentsTreeDataRequestQuery request,
         CancellationToken cancellationToken)
     {
-        var rightsCollector = new RightsCollector(_repo, _rvRepo, _unitOfWork);
-        OneOf<List<DataTypeModel>, Err[]> result =
+        var rightsCollector = new RightsCollector(_repo, _rvRepo, _unitOfWork, _databaseAbstraction);
+        OneOf<List<DataTypeModel>, Error[]> result =
             await rightsCollector.ParentsTreeData(_currentUser.Name, request.ViewStyle, cancellationToken);
 
-        return result.Match<OneOf<List<DataTypeModel>, Err[]>>(r => r, e => e.ToArray());
+        return result.Match<OneOf<List<DataTypeModel>, Error[]>>(r => r, e => e.ToArray());
     }
 }

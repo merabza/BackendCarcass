@@ -19,7 +19,7 @@ public sealed class GridModelQueryHandler : IQueryHandler<GridModelRequestQuery,
         _repository = repository;
     }
 
-    public async Task<OneOf<string, Err[]>> Handle(GridModelRequestQuery request, CancellationToken cancellationToken)
+    public async Task<OneOf<string, Error[]>> Handle(GridModelRequestQuery request, CancellationToken cancellationToken)
     {
         string? res = await _repository.GridModel(request.GridName, cancellationToken);
         if (res == null)

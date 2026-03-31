@@ -76,7 +76,7 @@ public /*open*/ class Cell
         return StringCell.Create(fieldName, caption, visible);
     }
 
-    public virtual List<Err> Validate(object? value)
+    public virtual List<Error> Validate(object? value)
     {
         return [];
     }

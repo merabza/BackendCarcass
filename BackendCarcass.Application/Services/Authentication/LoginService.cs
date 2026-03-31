@@ -21,7 +21,7 @@ public class LoginService : LoginBase, IScopeServiceCarcassApplication
     {
     }
 
-    public async Task<OneOf<LoginResult, Err[]>> TryToLogin(string userName, string password,
+    public async Task<OneOf<LoginResult, Error[]>> TryToLogin(string userName, string password,
         CancellationToken cancellationToken = default)
     {
         //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი

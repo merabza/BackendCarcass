@@ -22,10 +22,10 @@ public sealed class LoginCommandHandler : LoginCommandHandlerBase, ICommandHandl
         _loginService = loginService;
     }
 
-    public async Task<OneOf<LoginResponse, Err[]>> Handle(LoginRequestCommand request,
+    public async Task<OneOf<LoginResponse, Error[]>> Handle(LoginRequestCommand request,
         CancellationToken cancellationToken)
     {
-        OneOf<LoginResult, Err[]> tryLoginResult =
+        OneOf<LoginResult, Error[]> tryLoginResult =
             await _loginService.TryToLogin(request.UserName!, request.Password!, cancellationToken);
         if (tryLoginResult.IsT1)
         {

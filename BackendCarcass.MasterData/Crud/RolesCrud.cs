@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OneOf;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.Domain.Abstractions;
+using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.MasterData.Crud;
@@ -23,23 +24,23 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
     private AppRole? _justCreated;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public RolesCrud(ILogger logger, RoleManager<AppRole> roleManager, IUnitOfWork unitOfWork) : base(logger,
-        unitOfWork)
+    public RolesCrud(ILogger logger, RoleManager<AppRole> roleManager, IUnitOfWork unitOfWork,
+        IDatabaseAbstraction databaseAbstraction) : base(logger, unitOfWork, databaseAbstraction)
     {
         _roleManager = roleManager;
     }
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async ValueTask<OneOf<IEnumerable<IDataType>, Err[]>> GetAllRecords(
+    public async ValueTask<OneOf<IEnumerable<IDataType>, Error[]>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
         List<AppRole> roles = await _roleManager.Roles.ToListAsync(cancellationToken);
-        return OneOf<IEnumerable<IDataType>, Err[]>.FromT0(roles.Select(x =>
+        return OneOf<IEnumerable<IDataType>, Error[]>.FromT0(roles.Select(x =>
             new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level)));
     }
 
-    public override async ValueTask<OneOf<TableRowsData, Err[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+    public override async ValueTask<OneOf<TableRowsData, Error[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken = default)
     {
         IQueryable<AppRole> roles = _roleManager.Roles;
@@ -50,7 +51,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, rows.Select(s => s.EditFields()).ToList());
     }
 
-    protected override async Task<OneOf<ICrudData, Err[]>> GetOneData(int id,
+    protected override async Task<OneOf<ICrudData, Error[]>> GetOneData(int id,
         CancellationToken cancellationToken = default)
     {
         AppRole? appRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
@@ -62,7 +63,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return new[] { MasterDataApiErrors.CannotFindRole };
     }
 
-    protected override async ValueTask<Option<Err[]>> CreateData(ICrudData crudDataForCreate,
+    protected override async ValueTask<Option<Error[]>> CreateData(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default)
     {
         var role = (RoleCrudData)crudDataForCreate;
@@ -78,7 +79,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return null;
     }
 
-    protected override async ValueTask<Option<Err[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+    protected override async ValueTask<Option<Error[]>> UpdateData(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default)
     {
         AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
@@ -106,7 +107,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return ConvertError(setRoleResult);
     }
 
-    protected override async Task<Option<Err[]>> DeleteData(int id, CancellationToken cancellationToken = default)
+    protected override async Task<Option<Error[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole is null)
@@ -118,10 +119,10 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return ConvertError(deleteResult);
     }
 
-    private static Option<Err[]> ConvertError(IdentityResult result)
+    private static Option<Error[]> ConvertError(IdentityResult result)
     {
         return result.Succeeded
             ? null
-            : result.Errors.Select(x => new Err { ErrorCode = x.Code, ErrorMessage = x.Description }).ToArray();
+            : result.Errors.Select(x => new Error { Code = x.Code, Name = x.Description }).ToArray();
     }
 }
