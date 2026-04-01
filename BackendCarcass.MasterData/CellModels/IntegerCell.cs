@@ -100,7 +100,7 @@ public /*open*/ class IntegerCell : NumberCell
 
         if (MinValRule is not null && testIntValue < MinValRule.Val)
         {
-            errors.Add(MinValRule.Err);
+            errors.Add(MinValRule.Error);
         }
 
         if (IsPositiveErr is not null && testIntValue <= 0)

@@ -83,9 +83,9 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         return (List<IDataType>)queryRunResult;
 
-        //return await Query().Match<Task<OneOf<IEnumerable<IDataType>, Err[]>>>(
+        //return await Query().Match<Task<OneOf<IEnumerable<IDataType>, Error[]>>>(
         //    async x => await x.ToListAsync(cancellationToken),
-        //    e => Task.FromResult<OneOf<IEnumerable<IDataType>, Err[]>>(e));
+        //    e => Task.FromResult<OneOf<IEnumerable<IDataType>, Error[]>>(e));
     }
 
     public static OneOf<MasterDataCrud, Error[]> Create(string tableName, ILogger logger,
@@ -252,7 +252,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         sortedData.SortId++;
         return new MasterDataCrudLoadedData(sortedData.EditFields());
 
-        //return getOneRecordResult.Match<OneOf<ICrudData, Err[]>>(t0 => new MasterDataCrudLoadedData(t0.EditFields()),
+        //return getOneRecordResult.Match<OneOf<ICrudData, Error[]>>(t0 => new MasterDataCrudLoadedData(t0.EditFields()),
         //    t1 => t1);
     }
 
@@ -307,7 +307,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         }
 
         return OneOf<string, Error[]>.FromT0(singleKey.Properties[0].Name);
-        //return OneOf<IProperty, Err[]>.FromT0(singleKey.Properties[0]);
+        //return OneOf<IProperty, Error[]>.FromT0(singleKey.Properties[0]);
     }
 
     private OneOf<object, Error[]> QueryObject()
@@ -443,7 +443,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         _justCreated = newItem;
         return null;
 
-        //return createResult.Match(x => x, () => OneOf<IDataType, Err[]>.FromT0(newItem));
+        //return createResult.Match(x => x, () => OneOf<IDataType, Error[]>.FromT0(newItem));
     }
 
     protected override async ValueTask<Option<Error[]>> UpdateData(int id, ICrudData crudDataNewVersion,

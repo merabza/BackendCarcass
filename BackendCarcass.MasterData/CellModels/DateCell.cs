@@ -70,7 +70,7 @@ public sealed class DateCell : MixedCell
 
         if (MinValRule is not null && dateTimeValue < MinValRule.Val)
         {
-            errors.Add(MinValRule.Err);
+            errors.Add(MinValRule.Error);
         }
 
         return errors;

@@ -9,9 +9,9 @@ public sealed class DateRule
     public DateRule(DateTime val, string errCode, string errMessage)
     {
         Val = val;
-        Err = new Error { Code = errCode, Name = errMessage };
+        Error = new Error { Code = errCode, Name = errMessage };
     }
 
     public DateTime Val { get; set; }
-    public Error Err { get; set; }
+    public Error Error { get; set; }
 }

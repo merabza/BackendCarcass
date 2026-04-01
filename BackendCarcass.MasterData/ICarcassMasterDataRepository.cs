@@ -9,7 +9,7 @@ namespace BackendCarcass.MasterData;
 
 public interface ICarcassMasterDataRepository
 {
-    //OneOf<IQueryable<IDataType>, Err[]> LoadByTableName(string tableName);
+    //OneOf<IQueryable<IDataType>, Error[]> LoadByTableName(string tableName);
     object? RunGenericMethodForLoadAllRecords(MethodInfo setMethod, IReadOnlyTypeBase entityType);
 
     //IQueryable? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType);
