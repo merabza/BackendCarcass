@@ -13,8 +13,8 @@ namespace BackendCarcass.DataSeeding.Seeders;
 public /*open*/
     class DataTypesSeeder : DataSeeder<DataType, DataTypeSeederModel>
 {
-    private readonly IDatabaseAbstraction _databaseAbstraction;
     protected readonly ICarcassDataSeederRepository CarcassRepo;
+    protected readonly IDatabaseAbstraction DatabaseAbstraction;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public DataTypesSeeder(ICarcassDataSeederRepository carcassRepo, string dataSeedFolder, IDataSeederRepository repo,
@@ -23,7 +23,7 @@ public /*open*/
         keyFieldNamesList)
     {
         CarcassRepo = carcassRepo;
-        _databaseAbstraction = databaseAbstraction;
+        DatabaseAbstraction = databaseAbstraction;
     }
 
     public override bool AdditionalCheck(List<DataTypeSeederModel> jsonData, List<DataType> savedData)
@@ -110,14 +110,14 @@ public /*open*/
     protected virtual bool SetParentDataTypes()
     {
         var tempData = DataSeederTempData.Instance;
-        string dataTypeTableName = _databaseAbstraction.GetTableName<DataType>();
-        string crudRightTypeTableName = _databaseAbstraction.GetTableName<CrudRightType>();
+        string dataTypeTableName = DatabaseAbstraction.GetTableName<DataType>();
+        string crudRightTypeTableName = DatabaseAbstraction.GetTableName<CrudRightType>();
         int dataTypeId = tempData.GetIntIdByKey<DataType>(dataTypeTableName);
 
         var dtdt = new Tuple<int, int>[]
         {
-            new(tempData.GetIntIdByKey<DataType>(_databaseAbstraction.GetTableName<MenuItm>()),
-                tempData.GetIntIdByKey<DataType>(_databaseAbstraction.GetTableName<MenuGroup>()))
+            new(tempData.GetIntIdByKey<DataType>(DatabaseAbstraction.GetTableName<MenuItm>()),
+                tempData.GetIntIdByKey<DataType>(DatabaseAbstraction.GetTableName<MenuGroup>()))
         };
 
         var dtdtdt = new Tuple<int, int, int>[]
@@ -141,12 +141,12 @@ public /*open*/
 
             //AppClaim
             DataTypeFactory.Create("სპეციალური უფლებები", "სპეციალური უფლება", "სპეციალური უფლების",
-                _databaseAbstraction.GetTableName<AppClaim>(), nameof(AppClaim.AclId).UnCapitalize(), null,
+                DatabaseAbstraction.GetTableName<AppClaim>(), nameof(AppClaim.AclId).UnCapitalize(), null,
                 nameof(AppClaim.AclKey).UnCapitalize(), null, nameof(AppClaim.AclName).UnCapitalize(), null),
 
             //DataType
             DataTypeFactory.Create("მონაცემთა ტიპები", "მონაცემთა ტიპი", "მონაცემთა ტიპის",
-                _databaseAbstraction.GetTableName<DataType>(), nameof(DataType.DtId).UnCapitalize(), null,
+                DatabaseAbstraction.GetTableName<DataType>(), nameof(DataType.DtId).UnCapitalize(), null,
                 nameof(DataType.DtTable).UnCapitalize(), "ცხრილი", nameof(DataType.DtName).UnCapitalize(), null,
                 GetTextBoxCell(nameof(DataType.DtNameNominative).UnCapitalize(), "სახელობითი"),
                 GetTextBoxCell(nameof(DataType.DtNameGenitive).UnCapitalize(), "მიცემითი"),
@@ -154,48 +154,48 @@ public /*open*/
                 GetTextBoxCell(nameof(DataType.DtKeyFieldName).UnCapitalize(), "კოდი ველის სახელი"),
                 GetTextBoxCell(nameof(DataType.DtNameFieldName).UnCapitalize(), "სახელი ველის სახელი"),
                 GetMdComboCell(nameof(DataType.DtParentDataTypeId).UnCapitalize(), "უფლებების მშობელი",
-                    _databaseAbstraction.GetTableName<DataType>())),
+                    DatabaseAbstraction.GetTableName<DataType>())),
 
             //dataTypeToCrudTypeModel
             DataTypeFactory.CreatePseudo("მონაცემების ცვლილებაზე უფლებები", "მონაცემების ცვლილებაზე უფლება",
-                "მონაცემების ცვლილებაზე უფლების", _databaseAbstraction.GetTableName<DataType>(),
-                _databaseAbstraction.GetTableName<CrudRightType>()),
+                "მონაცემების ცვლილებაზე უფლების", DatabaseAbstraction.GetTableName<DataType>(),
+                DatabaseAbstraction.GetTableName<CrudRightType>()),
 
             //CrudRightType
             DataTypeFactory.Create("მონაცემების ცვლილებაზე უფლებების ტიპები", "მონაცემების ცვლილებაზე უფლების ტიპი",
-                "მონაცემების ცვლილებაზე უფლების ტიპის", _databaseAbstraction.GetTableName<CrudRightType>(),
+                "მონაცემების ცვლილებაზე უფლების ტიპის", DatabaseAbstraction.GetTableName<CrudRightType>(),
                 nameof(CrudRightType.CrtId).UnCapitalize(), null, nameof(CrudRightType.CrtKey).UnCapitalize(), null,
                 nameof(CrudRightType.CrtName).UnCapitalize(), null),
 
             //DataTypeToDataTypeModel
-            DataTypeFactory.CreatePseudo("უფლებები", "უფლება", "უფლების", _databaseAbstraction.GetTableName<DataType>(),
-                _databaseAbstraction.GetTableName<DataType>()),
+            DataTypeFactory.CreatePseudo("უფლებები", "უფლება", "უფლების", DatabaseAbstraction.GetTableName<DataType>(),
+                DatabaseAbstraction.GetTableName<DataType>()),
 
             //MenuGroup
             DataTypeFactory.Create("მენიუს ჯგუფები", "მენიუს ჯგუფი", "მენიუს ჯგუფის",
-                _databaseAbstraction.GetTableName<MenuGroup>(), nameof(MenuGroup.MengId).UnCapitalize(), null,
+                DatabaseAbstraction.GetTableName<MenuGroup>(), nameof(MenuGroup.MengId).UnCapitalize(), null,
                 nameof(MenuGroup.MengKey).UnCapitalize(), null, nameof(MenuGroup.MengName).UnCapitalize(), null,
                 GetSortIdCell(), GetTextBoxCell(nameof(MenuGroup.MengIconName).UnCapitalize(), "ხატულა")),
 
             //MenuItm
-            DataTypeFactory.Create("მენიუ", "მენიუ", "მენიუს", _databaseAbstraction.GetTableName<MenuItm>(),
+            DataTypeFactory.Create("მენიუ", "მენიუ", "მენიუს", DatabaseAbstraction.GetTableName<MenuItm>(),
                 nameof(MenuItm.MenId).UnCapitalize(), null, nameof(MenuItm.MenKey).UnCapitalize(), null,
                 nameof(MenuItm.MenName).UnCapitalize(), null, GetSortIdCell(),
                 GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
                 GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი",
-                    _databaseAbstraction.GetTableName<MenuGroup>()),
+                    DatabaseAbstraction.GetTableName<MenuGroup>()),
                 GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
                 GetTextBoxCell(nameof(MenuItm.MenIconName).UnCapitalize(), "ხატულა")),
 
             //Role
-            DataTypeFactory.Create("როლები", "როლი", "როლის", _databaseAbstraction.GetTableName<Role>(),
+            DataTypeFactory.Create("როლები", "როლი", "როლის", DatabaseAbstraction.GetTableName<Role>(),
                 nameof(Role.RolId).UnCapitalize(), null, nameof(Role.RolKey).UnCapitalize(), null,
                 nameof(Role.RolName).UnCapitalize(), null,
                 GetIntegerCell(nameof(Role.RolLevel).UnCapitalize(), "დონე")),
 
             //User
             DataTypeFactory.Create("მომხმარებლები", "მომხმარებელი", "მომხმარებლის",
-                _databaseAbstraction.GetTableName<User>(), nameof(User.UsrId).UnCapitalize(), null,
+                DatabaseAbstraction.GetTableName<User>(), nameof(User.UsrId).UnCapitalize(), null,
                 nameof(User.NormalizedUserName).UnCapitalize(), "მომხმარებლის სახელი ნორმალიზებული",
                 nameof(User.FullName).UnCapitalize(), "სრული სახელი",
                 GetTextBoxCell(nameof(User.UserName).UnCapitalize(), "მომხმარებლის სახელი"),
