@@ -3,18 +3,21 @@ using System.Linq;
 using BackendCarcass.Database.Models;
 using BackendCarcass.DataSeeding.Models;
 using SystemTools.DatabaseToolsShared;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.SystemToolsShared;
 
 namespace BackendCarcass.DataSeeding.Seeders;
 
 public /*open*/
     class MenuSeeder : DataSeeder<MenuItm, MenuItmSeederModel>
 {
+    private readonly IDatabaseAbstraction _databaseAbstraction;
+
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MenuSeeder(string dataSeedFolder, IDataSeederRepository repo, IUnitOfWork unitOfWork,
+    public MenuSeeder(string dataSeedFolder, IDataSeederRepository repo, IDatabaseAbstraction databaseAbstraction,
         ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
-        dataSeedFolder, repo, unitOfWork, seedDataType, keyFieldNamesList)
+        dataSeedFolder, repo, databaseAbstraction, seedDataType, keyFieldNamesList)
     {
+        _databaseAbstraction = databaseAbstraction;
     }
 
     public override bool AdditionalCheck(List<MenuItmSeederModel> jsonData, List<MenuItm> savedData)
@@ -50,7 +53,7 @@ public /*open*/
             {
                 MenKey = "DataTypes",
                 MenName = "DataTypes - მონაცემთა ტიპები",
-                MenValue = UnitOfWork.GetTableName<DataType>(),
+                MenValue = _databaseAbstraction.GetTableName<DataType>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 7,
                 MenLinkKey = mdList
@@ -59,7 +62,7 @@ public /*open*/
             {
                 MenKey = "Users",
                 MenName = "მომხმარებლები",
-                MenValue = UnitOfWork.GetTableName<User>(),
+                MenValue = _databaseAbstraction.GetTableName<User>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 17,
                 MenLinkKey = mdList
@@ -68,7 +71,7 @@ public /*open*/
             {
                 MenKey = "MenuEditor",
                 MenName = "MenuEditor - მენიუს რედაქტორი",
-                MenValue = UnitOfWork.GetTableName<MenuItm>(),
+                MenValue = _databaseAbstraction.GetTableName<MenuItm>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 4,
                 MenLinkKey = mdList
@@ -77,7 +80,7 @@ public /*open*/
             {
                 MenKey = "MenuGroups",
                 MenName = "MenuGroups - მენიუს ჯგუფები",
-                MenValue = UnitOfWork.GetTableName<MenuGroup>(),
+                MenValue = _databaseAbstraction.GetTableName<MenuGroup>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 4,
                 MenLinkKey = mdList
@@ -86,7 +89,7 @@ public /*open*/
             {
                 MenKey = "Roles",
                 MenName = "როლები",
-                MenValue = UnitOfWork.GetTableName<Role>(),
+                MenValue = _databaseAbstraction.GetTableName<Role>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 0,
                 MenLinkKey = mdList
@@ -106,7 +109,7 @@ public /*open*/
             {
                 MenKey = "CrudRightTypes",
                 MenName = "მონაცემების ცვლილებაზე უფლებების ტიპები",
-                MenValue = UnitOfWork.GetTableName<CrudRightType>(),
+                MenValue = _databaseAbstraction.GetTableName<CrudRightType>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 0,
                 MenLinkKey = mdList

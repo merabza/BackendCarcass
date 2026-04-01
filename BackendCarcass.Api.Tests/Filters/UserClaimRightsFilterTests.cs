@@ -8,23 +8,24 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OneOf;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Api.Tests.Filters;
 
 public class UserClaimRightsFilterTests
 {
+    private readonly IDatabaseAbstraction _mocDatabaseAbstraction;
     private readonly ICurrentUser _mockCurrentUser;
     private readonly ILogger<UserClaimRightsFilter> _mockLogger;
     private readonly IUserRightsRepository _mockRepo;
-    private readonly IUnitOfWork _mockUnitOfWork;
     private readonly string _testClaimName;
 
+    // ReSharper disable once ConvertConstructorToMemberInitializers
     public UserClaimRightsFilterTests()
     {
         _mockRepo = Substitute.For<IUserRightsRepository>();
-        _mockUnitOfWork = Substitute.For<IUnitOfWork>();
+        _mocDatabaseAbstraction = Substitute.For<IDatabaseAbstraction>();
         _mockLogger = Substitute.For<ILogger<UserClaimRightsFilter>>();
         _mockCurrentUser = Substitute.For<ICurrentUser>();
         _testClaimName = "TestClaim";
@@ -32,7 +33,7 @@ public class UserClaimRightsFilterTests
 
     private TestableUserClaimRightsFilter CreateFilter()
     {
-        return new TestableUserClaimRightsFilter(_testClaimName, _mockRepo, _mockUnitOfWork, _mockLogger,
+        return new TestableUserClaimRightsFilter(_testClaimName, _mockRepo, _mocDatabaseAbstraction, _mockLogger,
             _mockCurrentUser);
     }
 
@@ -88,9 +89,9 @@ public class UserClaimRightsFilterTests
 
         // Assert
         Assert.False(nextCalled);
-        Assert.IsType<BadRequest<Err[]>>(result);
+        Assert.IsType<BadRequest<Error[]>>(result);
 
-        var badRequest = result as BadRequest<Err[]>;
+        var badRequest = result as BadRequest<Error[]>;
         Assert.NotNull(badRequest);
         Assert.NotNull(badRequest.Value);
         Assert.Single(badRequest.Value);
@@ -112,10 +113,10 @@ public class UserClaimRightsFilterTests
             return Results.Ok();
         };
 
-        Err[] expectedErrors =
+        Error[] expectedErrors =
         [
             RightsApiErrors.ErrorWhenDeterminingRights,
-            new() { ErrorCode = "AdditionalError", ErrorMessage = "Additional error occurred" }
+            new() { Code = "AdditionalError", Name = "Additional error occurred" }
         ];
 
         _mockCurrentUser.Roles.Returns(["TestRole"]);
@@ -127,9 +128,9 @@ public class UserClaimRightsFilterTests
 
         // Assert
         Assert.False(nextCalled);
-        Assert.IsType<BadRequest<Err[]>>(result);
+        Assert.IsType<BadRequest<Error[]>>(result);
 
-        var badRequest = result as BadRequest<Err[]>;
+        var badRequest = result as BadRequest<Error[]>;
         Assert.NotNull(badRequest);
         Assert.NotNull(badRequest.Value);
         Assert.Equal(2, badRequest.Value.Length);
@@ -141,7 +142,7 @@ public class UserClaimRightsFilterTests
     {
         // Arrange
         string customClaimName = "CustomClaim";
-        var filter = new TestableUserClaimRightsFilter(customClaimName, _mockRepo, _mockUnitOfWork, _mockLogger,
+        var filter = new TestableUserClaimRightsFilter(customClaimName, _mockRepo, _mocDatabaseAbstraction, _mockLogger,
             _mockCurrentUser);
 
         var context = Substitute.For<EndpointFilterInvocationContext>();
@@ -246,11 +247,11 @@ public class UserClaimRightsFilterTests
     // Testable version of UserClaimRightsFilter to allow testing
     private sealed class TestableUserClaimRightsFilter : UserClaimRightsFilter
     {
-        private OneOf<bool, Err[]>? _mockResult;
+        private OneOf<bool, Error[]>? _mockResult;
 
-        public TestableUserClaimRightsFilter(string claimName, IUserRightsRepository repo, IUnitOfWork unitOfWork,
-            ILogger<UserClaimRightsFilter> logger, ICurrentUser currentUser) : base(claimName, repo, unitOfWork, logger,
-            currentUser)
+        public TestableUserClaimRightsFilter(string claimName, IUserRightsRepository repo,
+            IDatabaseAbstraction databaseAbstraction, ILogger<UserClaimRightsFilter> logger,
+            ICurrentUser currentUser) : base(claimName, repo, logger, currentUser, databaseAbstraction)
         {
             ClaimName = claimName;
         }
@@ -262,7 +263,7 @@ public class UserClaimRightsFilterTests
             _mockResult = hasRight;
         }
 
-        public void SetupRightsDeterminerResult(Err[] errors)
+        public void SetupRightsDeterminerResult(Error[] errors)
         {
             _mockResult = errors;
         }
@@ -276,7 +277,7 @@ public class UserClaimRightsFilterTests
                 return await base.InvokeAsync(context, next);
             }
 
-            OneOf<bool, Err[]> result = _mockResult.Value;
+            OneOf<bool, Error[]> result = _mockResult.Value;
             if (result.IsT1)
             {
                 return Results.BadRequest(result.AsT1);

@@ -3,7 +3,7 @@ using System.Linq;
 using BackendCarcass.Database.Models;
 using BackendCarcass.DataSeeding.Models;
 using SystemTools.DatabaseToolsShared;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.SystemToolsShared;
 
 namespace BackendCarcass.DataSeeding.Seeders;
 
@@ -11,9 +11,9 @@ public /*open*/
     class AppClaimsSeeder : DataSeeder<AppClaim, AppClaimSeederModel>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
-    public AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo, IUnitOfWork unitOfWork,
+    public AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo, IDatabaseAbstraction databaseAbstraction,
         ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
-        dataSeedFolder, repo, unitOfWork, seedDataType, keyFieldNamesList)
+        dataSeedFolder, repo, databaseAbstraction, seedDataType, keyFieldNamesList)
     {
     }
 

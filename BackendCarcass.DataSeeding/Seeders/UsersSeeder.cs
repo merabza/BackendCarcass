@@ -6,7 +6,7 @@ using BackendCarcass.DataSeeding.Models;
 using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Identity;
 using SystemTools.DatabaseToolsShared;
-using SystemTools.DomainShared.Repositories;
+using SystemTools.SystemToolsShared;
 
 namespace BackendCarcass.DataSeeding.Seeders;
 
@@ -17,9 +17,9 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public UsersSeeder(UserManager<AppUser> userManager, string secretDataFolder, string dataSeedFolder,
-        IDataSeederRepository repo, IUnitOfWork unitOfWork, ESeedDataType seedDataType = ESeedDataType.OnlyJson,
-        List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, unitOfWork, seedDataType,
-        keyFieldNamesList)
+        IDataSeederRepository repo, IDatabaseAbstraction databaseAbstraction,
+        ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
+        dataSeedFolder, repo, databaseAbstraction, seedDataType, keyFieldNamesList)
     {
         _userManager = userManager;
         _secretDataFolder = secretDataFolder;
