@@ -44,8 +44,8 @@ public static class CarcassIdentityDependencyInjection
         IdentitySettings identitySettings = appSettingsSection.Get<IdentitySettings>() ??
                                             throw new Exception("IdentitySettings is null");
         string jwtSecret = identitySettings.JwtSecret ?? throw new Exception("jwtSecret is null");
-        string jwtIssuer = identitySettings.Issuer ?? throw new Exception("Issuer is null");
-        string jwtAudience = identitySettings.Audience ?? throw new Exception("Audience is null");
+        string jwtIssuer = identitySettings.JwtIssuer ?? throw new Exception("JwtIssuer is null");
+        string jwtAudience = identitySettings.JwtAudience ?? throw new Exception("JwtAudience is null");
         byte[] key = Encoding.ASCII.GetBytes(jwtSecret);
 
         services.AddAuthentication(x =>

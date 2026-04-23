@@ -65,9 +65,8 @@ public class LoginBase
             return new[] { CarcassApiErrors.ParametersAreInvalid };
         }
 
-        string? issuer = _identitySettings.Value.Issuer;
-        string? audience = _identitySettings.Value.Audience;
-
+        string? issuer = _identitySettings.Value.JwtIssuer;
+        string? audience = _identitySettings.Value.JwtAudience;
         string? token = user.CreateJwToken(_identitySettings.Value.JwtSecret, 0, roles, issuer, audience);
         if (token is null)
         {
