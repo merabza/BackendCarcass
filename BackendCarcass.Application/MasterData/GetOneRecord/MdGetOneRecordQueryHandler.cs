@@ -8,12 +8,11 @@ using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
 using SystemTools.SystemToolsShared.Errors;
 
-
 namespace BackendCarcass.Application.MasterData.GetOneRecord;
 
-public sealed class MdGetOneRecordQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator) : IQueryHandler<MdGetOneRecordRequestQuery, MasterDataCrudLoadedData>
+public sealed class MdGetOneRecordQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
+    : IQueryHandler<MdGetOneRecordRequestQuery, MasterDataCrudLoadedData>
 {
-
     public async Task<OneOf<MasterDataCrudLoadedData, Error[]>> Handle(MdGetOneRecordRequestQuery request,
         CancellationToken cancellationToken)
     {
