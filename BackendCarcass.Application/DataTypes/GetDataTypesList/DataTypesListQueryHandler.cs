@@ -17,7 +17,6 @@ public sealed class DataTypesListQueryHandler : LoginCommandHandlerBase,
     private readonly ICurrentUser _currentUser;
     private readonly IMenuRightsRepository _repository;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public DataTypesListQueryHandler(IMenuRightsRepository repository, ICurrentUser currentUser)
     {
         _repository = repository;

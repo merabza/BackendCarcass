@@ -8,25 +8,17 @@ using OneOf;
 using SystemTools.MediatRMessagingAbstractions;
 using SystemTools.SystemToolsShared.Errors;
 
-// ReSharper disable ConvertToPrimaryConstructor
 
 namespace BackendCarcass.Application.MasterData.GetOneRecord;
 
-// ReSharper disable once ClassNeverInstantiated.Global
-public sealed class MdGetOneRecordQueryHandler : IQueryHandler<MdGetOneRecordRequestQuery, MasterDataCrudLoadedData>
+public sealed class MdGetOneRecordQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator) : IQueryHandler<MdGetOneRecordRequestQuery, MasterDataCrudLoadedData>
 {
-    private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
-
-    public MdGetOneRecordQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    {
-        _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
-    }
 
     public async Task<OneOf<MasterDataCrudLoadedData, Error[]>> Handle(MdGetOneRecordRequestQuery request,
         CancellationToken cancellationToken)
     {
         OneOf<CrudBase, Error[]> createMasterDataCrudResult =
-            _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+            masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
             return createMasterDataCrudResult.AsT1.ToArray();

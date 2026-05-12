@@ -13,7 +13,6 @@ public sealed class GridModelQueryHandler : IQueryHandler<GridModelRequestQuery,
 {
     private readonly IMenuRightsRepository _repository;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public GridModelQueryHandler(IMenuRightsRepository repository)
     {
         _repository = repository;

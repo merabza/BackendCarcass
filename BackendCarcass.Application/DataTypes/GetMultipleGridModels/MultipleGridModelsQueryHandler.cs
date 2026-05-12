@@ -16,7 +16,6 @@ public sealed class
 {
     private readonly IMenuRightsRepository _repository;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public MultipleGridModelsQueryHandler(IMenuRightsRepository repository)
     {
         _repository = repository;
