@@ -6,7 +6,6 @@ using BackendCarcass.MasterData;
 using BackendCarcass.Rights;
 using BackendCarcass.Rights.Models;
 using OneOf;
-using SystemTools.Domain.Abstractions;
 using SystemTools.MediatRMessagingAbstractions;
 using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
@@ -21,23 +20,21 @@ public sealed class
     private readonly IDatabaseAbstraction _databaseAbstraction;
     private readonly IRightsRepository _repo;
     private readonly IReturnValuesRepository _rvRepo;
-    private readonly IUnitOfWork _unitOfWork;
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public ChildrenTreeDataCommandHandler(IRightsRepository repo, IReturnValuesRepository rvRepo,
-        IUnitOfWork unitOfWork, ICurrentUser currentUser, IDatabaseAbstraction databaseAbstraction)
+        ICurrentUser currentUser, IDatabaseAbstraction databaseAbstraction)
     {
         _repo = repo;
         _rvRepo = rvRepo;
         _currentUser = currentUser;
         _databaseAbstraction = databaseAbstraction;
-        _unitOfWork = unitOfWork;
     }
 
     public async Task<OneOf<List<DataTypeModel>, Error[]>> Handle(ChildrenTreeDataRequestCommand request,
         CancellationToken cancellationToken)
     {
-        var rightsCollector = new RightsCollector(_repo, _rvRepo, _unitOfWork, _databaseAbstraction);
+        var rightsCollector = new RightsCollector(_repo, _rvRepo, _databaseAbstraction);
         OneOf<List<DataTypeModel>, Error[]> result = await rightsCollector.ChildrenTreeData(_currentUser.Name,
             request.DataTypeKey, request.ViewStyle, cancellationToken);
         return result.Match<OneOf<List<DataTypeModel>, Error[]>>(r => r, e => e);

@@ -9,7 +9,6 @@ using BackendCarcass.MasterData.Models;
 using BackendCarcass.Rights.Models;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
-using SystemTools.Domain.Abstractions;
 using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -24,7 +23,7 @@ public sealed class RightsCollector
     private readonly IReturnValuesRepository _rvRepo;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public RightsCollector(IRightsRepository repo, IReturnValuesRepository rvRepo, IUnitOfWork unitOfWork,
+    public RightsCollector(IRightsRepository repo, IReturnValuesRepository rvRepo,
         IDatabaseAbstraction databaseAbstraction)
     {
         _repo = repo;
