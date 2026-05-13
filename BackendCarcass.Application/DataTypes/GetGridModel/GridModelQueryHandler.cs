@@ -9,18 +9,12 @@ using SystemTools.SystemToolsShared.Errors;
 namespace BackendCarcass.Application.DataTypes.GetGridModel;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class GridModelQueryHandler : IQueryHandler<GridModelRequestQuery, string>
+public sealed class GridModelQueryHandler(IMenuRightsRepository repository)
+    : IQueryHandler<GridModelRequestQuery, string>
 {
-    private readonly IMenuRightsRepository _repository;
-
-    public GridModelQueryHandler(IMenuRightsRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<OneOf<string, Error[]>> Handle(GridModelRequestQuery request, CancellationToken cancellationToken)
     {
-        string? res = await _repository.GridModel(request.GridName, cancellationToken);
+        string? res = await repository.GridModel(request.GridName, cancellationToken);
         if (res == null)
         {
             return new[] { DataTypesApiErrors.GridNotFound(request.GridName) };

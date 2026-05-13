@@ -13,29 +13,20 @@ using SystemTools.SystemToolsShared.Errors;
 namespace BackendCarcass.Application.UserRights.DeleteCurrentUser;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class DeleteCurrentUserCommandHandler : ICommandHandler<DeleteCurrentUserRequestCommand>
+public sealed class DeleteCurrentUserCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
+    : ICommandHandler<DeleteCurrentUserRequestCommand>
 {
-    private readonly ICurrentUser _currentUser;
-    private readonly UserManager<AppUser> _userMgr;
-
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public DeleteCurrentUserCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
-    {
-        _userMgr = userMgr;
-        _currentUser = currentUser;
-    }
-
     public async Task<OneOf<Unit, Error[]>> Handle(DeleteCurrentUserRequestCommand request,
         CancellationToken cancellationToken)
     {
         //ეს ერთგვარი ტესტია. თუ კოდი აქამდე მოვიდა, მიმდინარე მომხმარებელი ვალიდურია
-        if (_currentUser.Name != request.UserName)
+        if (currentUser.Name != request.UserName)
         {
             return new[] { UserRightsErrors.BadRequestFailedToDeleteUser };
         }
 
-        var usersMdRepo = new UsersMdRepo(_userMgr);
-        AppUser? user = await _userMgr.FindByNameAsync(request.UserName!);
+        var usersMdRepo = new UsersMdRepo(userMgr);
+        AppUser? user = await userMgr.FindByNameAsync(request.UserName!);
         //თუ არ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user == null)
         {

@@ -11,22 +11,13 @@ using SystemTools.SystemToolsShared.Errors;
 namespace BackendCarcass.Application.DataTypes.GetDataTypesList;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class DataTypesListQueryHandler : LoginCommandHandlerBase,
-    IQueryHandler<DataTypesRequestQuery, DataTypesResponse[]>
+public sealed class DataTypesListQueryHandler(IMenuRightsRepository repository, ICurrentUser currentUser)
+    : LoginCommandHandlerBase, IQueryHandler<DataTypesRequestQuery, DataTypesResponse[]>
 {
-    private readonly ICurrentUser _currentUser;
-    private readonly IMenuRightsRepository _repository;
-
-    public DataTypesListQueryHandler(IMenuRightsRepository repository, ICurrentUser currentUser)
-    {
-        _repository = repository;
-        _currentUser = currentUser;
-    }
-
     public async Task<OneOf<DataTypesResponse[], Error[]>> Handle(DataTypesRequestQuery request,
         CancellationToken cancellationToken)
     {
-        DataTypesResponse[] res = await _repository.DataTypes(_currentUser.Name, cancellationToken);
+        DataTypesResponse[] res = await repository.DataTypes(currentUser.Name, cancellationToken);
         return res;
     }
 }

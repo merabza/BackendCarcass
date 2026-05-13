@@ -16,20 +16,14 @@ using Unit = MediatR.Unit;
 namespace BackendCarcass.Application.MasterData.DeleteOneRecord;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class MdDeleteOneRecordCommandHandler : ICommandHandler<MdDeleteOneRecordRequestCommand>
+public sealed class MdDeleteOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
+    : ICommandHandler<MdDeleteOneRecordRequestCommand>
 {
-    private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
-
-    public MdDeleteOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    {
-        _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
-    }
-
     public async Task<OneOf<Unit, Error[]>> Handle(MdDeleteOneRecordRequestCommand request,
         CancellationToken cancellationToken)
     {
         OneOf<CrudBase, Error[]> createMasterDataCrudResult =
-            _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+            masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
             return createMasterDataCrudResult.AsT1;

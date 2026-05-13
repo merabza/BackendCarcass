@@ -12,15 +12,9 @@ namespace BackendCarcass.Application.DataTypes.GetMultipleGridModels;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class
-    MultipleGridModelsQueryHandler : IQueryHandler<MultipleGridModelsRequestQuery, Dictionary<string, string>>
+    MultipleGridModelsQueryHandler(IMenuRightsRepository repository)
+    : IQueryHandler<MultipleGridModelsRequestQuery, Dictionary<string, string>>
 {
-    private readonly IMenuRightsRepository _repository;
-
-    public MultipleGridModelsQueryHandler(IMenuRightsRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<OneOf<Dictionary<string, string>, Error[]>> Handle(MultipleGridModelsRequestQuery request,
         CancellationToken cancellationToken)
     {
@@ -39,7 +33,7 @@ public sealed class
         //ხოლო მეორე გავლისას ხდება უშუალოდ საჭირო ინფორმაციის ჩატვირთვა
         foreach (string? gridName in gridNames)
         {
-            string? res = await _repository.GridModel(gridName!, cancellationToken);
+            string? res = await repository.GridModel(gridName!, cancellationToken);
             if (res != null)
             {
                 resultList.Add(gridName!, res);

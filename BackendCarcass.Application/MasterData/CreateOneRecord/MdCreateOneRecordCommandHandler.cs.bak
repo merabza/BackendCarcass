@@ -14,9 +14,16 @@ using SystemTools.SystemToolsShared.Errors;
 namespace BackendCarcass.Application.MasterData.CreateOneRecord;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class MdCreateOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    : ICommandHandler<MdCreateOneRecordRequestCommand, MasterDataCrudLoadedData>
+public sealed class
+    MdCreateOneRecordCommandHandler : ICommandHandler<MdCreateOneRecordRequestCommand, MasterDataCrudLoadedData>
 {
+    private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
+
+    public MdCreateOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
+    {
+        _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
+    }
+
     public async Task<OneOf<MasterDataCrudLoadedData, Error[]>> Handle(MdCreateOneRecordRequestCommand request,
         CancellationToken cancellationToken)
     {
@@ -28,7 +35,7 @@ public sealed class MdCreateOneRecordCommandHandler(IMasterDataLoaderCreator mas
 
         var crudData = new MasterDataCrudData(body);
         OneOf<CrudBase, Error[]> createMasterDataCrudResult =
-            masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+            _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
             return createMasterDataCrudResult.AsT1;

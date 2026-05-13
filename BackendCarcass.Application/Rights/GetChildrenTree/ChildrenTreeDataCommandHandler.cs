@@ -13,29 +13,17 @@ using SystemTools.SystemToolsShared.Errors;
 namespace BackendCarcass.Application.Rights.GetChildrenTree;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class
-    ChildrenTreeDataCommandHandler : ICommandHandler<ChildrenTreeDataRequestCommand, List<DataTypeModel>>
+public sealed class ChildrenTreeDataCommandHandler(
+    IRightsRepository repo,
+    IReturnValuesRepository rvRepo,
+    ICurrentUser currentUser,
+    IDatabaseAbstraction databaseAbstraction) : ICommandHandler<ChildrenTreeDataRequestCommand, List<DataTypeModel>>
 {
-    private readonly ICurrentUser _currentUser;
-    private readonly IDatabaseAbstraction _databaseAbstraction;
-    private readonly IRightsRepository _repo;
-    private readonly IReturnValuesRepository _rvRepo;
-
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public ChildrenTreeDataCommandHandler(IRightsRepository repo, IReturnValuesRepository rvRepo,
-        ICurrentUser currentUser, IDatabaseAbstraction databaseAbstraction)
-    {
-        _repo = repo;
-        _rvRepo = rvRepo;
-        _currentUser = currentUser;
-        _databaseAbstraction = databaseAbstraction;
-    }
-
     public async Task<OneOf<List<DataTypeModel>, Error[]>> Handle(ChildrenTreeDataRequestCommand request,
         CancellationToken cancellationToken)
     {
-        var rightsCollector = new RightsCollector(_repo, _rvRepo, _databaseAbstraction);
-        OneOf<List<DataTypeModel>, Error[]> result = await rightsCollector.ChildrenTreeData(_currentUser.Name,
+        var rightsCollector = new RightsCollector(repo, rvRepo, databaseAbstraction);
+        OneOf<List<DataTypeModel>, Error[]> result = await rightsCollector.ChildrenTreeData(currentUser.Name,
             request.DataTypeKey, request.ViewStyle, cancellationToken);
         return result.Match<OneOf<List<DataTypeModel>, Error[]>>(r => r, e => e);
     }

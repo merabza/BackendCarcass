@@ -18,15 +18,9 @@ using Unit = MediatR.Unit;
 namespace BackendCarcass.Application.MasterData.UpdateOneRecord;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOneRecordRequestCommand>
+public sealed class MdUpdateOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
+    : ICommandHandler<MdUpdateOneRecordRequestCommand>
 {
-    private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
-
-    public MdUpdateOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    {
-        _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
-    }
-
     public async Task<OneOf<Unit, Error[]>> Handle(MdUpdateOneRecordRequestCommand request,
         CancellationToken cancellationToken)
     {
@@ -38,7 +32,7 @@ public sealed class MdUpdateOneRecordCommandHandler : ICommandHandler<MdUpdateOn
 
         var crudData = new MasterDataCrudData(body);
         OneOf<CrudBase, Error[]> createMasterDataCrudResult =
-            _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+            masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
             return createMasterDataCrudResult.AsT1;

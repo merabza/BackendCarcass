@@ -13,16 +13,9 @@ using SystemTools.SystemToolsShared.Errors;
 namespace BackendCarcass.Application.MasterData.GetTableRows;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class GetTableRowsDataQueryHandler : IQueryHandler<GetTableRowsDataRequestQuery, TableRowsData>
+public sealed class GetTableRowsDataQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
+    : IQueryHandler<GetTableRowsDataRequestQuery, TableRowsData>
 {
-    private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
-
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public GetTableRowsDataQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    {
-        _masterDataLoaderCrudCreator = masterDataLoaderCrudCreator;
-    }
-
     public async Task<OneOf<TableRowsData, Error[]>> Handle(GetTableRowsDataRequestQuery request,
         CancellationToken cancellationToken)
     {
@@ -39,7 +32,7 @@ public sealed class GetTableRowsDataQueryHandler : IQueryHandler<GetTableRowsDat
         //    r => r, e => e);
 
         OneOf<CrudBase, Error[]> createMasterDataCrudResult =
-            _masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
+            masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
             return createMasterDataCrudResult.AsT1;

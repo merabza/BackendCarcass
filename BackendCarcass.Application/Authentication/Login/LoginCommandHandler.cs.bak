@@ -12,14 +12,21 @@ using SystemTools.SystemToolsShared.Errors;
 namespace BackendCarcass.Application.Authentication.Login;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class LoginCommandHandler(LoginService loginService)
-    : LoginCommandHandlerBase, ICommandHandler<LoginRequestCommand, LoginResponse>
+public sealed class LoginCommandHandler : LoginCommandHandlerBase, ICommandHandler<LoginRequestCommand, LoginResponse>
 {
+    private readonly LoginService _loginService;
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public LoginCommandHandler(LoginService loginService)
+    {
+        _loginService = loginService;
+    }
+
     public async Task<OneOf<LoginResponse, Error[]>> Handle(LoginRequestCommand request,
         CancellationToken cancellationToken)
     {
         OneOf<LoginResult, Error[]> tryLoginResult =
-            await loginService.TryToLogin(request.UserName!, request.Password!, cancellationToken);
+            await _loginService.TryToLogin(request.UserName!, request.Password!, cancellationToken);
         if (tryLoginResult.IsT1)
         {
             return tryLoginResult.AsT1;
