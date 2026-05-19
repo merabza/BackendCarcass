@@ -21,7 +21,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
     // ReSharper disable once ConvertToPrimaryConstructor
     public ManyToManyJoinsSeeder(string secretDataFolder, ICarcassDataSeederRepository carcassRepo,
         string dataSeedFolder, IDataSeederRepository repo, IDatabaseAbstraction databaseAbstraction,
-        ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
+        ESeedDataType seedDataType = ESeedDataType.OnlyDatabase, List<string>? keyFieldNamesList = null) : base(
         dataSeedFolder, repo, databaseAbstraction, seedDataType, keyFieldNamesList)
     {
         _secretDataFolder = secretDataFolder;

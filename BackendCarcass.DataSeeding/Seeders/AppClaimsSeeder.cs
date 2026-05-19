@@ -12,7 +12,7 @@ public /*open*/
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public AppClaimsSeeder(string dataSeedFolder, IDataSeederRepository repo, IDatabaseAbstraction databaseAbstraction,
-        ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
+        ESeedDataType seedDataType = ESeedDataType.OnlyDatabase, List<string>? keyFieldNamesList = null) : base(
         dataSeedFolder, repo, databaseAbstraction, seedDataType, keyFieldNamesList)
     {
     }

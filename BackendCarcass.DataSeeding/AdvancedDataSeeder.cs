@@ -12,7 +12,7 @@
 //{
 //    private readonly ESeedDataType _seedDataType;
 
-//    protected AdvancedDataSeeder(string dataSeedFolder, IDataSeederRepository repo, ESeedDataType seedDataType = ESeedDataType.RulesHasMorePriority) : base(dataSeedFolder, repo)
+//    protected AdvancedDataSeeder(string dataSeedFolder, IDataSeederRepository repo, ESeedDataType seedDataType = ESeedDataType.SeederRulesHasMorePriority) : base(dataSeedFolder, repo)
 //    {
 //        _seedDataType = seedDataType;
 //    }

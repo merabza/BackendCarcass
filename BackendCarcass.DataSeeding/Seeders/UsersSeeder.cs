@@ -18,7 +18,7 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
     // ReSharper disable once ConvertToPrimaryConstructor
     public UsersSeeder(UserManager<AppUser> userManager, string secretDataFolder, string dataSeedFolder,
         IDataSeederRepository repo, IDatabaseAbstraction databaseAbstraction,
-        ESeedDataType seedDataType = ESeedDataType.OnlyJson, List<string>? keyFieldNamesList = null) : base(
+        ESeedDataType seedDataType = ESeedDataType.OnlyDatabase, List<string>? keyFieldNamesList = null) : base(
         dataSeedFolder, repo, databaseAbstraction, seedDataType, keyFieldNamesList)
     {
         _userManager = userManager;

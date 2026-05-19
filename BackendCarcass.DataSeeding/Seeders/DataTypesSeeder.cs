@@ -18,7 +18,7 @@ public /*open*/
 
     // ReSharper disable once ConvertToPrimaryConstructor
     public DataTypesSeeder(ICarcassDataSeederRepository carcassRepo, string dataSeedFolder, IDataSeederRepository repo,
-        IDatabaseAbstraction databaseAbstraction, ESeedDataType seedDataType = ESeedDataType.OnlyRules,
+        IDatabaseAbstraction databaseAbstraction, ESeedDataType seedDataType = ESeedDataType.OnlySeederRules,
         List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, databaseAbstraction, seedDataType,
         keyFieldNamesList)
     {

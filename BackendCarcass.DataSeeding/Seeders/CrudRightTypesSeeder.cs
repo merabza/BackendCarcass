@@ -13,7 +13,7 @@ public /*open*/
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public CrudRightTypesSeeder(string dataSeedFolder, IDataSeederRepository repo,
-        IDatabaseAbstraction databaseAbstraction, ESeedDataType seedDataType = ESeedDataType.OnlyJson,
+        IDatabaseAbstraction databaseAbstraction, ESeedDataType seedDataType = ESeedDataType.OnlyDatabase,
         List<string>? keyFieldNamesList = null) : base(dataSeedFolder, repo, databaseAbstraction, seedDataType,
         keyFieldNamesList)
     {
