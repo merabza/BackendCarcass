@@ -11,8 +11,7 @@ using SystemTools.SystemToolsShared.Errors;
 namespace BackendCarcass.Application.DataTypes.GetMultipleGridModels;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class
-    MultipleGridModelsQueryHandler(IMenuRightsRepository repository)
+public sealed class MultipleGridModelsQueryHandler(IMenuRightsRepository repository)
     : IQueryHandler<MultipleGridModelsRequestQuery, Dictionary<string, string>>
 {
     public async Task<OneOf<Dictionary<string, string>, Error[]>> Handle(MultipleGridModelsRequestQuery request,
