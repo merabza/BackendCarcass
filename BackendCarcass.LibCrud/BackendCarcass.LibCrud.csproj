@@ -2,6 +2,7 @@
 
     <ItemGroup>
       <PackageReference Include="SystemTools.Domain.Abstractions" />
+      <PackageReference Include="SystemTools.SystemToolsShared" />
     </ItemGroup>
 
 </Project>

@@ -8,4 +8,8 @@
         <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="SystemTools.SystemToolsShared" />
+    </ItemGroup>
+
 </Project>

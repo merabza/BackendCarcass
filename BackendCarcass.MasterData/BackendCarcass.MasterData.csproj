@@ -5,6 +5,7 @@
         <PackageReference Include="Microsoft.Extensions.Identity.Stores" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
         <PackageReference Include="SystemTools.Domain.Abstractions" />
+        <PackageReference Include="SystemTools.SystemToolsShared" />
     </ItemGroup>
 
     <ItemGroup>
