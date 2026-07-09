@@ -1,12 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
+        <PackageReference Include="BackendCarcassShared.Contracts" />
         <PackageReference Include="FluentValidation" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference
-            Include="..\..\BackendCarcassShared\BackendCarcassShared.Contracts\BackendCarcassShared.Contracts.csproj" />
         <ProjectReference Include="..\..\WebSystemTools\WebSystemTools.CorsTools\WebSystemTools.CorsTools.csproj" />
         <ProjectReference Include="..\BackendCarcass.Application\BackendCarcass.Application.csproj" />
         <ProjectReference Include="..\BackendCarcass.LibCrud\BackendCarcass.LibCrud.csproj" />

@@ -13,7 +13,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassShared.Contracts\BackendCarcassShared.Contracts.csproj" />
       <ProjectReference Include="..\BackendCarcass.Api.Tests\BackendCarcass.Api.Tests.csproj" />
       <ProjectReference Include="..\BackendCarcass.Api\BackendCarcass.Api.csproj" />
       <ProjectReference Include="..\BackendCarcass.Application\BackendCarcass.Application.csproj" />
@@ -27,6 +26,10 @@
       <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />
       <ProjectReference Include="..\BackendCarcass.Repositories\BackendCarcass.Repositories.csproj" />
       <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BackendCarcassShared.Contracts" />
     </ItemGroup>
 
 

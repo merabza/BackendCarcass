@@ -1,14 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
+        <PackageReference Include="BackendCarcassShared.Contracts" />
         <PackageReference Include="Microsoft.Extensions.Identity.Stores" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+        <PackageReference Include="SystemTools.Domain.Abstractions" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassShared.Contracts\BackendCarcassShared.Contracts.csproj" />
-        <ProjectReference Include="..\..\SystemTools\SystemTools.Domain.Abstractions\SystemTools.Domain.Abstractions.csproj" />
-        <ProjectReference Include="..\..\SystemTools\SystemTools.SystemToolsShared\SystemTools.SystemToolsShared.csproj" />
         <ProjectReference Include="..\BackendCarcass.LibCrud\BackendCarcass.LibCrud.csproj" />
     </ItemGroup>
 
