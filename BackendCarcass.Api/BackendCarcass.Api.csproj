@@ -3,10 +3,10 @@
     <ItemGroup>
         <PackageReference Include="BackendCarcassShared.Contracts" />
         <PackageReference Include="FluentValidation" />
+        <PackageReference Include="WebSystemTools.CorsTools" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\WebSystemTools\WebSystemTools.CorsTools\WebSystemTools.CorsTools.csproj" />
         <ProjectReference Include="..\BackendCarcass.Application\BackendCarcass.Application.csproj" />
         <ProjectReference Include="..\BackendCarcass.LibCrud\BackendCarcass.LibCrud.csproj" />
         <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />

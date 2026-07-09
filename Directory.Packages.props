@@ -1,9 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="BackendCarcassShared.Contracts" Version="1.0.9686.24699" />
+    <PackageVersion Include="BackendCarcassShared.Contracts" Version="1.0.9686.33626" />
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
     <PackageVersion Include="Microsoft.AspNetCore.Http.Results" Version="2.3.0" />
@@ -15,11 +16,12 @@
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.19.1" />
     <PackageVersion Include="coverlet.collector" Version="10.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
-    <PackageVersion Include="SystemTools.DatabaseToolsShared" Version="1.0.9686.26889" />
-    <PackageVersion Include="SystemTools.Domain.Abstractions" Version="1.0.9686.26889" />
-    <PackageVersion Include="SystemTools.MediatRMessagingAbstractions" Version="1.0.9686.26889" />
-    <PackageVersion Include="SystemTools.RepositoriesShared" Version="1.0.9686.26889" />
-    <PackageVersion Include="SystemTools.SystemToolsShared" Version="1.0.9686.26889" />
+    <PackageVersion Include="SystemTools.DatabaseToolsShared" Version="1.0.9686.33588" />
+    <PackageVersion Include="SystemTools.Domain.Abstractions" Version="1.0.9686.33588" />
+    <PackageVersion Include="SystemTools.MediatRMessagingAbstractions" Version="1.0.9686.33588" />
+    <PackageVersion Include="SystemTools.RepositoriesShared" Version="1.0.9686.33588" />
+    <PackageVersion Include="SystemTools.SystemToolsShared" Version="1.0.9686.33588" />
+    <PackageVersion Include="WebSystemTools.CorsTools" Version="1.0.9686.34761" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>

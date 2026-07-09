@@ -28,6 +28,7 @@
   <Project Path="BackendCarcass.Application/BackendCarcass.Application.csproj" />
   <Project Path="BackendCarcass.Database/BackendCarcass.Database.csproj" />
   <Project Path="BackendCarcass.Db/BackendCarcass.Db.csproj" />
+  <Project Path="BackendCarcass.Domain/BackendCarcass.Domain.csproj" />
   <Project Path="BackendCarcass.FilterSort/BackendCarcass.FilterSort.csproj" />
   <Project Path="BackendCarcass.Identity/BackendCarcass.Identity.csproj" />
   <Project Path="BackendCarcass.Mappers/BackendCarcass.Mappers.csproj" />
