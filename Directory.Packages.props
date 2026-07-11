@@ -16,11 +16,11 @@
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.19.1" />
     <PackageVersion Include="coverlet.collector" Version="10.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
-    <PackageVersion Include="SystemTools.DatabaseToolsShared" Version="1.0.9686.36764" />
-    <PackageVersion Include="SystemTools.Domain.Abstractions" Version="1.0.9686.36764" />
-    <PackageVersion Include="SystemTools.MediatRMessagingAbstractions" Version="1.0.9686.36050" />
-    <PackageVersion Include="SystemTools.RepositoriesShared" Version="1.0.9686.36764" />
-    <PackageVersion Include="SystemTools.SystemToolsShared" Version="1.0.9686.36920" />
+    <PackageVersion Include="SystemTools.DatabaseToolsShared" Version="1.0.9689.2043" />
+    <PackageVersion Include="SystemTools.Domain.Abstractions" Version="1.0.9689.2043" />
+    <PackageVersion Include="SystemTools.MediatRMessagingAbstractions" Version="1.0.9689.2043" />
+    <PackageVersion Include="SystemTools.RepositoriesShared" Version="1.0.9689.2043" />
+    <PackageVersion Include="SystemTools.SystemToolsShared" Version="1.0.9689.2043" />
     <PackageVersion Include="WebSystemTools.CorsTools" Version="1.0.9686.34761" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
