@@ -6,10 +6,7 @@
         <ProjectReference Include="..\BackendCarcass.Mappers\BackendCarcass.Mappers.csproj" />
         <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />
         <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="SystemTools.SystemToolsShared" />
+        <ProjectReference Include="..\..\SystemTools\SystemTools.SystemToolsShared\SystemTools.SystemToolsShared.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,9 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <PackageReference Include="BackendCarcassShared.Contracts" />
         <PackageReference Include="FluentValidation" />
-        <PackageReference Include="WebSystemTools.CorsTools" />
     </ItemGroup>
 
     <ItemGroup>
@@ -12,6 +10,8 @@
         <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />
         <ProjectReference Include="..\BackendCarcass.Repositories\BackendCarcass.Repositories.csproj" />
         <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
+        <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassShared.Contracts\BackendCarcassShared.Contracts.csproj" />
+        <ProjectReference Include="..\..\WebSystemTools\WebSystemTools.CorsTools\WebSystemTools.CorsTools.csproj" />
     </ItemGroup>
 
 </Project>

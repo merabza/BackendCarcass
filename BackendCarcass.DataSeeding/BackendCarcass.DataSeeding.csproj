@@ -2,12 +2,12 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Identity.Core" />
-        <PackageReference Include="SystemTools.DatabaseToolsShared" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
         <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
+        <ProjectReference Include="..\..\SystemTools\SystemTools.DatabaseToolsShared\SystemTools.DatabaseToolsShared.csproj" />
     </ItemGroup>
 
 </Project>

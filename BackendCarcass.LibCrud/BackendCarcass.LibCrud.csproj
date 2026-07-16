@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-      <PackageReference Include="SystemTools.Domain.Abstractions" />
-      <PackageReference Include="SystemTools.SystemToolsShared" />
+      <ProjectReference Include="..\..\SystemTools\SystemTools.Domain.Abstractions\SystemTools.Domain.Abstractions.csproj" />
+      <ProjectReference Include="..\..\SystemTools\SystemTools.SystemToolsShared\SystemTools.SystemToolsShared.csproj" />
     </ItemGroup>
 
 </Project>

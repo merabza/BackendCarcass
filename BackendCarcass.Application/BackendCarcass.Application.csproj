@@ -6,11 +6,8 @@
         <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />
         <ProjectReference Include="..\BackendCarcass.Repositories\BackendCarcass.Repositories.csproj" />
         <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="BackendCarcassShared.Contracts" />
-      <PackageReference Include="SystemTools.MediatRMessagingAbstractions" />
+        <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassShared.Contracts\BackendCarcassShared.Contracts.csproj" />
+        <ProjectReference Include="..\..\SystemTools\SystemTools.MediatRMessagingAbstractions\SystemTools.MediatRMessagingAbstractions.csproj" />
     </ItemGroup>
 
 </Project>
