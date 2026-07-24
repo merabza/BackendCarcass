@@ -35,6 +35,6 @@ public sealed class CurrentUser : ICurrentUser
     {
         return _httpContext.HttpContext is null
             ? []
-            : _httpContext.HttpContext.User.Claims.Where(so => so.Type == type).Select(claim => claim.Value).ToList();
+            : [.. _httpContext.HttpContext.User.Claims.Where(so => so.Type == type).Select(claim => claim.Value)];
     }
 }

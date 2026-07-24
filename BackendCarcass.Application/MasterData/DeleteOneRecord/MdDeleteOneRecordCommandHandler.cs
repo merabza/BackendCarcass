@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.LibCrud;
@@ -33,8 +32,11 @@ public sealed class MdDeleteOneRecordCommandHandler(IMasterDataLoaderCreator mas
         Option<Error[]> result = await masterDataCruder.Delete(request.Id, cancellationToken);
         return result.Match<OneOf<Unit, Error[]>>(y =>
         {
-            List<Error> errors = y.ToList();
-            errors.Add(MasterDataApiErrors.CannotDeleteNewRecord);
+            List<Error> errors =
+            [
+                .. y,
+                MasterDataApiErrors.CannotDeleteNewRecord
+            ];
             return errors.ToArray();
         }, () => new Unit());
     }

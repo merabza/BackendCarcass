@@ -79,10 +79,12 @@ public sealed class RightsCollector
         ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
         List<DataTypeModelForRvs> dataTypes =
-            (viewStyle == ERightsEditorViewStyle.NormalView
+        [
+            .. (viewStyle == ERightsEditorViewStyle.NormalView
                 ? await ChildrenDataTypesNormalView(userName, dataTypeKey, cancellationToken)
                 : await ChildrenDataTypesReverseView(userName, dataTypeKey, cancellationToken)).OrderBy(o => o.DtName)
-            .GroupBy(g => g.DtId).Select(s => s.First()).ToList();
+            .GroupBy(g => g.DtId).Select(s => s.First())
+        ];
 
         return await GetTreeData(userName, dataTypes, cancellationToken);
     }

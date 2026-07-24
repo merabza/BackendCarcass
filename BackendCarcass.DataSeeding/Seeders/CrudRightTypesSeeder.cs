@@ -37,6 +37,6 @@ public /*open*/
             //new(nameof(ECrudOperationType.Confirm), "დადასტურება"),
         ];
 
-        return [..crudRightTypes];
+        return [.. crudRightTypes];
     }
 }

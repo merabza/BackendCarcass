@@ -32,11 +32,14 @@ public /*open*/
 
         List<Role> existingRoles = DataSeederRepo.GetAll<Role>();
 
-        List<RoleModel> rolesToCreate = GetRoleModels()
-            .Select(roleModel => new
-            {
-                roleModel, existingRole = existingRoles.SingleOrDefault(sd => sd.RolKey == roleModel.RoleKey)
-            }).Where(w => w.existingRole is null).Select(s => s.roleModel).ToList();
+        List<RoleModel> rolesToCreate =
+        [
+            .. GetRoleModels()
+                .Select(roleModel => new
+                {
+                    roleModel, existingRole = existingRoles.SingleOrDefault(sd => sd.RolKey == roleModel.RoleKey)
+                }).Where(w => w.existingRole is null).Select(s => s.roleModel)
+        ];
 
         //თუ არ არსებობს ადმინის როლი, შევქმნათ იგი
         if (!(rolesToCreate.Any(x => x.Level <= 10) || rolesToCreate.Any(x =>
@@ -58,10 +61,13 @@ public /*open*/
 
     public override List<Role> Adapt(List<RoleSeederModel> rolesSeedData)
     {
-        return rolesSeedData.Select(s => new Role
-        {
-            RolKey = s.RolKey, RolName = s.RolName, RolLevel = s.RolLevel, RolNormalizedKey = s.RolNormalizedKey
-        }).ToList();
+        return
+        [
+            .. rolesSeedData.Select(s => new Role
+            {
+                RolKey = s.RolKey, RolName = s.RolName, RolLevel = s.RolLevel, RolNormalizedKey = s.RolNormalizedKey
+            })
+        ];
     }
 
     private bool CreateRole(RoleModel roleModel)
@@ -74,6 +80,6 @@ public /*open*/
 
     private List<RoleModel> GetRoleModels()
     {
-        return LoadFromJsonFile<RoleModel>(_secretDataFolder, "Roles.json").ToList();
+        return [.. LoadFromJsonFile<RoleModel>(_secretDataFolder, "Roles.json")];
     }
 }

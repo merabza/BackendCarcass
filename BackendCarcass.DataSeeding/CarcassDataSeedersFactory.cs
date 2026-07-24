@@ -8,13 +8,13 @@ namespace BackendCarcass.DataSeeding;
 
 public /*open*/ class CarcassDataSeedersFactory
 {
-    private readonly IDataSeederRepository _repo;
     protected readonly ICarcassDataSeederRepository CarcassRepo;
-    protected readonly IDatabaseAbstraction DatabaseAbstraction;
     protected readonly string DataSeedFolder;
+    protected readonly IDatabaseAbstraction DatabaseAbstraction;
     protected readonly RoleManager<AppRole> MyRoleManager;
     protected readonly UserManager<AppUser> MyUserManager;
     protected readonly string SecretDataFolder;
+    private readonly IDataSeederRepository _repo;
 
     protected CarcassDataSeedersFactory(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager,
         string secretDataFolder, string dataSeedFolder, ICarcassDataSeederRepository carcassRepo,

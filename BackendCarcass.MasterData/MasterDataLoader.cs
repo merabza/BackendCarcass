@@ -10,10 +10,10 @@ namespace BackendCarcass.MasterData;
 public sealed class MasterDataLoader
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCreator;
-    private readonly List<string> _tableNames;
+    private readonly List<string?> _tableNames;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MasterDataLoader(List<string> tableNames, IMasterDataLoaderCreator masterDataLoaderCreator)
+    public MasterDataLoader(List<string?> tableNames, IMasterDataLoaderCreator masterDataLoaderCreator)
     {
         _masterDataLoaderCreator = masterDataLoaderCreator;
         _tableNames = tableNames;
@@ -28,6 +28,11 @@ public sealed class MasterDataLoader
         //ჩაიტვირთოს ყველა ცხრილი სათითაოდ
         foreach (string tableName in _tableNames)
         {
+            if (string.IsNullOrWhiteSpace(tableName))
+            {
+                continue;
+            }
+
             OneOf<IMasterDataLoader, Error[]> createMasterDataLoaderResult =
                 _masterDataLoaderCreator.CreateMasterDataLoader(tableName);
             if (createMasterDataLoaderResult.IsT1)

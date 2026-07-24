@@ -49,17 +49,20 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
 
     public override List<User> Adapt(List<UserSeederModel> usersSeedData)
     {
-        return usersSeedData.Select(s => new User
-        {
-            UserName = s.UserName,
-            NormalizedUserName = s.NormalizedUserName,
-            Email = s.Email,
-            NormalizedEmail = s.NormalizedEmail,
-            PasswordHash = s.PasswordHash,
-            FullName = s.FullName,
-            FirstName = s.FirstName,
-            LastName = s.LastName
-        }).ToList();
+        return
+        [
+            .. usersSeedData.Select(s => new User
+            {
+                UserName = s.UserName,
+                NormalizedUserName = s.NormalizedUserName,
+                Email = s.Email,
+                NormalizedEmail = s.NormalizedEmail,
+                PasswordHash = s.PasswordHash,
+                FullName = s.FullName,
+                FirstName = s.FirstName,
+                LastName = s.LastName
+            })
+        ];
     }
 
     private bool CreateUser(UserModel userModel)
@@ -78,6 +81,9 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
 
     private List<UserModel> GetAppUserModels()
     {
-        return [.. LoadFromJsonFile<UserModel>(_secretDataFolder, "Users.json")];
+        return
+        [
+            .. LoadFromJsonFile<UserModel>(_secretDataFolder, "Users.json")
+        ];
     }
 }

@@ -29,16 +29,19 @@ public /*open*/
     public override List<MenuItm> Adapt(List<MenuItmSeederModel> menuSeedData)
     {
         var tempData = DataSeederTempData.Instance;
-        return menuSeedData.Select(s => new MenuItm
-        {
-            MenGroupId = tempData.GetIntIdByKey<MenuGroup>(s.MenGroupIdMengKey),
-            MenIconName = s.MenIconName,
-            MenKey = s.MenKey,
-            MenLinkKey = s.MenLinkKey,
-            MenName = s.MenName,
-            MenValue = s.MenValue,
-            SortId = s.SortId
-        }).ToList();
+        return
+        [
+            .. menuSeedData.Select(s => new MenuItm
+            {
+                MenGroupId = tempData.GetIntIdByKey<MenuGroup>(s.MenGroupIdMengKey),
+                MenIconName = s.MenIconName,
+                MenKey = s.MenKey,
+                MenLinkKey = s.MenLinkKey,
+                MenName = s.MenName,
+                MenValue = s.MenValue,
+                SortId = s.SortId
+            })
+        ];
     }
 
     public override List<MenuItm> CreateListByRules()
@@ -115,6 +118,6 @@ public /*open*/
                 MenLinkKey = mdList
             }
         };
-        return menuItems.ToList();
+        return [.. menuItems];
     }
 }

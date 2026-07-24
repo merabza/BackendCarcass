@@ -7,7 +7,7 @@ namespace BackendCarcass.MasterData;
 
 public interface IReturnValuesRepository
 {
-    Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string> tableNames,
+    Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string?> tableNames,
         CancellationToken cancellationToken = default);
 
     Task<List<ReturnValueModel>> GetAllReturnValues(DataTypeModelForRvs dt,

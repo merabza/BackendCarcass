@@ -13,10 +13,10 @@ public sealed class ReturnValuesLoader
 {
     private readonly IReturnValuesLoaderCreator _returnValuesLoaderCreator;
     private readonly IReturnValuesRepository _rvRepo;
-    private readonly List<string> _tableNames;
+    private readonly List<string?> _tableNames;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public ReturnValuesLoader(List<string> tableNames, IReturnValuesRepository rvRepo,
+    public ReturnValuesLoader(List<string?> tableNames, IReturnValuesRepository rvRepo,
         IReturnValuesLoaderCreator returnValuesLoaderCreator)
     {
         _returnValuesLoaderCreator = returnValuesLoaderCreator;
@@ -50,9 +50,14 @@ public sealed class ReturnValuesLoader
             }
         }
 
-        IEnumerable<string> tablesWithoutDataType = _tableNames.Except(tableDataTypes.Select(x => x.DtTable));
-        foreach (string tableName in tablesWithoutDataType)
+        IEnumerable<string?> tablesWithoutDataType = _tableNames.Except(tableDataTypes.Select(x => x.DtTable));
+        foreach (string? tableName in tablesWithoutDataType)
         {
+            if (string.IsNullOrWhiteSpace(tableName))
+            {
+                continue;
+            }
+
             IReturnValuesLoader? loader = _returnValuesLoaderCreator.CreateReturnValuesLoaderLoader(tableName);
             if (loader is null)
             {

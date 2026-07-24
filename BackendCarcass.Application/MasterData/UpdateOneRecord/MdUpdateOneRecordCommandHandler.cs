@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.LibCrud;
@@ -42,8 +41,11 @@ public sealed class MdUpdateOneRecordCommandHandler(IMasterDataLoaderCreator mas
         Option<Error[]> result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
         return result.Match<OneOf<Unit, Error[]>>(y =>
         {
-            List<Error> errors = y.ToList();
-            errors.Add(MasterDataApiErrors.CannotUpdateNewRecord);
+            List<Error> errors =
+            [
+                .. y,
+                MasterDataApiErrors.CannotUpdateNewRecord
+            ];
             return errors.ToArray();
         }, () => new Unit());
     }

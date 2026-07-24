@@ -12,7 +12,7 @@ namespace BackendCarcass.Repositories;
 
 public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValuesRepository
 {
-    public Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string> tableNames,
+    public Task<List<DataTypeModelForRvs>> GetDataTypesByTableNames(List<string?> tableNames,
         CancellationToken cancellationToken = default)
     {
         return ctx.DataTypes.Where(x => tableNames.Contains(x.DtTable)).Select(x =>
@@ -61,7 +61,7 @@ public abstract class ReturnValuesRepository(CarcassDbContext ctx) : IReturnValu
             return null;
         }
 
-        List<IKey> parentPrimaryKeys = parentEntType.GetKeys().Where(w => w.IsPrimaryKey()).ToList();
+        List<IKey> parentPrimaryKeys = [.. parentEntType.GetKeys().Where(w => w.IsPrimaryKey())];
         if (parentPrimaryKeys.Count != 1)
         {
             return null;

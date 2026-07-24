@@ -22,7 +22,7 @@ public sealed class MultipleGridModelsQueryHandler(IMenuRightsRepository reposit
         //დამზადდეს ჩასატვირთი მოდელების შესაბამისი ცხრილების სახელების სია.
         //სიის დამზადება საჭიროა იმისათვის, რომ შესაძლებელი გახდეს მისი მეორედ გავლა
         //პირველი გავლისას მოწმდება უფლებები
-        List<string?> gridNames = request.Grids.Where(w => !string.IsNullOrWhiteSpace(w)).Distinct().ToList();
+        List<string?> gridNames = [.. request.Grids.Where(w => !string.IsNullOrWhiteSpace(w)).Distinct()];
         if (gridNames.Count == 0)
         {
             return new[] { DataTypesApiErrors.NoGridNamesInUriQuery };

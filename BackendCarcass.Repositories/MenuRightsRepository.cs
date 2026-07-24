@@ -37,7 +37,7 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
         var mainMenuModel = new MainMenuModel();
         foreach (MenuGroupModel menuGroup in menuGroups)
         {
-            menuGroup.Menu = menu.Where(m => m.MenGroupId == menuGroup.MengId).ToList();
+            menuGroup.Menu = [.. menu.Where(m => m.MenGroupId == menuGroup.MengId)];
             mainMenuModel.MenuGroups.Add(menuGroup);
         }
 
@@ -81,7 +81,7 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
         IQueryable<DataTypeToCrudRight> dtCrudRightsRes = await DataTypeCrudRights(userName, cancellationToken);
         ICollection<DataTypeToCrudRight> dtCrudRights = await dtCrudRightsRes.ToListAsync(cancellationToken);
 
-        DataTypesResponse[] res2 = res.ToArray();
+        DataTypesResponse[] res2 = [.. res];
         foreach (DataTypesResponse dataType in res2)
         {
             foreach (DataTypeToCrudRight dataTypeToCrudRight in dtCrudRights.Where(w => w.DtTable == dataType.DtTable))

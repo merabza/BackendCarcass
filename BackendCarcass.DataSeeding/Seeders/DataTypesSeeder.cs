@@ -34,18 +34,21 @@ public /*open*/
 
     public override List<DataType> Adapt(List<DataTypeSeederModel> dataTypesSeedData)
     {
-        return dataTypesSeedData.Select(s => new DataType
-        {
-            //DtKey = s.DtKey,
-            DtTable = s.DtTable,
-            DtName = s.DtName,
-            DtNameNominative = s.DtNameNominative,
-            DtNameGenitive = s.DtNameGenitive,
-            DtIdFieldName = s.DtIdFieldName,
-            DtKeyFieldName = s.DtKeyFieldName,
-            DtNameFieldName = s.DtNameFieldName,
-            DtGridRulesJson = s.DtGridRulesJson
-        }).ToList();
+        return
+        [
+            .. dataTypesSeedData.Select(s => new DataType
+            {
+                //DtKey = s.DtKey,
+                DtTable = s.DtTable,
+                DtName = s.DtName,
+                DtNameNominative = s.DtNameNominative,
+                DtNameGenitive = s.DtNameGenitive,
+                DtIdFieldName = s.DtIdFieldName,
+                DtKeyFieldName = s.DtKeyFieldName,
+                DtNameFieldName = s.DtNameFieldName,
+                DtGridRulesJson = s.DtGridRulesJson
+            })
+        ];
     }
 
     private bool SetParents(IReadOnlyCollection<DataTypeSeederModel> dataTypesSeedData,

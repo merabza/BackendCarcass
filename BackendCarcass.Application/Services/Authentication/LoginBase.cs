@@ -15,10 +15,10 @@ namespace BackendCarcass.Application.Services.Authentication;
 
 public class LoginBase
 {
+    protected readonly UserManager<AppUser> UserMgr;
     private readonly IOptions<IdentitySettings> _identitySettings;
     private readonly SignInManager<AppUser> _signinMgr;
     private readonly IUserClaimsRepository? _userClaimsRepository;
-    protected readonly UserManager<AppUser> UserMgr;
 
     public LoginBase(UserManager<AppUser> userMgr, SignInManager<AppUser> signinMgr,
         IOptions<IdentitySettings> identitySettings, IUserClaimsRepository? userClaimsRepository = null)

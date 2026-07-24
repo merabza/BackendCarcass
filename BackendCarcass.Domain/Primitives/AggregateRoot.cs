@@ -4,7 +4,7 @@ namespace BackendCarcass.Domain.Primitives;
 
 public class AggregateRoot<TId> : Entity<TId> where TId : notnull
 {
-    private readonly List<IDomainEvent> _domainEvents = new();
+    private readonly List<IDomainEvent> _domainEvents = [];
 
     protected AggregateRoot(TId id) : base(id)
     {

@@ -56,7 +56,7 @@ public sealed class RightsRepository : IRightsRepository
     public async Task<List<UserModel>> GetUsers(CancellationToken cancellationToken = default)
     {
         List<User> users = await _carcassContext.Users.ToListAsync(cancellationToken);
-        return users.Select(x => x.AdaptTo()).ToList();
+        return [.. users.Select(x => x.AdaptTo())];
     }
 
     public Task<List<TypeDataModel>> HalfChecksNormalView(int userDataId, string userName, int roleDataId,
@@ -155,12 +155,15 @@ public sealed class RightsRepository : IRightsRepository
         CancellationToken cancellationToken = default)
     {
         List<ManyToManyJoin> manyToManyJoins = await _carcassContext.ManyToManyJoins.ToListAsync(cancellationToken);
-        return (from r in manyToManyJoins
+        return
+        [
+            .. from r in manyToManyJoins
             join r1 in manyToManyJoins on new { t = r.PtId, i = r.PKey } equals new { t = r1.CtId, i = r1.CKey }
             join drt in manyToManyJoins on r.CKey equals drt.PKey + "." + drt.CKey
             where r.CtId == mmjDataId && r.PtId == childTypeId && r1.PtId == parentTypeId && r1.PKey == parentKey &&
                   drt.PtId == childTypeId2 && drt.CtId == childTypeId3
-            select new Tuple<string, string>(drt.PKey, drt.CKey)).ToList();
+            select new Tuple<string, string>(drt.PKey, drt.CKey)
+        ];
     }
 
     public Task<List<ReturnValueModel>> GetRoleReturnValues(int minLevel, CancellationToken cancellationToken = default)

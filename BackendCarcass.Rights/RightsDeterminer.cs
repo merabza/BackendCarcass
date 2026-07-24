@@ -158,7 +158,7 @@ public sealed class RightsDeterminer
     public async ValueTask<OneOf<bool, Error[]>> HasUserRightRole(IEnumerable<string> menuNames,
         CancellationToken cancellationToken = default)
     {
-        List<string> menuNamesList = menuNames.ToList();
+        List<string> menuNamesList = [.. menuNames];
         var menuClaimCombo = from menuName in menuNamesList
             from roleName in _currentUser.Roles
             select new { menuName, roleName };
