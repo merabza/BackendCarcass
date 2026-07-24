@@ -49,7 +49,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
             filterSortRequest, x => new UserCrudData(x.UserName!, x.FirstName, x.LastName, x.Email!),
             cancellationToken);
 
-        return new TableRowsData(count, realOffset, rows.Select(s => s.EditFields()).ToList());
+        return new TableRowsData(count, realOffset, [.. rows.Select(s => s.EditFields())]);
     }
 
     protected override async Task<OneOf<ICrudData, Error[]>> GetOneData(int id,

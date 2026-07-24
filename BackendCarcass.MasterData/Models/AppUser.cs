@@ -53,7 +53,7 @@ public sealed class AppUser : IdentityUser<int>
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(claims.ToArray()),
+            Subject = new ClaimsIdentity([.. claims]),
             Expires = DateTime.UtcNow.AddDays(7),
             Issuer = issuer,
             Audience = audience,

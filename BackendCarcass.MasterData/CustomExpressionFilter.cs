@@ -20,8 +20,11 @@ public static class CustomExpressionFilter
         Expression<Func<T, bool>>? filters;
         try
         {
-            List<ExpressionFilter> expressionFilters = columnFilters
-                .Select(item => new ExpressionFilter { ColumnName = item.FieldName, Value = item.Value }).ToList();
+            List<ExpressionFilter> expressionFilters =
+            [
+                .. columnFilters.Select(item =>
+                    new ExpressionFilter { ColumnName = item.FieldName, Value = item.Value })
+            ];
             // Create the parameter expression for the input data
             ParameterExpression parameter = Expression.Parameter(typeof(T));
 
