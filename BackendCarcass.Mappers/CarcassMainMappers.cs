@@ -1,4 +1,4 @@
-﻿using BackendCarcass.Database.Models;
+﻿using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.Rights.Models;
 
 namespace BackendCarcass.Mappers;

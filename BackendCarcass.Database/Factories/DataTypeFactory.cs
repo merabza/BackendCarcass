@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using BackendCarcass.Database.Models;
+using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.CellModels;
 using Newtonsoft.Json;

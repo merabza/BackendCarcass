@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Database.Models;
+using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BackendCarcass.Database;
-using BackendCarcass.Database.Models;
+using BackendCarcassDomain.Entities.Models;
 using Microsoft.Extensions.Logging;
 using SystemTools.SystemToolsShared;
 

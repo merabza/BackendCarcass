@@ -1,4 +1,6 @@
-﻿namespace BackendCarcass.MasterData;
+﻿using BackendCarcassDomain.Entities;
+
+namespace BackendCarcass.MasterData;
 
 public interface ISortedDataType : IDataType
 {

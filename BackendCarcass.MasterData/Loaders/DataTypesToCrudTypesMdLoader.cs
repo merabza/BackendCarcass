@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.MasterData.Models;
+using BackendCarcassDomain.Entities;
 using OneOf;
 using SystemTools.SystemToolsShared.Errors;
 

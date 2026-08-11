@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcassDomain.Entities;
 using OneOf;
 using SystemTools.SystemToolsShared.Errors;
 

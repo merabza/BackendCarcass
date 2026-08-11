@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using BackendCarcass.Database.QueryModels;
+using BackendCarcassDomain.Entities.QueryModels;
 
 namespace BackendCarcass.Repositories.Models;
 

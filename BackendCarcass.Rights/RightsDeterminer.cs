@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Database.Models;
+using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.Identity;
 using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;

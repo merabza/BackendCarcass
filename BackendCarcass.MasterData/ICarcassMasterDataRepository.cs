@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcassDomain.Entities;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore.Metadata;
 using SystemTools.SystemToolsShared.Errors;

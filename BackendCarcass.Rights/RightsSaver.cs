@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Database.Models;
+using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.Rights.Models;
 using Microsoft.Extensions.Logging;
 using SystemTools.Domain.Abstractions;

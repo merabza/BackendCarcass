@@ -10,6 +10,7 @@ using BackendCarcass.LibCrud.Models;
 using BackendCarcass.MasterData.CellModels;
 using BackendCarcass.MasterData.Models;
 using BackendCarcass.MasterData.SortIdStuff;
+using BackendCarcassDomain.Entities;
 using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;

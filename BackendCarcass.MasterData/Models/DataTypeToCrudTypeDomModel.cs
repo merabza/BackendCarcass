@@ -1,4 +1,5 @@
 ﻿using System;
+using BackendCarcassDomain.Entities;
 
 namespace BackendCarcass.MasterData.Models;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using BackendCarcass.LibCrud;
+using BackendCarcassDomain.Entities;
 
 namespace BackendCarcass.MasterData.Models;
 

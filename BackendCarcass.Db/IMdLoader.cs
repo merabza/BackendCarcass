@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using BackendCarcass.MasterData;
+using BackendCarcassDomain.Entities;
 using OneOf;
 using SystemTools.SystemToolsShared.Errors;
 

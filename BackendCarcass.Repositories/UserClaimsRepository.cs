@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Database;
-using BackendCarcass.Database.Models;
+using BackendCarcassDomain.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using SystemTools.SystemToolsShared;
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Database;
-using BackendCarcass.Database.Models;
+using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.Mappers;
 using BackendCarcass.MasterData.Models;
 using BackendCarcass.Rights;

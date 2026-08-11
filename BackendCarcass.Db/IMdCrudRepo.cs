@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using BackendCarcass.MasterData;
+using BackendCarcassDomain.Entities;
 using LanguageExt;
 using SystemTools.SystemToolsShared.Errors;
 

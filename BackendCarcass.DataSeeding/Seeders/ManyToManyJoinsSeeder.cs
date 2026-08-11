@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BackendCarcass.Database.Models;
+using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.DataSeeding.Comparers;
 using BackendCarcass.DataSeeding.Models;
 using BackendCarcass.MasterData;

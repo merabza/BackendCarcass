@@ -5,6 +5,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\BackendCarcassDomain\BackendCarcassDomain.Entities\BackendCarcassDomain.Entities.csproj" />
         <ProjectReference Include="..\BackendCarcass.Db\BackendCarcass.Db.csproj" />
         <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />
         <ProjectReference Include="..\..\SystemTools\SystemTools.DatabaseToolsShared\SystemTools.DatabaseToolsShared.csproj" />

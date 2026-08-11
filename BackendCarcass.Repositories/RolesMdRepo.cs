@@ -1,10 +1,11 @@
 ﻿using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using BackendCarcass.Database.Models;
+using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.Db;
 using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.Models;
+using BackendCarcassDomain.Entities;
 using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;
 using Microsoft.AspNetCore.Identity;

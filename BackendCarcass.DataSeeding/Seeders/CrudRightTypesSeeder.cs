@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BackendCarcass.Database.Models;
+using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.DataSeeding.Models;
 using BackendCarcass.Rights;
 using SystemTools.DatabaseToolsShared;

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
+        <ProjectReference Include="..\..\BackendCarcassDomain\BackendCarcassDomain.Entities\BackendCarcassDomain.Entities.csproj" />
         <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />
     </ItemGroup>
 
