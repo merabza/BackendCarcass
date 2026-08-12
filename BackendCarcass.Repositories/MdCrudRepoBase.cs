@@ -3,8 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using BackendCarcass.Database;
-using BackendCarcass.Db;
-using BackendCarcass.MasterData;
 using BackendCarcassDomain.Entities;
 using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;

@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.MasterData.Models;
+using BackendCarcassDomain.Entities.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace BackendCarcass.Identity;

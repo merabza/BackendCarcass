@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
-using BackendCarcass.MasterData;
 using BackendCarcassDomain.Entities;
 using LanguageExt;
 using SystemTools.SystemToolsShared.Errors;
 
-namespace BackendCarcass.Db;
+namespace BackendCarcass.Repositories;
 
 public interface IMdCrudRepo : IMdLoader
 {

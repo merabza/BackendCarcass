@@ -1,5 +1,5 @@
-﻿using BackendCarcassDomain.Entities.Models;
-using BackendCarcass.Rights.Models;
+﻿using BackendCarcass.Rights.Models;
+using BackendCarcassDomain.Entities.Models;
 
 namespace BackendCarcass.Mappers;
 

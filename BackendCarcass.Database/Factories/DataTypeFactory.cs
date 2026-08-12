@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.CellModels;
+using BackendCarcassDomain.Entities.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

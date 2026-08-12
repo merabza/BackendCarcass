@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using BackendCarcass.Database.Factories;
-using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.DataSeeding.Models;
 using BackendCarcass.MasterData.CellModels;
+using BackendCarcassDomain.Entities.Models;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;
 

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcassDomain.Entities.Models;
 using BackendCarcass.Rights.Models;
+using BackendCarcassDomain.Entities.Models;
 using Microsoft.Extensions.Logging;
 using SystemTools.Domain.Abstractions;
 using SystemTools.SystemToolsShared;
