@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/BackendCarcassDomain/">
+    <Project Path="../BackendCarcassDomain/BackendCarcassDomain.Entities/BackendCarcassDomain.Entities.csproj" />
+  </Folder>
   <Folder Name="/BackendCarcassShared/">
     <Project Path="../BackendCarcassShared/BackendCarcassShared.Contracts/BackendCarcassShared.Contracts.csproj" />
   </Folder>
