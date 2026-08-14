@@ -20,7 +20,7 @@ public sealed class GetLookupTablesQueryHandler(
     {
         //var reqQuery = request.HttpRequest.Query["tables"];
         List<string?> tableNames =
-            [.. request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()]!;
+            [.. request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()];
         var mdLoader = new ReturnValuesLoader(tableNames, rvRepo, returnValuesLoaderCreator);
         OneOf<Dictionary<string, IEnumerable<SrvModel>>, Error[]> loaderResult = await mdLoader.Run(cancellationToken);
         return loaderResult.Match<OneOf<MdGetLookupTablesQueryResponse, Error[]>>(

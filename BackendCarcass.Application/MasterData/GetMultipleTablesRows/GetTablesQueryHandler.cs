@@ -17,7 +17,7 @@ public sealed class GetTablesQueryHandler(IMasterDataLoaderCreator masterDataLoa
         CancellationToken cancellationToken)
     {
         List<string?> tableNames =
-            [.. request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()]!;
+            [.. request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()];
         var mdLoader = new MasterDataLoader(tableNames, masterDataLoaderCreator);
         OneOf<Dictionary<string, IEnumerable<dynamic>>, Error[]> loaderResult = await mdLoader.Run(cancellationToken);
         return loaderResult.Match<OneOf<MdGetTablesQueryResponse, Error[]>>(r => new MdGetTablesQueryResponse(r),
