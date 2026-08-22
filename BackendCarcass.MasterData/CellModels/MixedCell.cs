@@ -19,7 +19,7 @@ public /*open*/ class MixedCell : Cell
     }
 
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public Error? IsRequiredErr { get; set; }
+    public ErrorOmd? IsRequiredErr { get; set; }
 
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
     public bool IsNullable { get; set; }
@@ -41,9 +41,9 @@ public /*open*/ class MixedCell : Cell
         return this;
     }
 
-    public override List<Error> Validate(object? value)
+    public override List<ErrorOmd> Validate(object? value)
     {
-        List<Error> errors = [];
+        List<ErrorOmd> errors = [];
         if (IsRequiredErr is not null && value is null)
         {
             errors.Add(IsRequiredErr);
@@ -52,7 +52,7 @@ public /*open*/ class MixedCell : Cell
         return errors;
     }
 
-    protected List<Error> ValidateByType<T>(List<Error> errors, object? value, string typeName)
+    protected List<ErrorOmd> ValidateByType<T>(List<ErrorOmd> errors, object? value, string typeName)
     {
         if (value is T)
         {

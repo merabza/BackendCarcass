@@ -32,7 +32,7 @@ public abstract class CrudBase
     protected virtual int JustCreatedId => 0;
 
     // ReSharper disable once BothContextCallDeclaration.Global
-    public Task<OneOf<ICrudData, Error[]>> GetOne(int id, CancellationToken cancellationToken = default)
+    public Task<OneOf<ICrudData, ErrorOmd[]>> GetOne(int id, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -43,14 +43,14 @@ public abstract class CrudBase
             const string methodName = nameof(GetOne);
             if (_logger.IsEnabled(LogLevel.Error))
             {
-                _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
+                _logger.LogError(e, "ErrorOmd occurred executing {MethodName}.", methodName);
             }
 
             throw;
         }
     }
 
-    public async Task<OneOf<ICrudData, Error[]>> Create(ICrudData crudDataForCreate,
+    public async Task<OneOf<ICrudData, ErrorOmd[]>> Create(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default)
     {
         const string methodName = nameof(Create);
@@ -61,10 +61,10 @@ public abstract class CrudBase
                 await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
             try
             {
-                Option<Error[]> result = await CreateData(crudDataForCreate, cancellationToken);
+                Option<ErrorOmd[]> result = await CreateData(crudDataForCreate, cancellationToken);
                 if (result.IsSome)
                 {
-                    return (Error[])result;
+                    return (ErrorOmd[])result;
                 }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -107,7 +107,7 @@ public abstract class CrudBase
         }
     }
 
-    public async Task<Option<Error[]>> Update(int id, ICrudData crudDataNewVersion,
+    public async Task<Option<ErrorOmd[]>> Update(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default)
     {
         try
@@ -117,14 +117,14 @@ public abstract class CrudBase
                 await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
             try
             {
-                Option<Error[]> updateDataResult = await UpdateData(id, crudDataNewVersion, cancellationToken);
+                Option<ErrorOmd[]> updateDataResult = await UpdateData(id, crudDataNewVersion, cancellationToken);
                 if (updateDataResult.IsSome)
                 {
                     return updateDataResult;
                 }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                Option<Error[]> afterUpdateDataResult = await AfterUpdateData(cancellationToken);
+                Option<ErrorOmd[]> afterUpdateDataResult = await AfterUpdateData(cancellationToken);
                 if (afterUpdateDataResult.IsSome)
                 {
                     return afterUpdateDataResult;
@@ -146,7 +146,7 @@ public abstract class CrudBase
         }
     }
 
-    public async Task<Option<Error[]>> Delete(int id, CancellationToken cancellationToken = default)
+    public async Task<Option<ErrorOmd[]>> Delete(int id, CancellationToken cancellationToken = default)
     {
         const string methodName = nameof(Delete);
         try
@@ -156,7 +156,7 @@ public abstract class CrudBase
                 await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
             try
             {
-                Option<Error[]> result = await DeleteData(id, cancellationToken);
+                Option<ErrorOmd[]> result = await DeleteData(id, cancellationToken);
                 if (result.IsSome)
                 {
                     return result;
@@ -197,22 +197,22 @@ public abstract class CrudBase
         }
     }
 
-    protected abstract Task<OneOf<ICrudData, Error[]>>
-        GetOneData(int id, CancellationToken cancellationToken = default);
-
-    protected abstract ValueTask<Option<Error[]>> CreateData(ICrudData crudDataForCreate,
+    protected abstract Task<OneOf<ICrudData, ErrorOmd[]>> GetOneData(int id,
         CancellationToken cancellationToken = default);
 
-    protected abstract ValueTask<Option<Error[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+    protected abstract ValueTask<Option<ErrorOmd[]>> CreateData(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default);
 
-    protected virtual ValueTask<Option<Error[]>> AfterUpdateData(CancellationToken cancellationToken = default)
+    protected abstract ValueTask<Option<ErrorOmd[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+        CancellationToken cancellationToken = default);
+
+    protected virtual ValueTask<Option<ErrorOmd[]>> AfterUpdateData(CancellationToken cancellationToken = default)
     {
-        return ValueTask.FromResult<Option<Error[]>>(null);
+        return ValueTask.FromResult<Option<ErrorOmd[]>>(null);
     }
 
-    protected abstract Task<Option<Error[]>> DeleteData(int id, CancellationToken cancellationToken = default);
+    protected abstract Task<Option<ErrorOmd[]>> DeleteData(int id, CancellationToken cancellationToken = default);
 
-    public abstract ValueTask<OneOf<TableRowsData, Error[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+    public abstract ValueTask<OneOf<TableRowsData, ErrorOmd[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken = default);
 }

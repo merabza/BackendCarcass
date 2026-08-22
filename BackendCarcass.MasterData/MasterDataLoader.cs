@@ -20,11 +20,11 @@ public sealed class MasterDataLoader
         _tableNames = tableNames;
     }
 
-    public async ValueTask<OneOf<Dictionary<string, IEnumerable<dynamic>>, Error[]>> Run(
+    public async ValueTask<OneOf<Dictionary<string, IEnumerable<dynamic>>, ErrorOmd[]>> Run(
         CancellationToken cancellationToken = default)
     {
         var resultList = new Dictionary<string, IEnumerable<dynamic>>();
-        var errors = new List<Error>();
+        var errors = new List<ErrorOmd>();
 
         //ჩაიტვირთოს ყველა ცხრილი სათითაოდ
         foreach (string tableName in _tableNames)
@@ -34,7 +34,7 @@ public sealed class MasterDataLoader
                 continue;
             }
 
-            OneOf<IMasterDataLoader, Error[]> createMasterDataLoaderResult =
+            OneOf<IMasterDataLoader, ErrorOmd[]> createMasterDataLoaderResult =
                 _masterDataLoaderCreator.CreateMasterDataLoader(tableName);
             if (createMasterDataLoaderResult.IsT1)
             {
@@ -42,7 +42,7 @@ public sealed class MasterDataLoader
             }
 
             IMasterDataLoader? loader = createMasterDataLoaderResult.AsT0;
-            OneOf<IEnumerable<IDataType>, Error[]> tableResult = await loader.GetAllRecords(cancellationToken);
+            OneOf<IEnumerable<IDataType>, ErrorOmd[]> tableResult = await loader.GetAllRecords(cancellationToken);
             if (tableResult.IsT1)
             {
                 errors.AddRange(tableResult.AsT1);

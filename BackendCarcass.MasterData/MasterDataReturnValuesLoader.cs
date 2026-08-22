@@ -21,7 +21,7 @@ public sealed class MasterDataReturnValuesLoader : IReturnValuesLoader
         _rvRepo = rvRepo;
     }
 
-    public async Task<OneOf<IEnumerable<SrvModel>, Error[]>> GetSimpleReturnValues(
+    public async Task<OneOf<IEnumerable<SrvModel>, ErrorOmd[]>> GetSimpleReturnValues(
         CancellationToken cancellationToken = default)
     {
         return await _rvRepo.GetSimpleReturnValues(_dt, cancellationToken);

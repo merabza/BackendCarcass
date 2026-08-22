@@ -59,9 +59,9 @@ public sealed class DateCell : MixedCell
         return this;
     }
 
-    public override List<Error> Validate(object? value)
+    public override List<ErrorOmd> Validate(object? value)
     {
-        List<Error> errors = ValidateByType<DateTime>(base.Validate(value), value, "თარიღის");
+        List<ErrorOmd> errors = ValidateByType<DateTime>(base.Validate(value), value, "თარიღის");
 
         if (value is not DateTime dateTimeValue)
         {
@@ -70,7 +70,7 @@ public sealed class DateCell : MixedCell
 
         if (MinValRule is not null && dateTimeValue < MinValRule.Val)
         {
-            errors.Add(MinValRule.Error);
+            errors.Add(MinValRule.ErrorOmd);
         }
 
         return errors;

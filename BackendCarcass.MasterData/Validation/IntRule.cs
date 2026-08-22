@@ -8,9 +8,9 @@ public sealed class IntRule
     public IntRule(int val, string errCode, string errMessage)
     {
         Val = val;
-        Error = new Error { Code = errCode, Name = errMessage };
+        ErrorOmd = new ErrorOmd { Code = errCode, Name = errMessage };
     }
 
     public int Val { get; set; }
-    public Error Error { get; set; }
+    public ErrorOmd ErrorOmd { get; set; }
 }

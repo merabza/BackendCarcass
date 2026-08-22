@@ -8,11 +8,13 @@ namespace BackendCarcass.LibCrud;
 
 public interface ICrud
 {
-    Task<OneOf<ICrudData, Error[]>> GetOne(int id, CancellationToken cancellationToken = default);
+    Task<OneOf<ICrudData, ErrorOmd[]>> GetOne(int id, CancellationToken cancellationToken = default);
 
-    Task<OneOf<ICrudData, Error[]>> Create(ICrudData crudDataForCreate, CancellationToken cancellationToken = default);
+    Task<OneOf<ICrudData, ErrorOmd[]>> Create(ICrudData crudDataForCreate,
+        CancellationToken cancellationToken = default);
 
-    Task<Option<Error[]>> Update(int id, ICrudData crudDataNewVersion, CancellationToken cancellationToken = default);
+    Task<Option<ErrorOmd[]>> Update(int id, ICrudData crudDataNewVersion,
+        CancellationToken cancellationToken = default);
 
-    Task<Option<Error[]>> Delete(int id, CancellationToken cancellationToken = default);
+    Task<Option<ErrorOmd[]>> Delete(int id, CancellationToken cancellationToken = default);
 }

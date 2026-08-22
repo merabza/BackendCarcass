@@ -27,7 +27,7 @@ public sealed class BooleanCell : MixedCell
         return this;
     }
 
-    public override List<Error> Validate(object? value)
+    public override List<ErrorOmd> Validate(object? value)
     {
         return ValidateByType<bool>(base.Validate(value), value, "ლოგიკური");
     }

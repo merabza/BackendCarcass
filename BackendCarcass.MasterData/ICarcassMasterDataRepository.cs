@@ -10,13 +10,13 @@ namespace BackendCarcass.MasterData;
 
 public interface ICarcassMasterDataRepository
 {
-    //OneOf<IQueryable<IDataType>, Error[]> LoadByTableName(string tableName);
+    //OneOf<IQueryable<IDataType>, ErrorOmd[]> LoadByTableName(string tableName);
     object? RunGenericMethodForLoadAllRecords(MethodInfo setMethod, IReadOnlyTypeBase entityType);
 
     //IQueryable? RunGenericMethodForQueryRecords(IReadOnlyTypeBase entityType);
     MethodInfo? SetMethodInfo();
     IEntityType? GetEntityTypeByTableName(string tableName);
-    Task<Option<Error[]>> Create(IDataType newItem, CancellationToken cancellationToken = default);
+    Task<Option<ErrorOmd[]>> Create(IDataType newItem, CancellationToken cancellationToken = default);
     Task<GridModel?> GetDataTypeGridRulesByTableName(string tableName, CancellationToken cancellationToken = default);
     void Update(IDataType newItem);
     void Delete(IDataType dataType);

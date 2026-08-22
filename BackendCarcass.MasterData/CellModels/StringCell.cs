@@ -50,9 +50,9 @@ public sealed class StringCell : MixedCell
         return this;
     }
 
-    public override List<Error> Validate(object? value)
+    public override List<ErrorOmd> Validate(object? value)
     {
-        List<Error> errMes = ValidateByType<string>(base.Validate(value), value, "სტრიქონის");
+        List<ErrorOmd> errMes = ValidateByType<string>(base.Validate(value), value, "სტრიქონის");
 
         if (value is not string strValue)
         {

@@ -33,16 +33,16 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async ValueTask<OneOf<IEnumerable<IDataType>, Error[]>> GetAllRecords(
+    public async ValueTask<OneOf<IEnumerable<IDataType>, ErrorOmd[]>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
         List<AppRole> roles = await _roleManager.Roles.ToListAsync(cancellationToken);
-        return OneOf<IEnumerable<IDataType>, Error[]>.FromT0(roles.Select(x =>
+        return OneOf<IEnumerable<IDataType>, ErrorOmd[]>.FromT0(roles.Select(x =>
             new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level)));
     }
 
-    public override async ValueTask<OneOf<TableRowsData, Error[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
-        CancellationToken cancellationToken = default)
+    public override async ValueTask<OneOf<TableRowsData, ErrorOmd[]>> GetTableRowsData(
+        FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default)
     {
         IQueryable<AppRole> roles = _roleManager.Roles;
 
@@ -52,7 +52,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, [.. rows.Select(s => s.EditFields())]);
     }
 
-    protected override async Task<OneOf<ICrudData, Error[]>> GetOneData(int id,
+    protected override async Task<OneOf<ICrudData, ErrorOmd[]>> GetOneData(int id,
         CancellationToken cancellationToken = default)
     {
         AppRole? appRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
@@ -64,7 +64,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return new[] { MasterDataApiErrors.CannotFindRole };
     }
 
-    protected override async ValueTask<Option<Error[]>> CreateData(ICrudData crudDataForCreate,
+    protected override async ValueTask<Option<ErrorOmd[]>> CreateData(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default)
     {
         var role = (RoleCrudData)crudDataForCreate;
@@ -80,7 +80,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return null;
     }
 
-    protected override async ValueTask<Option<Error[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+    protected override async ValueTask<Option<ErrorOmd[]>> UpdateData(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default)
     {
         AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
@@ -108,7 +108,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return ConvertError(setRoleResult);
     }
 
-    protected override async Task<Option<Error[]>> DeleteData(int id, CancellationToken cancellationToken = default)
+    protected override async Task<Option<ErrorOmd[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole is null)
@@ -120,10 +120,10 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return ConvertError(deleteResult);
     }
 
-    private static Option<Error[]> ConvertError(IdentityResult result)
+    private static Option<ErrorOmd[]> ConvertError(IdentityResult result)
     {
         return result.Succeeded
             ? null
-            : result.Errors.Select(x => new Error { Code = x.Code, Name = x.Description }).ToArray();
+            : result.Errors.Select(x => new ErrorOmd { Code = x.Code, Name = x.Description }).ToArray();
     }
 }

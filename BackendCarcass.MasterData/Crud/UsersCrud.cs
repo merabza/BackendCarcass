@@ -33,17 +33,17 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async ValueTask<OneOf<IEnumerable<IDataType>, Error[]>> GetAllRecords(
+    public async ValueTask<OneOf<IEnumerable<IDataType>, ErrorOmd[]>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
         List<AppUser> users = await _userManager.Users.ToListAsync(cancellationToken);
-        return OneOf<IEnumerable<IDataType>, Error[]>.FromT0(users
+        return OneOf<IEnumerable<IDataType>, ErrorOmd[]>.FromT0(users
             .Where(x => x.UserName is not null && x.Email is not null)
             .Select(x => new UserCrudData(x.UserName!, x.FirstName, x.LastName, x.Email!)));
     }
 
-    public override async ValueTask<OneOf<TableRowsData, Error[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
-        CancellationToken cancellationToken = default)
+    public override async ValueTask<OneOf<TableRowsData, ErrorOmd[]>> GetTableRowsData(
+        FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default)
     {
         IQueryable<AppUser> users = _userManager.Users;
         (int realOffset, int count, List<UserCrudData> rows) = await users.UseCustomSortFilterPagination(
@@ -53,7 +53,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, [.. rows.Select(s => s.EditFields())]);
     }
 
-    protected override async Task<OneOf<ICrudData, Error[]>> GetOneData(int id,
+    protected override async Task<OneOf<ICrudData, ErrorOmd[]>> GetOneData(int id,
         CancellationToken cancellationToken = default)
     {
         AppUser? appUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
@@ -65,7 +65,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return new[] { MasterDataApiErrors.CannotFindUser };
     }
 
-    protected override async ValueTask<Option<Error[]>> CreateData(ICrudData crudDataForCreate,
+    protected override async ValueTask<Option<ErrorOmd[]>> CreateData(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default)
     {
         var user = (UserCrudData)crudDataForCreate;
@@ -82,7 +82,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return null;
     }
 
-    protected override async ValueTask<Option<Error[]>> UpdateData(int id, ICrudData crudDataNewVersion,
+    protected override async ValueTask<Option<ErrorOmd[]>> UpdateData(int id, ICrudData crudDataNewVersion,
         CancellationToken cancellationToken = default)
     {
         AppUser? oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
@@ -121,7 +121,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return ConvertError(setEmailResult);
     }
 
-    protected override async Task<Option<Error[]>> DeleteData(int id, CancellationToken cancellationToken = default)
+    protected override async Task<Option<ErrorOmd[]>> DeleteData(int id, CancellationToken cancellationToken = default)
     {
         AppUser? oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldUser is null)
@@ -133,10 +133,10 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return ConvertError(deleteResult);
     }
 
-    private static Option<Error[]> ConvertError(IdentityResult result)
+    private static Option<ErrorOmd[]> ConvertError(IdentityResult result)
     {
         return result.Succeeded
             ? null
-            : result.Errors.Select(x => new Error { Code = x.Code, Name = x.Description }).ToArray();
+            : result.Errors.Select(x => new ErrorOmd { Code = x.Code, Name = x.Description }).ToArray();
     }
 }

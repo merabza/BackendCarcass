@@ -25,7 +25,7 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
         Services = services;
     }
 
-    public virtual OneOf<IMasterDataLoader, Error[]> CreateMasterDataLoader(string queryName)
+    public virtual OneOf<IMasterDataLoader, ErrorOmd[]> CreateMasterDataLoader(string queryName)
     {
         // ReSharper disable once using
 #pragma warning disable CA2000
@@ -36,10 +36,11 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
 
         return MasterDataCrud
             .Create(queryName, _logger, scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>(),
-                unitOfWork, databaseAbstraction).Match<OneOf<IMasterDataLoader, Error[]>>(f0 => f0, f1 => f1.ToArray());
+                unitOfWork, databaseAbstraction)
+            .Match<OneOf<IMasterDataLoader, ErrorOmd[]>>(f0 => f0, f1 => f1.ToArray());
     }
 
-    public virtual OneOf<CrudBase, Error[]> CreateMasterDataCrud(string tableName)
+    public virtual OneOf<CrudBase, ErrorOmd[]> CreateMasterDataCrud(string tableName)
     {
         // ReSharper disable once using
 #pragma warning disable CA2000
@@ -56,7 +57,7 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
             "roles" => new RolesCrud(_logger, scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>(),
                 unitOfWork, databaseAbstraction),
             _ => MasterDataCrud.Create(tableName, _logger, carcassMasterDataRepository, unitOfWork, databaseAbstraction)
-                .Match<OneOf<CrudBase, Error[]>>(f0 => f0, f1 => f1.ToArray())
+                .Match<OneOf<CrudBase, ErrorOmd[]>>(f0 => f0, f1 => f1.ToArray())
         };
     }
 }

@@ -9,5 +9,5 @@ namespace BackendCarcass.MasterData;
 
 public interface IMasterDataLoader
 {
-    ValueTask<OneOf<IEnumerable<IDataType>, Error[]>> GetAllRecords(CancellationToken cancellationToken = default);
+    ValueTask<OneOf<IEnumerable<IDataType>, ErrorOmd[]>> GetAllRecords(CancellationToken cancellationToken = default);
 }

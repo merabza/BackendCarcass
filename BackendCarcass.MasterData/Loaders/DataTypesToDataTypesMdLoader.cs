@@ -10,11 +10,11 @@ namespace BackendCarcass.MasterData.Loaders;
 
 public sealed class DataTypesToDataTypesMdLoader(IDataTypesRepository dataTypesRepository) : IMasterDataLoader
 {
-    public async ValueTask<OneOf<IEnumerable<IDataType>, Error[]>> GetAllRecords(
+    public async ValueTask<OneOf<IEnumerable<IDataType>, ErrorOmd[]>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
         IEnumerable<DataTypeToDataTypeDomModel> result =
             await dataTypesRepository.LoadDataTypesToDataTypes(cancellationToken);
-        return OneOf<IEnumerable<IDataType>, Error[]>.FromT0(result);
+        return OneOf<IEnumerable<IDataType>, ErrorOmd[]>.FromT0(result);
     }
 }
