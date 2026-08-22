@@ -89,9 +89,9 @@ public class UserClaimRightsFilterTests
 
         // Assert
         Assert.False(nextCalled);
-        Assert.IsType<BadRequest<Error[]>>(result);
+        Assert.IsType<BadRequest<ErrorOmd[]>>(result);
 
-        var badRequest = result as BadRequest<Error[]>;
+        var badRequest = result as BadRequest<ErrorOmd[]>;
         Assert.NotNull(badRequest);
         Assert.NotNull(badRequest.Value);
         Assert.Single(badRequest.Value);
@@ -113,7 +113,7 @@ public class UserClaimRightsFilterTests
             return Results.Ok();
         };
 
-        Error[] expectedErrors =
+        ErrorOmd[] expectedErrors =
         [
             RightsApiErrors.ErrorWhenDeterminingRights,
             new() { Code = "AdditionalError", Name = "Additional error occurred" }
@@ -128,9 +128,9 @@ public class UserClaimRightsFilterTests
 
         // Assert
         Assert.False(nextCalled);
-        Assert.IsType<BadRequest<Error[]>>(result);
+        Assert.IsType<BadRequest<ErrorOmd[]>>(result);
 
-        var badRequest = result as BadRequest<Error[]>;
+        var badRequest = result as BadRequest<ErrorOmd[]>;
         Assert.NotNull(badRequest);
         Assert.NotNull(badRequest.Value);
         Assert.Equal(2, badRequest.Value.Length);
@@ -247,7 +247,7 @@ public class UserClaimRightsFilterTests
     // Testable version of UserClaimRightsFilter to allow testing
     private sealed class TestableUserClaimRightsFilter : UserClaimRightsFilter
     {
-        private OneOf<bool, Error[]>? _mockResult;
+        private OneOf<bool, ErrorOmd[]>? _mockResult;
 
         public TestableUserClaimRightsFilter(string claimName, IUserRightsRepository repo,
             IDatabaseAbstraction databaseAbstraction, ILogger<UserClaimRightsFilter> logger,
@@ -263,7 +263,7 @@ public class UserClaimRightsFilterTests
             _mockResult = hasRight;
         }
 
-        public void SetupRightsDeterminerResult(Error[] errors)
+        public void SetupRightsDeterminerResult(ErrorOmd[] errors)
         {
             _mockResult = errors;
         }
@@ -277,7 +277,7 @@ public class UserClaimRightsFilterTests
                 return await base.InvokeAsync(context, next);
             }
 
-            OneOf<bool, Error[]> result = _mockResult.Value;
+            OneOf<bool, ErrorOmd[]> result = _mockResult.Value;
             if (result.IsT1)
             {
                 return Results.BadRequest(result.AsT1);
