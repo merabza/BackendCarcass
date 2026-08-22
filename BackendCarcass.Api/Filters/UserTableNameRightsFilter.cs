@@ -35,7 +35,7 @@ public /*open*/ class UserTableNameRightsFilter : IEndpointFilter
         foreach (string tableKey in _tableKeys)
         {
             var rightsDeterminer = new RightsDeterminer(_repo, _logger, _currentUser, _databaseAbstraction);
-            Option<BadRequest<Error[]>> checkTableRightsResult =
+            Option<BadRequest<ErrorOmd[]>> checkTableRightsResult =
                 await rightsDeterminer.CheckTableRights(_currentUser.Name, context.HttpContext.Request.Method,
                     new TableKeyName { TableName = tableKey }, CancellationToken.None);
             if (checkTableRightsResult.IsSome)

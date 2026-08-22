@@ -19,12 +19,12 @@ public sealed class ChildrenTreeDataCommandHandler(
     ICurrentUser currentUser,
     IDatabaseAbstraction databaseAbstraction) : ICommandHandler<ChildrenTreeDataRequestCommand, List<DataTypeModel>>
 {
-    public async Task<OneOf<List<DataTypeModel>, Error[]>> Handle(ChildrenTreeDataRequestCommand request,
+    public async Task<OneOf<List<DataTypeModel>, ErrorOmd[]>> Handle(ChildrenTreeDataRequestCommand request,
         CancellationToken cancellationToken)
     {
         var rightsCollector = new RightsCollector(repo, rvRepo, databaseAbstraction);
-        OneOf<List<DataTypeModel>, Error[]> result = await rightsCollector.ChildrenTreeData(currentUser.Name,
+        OneOf<List<DataTypeModel>, ErrorOmd[]> result = await rightsCollector.ChildrenTreeData(currentUser.Name,
             request.DataTypeKey, request.ViewStyle, cancellationToken);
-        return result.Match<OneOf<List<DataTypeModel>, Error[]>>(r => r, e => e);
+        return result.Match<OneOf<List<DataTypeModel>, ErrorOmd[]>>(r => r, e => e);
     }
 }

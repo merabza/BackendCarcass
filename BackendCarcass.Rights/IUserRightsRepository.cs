@@ -21,7 +21,7 @@ public interface IUserRightsRepository
     Task<bool> CheckTableViewRight(int roleDtId, string roleName, int dataTypeDtId, string keyByTableName, int menuDtId,
         CancellationToken cancellationToken = default);
 
-    Task<OneOf<bool, Error[]>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
+    Task<OneOf<bool, ErrorOmd[]>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
         string keyByTableName, int dataCrudRightDtId, ECrudOperationType crudType,
         CancellationToken cancellationToken = default);
 }

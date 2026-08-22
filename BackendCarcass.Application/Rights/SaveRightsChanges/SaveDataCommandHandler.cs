@@ -19,7 +19,8 @@ public sealed class SaveDataCommandHandler(
     ICurrentUser currentUser,
     IDatabaseAbstraction databaseAbstraction) : ICommandHandler<SaveDataRequestCommand, bool>
 {
-    public async Task<OneOf<bool, Error[]>> Handle(SaveDataRequestCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<bool, ErrorOmd[]>> Handle(SaveDataRequestCommand request,
+        CancellationToken cancellationToken)
     {
         var rightsSaver = new RightsSaver(logger, repo, unitOfWork, databaseAbstraction);
         return await rightsSaver.SaveRightsChanges(currentUser.Name, request.ChangesForSave, cancellationToken);

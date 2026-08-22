@@ -17,7 +17,7 @@ namespace BackendCarcass.Application.MasterData.CreateOneRecord;
 public sealed class MdCreateOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
     : ICommandHandler<MdCreateOneRecordRequestCommand, MasterDataCrudLoadedData>
 {
-    public async Task<OneOf<MasterDataCrudLoadedData, Error[]>> Handle(MdCreateOneRecordRequestCommand request,
+    public async Task<OneOf<MasterDataCrudLoadedData, ErrorOmd[]>> Handle(MdCreateOneRecordRequestCommand request,
         CancellationToken cancellationToken)
     {
         //ამოვიღოთ მოთხოვნის ტანი
@@ -27,7 +27,7 @@ public sealed class MdCreateOneRecordCommandHandler(IMasterDataLoaderCreator mas
         string body = await reader.ReadToEndAsync(cancellationToken);
 
         var crudData = new MasterDataCrudData(body);
-        OneOf<CrudBase, Error[]> createMasterDataCrudResult =
+        OneOf<CrudBase, ErrorOmd[]> createMasterDataCrudResult =
             masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
@@ -35,8 +35,8 @@ public sealed class MdCreateOneRecordCommandHandler(IMasterDataLoaderCreator mas
         }
 
         CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
-        OneOf<ICrudData, Error[]> result = await masterDataCruder.Create(crudData, cancellationToken);
-        return result.Match<OneOf<MasterDataCrudLoadedData, Error[]>>(rcd => (MasterDataCrudLoadedData)rcd,
-            y => Error.RecreateErrors(y, MasterDataApiErrors.CannotCreateNewRecord));
+        OneOf<ICrudData, ErrorOmd[]> result = await masterDataCruder.Create(crudData, cancellationToken);
+        return result.Match<OneOf<MasterDataCrudLoadedData, ErrorOmd[]>>(rcd => (MasterDataCrudLoadedData)rcd,
+            y => ErrorOmd.RecreateErrors(y, MasterDataApiErrors.CannotCreateNewRecord));
     }
 }

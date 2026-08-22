@@ -20,7 +20,7 @@ public class RegistrationService : LoginBase, IScopeServiceCarcassApplication
     {
     }
 
-    public async Task<OneOf<LoginResult, Error[]>> TryToRegister(RegisterParameters registerParameters,
+    public async Task<OneOf<LoginResult, ErrorOmd[]>> TryToRegister(RegisterParameters registerParameters,
         CancellationToken cancellationToken = default)
     {
         //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი

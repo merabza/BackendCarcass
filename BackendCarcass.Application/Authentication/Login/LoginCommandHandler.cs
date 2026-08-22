@@ -15,10 +15,10 @@ namespace BackendCarcass.Application.Authentication.Login;
 public sealed class LoginCommandHandler(LoginService loginService)
     : LoginCommandHandlerBase, ICommandHandler<LoginRequestCommand, LoginResponse>
 {
-    public async Task<OneOf<LoginResponse, Error[]>> Handle(LoginRequestCommand request,
+    public async Task<OneOf<LoginResponse, ErrorOmd[]>> Handle(LoginRequestCommand request,
         CancellationToken cancellationToken)
     {
-        OneOf<LoginResult, Error[]> tryLoginResult =
+        OneOf<LoginResult, ErrorOmd[]> tryLoginResult =
             await loginService.TryToLogin(request.UserName!, request.Password!, cancellationToken);
         if (tryLoginResult.IsT1)
         {

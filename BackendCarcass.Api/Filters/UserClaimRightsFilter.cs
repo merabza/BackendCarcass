@@ -33,7 +33,8 @@ public /*open*/ class UserClaimRightsFilter : IEndpointFilter
     {
         //შემოწმდეს აქვს თუ არა მიმდინარე მომხმარებელს _claimName-ის შესაბამისი სპეციალური უფლება
         var rightsDeterminer = new RightsDeterminer(_repo, _logger, _currentUser, _databaseAbstraction);
-        OneOf<bool, Error[]> result = await rightsDeterminer.CheckUserRightToClaim(_claimName, CancellationToken.None);
+        OneOf<bool, ErrorOmd[]> result =
+            await rightsDeterminer.CheckUserRightToClaim(_claimName, CancellationToken.None);
         if (result.IsT1)
         {
             return Results.BadRequest(result.AsT1);

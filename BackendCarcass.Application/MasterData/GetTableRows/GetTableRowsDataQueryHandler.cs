@@ -16,7 +16,7 @@ namespace BackendCarcass.Application.MasterData.GetTableRows;
 public sealed class GetTableRowsDataQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
     : IQueryHandler<GetTableRowsDataRequestQuery, TableRowsData>
 {
-    public async Task<OneOf<TableRowsData, Error[]>> Handle(GetTableRowsDataRequestQuery request,
+    public async Task<OneOf<TableRowsData, ErrorOmd[]>> Handle(GetTableRowsDataRequestQuery request,
         CancellationToken cancellationToken)
     {
         FilterSortRequest? filterSortRequestObject = FilterSortRequestFactory.Create(request.FilterSortRequest);
@@ -31,7 +31,7 @@ public sealed class GetTableRowsDataQueryHandler(IMasterDataLoaderCreator master
         //return result.Match<OneOf<TableRowsData, Err[]>>(
         //    r => r, e => e);
 
-        OneOf<CrudBase, Error[]> createMasterDataCrudResult =
+        OneOf<CrudBase, ErrorOmd[]> createMasterDataCrudResult =
             masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
@@ -40,8 +40,8 @@ public sealed class GetTableRowsDataQueryHandler(IMasterDataLoaderCreator master
 
         CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
 
-        OneOf<TableRowsData, Error[]> result =
+        OneOf<TableRowsData, ErrorOmd[]> result =
             await masterDataCruder.GetTableRowsData(filterSortRequestObject, cancellationToken);
-        return result.Match<OneOf<TableRowsData, Error[]>>(r => r, e => e.ToArray());
+        return result.Match<OneOf<TableRowsData, ErrorOmd[]>>(r => r, e => e.ToArray());
     }
 }

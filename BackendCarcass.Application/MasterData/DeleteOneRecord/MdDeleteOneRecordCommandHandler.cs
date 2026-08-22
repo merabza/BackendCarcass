@@ -18,10 +18,10 @@ namespace BackendCarcass.Application.MasterData.DeleteOneRecord;
 public sealed class MdDeleteOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
     : ICommandHandler<MdDeleteOneRecordRequestCommand>
 {
-    public async Task<OneOf<Unit, Error[]>> Handle(MdDeleteOneRecordRequestCommand request,
+    public async Task<OneOf<Unit, ErrorOmd[]>> Handle(MdDeleteOneRecordRequestCommand request,
         CancellationToken cancellationToken)
     {
-        OneOf<CrudBase, Error[]> createMasterDataCrudResult =
+        OneOf<CrudBase, ErrorOmd[]> createMasterDataCrudResult =
             masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
@@ -29,10 +29,10 @@ public sealed class MdDeleteOneRecordCommandHandler(IMasterDataLoaderCreator mas
         }
 
         CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
-        Option<Error[]> result = await masterDataCruder.Delete(request.Id, cancellationToken);
-        return result.Match<OneOf<Unit, Error[]>>(y =>
+        Option<ErrorOmd[]> result = await masterDataCruder.Delete(request.Id, cancellationToken);
+        return result.Match<OneOf<Unit, ErrorOmd[]>>(y =>
         {
-            List<Error> errors =
+            List<ErrorOmd> errors =
             [
                 .. y,
                 MasterDataApiErrors.CannotDeleteNewRecord

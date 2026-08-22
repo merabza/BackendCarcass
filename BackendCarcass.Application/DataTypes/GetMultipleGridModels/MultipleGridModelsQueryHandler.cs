@@ -14,7 +14,7 @@ namespace BackendCarcass.Application.DataTypes.GetMultipleGridModels;
 public sealed class MultipleGridModelsQueryHandler(IMenuRightsRepository repository)
     : IQueryHandler<MultipleGridModelsRequestQuery, Dictionary<string, string>>
 {
-    public async Task<OneOf<Dictionary<string, string>, Error[]>> Handle(MultipleGridModelsRequestQuery request,
+    public async Task<OneOf<Dictionary<string, string>, ErrorOmd[]>> Handle(MultipleGridModelsRequestQuery request,
         CancellationToken cancellationToken)
     {
         var resultList = new Dictionary<string, string>();
@@ -28,7 +28,7 @@ public sealed class MultipleGridModelsQueryHandler(IMenuRightsRepository reposit
             return new[] { DataTypesApiErrors.NoGridNamesInUriQuery };
         }
 
-        List<Error> errors = [];
+        List<ErrorOmd> errors = [];
         //ხოლო მეორე გავლისას ხდება უშუალოდ საჭირო ინფორმაციის ჩატვირთვა
         foreach (string? gridName in gridNames)
         {

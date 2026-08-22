@@ -39,7 +39,7 @@ public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
         }
         catch (Exception e)
         {
-            StShared.WriteException(e, "Error when SetDtParentDataTypes", true, _logger, false);
+            StShared.WriteException(e, "ErrorOmd when SetDtParentDataTypes", true, _logger, false);
             return false;
         }
     }
@@ -59,7 +59,7 @@ public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
         }
         catch (Exception e)
         {
-            StShared.WriteException(e, "Error when SetDtParentDataTypes", true, _logger, false);
+            StShared.WriteException(e, "ErrorOmd when SetDtParentDataTypes", true, _logger, false);
             return false;
         }
     }
@@ -73,7 +73,7 @@ public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
         }
         catch (Exception e)
         {
-            StShared.WriteException(e, "Error when RemoveRedundantDataTypesByTableNames", true, _logger, false);
+            StShared.WriteException(e, "ErrorOmd when RemoveRedundantDataTypesByTableNames", true, _logger, false);
             return false;
         }
     }
@@ -87,7 +87,7 @@ public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
         }
         catch (Exception e)
         {
-            StShared.WriteException(e, "Error when saving changes", true, _logger, false);
+            StShared.WriteException(e, "ErrorOmd when saving changes", true, _logger, false);
             return false;
         }
     }

@@ -20,7 +20,7 @@ namespace BackendCarcass.Application.MasterData.UpdateOneRecord;
 public sealed class MdUpdateOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
     : ICommandHandler<MdUpdateOneRecordRequestCommand>
 {
-    public async Task<OneOf<Unit, Error[]>> Handle(MdUpdateOneRecordRequestCommand request,
+    public async Task<OneOf<Unit, ErrorOmd[]>> Handle(MdUpdateOneRecordRequestCommand request,
         CancellationToken cancellationToken)
     {
         //ამოვიღოთ მოთხოვნის ტანი
@@ -30,7 +30,7 @@ public sealed class MdUpdateOneRecordCommandHandler(IMasterDataLoaderCreator mas
         string body = await reader.ReadToEndAsync(cancellationToken);
 
         var crudData = new MasterDataCrudData(body);
-        OneOf<CrudBase, Error[]> createMasterDataCrudResult =
+        OneOf<CrudBase, ErrorOmd[]> createMasterDataCrudResult =
             masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
@@ -38,10 +38,10 @@ public sealed class MdUpdateOneRecordCommandHandler(IMasterDataLoaderCreator mas
         }
 
         CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
-        Option<Error[]> result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
-        return result.Match<OneOf<Unit, Error[]>>(y =>
+        Option<ErrorOmd[]> result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
+        return result.Match<OneOf<Unit, ErrorOmd[]>>(y =>
         {
-            List<Error> errors =
+            List<ErrorOmd> errors =
             [
                 .. y,
                 MasterDataApiErrors.CannotUpdateNewRecord

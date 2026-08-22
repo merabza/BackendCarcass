@@ -20,13 +20,13 @@ public sealed class ParentsTreeDataQueryHandler(
     ICurrentUser currentUser,
     IDatabaseAbstraction databaseAbstraction) : IQueryHandler<ParentsTreeDataRequestQuery, List<DataTypeModel>>
 {
-    public async Task<OneOf<List<DataTypeModel>, Error[]>> Handle(ParentsTreeDataRequestQuery request,
+    public async Task<OneOf<List<DataTypeModel>, ErrorOmd[]>> Handle(ParentsTreeDataRequestQuery request,
         CancellationToken cancellationToken)
     {
         var rightsCollector = new RightsCollector(repo, rvRepo, databaseAbstraction);
-        OneOf<List<DataTypeModel>, Error[]> result =
+        OneOf<List<DataTypeModel>, ErrorOmd[]> result =
             await rightsCollector.ParentsTreeData(currentUser.Name, request.ViewStyle, cancellationToken);
 
-        return result.Match<OneOf<List<DataTypeModel>, Error[]>>(r => r, e => e.ToArray());
+        return result.Match<OneOf<List<DataTypeModel>, ErrorOmd[]>>(r => r, e => e.ToArray());
     }
 }

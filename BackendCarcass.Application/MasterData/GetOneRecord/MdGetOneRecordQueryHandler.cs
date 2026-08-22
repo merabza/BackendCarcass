@@ -13,10 +13,10 @@ namespace BackendCarcass.Application.MasterData.GetOneRecord;
 public sealed class MdGetOneRecordQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
     : IQueryHandler<MdGetOneRecordRequestQuery, MasterDataCrudLoadedData>
 {
-    public async Task<OneOf<MasterDataCrudLoadedData, Error[]>> Handle(MdGetOneRecordRequestQuery request,
+    public async Task<OneOf<MasterDataCrudLoadedData, ErrorOmd[]>> Handle(MdGetOneRecordRequestQuery request,
         CancellationToken cancellationToken)
     {
-        OneOf<CrudBase, Error[]> createMasterDataCrudResult =
+        OneOf<CrudBase, ErrorOmd[]> createMasterDataCrudResult =
             masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
         if (createMasterDataCrudResult.IsT1)
         {
@@ -24,8 +24,8 @@ public sealed class MdGetOneRecordQueryHandler(IMasterDataLoaderCreator masterDa
         }
 
         CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
-        OneOf<ICrudData, Error[]> result = await masterDataCruder.GetOne(request.Id, cancellationToken);
-        return result.Match<OneOf<MasterDataCrudLoadedData, Error[]>>(r => (MasterDataCrudLoadedData)r,
+        OneOf<ICrudData, ErrorOmd[]> result = await masterDataCruder.GetOne(request.Id, cancellationToken);
+        return result.Match<OneOf<MasterDataCrudLoadedData, ErrorOmd[]>>(r => (MasterDataCrudLoadedData)r,
             e => e.ToArray());
     }
 }

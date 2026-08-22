@@ -31,7 +31,7 @@ public sealed class RightsCollector
         _databaseAbstraction = databaseAbstraction;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, Error[]>> ParentsTreeData(string userName,
+    public async Task<OneOf<List<DataTypeModel>, ErrorOmd[]>> ParentsTreeData(string userName,
         ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
         IEnumerable<DataTypeModelForRvs> dataTypes =
@@ -43,17 +43,17 @@ public sealed class RightsCollector
         return await GetTreeData(userName, dataTypes, cancellationToken);
     }
 
-    private async ValueTask<OneOf<List<DataTypeModel>, Error[]>> GetTreeData(string userName,
+    private async ValueTask<OneOf<List<DataTypeModel>, ErrorOmd[]>> GetTreeData(string userName,
         IEnumerable<DataTypeModelForRvs> dataTypes, CancellationToken cancellationToken = default)
     {
         var dataTypeModels = new List<DataTypeModel>();
-        var errors = new List<Error>();
+        var errors = new List<ErrorOmd>();
         foreach (DataTypeModelForRvs dataType in dataTypes)
         {
             var dataTypeModel = new DataTypeModel(dataType.DtId, dataType.DtTable, dataType.DtName,
                 dataType.DtParentDataTypeId);
-            OneOf<List<ReturnValueModel>, Error[]>
-                entResult = await GetRetValues(dataType, userName, cancellationToken);
+            OneOf<List<ReturnValueModel>, ErrorOmd[]> entResult =
+                await GetRetValues(dataType, userName, cancellationToken);
 
             if (entResult.IsT1)
             {
@@ -75,7 +75,7 @@ public sealed class RightsCollector
         return dataTypeModels;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, Error[]>> ChildrenTreeData(string userName, string dataTypeKey,
+    public async Task<OneOf<List<DataTypeModel>, ErrorOmd[]>> ChildrenTreeData(string userName, string dataTypeKey,
         ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
         List<DataTypeModelForRvs> dataTypes =
@@ -149,7 +149,7 @@ public sealed class RightsCollector
             mmjDataId, cancellationToken);
     }
 
-    private async Task<OneOf<List<ReturnValueModel>, Error[]>> GetRetValues(DataTypeModelForRvs dt, string userName,
+    private async Task<OneOf<List<ReturnValueModel>, ErrorOmd[]>> GetRetValues(DataTypeModelForRvs dt, string userName,
         CancellationToken cancellationToken = default)
     {
         if (dt.DtTable == _databaseAbstraction.GetTableName<User>())

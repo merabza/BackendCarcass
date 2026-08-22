@@ -12,7 +12,8 @@ namespace BackendCarcass.Application.DataTypes.GetGridModel;
 public sealed class GridModelQueryHandler(IMenuRightsRepository repository)
     : IQueryHandler<GridModelRequestQuery, string>
 {
-    public async Task<OneOf<string, Error[]>> Handle(GridModelRequestQuery request, CancellationToken cancellationToken)
+    public async Task<OneOf<string, ErrorOmd[]>> Handle(GridModelRequestQuery request,
+        CancellationToken cancellationToken)
     {
         string? res = await repository.GridModel(request.GridName, cancellationToken);
         if (res == null)

@@ -90,7 +90,7 @@ public /*open*/ class CarcassMasterDataRepository : ICarcassMasterDataRepository
         return dataType?.DtNameFieldName;
     }
 
-    public async Task<Option<Error[]>> Create(IDataType newItem, CancellationToken cancellationToken = default)
+    public async Task<Option<ErrorOmd[]>> Create(IDataType newItem, CancellationToken cancellationToken = default)
     {
         await _context.AddAsync(newItem, cancellationToken);
         //await _context.SaveChangesAsync();

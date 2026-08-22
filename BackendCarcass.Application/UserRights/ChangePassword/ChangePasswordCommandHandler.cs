@@ -15,7 +15,7 @@ namespace BackendCarcass.Application.UserRights.ChangePassword;
 public sealed class ChangePasswordCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
     : ICommandHandler<ChangePasswordRequestCommand>
 {
-    public async Task<OneOf<Unit, Error[]>> Handle(ChangePasswordRequestCommand request,
+    public async Task<OneOf<Unit, ErrorOmd[]>> Handle(ChangePasswordRequestCommand request,
         CancellationToken cancellationToken)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით

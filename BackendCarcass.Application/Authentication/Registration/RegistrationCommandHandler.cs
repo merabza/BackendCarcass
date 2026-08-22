@@ -22,7 +22,7 @@ public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
         _registrationService = registrationService;
     }
 
-    public async Task<OneOf<LoginResponse, Error[]>> Handle(RegistrationRequestCommand request,
+    public async Task<OneOf<LoginResponse, ErrorOmd[]>> Handle(RegistrationRequestCommand request,
         CancellationToken cancellationToken)
     {
         var registerParameters = new RegisterParameters
@@ -33,7 +33,7 @@ public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
             LastName = request.LastName!,
             Password = request.Password!
         };
-        OneOf<LoginResult, Error[]> tryLoginResult =
+        OneOf<LoginResult, ErrorOmd[]> tryLoginResult =
             await _registrationService.TryToRegister(registerParameters, cancellationToken);
         if (tryLoginResult.IsT1)
         {

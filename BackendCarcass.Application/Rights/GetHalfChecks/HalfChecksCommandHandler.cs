@@ -19,7 +19,7 @@ public sealed class HalfChecksCommandHandler(
     ICurrentUser currentUser,
     IDatabaseAbstraction databaseAbstraction) : ICommandHandler<HalfChecksRequestCommand, List<TypeDataModel>>
 {
-    public async Task<OneOf<List<TypeDataModel>, Error[]>> Handle(HalfChecksRequestCommand request,
+    public async Task<OneOf<List<TypeDataModel>, ErrorOmd[]>> Handle(HalfChecksRequestCommand request,
         CancellationToken cancellationToken)
     {
         var rightsCollector = new RightsCollector(repo, rvRepo, databaseAbstraction);

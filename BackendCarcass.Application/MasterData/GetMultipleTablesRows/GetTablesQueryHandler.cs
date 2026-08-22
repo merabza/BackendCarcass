@@ -13,14 +13,15 @@ namespace BackendCarcass.Application.MasterData.GetMultipleTablesRows;
 public sealed class GetTablesQueryHandler(IMasterDataLoaderCreator masterDataLoaderCreator)
     : IQueryHandler<MdGetTablesRequestQuery, MdGetTablesQueryResponse>
 {
-    public async Task<OneOf<MdGetTablesQueryResponse, Error[]>> Handle(MdGetTablesRequestQuery request,
+    public async Task<OneOf<MdGetTablesQueryResponse, ErrorOmd[]>> Handle(MdGetTablesRequestQuery request,
         CancellationToken cancellationToken)
     {
         List<string?> tableNames =
             [.. request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()];
         var mdLoader = new MasterDataLoader(tableNames, masterDataLoaderCreator);
-        OneOf<Dictionary<string, IEnumerable<dynamic>>, Error[]> loaderResult = await mdLoader.Run(cancellationToken);
-        return loaderResult.Match<OneOf<MdGetTablesQueryResponse, Error[]>>(r => new MdGetTablesQueryResponse(r),
+        OneOf<Dictionary<string, IEnumerable<dynamic>>, ErrorOmd[]>
+            loaderResult = await mdLoader.Run(cancellationToken);
+        return loaderResult.Match<OneOf<MdGetTablesQueryResponse, ErrorOmd[]>>(r => new MdGetTablesQueryResponse(r),
             e => e.ToArray());
     }
 }

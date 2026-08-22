@@ -13,7 +13,7 @@ namespace BackendCarcass.Application.UserRights.GetMainMenu;
 public sealed class MainMenuQueryHandler(IMenuRightsRepository mdRepo, ICurrentUser currentUser)
     : IQueryHandler<MainMenuRequestQuery, MainMenuModel>
 {
-    public async Task<OneOf<MainMenuModel, Error[]>> Handle(MainMenuRequestQuery request,
+    public async Task<OneOf<MainMenuModel, ErrorOmd[]>> Handle(MainMenuRequestQuery request,
         CancellationToken cancellationToken)
     {
         MainMenuModel mainMenuModel = await mdRepo.MainMenu(currentUser.Name, cancellationToken);

@@ -16,7 +16,7 @@ namespace BackendCarcass.Application.UserRights.DeleteCurrentUser;
 public sealed class DeleteCurrentUserCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
     : ICommandHandler<DeleteCurrentUserRequestCommand>
 {
-    public async Task<OneOf<Unit, Error[]>> Handle(DeleteCurrentUserRequestCommand request,
+    public async Task<OneOf<Unit, ErrorOmd[]>> Handle(DeleteCurrentUserRequestCommand request,
         CancellationToken cancellationToken)
     {
         //ეს ერთგვარი ტესტია. თუ კოდი აქამდე მოვიდა, მიმდინარე მომხმარებელი ვალიდურია

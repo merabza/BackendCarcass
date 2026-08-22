@@ -15,15 +15,16 @@ public sealed class GetLookupTablesQueryHandler(
     IReturnValuesLoaderCreator returnValuesLoaderCreator)
     : IQueryHandler<MdGetLookupTablesRequestQuery, MdGetLookupTablesQueryResponse>
 {
-    public async Task<OneOf<MdGetLookupTablesQueryResponse, Error[]>> Handle(MdGetLookupTablesRequestQuery request,
+    public async Task<OneOf<MdGetLookupTablesQueryResponse, ErrorOmd[]>> Handle(MdGetLookupTablesRequestQuery request,
         CancellationToken cancellationToken)
     {
         //var reqQuery = request.HttpRequest.Query["tables"];
         List<string?> tableNames =
             [.. request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()];
         var mdLoader = new ReturnValuesLoader(tableNames, rvRepo, returnValuesLoaderCreator);
-        OneOf<Dictionary<string, IEnumerable<SrvModel>>, Error[]> loaderResult = await mdLoader.Run(cancellationToken);
-        return loaderResult.Match<OneOf<MdGetLookupTablesQueryResponse, Error[]>>(
+        OneOf<Dictionary<string, IEnumerable<SrvModel>>, ErrorOmd[]> loaderResult =
+            await mdLoader.Run(cancellationToken);
+        return loaderResult.Match<OneOf<MdGetLookupTablesQueryResponse, ErrorOmd[]>>(
             r => new MdGetLookupTablesQueryResponse(r), e => e.ToArray());
     }
 }

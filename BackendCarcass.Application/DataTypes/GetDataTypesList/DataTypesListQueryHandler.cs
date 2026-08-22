@@ -14,7 +14,7 @@ namespace BackendCarcass.Application.DataTypes.GetDataTypesList;
 public sealed class DataTypesListQueryHandler(IMenuRightsRepository repository, ICurrentUser currentUser)
     : LoginCommandHandlerBase, IQueryHandler<DataTypesRequestQuery, DataTypesResponse[]>
 {
-    public async Task<OneOf<DataTypesResponse[], Error[]>> Handle(DataTypesRequestQuery request,
+    public async Task<OneOf<DataTypesResponse[], ErrorOmd[]>> Handle(DataTypesRequestQuery request,
         CancellationToken cancellationToken)
     {
         DataTypesResponse[] res = await repository.DataTypes(currentUser.Name, cancellationToken);

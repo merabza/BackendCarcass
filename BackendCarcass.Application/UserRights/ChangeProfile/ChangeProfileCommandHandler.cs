@@ -16,7 +16,7 @@ namespace BackendCarcass.Application.UserRights.ChangeProfile;
 public sealed class ChangeProfileCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
     : ICommandHandler<ChangeProfileRequestCommand>
 {
-    public async Task<OneOf<Unit, Error[]>> Handle(ChangeProfileRequestCommand request,
+    public async Task<OneOf<Unit, ErrorOmd[]>> Handle(ChangeProfileRequestCommand request,
         CancellationToken cancellationToken)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით
