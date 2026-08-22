@@ -78,7 +78,7 @@ public abstract class CrudBase
                 {
                     if (_logger.IsEnabled(LogLevel.Error))
                     {
-                        _logger.LogError(e.InnerException, "Error occurred executing {MethodName}.", methodName);
+                        _logger.LogError(e.InnerException, "ErrorOmd occurred executing {MethodName}.", methodName);
                     }
 
                     if (e.InnerException.Message.StartsWith("Cannot insert duplicate key row in object",
@@ -90,7 +90,7 @@ public abstract class CrudBase
 
                 if (_logger.IsEnabled(LogLevel.Error))
                 {
-                    _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
+                    _logger.LogError(e, "ErrorOmd occurred executing {MethodName}.", methodName);
                 }
 
                 return new[] { SystemToolsErrors.UnexpectedApiException(e) };
@@ -100,7 +100,7 @@ public abstract class CrudBase
         {
             if (_logger.IsEnabled(LogLevel.Error))
             {
-                _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
+                _logger.LogError(e, "ErrorOmd occurred executing {MethodName}.", methodName);
             }
 
             return new[] { SystemToolsErrors.UnexpectedApiException(e) };
@@ -173,7 +173,7 @@ public abstract class CrudBase
                 {
                     if (_logger.IsEnabled(LogLevel.Error))
                     {
-                        _logger.LogError(e.InnerException, "Error occurred executing {MethodName}.", methodName);
+                        _logger.LogError(e.InnerException, "ErrorOmd occurred executing {MethodName}.", methodName);
                     }
 
                     if (e.InnerException.Message.StartsWith(
@@ -185,7 +185,7 @@ public abstract class CrudBase
 
                 if (_logger.IsEnabled(LogLevel.Error))
                 {
-                    _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
+                    _logger.LogError(e, "ErrorOmd occurred executing {MethodName}.", methodName);
                 }
 
                 return new[] { SystemToolsErrors.UnexpectedApiException(e) };

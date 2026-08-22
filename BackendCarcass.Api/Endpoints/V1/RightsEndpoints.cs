@@ -150,7 +150,7 @@ public static class RightsEndpoints
         //}
         //catch (Exception e)
         //{
-        //    logger.Log(LogLevel.ErrorOmd, e.Message);
+        //    logger.Log(LogLevel.Error, e.Message);
         //    return Results.BadRequest("შეცდომა უფლებების ოპტიმიზაციის პროცესის მიმდინარეობისას");
         //}
         return TypedResults.Ok(true);
