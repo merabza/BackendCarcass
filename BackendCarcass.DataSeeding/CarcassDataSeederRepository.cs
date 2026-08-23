@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using BackendCarcass.Database;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.DataTypes;
+using BackendCarcassDomain.Entities.ManyToManyJoins;
 using Microsoft.Extensions.Logging;
 using SystemTools.SystemToolsShared;
 

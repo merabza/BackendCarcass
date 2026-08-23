@@ -13,7 +13,7 @@ namespace BackendCarcass.Application.Authentication.Login;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class LoginCommandHandler(LoginService loginService)
-    : LoginCommandHandlerBase, ICommandHandler<LoginRequestCommand, LoginResponse>
+    : LoginCommandHandlerBase, ICommandHandlerOmd<LoginRequestCommand, LoginResponse>
 {
     public async Task<OneOf<LoginResponse, ErrorOmd[]>> Handle(LoginRequestCommand request,
         CancellationToken cancellationToken)

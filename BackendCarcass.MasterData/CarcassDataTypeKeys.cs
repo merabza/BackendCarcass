@@ -14,7 +14,7 @@
 ////            { ECarcassDataTypeKeys.DataTypeToDataType.ToString(), "dtdt" },
 ////            { ECarcassDataTypeKeys.DataTypeToCrudType.ToString(), "dtct" },
 ////            { ECarcassDataTypeKeys.MenuGroup.ToString(), "meng" },
-////            { ECarcassDataTypeKeys.MenuItm.ToString(), "men" },
+////            { ECarcassDataTypeKeys.MenuItem.ToString(), "men" },
 ////            { ECarcassDataTypeKeys.Role.ToString(), "rol" },
 ////            { ECarcassDataTypeKeys.User.ToString(), "usr" }
 ////        };
@@ -45,7 +45,7 @@
 //            { ECarcassDataTypeKeys.DataTypeToDataType.ToString(), "dtdt" },
 //            { ECarcassDataTypeKeys.DataTypeToCrudType.ToString(), "dtct" },
 //            { ECarcassDataTypeKeys.MenuGroup.ToString(), "meng" },
-//            { ECarcassDataTypeKeys.MenuItm.ToString(), "men" },
+//            { ECarcassDataTypeKeys.MenuItem.ToString(), "men" },
 //            { ECarcassDataTypeKeys.Role.ToString(), "rol" },
 //            { ECarcassDataTypeKeys.User.ToString(), "usr" }
 //        };

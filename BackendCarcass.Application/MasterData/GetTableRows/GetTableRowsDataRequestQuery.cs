@@ -3,4 +3,4 @@ using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.MasterData.GetTableRows;
 
-public record GetTableRowsDataRequestQuery(string TableName, string FilterSortRequest) : IQuery<TableRowsData>;
+public record GetTableRowsDataRequestQuery(string TableName, string FilterSortRequest) : IQueryOmd<TableRowsData>;

@@ -3,7 +3,7 @@ using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.MasterData.GetMultipleTablesRows;
 
-public sealed class MdGetTablesRequestQuery : IQuery<MdGetTablesQueryResponse>
+public sealed class MdGetTablesRequestQuery : IQueryOmd<MdGetTablesQueryResponse>
 {
     //public MdGetTablesQueryRequest(HttpRequest httpRequest)
     //{

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Database;
 using BackendCarcass.Rights;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.ManyToManyJoins;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
 using SystemTools.SystemToolsShared.Errors;

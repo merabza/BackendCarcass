@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BackendCarcass.DataSeeding.Models;
 using BackendCarcass.MasterData.Models;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.Users;
 using Microsoft.AspNetCore.Identity;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;

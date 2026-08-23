@@ -3,7 +3,7 @@ using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.MasterData.GetLookupTables;
 
-public sealed class MdGetLookupTablesRequestQuery : IQuery<MdGetLookupTablesQueryResponse>
+public sealed class MdGetLookupTablesRequestQuery : IQueryOmd<MdGetLookupTablesQueryResponse>
 {
     //StringValues tables
     //public MdGetLookupTablesQueryRequest(HttpRequest httpRequest)

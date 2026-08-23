@@ -17,7 +17,7 @@ public sealed class ChildrenTreeDataCommandHandler(
     IRightsRepository repo,
     IReturnValuesRepository rvRepo,
     ICurrentUser currentUser,
-    IDatabaseAbstraction databaseAbstraction) : ICommandHandler<ChildrenTreeDataRequestCommand, List<DataTypeModel>>
+    IDatabaseAbstraction databaseAbstraction) : ICommandHandlerOmd<ChildrenTreeDataRequestCommand, List<DataTypeModel>>
 {
     public async Task<OneOf<List<DataTypeModel>, ErrorOmd[]>> Handle(ChildrenTreeDataRequestCommand request,
         CancellationToken cancellationToken)

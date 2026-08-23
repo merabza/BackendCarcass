@@ -17,7 +17,7 @@ public sealed class HalfChecksCommandHandler(
     IRightsRepository repo,
     IReturnValuesRepository rvRepo,
     ICurrentUser currentUser,
-    IDatabaseAbstraction databaseAbstraction) : ICommandHandler<HalfChecksRequestCommand, List<TypeDataModel>>
+    IDatabaseAbstraction databaseAbstraction) : ICommandHandlerOmd<HalfChecksRequestCommand, List<TypeDataModel>>
 {
     public async Task<OneOf<List<TypeDataModel>, ErrorOmd[]>> Handle(HalfChecksRequestCommand request,
         CancellationToken cancellationToken)

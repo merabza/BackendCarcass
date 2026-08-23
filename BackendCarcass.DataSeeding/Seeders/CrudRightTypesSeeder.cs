@@ -2,7 +2,7 @@
 using System.Linq;
 using BackendCarcass.DataSeeding.Models;
 using BackendCarcass.Rights;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.CrudRightTypes;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;
 

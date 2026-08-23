@@ -8,7 +8,9 @@ using BackendCarcass.Mappers;
 using BackendCarcass.MasterData.Models;
 using BackendCarcass.Rights;
 using BackendCarcass.Rights.Models;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.DataTypes;
+using BackendCarcassDomain.Entities.ManyToManyJoins;
+using BackendCarcassDomain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

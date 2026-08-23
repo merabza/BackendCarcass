@@ -13,7 +13,7 @@ namespace BackendCarcass.Application.MasterData.GetLookupTables;
 public sealed class GetLookupTablesQueryHandler(
     IReturnValuesRepository rvRepo,
     IReturnValuesLoaderCreator returnValuesLoaderCreator)
-    : IQueryHandler<MdGetLookupTablesRequestQuery, MdGetLookupTablesQueryResponse>
+    : IQueryHandlerOmd<MdGetLookupTablesRequestQuery, MdGetLookupTablesQueryResponse>
 {
     public async Task<OneOf<MdGetLookupTablesQueryResponse, ErrorOmd[]>> Handle(MdGetLookupTablesRequestQuery request,
         CancellationToken cancellationToken)

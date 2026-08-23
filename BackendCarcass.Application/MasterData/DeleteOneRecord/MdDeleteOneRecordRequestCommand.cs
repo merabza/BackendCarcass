@@ -2,7 +2,7 @@
 
 namespace BackendCarcass.Application.MasterData.DeleteOneRecord;
 
-public sealed class MdDeleteOneRecordRequestCommand : ICommand
+public sealed class MdDeleteOneRecordRequestCommand : ICommandOmd
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public MdDeleteOneRecordRequestCommand(string tableName, int id)

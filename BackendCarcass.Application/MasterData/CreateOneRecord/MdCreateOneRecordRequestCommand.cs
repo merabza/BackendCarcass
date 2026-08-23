@@ -4,7 +4,7 @@ using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.MasterData.CreateOneRecord;
 
-public sealed class MdCreateOneRecordRequestCommand : ICommand<MasterDataCrudLoadedData>
+public sealed class MdCreateOneRecordRequestCommand : ICommandOmd<MasterDataCrudLoadedData>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public MdCreateOneRecordRequestCommand(string tableName, HttpRequest httpRequest)

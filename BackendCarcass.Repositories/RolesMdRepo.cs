@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BackendCarcass.MasterData.Models;
 using BackendCarcassDomain.Entities;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.Roles;
 using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;
 using Microsoft.AspNetCore.Identity;

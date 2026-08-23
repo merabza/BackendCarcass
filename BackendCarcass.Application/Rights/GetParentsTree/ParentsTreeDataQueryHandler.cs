@@ -18,7 +18,7 @@ public sealed class ParentsTreeDataQueryHandler(
     IRightsRepository repo,
     IReturnValuesRepository rvRepo,
     ICurrentUser currentUser,
-    IDatabaseAbstraction databaseAbstraction) : IQueryHandler<ParentsTreeDataRequestQuery, List<DataTypeModel>>
+    IDatabaseAbstraction databaseAbstraction) : IQueryHandlerOmd<ParentsTreeDataRequestQuery, List<DataTypeModel>>
 {
     public async Task<OneOf<List<DataTypeModel>, ErrorOmd[]>> Handle(ParentsTreeDataRequestQuery request,
         CancellationToken cancellationToken)

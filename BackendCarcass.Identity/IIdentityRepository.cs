@@ -2,7 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.MasterData.Models;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.ManyToManyJoins;
+using BackendCarcassDomain.Entities.Roles;
+using BackendCarcassDomain.Entities.Users;
 using Microsoft.AspNetCore.Identity;
 
 namespace BackendCarcass.Identity;

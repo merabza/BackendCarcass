@@ -3,7 +3,7 @@ using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.MasterData.GetOneRecord;
 
-public sealed class MdGetOneRecordRequestQuery : IQuery<MasterDataCrudLoadedData>
+public sealed class MdGetOneRecordRequestQuery : IQueryOmd<MasterDataCrudLoadedData>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public MdGetOneRecordRequestQuery(string tableName, int id)

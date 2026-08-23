@@ -3,4 +3,4 @@ using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.DataTypes.GetDataTypesList;
 
-public sealed class DataTypesRequestQuery : IQuery<DataTypesResponse[]>;
+public sealed class DataTypesRequestQuery : IQueryOmd<DataTypesResponse[]>;

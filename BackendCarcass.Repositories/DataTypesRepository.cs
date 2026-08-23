@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using BackendCarcass.Database;
 using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.Models;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.CrudRightTypes;
+using BackendCarcassDomain.Entities.DataTypes;
+using BackendCarcassDomain.Entities.MenuItems;
 using Microsoft.EntityFrameworkCore;
 using SystemTools.SystemToolsShared;
 
@@ -31,7 +33,7 @@ public sealed class DataTypesRepository : IDataTypesRepository
                 join ct in _context.DataTypes on mmj.CtId equals ct.DtId
                 join p in _context.Menu on mmj.PKey equals p.MenKey
                 join c in _context.CrudRightTypes on mmj.CKey equals c.CrtKey
-                where pt.DtTable == _databaseAbstraction.GetTableName<MenuItm>() &&
+                where pt.DtTable == _databaseAbstraction.GetTableName<MenuItem>() &&
                       ct.DtTable == _databaseAbstraction.GetTableName<CrudRightType>()
                 select new MenuToCrudTypeDomModel(mmj.MmjId, mmj.PKey + "." + mmj.CKey, p.MenName + "." + c.CrtName))
             .ToListAsync(cancellationToken);

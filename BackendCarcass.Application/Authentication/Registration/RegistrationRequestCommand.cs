@@ -3,7 +3,7 @@ using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.Authentication.Registration;
 
-public sealed class RegistrationRequestCommand : ICommand<LoginResponse>
+public sealed class RegistrationRequestCommand : ICommandOmd<LoginResponse>
 {
     public string? Email { get; set; }
     public string? FirstName { get; set; }

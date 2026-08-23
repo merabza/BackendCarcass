@@ -1,10 +1,10 @@
-﻿using BackendCarcassDomain.Entities.Models;
+﻿using BackendCarcassDomain.Entities.MenuItems;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendCarcass.Database.Configuration;
 
-public sealed class MenuItmConfiguration : IEntityTypeConfiguration<MenuItm>
+public sealed class MenuItmConfiguration : IEntityTypeConfiguration<MenuItem>
 {
     private const int MenIconNameMaxLength = 50;
     private const int MenKeyMaxLength = 72;
@@ -12,7 +12,7 @@ public sealed class MenuItmConfiguration : IEntityTypeConfiguration<MenuItm>
     private const int MenNameMaxLength = 200;
     private const int MenValueMaxLength = 72;
 
-    public void Configure(EntityTypeBuilder<MenuItm> builder)
+    public void Configure(EntityTypeBuilder<MenuItem> builder)
     {
         builder.HasKey(e => e.MenId);
         builder.ToTable("Menu");

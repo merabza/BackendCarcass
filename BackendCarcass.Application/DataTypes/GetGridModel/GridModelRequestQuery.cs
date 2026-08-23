@@ -2,7 +2,7 @@
 
 namespace BackendCarcass.Application.DataTypes.GetGridModel;
 
-public sealed class GridModelRequestQuery : IQuery<string>
+public sealed class GridModelRequestQuery : IQueryOmd<string>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public GridModelRequestQuery(string gridName)

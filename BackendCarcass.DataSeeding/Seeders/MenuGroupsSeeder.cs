@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BackendCarcass.DataSeeding.Models;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.MenuGroups;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;
 

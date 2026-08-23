@@ -12,7 +12,7 @@ namespace BackendCarcass.Application.DataTypes.GetMultipleGridModels;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MultipleGridModelsQueryHandler(IMenuRightsRepository repository)
-    : IQueryHandler<MultipleGridModelsRequestQuery, Dictionary<string, string>>
+    : IQueryHandlerOmd<MultipleGridModelsRequestQuery, Dictionary<string, string>>
 {
     public async Task<OneOf<Dictionary<string, string>, ErrorOmd[]>> Handle(MultipleGridModelsRequestQuery request,
         CancellationToken cancellationToken)

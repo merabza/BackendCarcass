@@ -5,7 +5,13 @@ using BackendCarcass.DataSeeding.Comparers;
 using BackendCarcass.DataSeeding.Models;
 using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.CellModels;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.CrudRightTypes;
+using BackendCarcassDomain.Entities.DataTypes;
+using BackendCarcassDomain.Entities.ManyToManyJoins;
+using BackendCarcassDomain.Entities.MenuGroups;
+using BackendCarcassDomain.Entities.MenuItems;
+using BackendCarcassDomain.Entities.Roles;
+using BackendCarcassDomain.Entities.Users;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;
 
@@ -39,7 +45,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         //                                          ECarcassDataTypeKeys.DataTypeToCrudType.ToDtKey(), dataTypeDKey,
         //                                          ECarcassDataTypeKeys.CrudRightType
         //                                              .ToDtKey())) //rol admin DataCrudRights all
-        //                                      //&& Check(GetThirdPartRights(MenuToCrudTypeModel.DKey, MenuItm.DKey, CrudRightType.DKey)) //rol admin MenuCrudRights all
+        //                                      //&& Check(GetThirdPartRights(MenuToCrudTypeModel.DKey, MenuItem.DKey, CrudRightType.DKey)) //rol admin MenuCrudRights all
         //                                      && Check(GetAdminRoleToDataTypes()) //rol admin DataTypes all
         //                                      && Check(GetAdminRoleToMenuGroups()) //rol admin MenuGroups all
         //                                      && Check(GetAdminRoleToMenuItems()) //rol admin MenuItems all
@@ -110,7 +116,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
         string userTableName = DatabaseAbstraction.GetTableName<User>();
         string roleTableName = DatabaseAbstraction.GetTableName<Role>();
         string menuGroupTableName = DatabaseAbstraction.GetTableName<MenuGroup>();
-        string menuTableName = DatabaseAbstraction.GetTableName<MenuItm>();
+        string menuTableName = DatabaseAbstraction.GetTableName<MenuItem>();
         string crudRightTypeTableName = DatabaseAbstraction.GetTableName<CrudRightType>();
 
         var tempData = DataSeederTempData.Instance;
@@ -209,7 +215,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
             //Menu by CrudRightTypes
 
-            .. from mnu in DataSeederRepo.GetAll<MenuItm>().Where(w => w.MenLinkKey != "mdList")
+            .. from mnu in DataSeederRepo.GetAll<MenuItem>().Where(w => w.MenLinkKey != "mdList")
             from crudRightType in
                 DataSeederRepo.GetAll<CrudRightType>() //.Where(w=>w.CrtKey != nameof(ECrudOperationType.Confirm))
             select new ManyToManyJoin
@@ -316,10 +322,10 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
     {
         var tempData = DataSeederTempData.Instance;
 
-        int dataTypeMenu = tempData.GetIntIdByKey<DataType>(DatabaseAbstraction.GetTableName<MenuItm>());
+        int dataTypeMenu = tempData.GetIntIdByKey<DataType>(DatabaseAbstraction.GetTableName<MenuItem>());
         int dataTypeRol = tempData.GetIntIdByKey<DataType>(DatabaseAbstraction.GetTableName<Role>());
 
-        List<MenuItm> existingMenuItems = DataSeederRepo.GetAll<MenuItm>();
+        List<MenuItem> existingMenuItems = DataSeederRepo.GetAll<MenuItem>();
 
         return
         [
@@ -333,14 +339,14 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
     private List<ManyToManyJoin> GetMenuToDataTypes()
     {
         var tempData = DataSeederTempData.Instance;
-        int dtMen = tempData.GetIntIdByKey<DataType>(DatabaseAbstraction.GetTableName<MenuItm>());
+        int dtMen = tempData.GetIntIdByKey<DataType>(DatabaseAbstraction.GetTableName<MenuItem>());
         int dtDt = tempData.GetIntIdByKey<DataType>(DatabaseAbstraction.GetTableName<DataType>());
 
         var res = new List<ManyToManyJoin>();
-        List<MenuItm> existingMenu = DataSeederRepo.GetAll<MenuItm>();
+        List<MenuItem> existingMenu = DataSeederRepo.GetAll<MenuItem>();
         List<DataType> existingDataTypes = DataSeederRepo.GetAll<DataType>();
 
-        foreach (MenuItm miItm in existingMenu.Where(w =>
+        foreach (MenuItem miItm in existingMenu.Where(w =>
                      w.MenLinkKey == "mdList" && !string.IsNullOrWhiteSpace(w.MenValue)))
         {
             DataType? dataType = existingDataTypes.SingleOrDefault(s => s.DtTable == miItm.MenValue);
@@ -387,7 +393,7 @@ public /*open*/ class ManyToManyJoinsSeeder : DataSeeder<ManyToManyJoin, ManyToM
 
     private List<ManyToManyJoin> GetMenuToDataTypesNeedLess()
     {
-        string menuDKey = DatabaseAbstraction.GetTableName<MenuItm>();
+        string menuDKey = DatabaseAbstraction.GetTableName<MenuItem>();
         string dataTypeDKey = DatabaseAbstraction.GetTableName<DataType>();
 
         var tempData = DataSeederTempData.Instance;

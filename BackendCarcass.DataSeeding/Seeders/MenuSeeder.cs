@@ -1,14 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BackendCarcass.DataSeeding.Models;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.CrudRightTypes;
+using BackendCarcassDomain.Entities.DataTypes;
+using BackendCarcassDomain.Entities.MenuGroups;
+using BackendCarcassDomain.Entities.MenuItems;
+using BackendCarcassDomain.Entities.Roles;
+using BackendCarcassDomain.Entities.Users;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;
 
 namespace BackendCarcass.DataSeeding.Seeders;
 
 public /*open*/
-    class MenuSeeder : DataSeeder<MenuItm, MenuItmSeederModel>
+    class MenuSeeder : DataSeeder<MenuItem, MenuItmSeederModel>
 {
     protected readonly IDatabaseAbstraction DatabaseAbstraction;
 
@@ -20,18 +25,18 @@ public /*open*/
         DatabaseAbstraction = databaseAbstraction;
     }
 
-    public override bool AdditionalCheck(List<MenuItmSeederModel> jsonData, List<MenuItm> savedData)
+    public override bool AdditionalCheck(List<MenuItmSeederModel> jsonData, List<MenuItem> savedData)
     {
-        DataSeederTempData.Instance.SaveIntIdKeys<MenuItm>(savedData.ToDictionary(k => k.Key, v => v.Id));
+        DataSeederTempData.Instance.SaveIntIdKeys<MenuItem>(savedData.ToDictionary(k => k.Key, v => v.Id));
         return true;
     }
 
-    public override List<MenuItm> Adapt(List<MenuItmSeederModel> menuSeedData)
+    public override List<MenuItem> Adapt(List<MenuItmSeederModel> menuSeedData)
     {
         var tempData = DataSeederTempData.Instance;
         return
         [
-            .. menuSeedData.Select(s => new MenuItm
+            .. menuSeedData.Select(s => new MenuItem
             {
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(s.MenGroupIdMengKey),
                 MenIconName = s.MenIconName,
@@ -44,12 +49,12 @@ public /*open*/
         ];
     }
 
-    public override List<MenuItm> CreateListByRules()
+    public override List<MenuItem> CreateListByRules()
     {
         var tempData = DataSeederTempData.Instance;
         const string mdList = nameof(mdList);
 
-        var menuItems = new MenuItm[]
+        var menuItems = new MenuItem[]
         {
             //carcass master data
             new()
@@ -74,7 +79,7 @@ public /*open*/
             {
                 MenKey = "MenuEditor",
                 MenName = "MenuEditor - მენიუს რედაქტორი",
-                MenValue = DatabaseAbstraction.GetTableName<MenuItm>(),
+                MenValue = DatabaseAbstraction.GetTableName<MenuItem>(),
                 MenGroupId = tempData.GetIntIdByKey<MenuGroup>(MenuGroupsSeeder.MasterData),
                 SortId = 4,
                 MenLinkKey = mdList

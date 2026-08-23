@@ -14,7 +14,7 @@ namespace BackendCarcass.Application.UserRights.DeleteCurrentUser;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class DeleteCurrentUserCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
-    : ICommandHandler<DeleteCurrentUserRequestCommand>
+    : ICommandHandlerOmd<DeleteCurrentUserRequestCommand>
 {
     public async Task<OneOf<Unit, ErrorOmd[]>> Handle(DeleteCurrentUserRequestCommand request,
         CancellationToken cancellationToken)

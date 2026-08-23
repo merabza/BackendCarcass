@@ -5,7 +5,7 @@ using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.Rights.GetParentsTree;
 
-public sealed class ParentsTreeDataRequestQuery : IQuery<List<DataTypeModel>>
+public sealed class ParentsTreeDataRequestQuery : IQueryOmd<List<DataTypeModel>>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public ParentsTreeDataRequestQuery(ERightsEditorViewStyle viewStyle)

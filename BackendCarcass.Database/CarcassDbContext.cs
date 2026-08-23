@@ -1,4 +1,11 @@
-﻿using BackendCarcassDomain.Entities.Models;
+﻿using BackendCarcassDomain.Entities.AppClaims;
+using BackendCarcassDomain.Entities.CrudRightTypes;
+using BackendCarcassDomain.Entities.DataTypes;
+using BackendCarcassDomain.Entities.ManyToManyJoins;
+using BackendCarcassDomain.Entities.MenuGroups;
+using BackendCarcassDomain.Entities.MenuItems;
+using BackendCarcassDomain.Entities.Roles;
+using BackendCarcassDomain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackendCarcass.Database;
@@ -22,7 +29,7 @@ public /*open*/ class CarcassDbContext : DbContext
     public DbSet<CrudRightType> CrudRightTypes => Set<CrudRightType>();
     public DbSet<ManyToManyJoin> ManyToManyJoins => Set<ManyToManyJoin>();
     public DbSet<MenuGroup> MenuGroups => Set<MenuGroup>();
-    public DbSet<MenuItm> Menu => Set<MenuItm>();
+    public DbSet<MenuItem> Menu => Set<MenuItem>();
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<User> Users => Set<User>();
 

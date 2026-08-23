@@ -2,7 +2,7 @@
 
 namespace BackendCarcass.Application.UserRights.ChangeProfile;
 
-public sealed class ChangeProfileRequestCommand : ICommand
+public sealed class ChangeProfileRequestCommand : ICommandOmd
 {
     public int Userid { get; set; }
     public string? UserName { get; set; }

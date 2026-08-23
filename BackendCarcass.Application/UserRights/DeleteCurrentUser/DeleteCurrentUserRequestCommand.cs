@@ -2,7 +2,7 @@
 
 namespace BackendCarcass.Application.UserRights.DeleteCurrentUser;
 
-public sealed class DeleteCurrentUserRequestCommand : ICommand
+public sealed class DeleteCurrentUserRequestCommand : ICommandOmd
 {
     public string? UserName { get; set; }
 }

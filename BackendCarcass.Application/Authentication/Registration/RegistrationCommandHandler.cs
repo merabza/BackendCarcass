@@ -12,7 +12,7 @@ namespace BackendCarcass.Application.Authentication.Registration;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
-    ICommandHandler<RegistrationRequestCommand, LoginResponse>
+    ICommandHandlerOmd<RegistrationRequestCommand, LoginResponse>
 {
     private readonly RegistrationService _registrationService;
 

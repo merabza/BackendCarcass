@@ -3,7 +3,7 @@ using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.MasterData.UpdateOneRecord;
 
-public sealed class MdUpdateOneRecordRequestCommand : ICommand
+public sealed class MdUpdateOneRecordRequestCommand : ICommandOmd
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public MdUpdateOneRecordRequestCommand(string tableName, HttpRequest httpRequest, int id)

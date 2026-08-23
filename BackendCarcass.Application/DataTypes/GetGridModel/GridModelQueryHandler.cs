@@ -10,7 +10,7 @@ namespace BackendCarcass.Application.DataTypes.GetGridModel;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class GridModelQueryHandler(IMenuRightsRepository repository)
-    : IQueryHandler<GridModelRequestQuery, string>
+    : IQueryHandlerOmd<GridModelRequestQuery, string>
 {
     public async Task<OneOf<string, ErrorOmd[]>> Handle(GridModelRequestQuery request,
         CancellationToken cancellationToken)

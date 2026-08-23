@@ -14,7 +14,7 @@ namespace BackendCarcass.Application.UserRights.ChangeProfile;
 // ReSharper disable once UnusedType.Global
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class ChangeProfileCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
-    : ICommandHandler<ChangeProfileRequestCommand>
+    : ICommandHandlerOmd<ChangeProfileRequestCommand>
 {
     public async Task<OneOf<Unit, ErrorOmd[]>> Handle(ChangeProfileRequestCommand request,
         CancellationToken cancellationToken)

@@ -11,7 +11,7 @@ namespace BackendCarcass.Application.MasterData.GetMultipleTablesRows;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class GetTablesQueryHandler(IMasterDataLoaderCreator masterDataLoaderCreator)
-    : IQueryHandler<MdGetTablesRequestQuery, MdGetTablesQueryResponse>
+    : IQueryHandlerOmd<MdGetTablesRequestQuery, MdGetTablesQueryResponse>
 {
     public async Task<OneOf<MdGetTablesQueryResponse, ErrorOmd[]>> Handle(MdGetTablesRequestQuery request,
         CancellationToken cancellationToken)

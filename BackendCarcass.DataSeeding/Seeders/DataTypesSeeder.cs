@@ -4,7 +4,13 @@ using System.Linq;
 using BackendCarcass.Database.Factories;
 using BackendCarcass.DataSeeding.Models;
 using BackendCarcass.MasterData.CellModels;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.AppClaims;
+using BackendCarcassDomain.Entities.CrudRightTypes;
+using BackendCarcassDomain.Entities.DataTypes;
+using BackendCarcassDomain.Entities.MenuGroups;
+using BackendCarcassDomain.Entities.MenuItems;
+using BackendCarcassDomain.Entities.Roles;
+using BackendCarcassDomain.Entities.Users;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;
 
@@ -119,7 +125,7 @@ public /*open*/
 
         var dtdt = new Tuple<int, int>[]
         {
-            new(tempData.GetIntIdByKey<DataType>(DatabaseAbstraction.GetTableName<MenuItm>()),
+            new(tempData.GetIntIdByKey<DataType>(DatabaseAbstraction.GetTableName<MenuItem>()),
                 tempData.GetIntIdByKey<DataType>(DatabaseAbstraction.GetTableName<MenuGroup>()))
         };
 
@@ -180,15 +186,15 @@ public /*open*/
                 nameof(MenuGroup.MengKey).UnCapitalize(), null, nameof(MenuGroup.MengName).UnCapitalize(), null,
                 GetSortIdCell(), GetTextBoxCell(nameof(MenuGroup.MengIconName).UnCapitalize(), "ხატულა")),
 
-            //MenuItm
-            DataTypeFactory.Create("მენიუ", "მენიუ", "მენიუს", DatabaseAbstraction.GetTableName<MenuItm>(),
-                nameof(MenuItm.MenId).UnCapitalize(), null, nameof(MenuItm.MenKey).UnCapitalize(), null,
-                nameof(MenuItm.MenName).UnCapitalize(), null, GetSortIdCell(),
-                GetTextBoxCell(nameof(MenuItm.MenValue).UnCapitalize(), "პარამეტრი"),
-                GetMdComboCell(nameof(MenuItm.MenGroupId).UnCapitalize(), "ჯგუფი",
+            //MenuItem
+            DataTypeFactory.Create("მენიუ", "მენიუ", "მენიუს", DatabaseAbstraction.GetTableName<MenuItem>(),
+                nameof(MenuItem.MenId).UnCapitalize(), null, nameof(MenuItem.MenKey).UnCapitalize(), null,
+                nameof(MenuItem.MenName).UnCapitalize(), null, GetSortIdCell(),
+                GetTextBoxCell(nameof(MenuItem.MenValue).UnCapitalize(), "პარამეტრი"),
+                GetMdComboCell(nameof(MenuItem.MenGroupId).UnCapitalize(), "ჯგუფი",
                     DatabaseAbstraction.GetTableName<MenuGroup>()),
-                GetTextBoxCell(nameof(MenuItm.MenLinkKey).UnCapitalize(), "ბმული"),
-                GetTextBoxCell(nameof(MenuItm.MenIconName).UnCapitalize(), "ხატულა")),
+                GetTextBoxCell(nameof(MenuItem.MenLinkKey).UnCapitalize(), "ბმული"),
+                GetTextBoxCell(nameof(MenuItem.MenIconName).UnCapitalize(), "ხატულა")),
 
             //Role
             DataTypeFactory.Create("როლები", "როლი", "როლის", DatabaseAbstraction.GetTableName<Role>(),

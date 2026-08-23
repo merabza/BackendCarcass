@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 using BackendCarcass.Database;
 using BackendCarcass.Repositories.Models;
 using BackendCarcass.Rights;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.CrudRightTypes;
+using BackendCarcassDomain.Entities.DataTypes;
+using BackendCarcassDomain.Entities.MenuGroups;
+using BackendCarcassDomain.Entities.MenuItems;
 using BackendCarcassDomain.Entities.QueryModels;
+using BackendCarcassDomain.Entities.Roles;
+using BackendCarcassDomain.Entities.Users;
 using BackendCarcassShared.Contracts.V1.Responses;
 using Microsoft.EntityFrameworkCore;
 using SystemTools.SystemToolsShared;
@@ -97,7 +102,7 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
         CancellationToken cancellationToken = default)
     {
         int menuGroupsDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<MenuGroup>(), cancellationToken);
-        int menuDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<MenuItm>(), cancellationToken);
+        int menuDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<MenuItem>(), cancellationToken);
         int roleDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
         int userDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<User>(), cancellationToken);
 
@@ -118,7 +123,7 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
         CancellationToken cancellationToken = default)
     {
         int menuGroupsDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<MenuGroup>(), cancellationToken);
-        int menuDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<MenuItm>(), cancellationToken);
+        int menuDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<MenuItem>(), cancellationToken);
         int roleDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
         int userDtId = await DataTypeIdByKey(_databaseAbstraction.GetTableName<User>(), cancellationToken);
 

@@ -3,4 +3,4 @@ using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.UserRights.GetMainMenu;
 
-public sealed class MainMenuRequestQuery : IQuery<MainMenuModel>;
+public sealed class MainMenuRequestQuery : IQueryOmd<MainMenuModel>;

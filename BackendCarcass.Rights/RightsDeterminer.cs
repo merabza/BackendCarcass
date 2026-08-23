@@ -3,7 +3,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Identity;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.AppClaims;
+using BackendCarcassDomain.Entities.CrudRightTypes;
+using BackendCarcassDomain.Entities.DataTypes;
+using BackendCarcassDomain.Entities.MenuGroups;
+using BackendCarcassDomain.Entities.MenuItems;
+using BackendCarcassDomain.Entities.Roles;
 using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;
 using Microsoft.AspNetCore.Http;
@@ -128,7 +133,8 @@ public sealed class RightsDeterminer
     {
         int? menuGroupsDtId =
             await _repo.GetDataTypeIdByKey(_databaseAbstraction.GetTableName<MenuGroup>(), cancellationToken);
-        int? menuDtId = await _repo.GetDataTypeIdByKey(_databaseAbstraction.GetTableName<MenuItm>(), cancellationToken);
+        int? menuDtId =
+            await _repo.GetDataTypeIdByKey(_databaseAbstraction.GetTableName<MenuItem>(), cancellationToken);
         int? roleDtId = await _repo.GetDataTypeIdByKey(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
 
         if (menuGroupsDtId is null)
@@ -242,7 +248,8 @@ public sealed class RightsDeterminer
         int? roleDtId = await _repo.GetDataTypeIdByKey(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
         int? dataTypeDtId =
             await _repo.GetDataTypeIdByKey(_databaseAbstraction.GetTableName<DataType>(), cancellationToken);
-        int? menuDtId = await _repo.GetDataTypeIdByKey(_databaseAbstraction.GetTableName<MenuItm>(), cancellationToken);
+        int? menuDtId =
+            await _repo.GetDataTypeIdByKey(_databaseAbstraction.GetTableName<MenuItem>(), cancellationToken);
 
         if (roleDtId is null)
         {

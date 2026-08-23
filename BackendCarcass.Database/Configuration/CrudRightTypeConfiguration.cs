@@ -1,4 +1,4 @@
-﻿using BackendCarcassDomain.Entities.Models;
+﻿using BackendCarcassDomain.Entities.CrudRightTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -16,7 +16,7 @@ namespace BackendCarcass.Application.MasterData.DeleteOneRecord;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MdDeleteOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    : ICommandHandler<MdDeleteOneRecordRequestCommand>
+    : ICommandHandlerOmd<MdDeleteOneRecordRequestCommand>
 {
     public async Task<OneOf<Unit, ErrorOmd[]>> Handle(MdDeleteOneRecordRequestCommand request,
         CancellationToken cancellationToken)

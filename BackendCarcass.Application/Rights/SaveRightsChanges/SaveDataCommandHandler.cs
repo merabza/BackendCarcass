@@ -17,7 +17,7 @@ public sealed class SaveDataCommandHandler(
     IRightsRepository repo,
     IUnitOfWork unitOfWork,
     ICurrentUser currentUser,
-    IDatabaseAbstraction databaseAbstraction) : ICommandHandler<SaveDataRequestCommand, bool>
+    IDatabaseAbstraction databaseAbstraction) : ICommandHandlerOmd<SaveDataRequestCommand, bool>
 {
     public async Task<OneOf<bool, ErrorOmd[]>> Handle(SaveDataRequestCommand request,
         CancellationToken cancellationToken)

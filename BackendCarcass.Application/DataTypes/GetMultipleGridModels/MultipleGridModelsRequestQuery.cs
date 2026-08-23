@@ -4,7 +4,7 @@ using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.DataTypes.GetMultipleGridModels;
 
-public sealed class MultipleGridModelsRequestQuery : IQuery<Dictionary<string, string>>
+public sealed class MultipleGridModelsRequestQuery : IQueryOmd<Dictionary<string, string>>
 {
     //public MultipleGridModelsQueryRequest(HttpRequest httpRequest)
     //{

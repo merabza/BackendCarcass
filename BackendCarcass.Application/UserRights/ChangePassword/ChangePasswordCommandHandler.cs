@@ -13,7 +13,7 @@ namespace BackendCarcass.Application.UserRights.ChangePassword;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class ChangePasswordCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
-    : ICommandHandler<ChangePasswordRequestCommand>
+    : ICommandHandlerOmd<ChangePasswordRequestCommand>
 {
     public async Task<OneOf<Unit, ErrorOmd[]>> Handle(ChangePasswordRequestCommand request,
         CancellationToken cancellationToken)

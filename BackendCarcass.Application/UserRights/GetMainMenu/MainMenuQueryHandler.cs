@@ -11,7 +11,7 @@ namespace BackendCarcass.Application.UserRights.GetMainMenu;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MainMenuQueryHandler(IMenuRightsRepository mdRepo, ICurrentUser currentUser)
-    : IQueryHandler<MainMenuRequestQuery, MainMenuModel>
+    : IQueryHandlerOmd<MainMenuRequestQuery, MainMenuModel>
 {
     public async Task<OneOf<MainMenuModel, ErrorOmd[]>> Handle(MainMenuRequestQuery request,
         CancellationToken cancellationToken)

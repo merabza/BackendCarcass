@@ -5,7 +5,7 @@ using SystemTools.MediatRMessagingAbstractions;
 
 namespace BackendCarcass.Application.Rights.GetChildrenTree;
 
-public sealed class ChildrenTreeDataRequestCommand : ICommand<List<DataTypeModel>>
+public sealed class ChildrenTreeDataRequestCommand : ICommandOmd<List<DataTypeModel>>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public ChildrenTreeDataRequestCommand(string dataTypeKey, ERightsEditorViewStyle viewStyle)

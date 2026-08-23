@@ -3,7 +3,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Database;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.AppClaims;
+using BackendCarcassDomain.Entities.Roles;
+using BackendCarcassDomain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using SystemTools.SystemToolsShared;
 

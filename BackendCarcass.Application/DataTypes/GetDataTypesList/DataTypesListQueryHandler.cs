@@ -12,7 +12,7 @@ namespace BackendCarcass.Application.DataTypes.GetDataTypesList;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class DataTypesListQueryHandler(IMenuRightsRepository repository, ICurrentUser currentUser)
-    : LoginCommandHandlerBase, IQueryHandler<DataTypesRequestQuery, DataTypesResponse[]>
+    : LoginCommandHandlerBase, IQueryHandlerOmd<DataTypesRequestQuery, DataTypesResponse[]>
 {
     public async Task<OneOf<DataTypesResponse[], ErrorOmd[]>> Handle(DataTypesRequestQuery request,
         CancellationToken cancellationToken)

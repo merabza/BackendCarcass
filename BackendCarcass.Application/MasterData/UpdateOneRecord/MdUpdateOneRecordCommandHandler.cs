@@ -18,7 +18,7 @@ namespace BackendCarcass.Application.MasterData.UpdateOneRecord;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MdUpdateOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    : ICommandHandler<MdUpdateOneRecordRequestCommand>
+    : ICommandHandlerOmd<MdUpdateOneRecordRequestCommand>
 {
     public async Task<OneOf<Unit, ErrorOmd[]>> Handle(MdUpdateOneRecordRequestCommand request,
         CancellationToken cancellationToken)

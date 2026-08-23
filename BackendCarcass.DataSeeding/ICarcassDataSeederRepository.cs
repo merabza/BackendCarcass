@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using BackendCarcassDomain.Entities.Models;
+using BackendCarcassDomain.Entities.ManyToManyJoins;
 
 namespace BackendCarcass.DataSeeding;
 

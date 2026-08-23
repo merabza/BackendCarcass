@@ -11,7 +11,7 @@ using SystemTools.SystemToolsShared.Errors;
 namespace BackendCarcass.Application.MasterData.GetOneRecord;
 
 public sealed class MdGetOneRecordQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    : IQueryHandler<MdGetOneRecordRequestQuery, MasterDataCrudLoadedData>
+    : IQueryHandlerOmd<MdGetOneRecordRequestQuery, MasterDataCrudLoadedData>
 {
     public async Task<OneOf<MasterDataCrudLoadedData, ErrorOmd[]>> Handle(MdGetOneRecordRequestQuery request,
         CancellationToken cancellationToken)
