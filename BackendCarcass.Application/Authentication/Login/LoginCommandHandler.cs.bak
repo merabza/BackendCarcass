@@ -12,7 +12,7 @@ using SystemTools.SystemToolsShared.Errors;
 namespace BackendCarcass.Application.Authentication.Login;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class LoginCommandHandler : LoginCommandHandlerBase, ICommandHandler<LoginRequestCommand, LoginResponse>
+public sealed class LoginCommandHandler : LoginCommandHandlerBase, ICommandHandlerOmd<LoginRequestCommand, LoginResponse>
 {
     private readonly LoginService _loginService;
 

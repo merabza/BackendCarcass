@@ -14,7 +14,7 @@ namespace BackendCarcass.Application.Rights.GetChildrenTree;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class
-    ChildrenTreeDataCommandHandler : ICommandHandler<ChildrenTreeDataRequestCommand, List<DataTypeModel>>
+    ChildrenTreeDataCommandHandler : ICommandHandlerOmd<ChildrenTreeDataRequestCommand, List<DataTypeModel>>
 {
     private readonly ICurrentUser _currentUser;
     private readonly IDatabaseAbstraction _databaseAbstraction;

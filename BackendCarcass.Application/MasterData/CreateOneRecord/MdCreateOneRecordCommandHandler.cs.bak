@@ -15,7 +15,7 @@ namespace BackendCarcass.Application.MasterData.CreateOneRecord;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class
-    MdCreateOneRecordCommandHandler : ICommandHandler<MdCreateOneRecordRequestCommand, MasterDataCrudLoadedData>
+    MdCreateOneRecordCommandHandler : ICommandHandlerOmd<MdCreateOneRecordRequestCommand, MasterDataCrudLoadedData>
 {
     private readonly IMasterDataLoaderCreator _masterDataLoaderCrudCreator;
 
