@@ -5,7 +5,7 @@ using BackendCarcass.Rights;
 using BackendCarcassShared.Contracts.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using OneOf;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -33,14 +33,14 @@ public /*open*/ class UserClaimRightsFilter : IEndpointFilter
     {
         //შემოწმდეს აქვს თუ არა მიმდინარე მომხმარებელს _claimName-ის შესაბამისი სპეციალური უფლება
         var rightsDeterminer = new RightsDeterminer(_repo, _logger, _currentUser, _databaseAbstraction);
-        OneOf<bool, ErrorOmd[]> result =
+        Result<bool> result =
             await rightsDeterminer.CheckUserRightToClaim(_claimName, CancellationToken.None);
-        if (result.IsT1)
+        if (result.IsFailure)
         {
-            return Results.BadRequest(result.AsT1);
+            return Results.BadRequest(result.Error.ToErrorOmdArray());
         }
 
-        if (!result.AsT0)
+        if (!result.Value)
             //თუ არა დაბრუნდეს შეცდომა
         {
             return Results.BadRequest(new[] { RightsApiErrors.InsufficientRights });

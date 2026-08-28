@@ -2,12 +2,10 @@
 using System.Threading.Tasks;
 using BackendCarcass.Identity;
 using BackendCarcass.Rights;
-using LanguageExt;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Api.Filters;
 
@@ -35,12 +33,11 @@ public /*open*/ class UserTableNameRightsFilter : IEndpointFilter
         foreach (string tableKey in _tableKeys)
         {
             var rightsDeterminer = new RightsDeterminer(_repo, _logger, _currentUser, _databaseAbstraction);
-            Option<BadRequest<ErrorOmd[]>> checkTableRightsResult =
-                await rightsDeterminer.CheckTableRights(_currentUser.Name, context.HttpContext.Request.Method,
-                    new TableKeyName { TableName = tableKey }, CancellationToken.None);
-            if (checkTableRightsResult.IsSome)
+            Result checkTableRightsResult = await rightsDeterminer.CheckTableRights(_currentUser.Name,
+                context.HttpContext.Request.Method, new TableKeyName { TableName = tableKey }, CancellationToken.None);
+            if (checkTableRightsResult.IsFailure)
             {
-                return checkTableRightsResult;
+                return Result.Failure(checkTableRightsResult.Error);
             }
         }
 

@@ -2,8 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.MasterData.Models;
-using OneOf;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
 
@@ -21,7 +20,7 @@ public sealed class MasterDataReturnValuesLoader : IReturnValuesLoader
         _rvRepo = rvRepo;
     }
 
-    public async Task<OneOf<IEnumerable<SrvModel>, ErrorOmd[]>> GetSimpleReturnValues(
+    public async Task<Result<IEnumerable<SrvModel>>> GetSimpleReturnValues(
         CancellationToken cancellationToken = default)
     {
         return await _rvRepo.GetSimpleReturnValues(_dt, cancellationToken);

@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassDomain.Entities;
-using OneOf;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.MasterData;
 
@@ -20,11 +19,11 @@ public sealed class MasterDataLoader
         _tableNames = tableNames;
     }
 
-    public async ValueTask<OneOf<Dictionary<string, IEnumerable<dynamic>>, ErrorOmd[]>> Run(
+    public async ValueTask<Result<Dictionary<string, IEnumerable<dynamic>>>> Run(
         CancellationToken cancellationToken = default)
     {
         var resultList = new Dictionary<string, IEnumerable<dynamic>>();
-        var errors = new List<ErrorOmd>();
+        var errors = new List<Error>();
 
         //ჩაიტვირთოს ყველა ცხრილი სათითაოდ
         foreach (string tableName in _tableNames)
@@ -34,29 +33,30 @@ public sealed class MasterDataLoader
                 continue;
             }
 
-            OneOf<IMasterDataLoader, ErrorOmd[]> createMasterDataLoaderResult =
+            Result<IMasterDataLoader> createMasterDataLoaderResult =
                 _masterDataLoaderCreator.CreateMasterDataLoader(tableName);
-            if (createMasterDataLoaderResult.IsT1)
+            if (createMasterDataLoaderResult.IsFailure)
             {
-                return createMasterDataLoaderResult.AsT1;
+                return Result.Failure<Dictionary<string, IEnumerable<dynamic>>>(createMasterDataLoaderResult.Error);
             }
 
-            IMasterDataLoader? loader = createMasterDataLoaderResult.AsT0;
-            OneOf<IEnumerable<IDataType>, ErrorOmd[]> tableResult = await loader.GetAllRecords(cancellationToken);
-            if (tableResult.IsT1)
+            IMasterDataLoader loader = createMasterDataLoaderResult.Value;
+            Result<IEnumerable<IDataType>> tableResult = await loader.GetAllRecords(cancellationToken);
+            if (tableResult.IsFailure)
             {
-                errors.AddRange(tableResult.AsT1);
+                errors.Add(tableResult.Error);
             }
             else
             {
-                IEnumerable<dynamic> res = tableResult.AsT0.Select(s => s.EditFields());
+                IEnumerable<dynamic> res = tableResult.Value.Select(s => s.EditFields());
                 resultList.Add(tableName, res);
             }
         }
 
         if (errors.Count > 0)
         {
-            return errors.ToArray();
+            return Result.Failure<Dictionary<string, IEnumerable<dynamic>>>(
+                errors.Count == 1 ? errors[0] : new ValidationError([.. errors]));
         }
 
         return resultList;

@@ -1,11 +1,10 @@
-﻿using System.Linq;
+using System.Linq;
 using BackendCarcassDomain.Entities;
-using OneOf;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Repositories;
 
 public interface IMdLoader
 {
-    OneOf<IQueryable<IDataType>, ErrorOmd[]> Load();
+    Result<IQueryable<IDataType>> Load();
 }

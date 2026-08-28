@@ -6,8 +6,7 @@ using BackendCarcass.MasterData.Models;
 using BackendCarcassShared.Contracts.Errors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using OneOf;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.Services.Authentication;
 
@@ -20,7 +19,7 @@ public class RegistrationService : LoginBase, IScopeServiceCarcassApplication
     {
     }
 
-    public async Task<OneOf<LoginResult, ErrorOmd[]>> TryToRegister(RegisterParameters registerParameters,
+    public async Task<Result<LoginResult>> TryToRegister(RegisterParameters registerParameters,
         CancellationToken cancellationToken = default)
     {
         //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი
@@ -28,7 +27,7 @@ public class RegistrationService : LoginBase, IScopeServiceCarcassApplication
         //თუ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user != null)
         {
-            return new[] { AuthenticationApiErrors.UserAlreadyExists };
+            return Result.Failure<LoginResult>(AuthenticationApiErrors.UserAlreadyExists);
         }
 
         //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი
@@ -36,7 +35,7 @@ public class RegistrationService : LoginBase, IScopeServiceCarcassApplication
         //თუ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user != null)
         {
-            return new[] { AuthenticationApiErrors.EmailAlreadyExists };
+            return Result.Failure<LoginResult>(AuthenticationApiErrors.EmailAlreadyExists);
         }
 
         //1. შევქმნათ ახალი მომხმარებელი
@@ -48,7 +47,8 @@ public class RegistrationService : LoginBase, IScopeServiceCarcassApplication
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
         if (!result.Succeeded)
         {
-            return new[] { AuthenticationApiErrors.MoreComplexPasswordIsRequired };
+            return Result.Failure<LoginResult>(AuthenticationApiErrors.MoreComplexPasswordIsRequired);
+            //return new[] { AuthenticationApiErrors.MoreComplexPasswordIsRequired };
         }
 
         return await LoginProcess(user, registerParameters.Password, cancellationToken);

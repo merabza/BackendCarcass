@@ -1,24 +1,22 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Repositories;
 using BackendCarcassShared.Contracts.Errors;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.DataTypes.GetGridModel;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class GridModelQueryHandler(IMenuRightsRepository repository)
-    : IQueryHandlerOmd<GridModelRequestQuery, string>
+    : IQueryHandler<GridModelRequestQuery, string>
 {
-    public async Task<OneOf<string, ErrorOmd[]>> Handle(GridModelRequestQuery request,
-        CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(GridModelRequestQuery request, CancellationToken cancellationToken)
     {
         string? res = await repository.GridModel(request.GridName, cancellationToken);
         if (res == null)
         {
-            return new[] { DataTypesApiErrors.GridNotFound(request.GridName) };
+            return Result.Failure<string>(DataTypesApiErrors.GridNotFound(request.GridName));
         }
 
         return res;

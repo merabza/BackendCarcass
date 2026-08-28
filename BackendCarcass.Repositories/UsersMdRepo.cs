@@ -7,7 +7,7 @@ using BackendCarcassDomain.Entities.Users;
 using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;
 using Microsoft.AspNetCore.Identity;
-using OneOf;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Repositories;
@@ -22,9 +22,9 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         _userManager = userManager;
     }
 
-    public OneOf<IQueryable<IDataType>, ErrorOmd[]> Load()
+    public Result<IQueryable<IDataType>> Load()
     {
-        return OneOf<IQueryable<IDataType>, ErrorOmd[]>.FromT0(_userManager.Users.Cast<IDataType>());
+        return Result.Success(_userManager.Users.Cast<IDataType>());
     }
 
     public async Task<Option<ErrorOmd[]>> Create(IDataType newItem)

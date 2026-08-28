@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using OneOf;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Rights;
 
@@ -21,7 +20,7 @@ public interface IUserRightsRepository
     Task<bool> CheckTableViewRight(int roleDtId, string roleName, int dataTypeDtId, string keyByTableName, int menuDtId,
         CancellationToken cancellationToken = default);
 
-    Task<OneOf<bool, ErrorOmd[]>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
+    Task<Result<bool>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
         string keyByTableName, int dataCrudRightDtId, ECrudOperationType crudType,
         CancellationToken cancellationToken = default);
 }

@@ -8,16 +8,16 @@ using BackendCarcassShared.Contracts.Errors;
 using BackendCarcassShared.Contracts.V1.Requests;
 using BackendCarcassShared.Contracts.V1.Responses;
 using BackendCarcassShared.Contracts.V1.Routes;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using OneOf;
 using Serilog;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 using WebSystemTools.CorsTools.DependencyInjection;
+using WebSystemTools.WebApi.Abstractions.Infrastructure;
 
 namespace BackendCarcass.Api.Endpoints.V1;
 
@@ -49,19 +49,20 @@ public static class AuthenticationEndpoints
     //   მაგრამ სამწუხაროდ უფლებების არქონის გამო პრაქტიკულად შეეძლება მხოლოდ თავისი ინფორმაციის ცვლილება
     //   ან თავისივე რეგისტრაციის წაშლა
     // POST api/v1/authentication/registration
-    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<ErrorOmd[]>>> Registration(
-        [FromBody] RegistrationRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
+    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<Error>, ProblemHttpResult>> Registration(
+        [FromBody] RegistrationRequest? request, ICommandHandler<RegistrationRequestCommand, LoginResponse> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(RegistrationCommandHandler)} from {nameof(Registration)}");
         if (request is null)
         {
-            return TypedResults.BadRequest(ErrorOmd.Create(CarcassApiErrors.RequestIsEmpty));
+            return TypedResults.BadRequest(CarcassApiErrors.RequestIsEmpty);
         }
 
         RegistrationRequestCommand command = request.AdaptTo();
-        OneOf<LoginResponse, ErrorOmd[]> result = await mediator.Send(command, cancellationToken);
-        return result.Match<Results<Ok<LoginResponse>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        Result<LoginResponse> result = await handler.Handle(command, cancellationToken);
+        return result.Match<LoginResponse, Results<Ok<LoginResponse>, BadRequest<Error>, ProblemHttpResult>>(
+            res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -70,18 +71,20 @@ public static class AuthenticationEndpoints
     //მოქმედება -> სხვადასხვა შემოწმებების შემდეგ ცდილობს მომხმარებლის ავტორიზებას
     //   წარმატებული ავტორიზების შემთხვევაში იქმნება JwT, რომელიც მომხმარებლის ინფორმაციასთან ერთად გადაეწოდება გამომძახებელს
     // POST api/authentication/login
-    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<ErrorOmd[]>>> Login(
-        [FromBody] LoginRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
+    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<Error>, ProblemHttpResult>> Login(
+        [FromBody] LoginRequest? request, ICommandHandler<LoginRequestCommand, LoginResponse> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(LoginCommandHandler)} from {nameof(Login)}");
         if (request is null)
         {
-            return TypedResults.BadRequest(ErrorOmd.Create(CarcassApiErrors.RequestIsEmpty));
+            return TypedResults.BadRequest(CarcassApiErrors.RequestIsEmpty);
         }
 
         LoginRequestCommand command = request.AdaptTo();
-        OneOf<LoginResponse, ErrorOmd[]> result = await mediator.Send(command, cancellationToken);
-        return result.Match<Results<Ok<LoginResponse>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        Result<LoginResponse> result = await handler.Handle(command, cancellationToken);
+
+        return result.Match<LoginResponse, Results<Ok<LoginResponse>, BadRequest<Error>, ProblemHttpResult>>(
+            res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 }

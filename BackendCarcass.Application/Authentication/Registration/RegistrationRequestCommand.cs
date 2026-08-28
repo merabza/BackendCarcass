@@ -1,9 +1,9 @@
 ﻿using BackendCarcassShared.Contracts.V1.Responses;
-using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.Authentication.Registration;
 
-public sealed class RegistrationRequestCommand : ICommandOmd<LoginResponse>
+public sealed class RegistrationRequestCommand : ICommand<LoginResponse>
 {
     public string? Email { get; set; }
     public string? FirstName { get; set; }

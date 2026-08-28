@@ -1,13 +1,12 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Identity;
 using BackendCarcass.Rights;
 using Microsoft.Extensions.Logging;
-using OneOf;
+using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.Domain.Abstractions;
-using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.Rights.SaveRightsChanges;
 
@@ -17,10 +16,9 @@ public sealed class SaveDataCommandHandler(
     IRightsRepository repo,
     IUnitOfWork unitOfWork,
     ICurrentUser currentUser,
-    IDatabaseAbstraction databaseAbstraction) : ICommandHandlerOmd<SaveDataRequestCommand, bool>
+    IDatabaseAbstraction databaseAbstraction) : ICommandHandler<SaveDataRequestCommand, bool>
 {
-    public async Task<OneOf<bool, ErrorOmd[]>> Handle(SaveDataRequestCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(SaveDataRequestCommand request, CancellationToken cancellationToken)
     {
         var rightsSaver = new RightsSaver(logger, repo, unitOfWork, databaseAbstraction);
         return await rightsSaver.SaveRightsChanges(currentUser.Name, request.ChangesForSave, cancellationToken);

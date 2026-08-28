@@ -1,8 +1,8 @@
-﻿using SystemTools.MediatRMessagingAbstractions;
+﻿using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.UserRights.ChangePassword;
 
-public sealed class ChangePasswordRequestCommand : ICommandOmd
+public sealed class ChangePasswordRequestCommand : ICommand
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public ChangePasswordRequestCommand(int userid, string? userName, string? oldPassword, string? newPassword,

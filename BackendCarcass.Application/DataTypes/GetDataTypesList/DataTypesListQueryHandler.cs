@@ -1,20 +1,19 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Application.Authentication;
 using BackendCarcass.Identity;
 using BackendCarcass.Repositories;
 using BackendCarcassShared.Contracts.V1.Responses;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.DataTypes.GetDataTypesList;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class DataTypesListQueryHandler(IMenuRightsRepository repository, ICurrentUser currentUser)
-    : LoginCommandHandlerBase, IQueryHandlerOmd<DataTypesRequestQuery, DataTypesResponse[]>
+    : LoginCommandHandlerBase, IQueryHandler<DataTypesRequestQuery, DataTypesResponse[]>
 {
-    public async Task<OneOf<DataTypesResponse[], ErrorOmd[]>> Handle(DataTypesRequestQuery request,
+    public async Task<Result<DataTypesResponse[]>> Handle(DataTypesRequestQuery request,
         CancellationToken cancellationToken)
     {
         DataTypesResponse[] res = await repository.DataTypes(currentUser.Name, cancellationToken);

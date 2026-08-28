@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Primitives;
-using SystemTools.MediatRMessagingAbstractions;
+using Microsoft.Extensions.Primitives;
+using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.MasterData.GetMultipleTablesRows;
 
-public sealed class MdGetTablesRequestQuery : IQueryOmd<MdGetTablesQueryResponse>
+public sealed class MdGetTablesRequestQuery : IQuery<MdGetTablesQueryResponse>
 {
     //public MdGetTablesQueryRequest(HttpRequest httpRequest)
     //{

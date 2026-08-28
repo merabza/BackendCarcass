@@ -12,8 +12,8 @@ using LanguageExt;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using SystemTools.Domain.Abstractions;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -33,16 +33,16 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async ValueTask<OneOf<IEnumerable<IDataType>, ErrorOmd[]>> GetAllRecords(
+    public async ValueTask<Result<IEnumerable<IDataType>>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
         List<AppUser> users = await _userManager.Users.ToListAsync(cancellationToken);
-        return OneOf<IEnumerable<IDataType>, ErrorOmd[]>.FromT0(users
+        return Result.Success<IEnumerable<IDataType>>(users
             .Where(x => x.UserName is not null && x.Email is not null)
             .Select(x => new UserCrudData(x.UserName!, x.FirstName, x.LastName, x.Email!)));
     }
 
-    public override async ValueTask<OneOf<TableRowsData, ErrorOmd[]>> GetTableRowsData(
+    public override async ValueTask<Result<TableRowsData>> GetTableRowsData(
         FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default)
     {
         IQueryable<AppUser> users = _userManager.Users;
@@ -53,7 +53,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, [.. rows.Select(s => s.EditFields())]);
     }
 
-    protected override async Task<OneOf<ICrudData, ErrorOmd[]>> GetOneData(int id,
+    protected override async Task<Result<ICrudData>> GetOneData(int id,
         CancellationToken cancellationToken = default)
     {
         AppUser? appUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
@@ -62,7 +62,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
             return new UserCrudData(appUser.UserName, appUser.FirstName, appUser.LastName, appUser.Email);
         }
 
-        return new[] { MasterDataApiErrors.CannotFindUser };
+        return Result.Failure<ICrudData>(MasterDataApiErrors.CannotFindUser.ToError());
     }
 
     protected override async ValueTask<Option<ErrorOmd[]>> CreateData(ICrudData crudDataForCreate,

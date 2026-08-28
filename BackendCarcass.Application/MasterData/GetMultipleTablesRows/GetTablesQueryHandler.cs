@@ -1,27 +1,29 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.MasterData;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.MasterData.GetMultipleTablesRows;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class GetTablesQueryHandler(IMasterDataLoaderCreator masterDataLoaderCreator)
-    : IQueryHandlerOmd<MdGetTablesRequestQuery, MdGetTablesQueryResponse>
+    : IQueryHandler<MdGetTablesRequestQuery, MdGetTablesQueryResponse>
 {
-    public async Task<OneOf<MdGetTablesQueryResponse, ErrorOmd[]>> Handle(MdGetTablesRequestQuery request,
+    public async Task<Result<MdGetTablesQueryResponse>> Handle(MdGetTablesRequestQuery request,
         CancellationToken cancellationToken)
     {
         List<string?> tableNames =
             [.. request.Tables.Where(tableName => !string.IsNullOrWhiteSpace(tableName)).Distinct()];
         var mdLoader = new MasterDataLoader(tableNames, masterDataLoaderCreator);
-        OneOf<Dictionary<string, IEnumerable<dynamic>>, ErrorOmd[]>
-            loaderResult = await mdLoader.Run(cancellationToken);
-        return loaderResult.Match<OneOf<MdGetTablesQueryResponse, ErrorOmd[]>>(r => new MdGetTablesQueryResponse(r),
-            e => e.ToArray());
+        Result<Dictionary<string, IEnumerable<dynamic>>> loaderResult = await mdLoader.Run(cancellationToken);
+        if (loaderResult.IsFailure)
+        {
+            return Result.Failure<MdGetTablesQueryResponse>(loaderResult.Error);
+        }
+
+        return new MdGetTablesQueryResponse(loaderResult.Value);
     }
 }

@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Identity;
 using BackendCarcass.MasterData;
 using BackendCarcass.Rights;
 using BackendCarcass.Rights.Models;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.Rights.GetHalfChecks;
 
@@ -17,9 +16,9 @@ public sealed class HalfChecksCommandHandler(
     IRightsRepository repo,
     IReturnValuesRepository rvRepo,
     ICurrentUser currentUser,
-    IDatabaseAbstraction databaseAbstraction) : ICommandHandlerOmd<HalfChecksRequestCommand, List<TypeDataModel>>
+    IDatabaseAbstraction databaseAbstraction) : ICommandHandler<HalfChecksRequestCommand, List<TypeDataModel>>
 {
-    public async Task<OneOf<List<TypeDataModel>, ErrorOmd[]>> Handle(HalfChecksRequestCommand request,
+    public async Task<Result<List<TypeDataModel>>> Handle(HalfChecksRequestCommand request,
         CancellationToken cancellationToken)
     {
         var rightsCollector = new RightsCollector(repo, rvRepo, databaseAbstraction);

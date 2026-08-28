@@ -1,11 +1,10 @@
-﻿using BackendCarcass.LibCrud;
-using OneOf;
-using SystemTools.SystemToolsShared.Errors;
+using BackendCarcass.LibCrud;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.MasterData;
 
 public interface IMasterDataLoaderCreator
 {
-    OneOf<IMasterDataLoader, ErrorOmd[]> CreateMasterDataLoader(string queryName);
-    OneOf<CrudBase, ErrorOmd[]> CreateMasterDataCrud(string tableName);
+    Result<IMasterDataLoader> CreateMasterDataLoader(string queryName);
+    Result<CrudBase> CreateMasterDataCrud(string tableName);
 }

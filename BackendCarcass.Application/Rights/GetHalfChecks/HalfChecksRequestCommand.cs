@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using BackendCarcass.Rights;
 using BackendCarcass.Rights.Models;
-using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.Rights.GetHalfChecks;
 
-public sealed class HalfChecksRequestCommand : ICommandOmd<List<TypeDataModel>>
+public sealed class HalfChecksRequestCommand : ICommand<List<TypeDataModel>>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public HalfChecksRequestCommand(int dataTypeId, string dataKey, ERightsEditorViewStyle viewStyle)

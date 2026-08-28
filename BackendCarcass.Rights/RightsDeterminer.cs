@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,9 +12,8 @@ using BackendCarcassDomain.Entities.Roles;
 using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
-using OneOf;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -38,32 +37,32 @@ public sealed class RightsDeterminer
         _databaseAbstraction = databaseAbstraction;
     }
 
-    public async ValueTask<Option<BadRequest<ErrorOmd[]>>> CheckTableRights(string? userName, string method,
-        TableKeyName tableKeyName, CancellationToken cancellationToken = default)
+    public async ValueTask<Result> CheckTableRights(string? userName, string method, TableKeyName tableKeyName,
+        CancellationToken cancellationToken = default)
     {
         //var userName = _context.HttpContext.User.Identity?.Name;
         if (userName == null)
         {
-            return TypedResults.BadRequest(ErrorOmd.Create(RightsApiErrors.UserNotIdentified));
+            return Result.Failure(RightsApiErrors.UserNotIdentified.ToError());
         }
 
         string? tableKey = await tableKeyName.GetTableKey(_repo, cancellationToken);
         if (string.IsNullOrWhiteSpace(tableKey))
         {
-            return TypedResults.BadRequest(ErrorOmd.Create(RightsApiErrors.TableNameNotIdentified));
+            return Result.Failure(RightsApiErrors.TableNameNotIdentified.ToError());
         }
 
         //შემოწმდეს აქვს თუ არა მიმდინარე მომხმარებელს _claimName-ის შესაბამისი სპეციალური უფლება
-        OneOf<bool, ErrorOmd[]> result = method == HttpMethods.Get
+        Result<bool> result = method == HttpMethods.Get
             ? await CheckViewRightByTableKey(tableKey, cancellationToken)
             : await CheckCrudRightByTableKey(tableKey, GetCrudType(method), cancellationToken);
-        if (result.IsT1)
+        if (result.IsFailure)
         {
-            return TypedResults.BadRequest(result.AsT1);
+            return result;
         }
 
         //თუ არა დაბრუნდეს შეცდომა
-        return !result.AsT0 ? TypedResults.BadRequest(ErrorOmd.Create(RightsApiErrors.InsufficientRights)) : null;
+        return !result.Value ? Result.Failure(RightsApiErrors.InsufficientRights.ToError()) : Result.Success();
     }
 
     private static Option<ECrudOperationType> GetCrudType(string method)
@@ -81,29 +80,27 @@ public sealed class RightsDeterminer
         return method == HttpMethods.Delete ? ECrudOperationType.Delete : new Option<ECrudOperationType>();
     }
 
-    public async ValueTask<OneOf<bool, ErrorOmd[]>> CheckUserRightToClaim(string claimName,
+    public async ValueTask<Result<bool>> CheckUserRightToClaim(string claimName,
         CancellationToken cancellationToken = default)
     {
         foreach (string role in _currentUser.Roles)
         {
-            OneOf<bool, ErrorOmd[]> result = await CheckRoleRightToClaim(role, claimName, cancellationToken);
-            if (result.IsT0)
+            Result<bool> result = await CheckRoleRightToClaim(role, claimName, cancellationToken);
+            if (result.IsFailure)
             {
-                if (result.AsT0)
-                {
-                    return true;
-                }
+                return result;
             }
-            else
+
+            if (result.Value)
             {
-                return result.AsT1;
+                return true;
             }
         }
 
         return false;
     }
 
-    private async Task<OneOf<bool, ErrorOmd[]>> CheckRoleRightToClaim(string roleName, string claimName,
+    private async Task<Result<bool>> CheckRoleRightToClaim(string roleName, string claimName,
         CancellationToken cancellationToken = default)
     {
         int? roleDtId = await _repo.GetDataTypeIdByKey(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
@@ -122,13 +119,13 @@ public sealed class RightsDeterminer
 
         if (roleDtId is null || appClaimDataTypeId is null)
         {
-            return new[] { RightsApiErrors.ErrorWhenDeterminingRights };
+            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights.ToError());
         }
 
         return await _repo.CheckRight(roleDtId.Value, roleName, appClaimDataTypeId.Value, claimName, cancellationToken);
     }
 
-    private async Task<OneOf<bool, ErrorOmd[]>> CheckMenuRight(string roleName, string menuItemName,
+    private async Task<Result<bool>> CheckMenuRight(string roleName, string menuItemName,
         CancellationToken cancellationToken = default)
     {
         int? menuGroupsDtId =
@@ -154,78 +151,71 @@ public sealed class RightsDeterminer
 
         if (menuGroupsDtId is null || menuDtId is null || roleDtId is null)
         {
-            return new[] { RightsApiErrors.ErrorWhenDeterminingRights };
+            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights.ToError());
         }
 
         return await _repo.CheckMenuRight(roleDtId.Value, roleName, menuGroupsDtId.Value, menuDtId.Value, menuItemName,
             cancellationToken);
     }
 
-    public async ValueTask<OneOf<bool, ErrorOmd[]>> HasUserRightRole(IEnumerable<string> menuNames,
+    public async ValueTask<Result<bool>> HasUserRightRole(IEnumerable<string> menuNames,
         CancellationToken cancellationToken = default)
     {
         List<string> menuNamesList = [.. menuNames];
         var menuClaimCombo = from menuName in menuNamesList
             from roleName in _currentUser.Roles
             select new { menuName, roleName };
-        List<ErrorOmd> errors = [];
+        List<Error> errors = [];
 
         foreach (var menuClaim in menuClaimCombo)
         {
-            OneOf<bool, ErrorOmd[]> result =
-                await CheckMenuRight(menuClaim.roleName, menuClaim.menuName, cancellationToken);
-            if (result.IsT0)
+            Result<bool> result = await CheckMenuRight(menuClaim.roleName, menuClaim.menuName, cancellationToken);
+            if (result.IsFailure)
             {
-                if (result.AsT0)
-                {
-                    return true;
-                }
+                errors.Add(result.Error);
             }
-            else
+            else if (result.Value)
             {
-                errors.AddRange(result.AsT1);
+                return true;
             }
         }
 
         if (errors.Count != 0)
         {
-            return errors.ToArray();
+            return Result.Failure<bool>(CombineErrors(errors));
         }
 
         return false;
     }
 
-    private async ValueTask<OneOf<bool, ErrorOmd[]>> CheckViewRightByTableKey(string tableKey,
+    private async ValueTask<Result<bool>> CheckViewRightByTableKey(string tableKey,
         CancellationToken cancellationToken = default)
     {
-        List<ErrorOmd> errors = [];
+        List<Error> errors = [];
 
         foreach (string roleName in _currentUser.Roles)
         {
-            OneOf<bool, ErrorOmd[]> result = await CheckViewRightByTableKey(roleName, tableKey, cancellationToken);
+            Result<bool> result = await CheckViewRightByTableKey(roleName, tableKey, cancellationToken);
 
-            if (result.IsT0)
+            if (result.IsFailure)
             {
-                if (result.AsT0)
-                {
-                    return true;
-                }
+                errors.Add(result.Error);
             }
-            else
+            else if (result.Value)
             {
-                errors.AddRange(result.AsT1);
+                return true;
             }
         }
 
         if (errors.Count != 0)
         {
-            return errors.ToArray();
+            return Result.Failure<bool>(CombineErrors(errors));
         }
 
         return false;
     }
 
-    public async Task<OneOf<bool, ErrorOmd[]>> CheckTableViewRight(string roleName, TableKeyName tableKeyName,
+    public async Task<Result<bool>> CheckTableViewRight(string roleName, TableKeyName tableKeyName,
         CancellationToken cancellationToken = default)
     {
         string? keyByTableName = await tableKeyName.GetTableKey(_repo, cancellationToken);
@@ -236,13 +226,13 @@ public sealed class RightsDeterminer
 
         if (keyByTableName is null)
         {
-            return new[] { RightsApiErrors.ErrorWhenDeterminingRights };
+            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights.ToError());
         }
 
         return await CheckViewRightByTableKey(roleName, keyByTableName, cancellationToken);
     }
 
-    private async Task<OneOf<bool, ErrorOmd[]>> CheckViewRightByTableKey(string roleName, string tableKey,
+    private async Task<Result<bool>> CheckViewRightByTableKey(string roleName, string tableKey,
         CancellationToken cancellationToken = default)
     {
         int? roleDtId = await _repo.GetDataTypeIdByKey(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
@@ -268,82 +258,76 @@ public sealed class RightsDeterminer
 
         if (roleDtId is null || dataTypeDtId is null || menuDtId is null)
         {
-            return new[] { RightsApiErrors.ErrorWhenDeterminingRights };
+            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights.ToError());
         }
 
         return await _repo.CheckTableViewRight(roleDtId.Value, roleName, dataTypeDtId.Value, tableKey, menuDtId.Value,
             cancellationToken);
     }
 
-    public async ValueTask<OneOf<bool, ErrorOmd[]>> CheckTableListViewRight(IEnumerable<TableKeyName> tableKeysNames,
+    public async ValueTask<Result<bool>> CheckTableListViewRight(IEnumerable<TableKeyName> tableKeysNames,
         CancellationToken cancellationToken = default)
     {
         var tableClaimCombo = from tableKeyName in tableKeysNames
             from roleName in _currentUser.Roles
             select new { tableKeyName, roleName };
-        List<ErrorOmd> errors = [];
+        List<Error> errors = [];
 
         foreach (var menuClaim in tableClaimCombo)
         {
-            OneOf<bool, ErrorOmd[]> result =
+            Result<bool> result =
                 await CheckTableViewRight(menuClaim.roleName, menuClaim.tableKeyName, cancellationToken);
-            if (result.IsT0)
+            if (result.IsFailure)
             {
-                if (result.AsT0)
-                {
-                    return true;
-                }
+                errors.Add(result.Error);
             }
-            else
+            else if (result.Value)
             {
-                errors.AddRange(result.AsT1);
+                return true;
             }
         }
 
         if (errors.Count != 0)
         {
-            return errors.ToArray();
+            return Result.Failure<bool>(CombineErrors(errors));
         }
 
         return false;
     }
 
-    private async ValueTask<OneOf<bool, ErrorOmd[]>> CheckCrudRightByTableKey(string tableKey,
+    private async ValueTask<Result<bool>> CheckCrudRightByTableKey(string tableKey,
         Option<ECrudOperationType> crudType, CancellationToken cancellationToken = default)
     {
-        List<ErrorOmd> errors = [];
+        List<Error> errors = [];
         if (crudType.IsNone)
         {
-            return new[] { RightsApiErrors.ErrorWhenDeterminingCrudType };
+            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingCrudType.ToError());
         }
 
         foreach (string roleName in _currentUser.Roles)
         {
-            OneOf<bool, ErrorOmd[]> result =
+            Result<bool> result =
                 await CheckCrudRightByTableKey(roleName, tableKey, (ECrudOperationType)crudType, cancellationToken);
 
-            if (result.IsT0)
+            if (result.IsFailure)
             {
-                if (result.AsT0)
-                {
-                    return true;
-                }
+                errors.Add(result.Error);
             }
-            else
+            else if (result.Value)
             {
-                errors.AddRange(result.AsT1);
+                return true;
             }
         }
 
         if (errors.Count != 0)
         {
-            return errors.ToArray();
+            return Result.Failure<bool>(CombineErrors(errors));
         }
 
         return false;
     }
 
-    private async Task<OneOf<bool, ErrorOmd[]>> CheckCrudRightByTableKey(string roleName, string tableKey,
+    private async Task<Result<bool>> CheckCrudRightByTableKey(string roleName, string tableKey,
         ECrudOperationType crudType, CancellationToken cancellationToken = default)
     {
         int? roleDtId = await _repo.GetDataTypeIdByKey(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
@@ -371,10 +355,15 @@ public sealed class RightsDeterminer
 
         if (roleDtId is null || dataTypeDtId is null || dataCrudRightDtId is null)
         {
-            return new[] { RightsApiErrors.ErrorWhenDeterminingRights };
+            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights.ToError());
         }
 
         return await _repo.CheckTableCrudRight(roleDtId.Value, roleName, dataTypeDtId.Value, tableKey,
             dataCrudRightDtId.Value, crudType, cancellationToken);
+    }
+
+    private static Error CombineErrors(List<Error> errors)
+    {
+        return errors.Count == 1 ? errors[0] : new ValidationError([.. errors]);
     }
 }

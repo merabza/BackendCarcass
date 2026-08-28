@@ -1,20 +1,19 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Repositories;
 using BackendCarcassShared.Contracts.Errors;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.DataTypes.GetMultipleGridModels;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MultipleGridModelsQueryHandler(IMenuRightsRepository repository)
-    : IQueryHandlerOmd<MultipleGridModelsRequestQuery, Dictionary<string, string>>
+    : IQueryHandler<MultipleGridModelsRequestQuery, Dictionary<string, string>>
 {
-    public async Task<OneOf<Dictionary<string, string>, ErrorOmd[]>> Handle(MultipleGridModelsRequestQuery request,
+    public async Task<Result<Dictionary<string, string>>> Handle(MultipleGridModelsRequestQuery request,
         CancellationToken cancellationToken)
     {
         var resultList = new Dictionary<string, string>();
@@ -25,10 +24,10 @@ public sealed class MultipleGridModelsQueryHandler(IMenuRightsRepository reposit
         List<string?> gridNames = [.. request.Grids.Where(w => !string.IsNullOrWhiteSpace(w)).Distinct()];
         if (gridNames.Count == 0)
         {
-            return new[] { DataTypesApiErrors.NoGridNamesInUriQuery };
+            return Result.Failure<Dictionary<string, string>>(DataTypesApiErrors.NoGridNamesInUriQuery);
         }
 
-        List<ErrorOmd> errors = [];
+        List<Error> errors = [];
         //ხოლო მეორე გავლისას ხდება უშუალოდ საჭირო ინფორმაციის ჩატვირთვა
         foreach (string? gridName in gridNames)
         {
@@ -45,7 +44,9 @@ public sealed class MultipleGridModelsQueryHandler(IMenuRightsRepository reposit
 
         if (errors.Count > 0)
         {
-            return errors.ToArray();
+            return Result.Failure<Dictionary<string, string>>(errors.Count == 1
+                ? errors[0]
+                : new ValidationError([.. errors]));
         }
 
         return resultList;

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.MasterData.Models;
 using BackendCarcassShared.Contracts.Errors;
-using OneOf;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.MasterData;
@@ -24,13 +24,13 @@ public sealed class ReturnValuesLoader
         _tableNames = tableNames;
     }
 
-    public async Task<OneOf<Dictionary<string, IEnumerable<SrvModel>>, ErrorOmd[]>> Run(
+    public async Task<Result<Dictionary<string, IEnumerable<SrvModel>>>> Run(
         CancellationToken cancellationToken = default)
     {
         var resultList = new Dictionary<string, IEnumerable<SrvModel>>();
         List<DataTypeModelForRvs> tableDataTypes =
             await _rvRepo.GetDataTypesByTableNames(_tableNames, cancellationToken);
-        var errors = new List<ErrorOmd>();
+        var errors = new List<Error>();
 
         //ჩაიტვირთოს ყველა ცხრილი სათითაოდ
         foreach (DataTypeModelForRvs dt in tableDataTypes)
@@ -38,15 +38,14 @@ public sealed class ReturnValuesLoader
             var loader =
                 new MasterDataReturnValuesLoader(dt,
                     _rvRepo); // _returnValuesLoaderCreator.CreateReturnValuesLoaderLoader(dt);
-            OneOf<IEnumerable<SrvModel>, ErrorOmd[]>
-                tableResult = await loader.GetSimpleReturnValues(cancellationToken);
-            if (tableResult.IsT1)
+            Result<IEnumerable<SrvModel>> tableResult = await loader.GetSimpleReturnValues(cancellationToken);
+            if (tableResult.IsFailure)
             {
-                errors.AddRange(tableResult.AsT1);
+                errors.Add(tableResult.Error);
             }
             else
             {
-                IEnumerable<SrvModel>? res = tableResult.AsT0;
+                IEnumerable<SrvModel> res = tableResult.Value;
                 resultList.Add(dt.DtTable, res);
             }
         }
@@ -62,27 +61,27 @@ public sealed class ReturnValuesLoader
             IReturnValuesLoader? loader = _returnValuesLoaderCreator.CreateReturnValuesLoaderLoader(tableName);
             if (loader is null)
             {
-                errors.Add(MasterDataApiErrors
-                    .LoaderForTableNotFound(tableName)); //ჩამტვირთავი ცხრილისთვის სახელით {tableName} ვერ მოიძებნა
+                errors.Add(MasterDataApiErrors.LoaderForTableNotFound(tableName)
+                    .ToError()); //ჩამტვირთავი ცხრილისთვის სახელით {tableName} ვერ მოიძებნა
                 continue;
             }
 
-            OneOf<IEnumerable<SrvModel>, ErrorOmd[]>
-                tableResult = await loader.GetSimpleReturnValues(cancellationToken);
-            if (tableResult.IsT1)
+            Result<IEnumerable<SrvModel>> tableResult = await loader.GetSimpleReturnValues(cancellationToken);
+            if (tableResult.IsFailure)
             {
-                errors.AddRange(tableResult.AsT1);
+                errors.Add(tableResult.Error);
             }
             else
             {
-                IEnumerable<SrvModel>? res = tableResult.AsT0;
+                IEnumerable<SrvModel> res = tableResult.Value;
                 resultList.Add(tableName, res);
             }
         }
 
         if (errors.Count > 0)
         {
-            return errors.ToArray();
+            return Result.Failure<Dictionary<string, IEnumerable<SrvModel>>>(
+                errors.Count == 1 ? errors[0] : new ValidationError([.. errors]));
         }
 
         return resultList;

@@ -10,9 +10,8 @@ using BackendCarcassDomain.Entities.DataTypes;
 using BackendCarcassDomain.Entities.Roles;
 using BackendCarcassDomain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
-using OneOf;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 
 // ReSharper disable ReplaceWithPrimaryConstructorParameter
 
@@ -33,7 +32,7 @@ public sealed class RightsCollector
         _databaseAbstraction = databaseAbstraction;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, ErrorOmd[]>> ParentsTreeData(string userName,
+    public async Task<Result<List<DataTypeModel>>> ParentsTreeData(string userName,
         ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
         IEnumerable<DataTypeModelForRvs> dataTypes =
@@ -45,25 +44,24 @@ public sealed class RightsCollector
         return await GetTreeData(userName, dataTypes, cancellationToken);
     }
 
-    private async ValueTask<OneOf<List<DataTypeModel>, ErrorOmd[]>> GetTreeData(string userName,
+    private async ValueTask<Result<List<DataTypeModel>>> GetTreeData(string userName,
         IEnumerable<DataTypeModelForRvs> dataTypes, CancellationToken cancellationToken = default)
     {
         var dataTypeModels = new List<DataTypeModel>();
-        var errors = new List<ErrorOmd>();
+        var errors = new List<Error>();
         foreach (DataTypeModelForRvs dataType in dataTypes)
         {
             var dataTypeModel = new DataTypeModel(dataType.DtId, dataType.DtTable, dataType.DtName,
                 dataType.DtParentDataTypeId);
-            OneOf<List<ReturnValueModel>, ErrorOmd[]> entResult =
-                await GetRetValues(dataType, userName, cancellationToken);
+            Result<List<ReturnValueModel>> entResult = await GetRetValues(dataType, userName, cancellationToken);
 
-            if (entResult.IsT1)
+            if (entResult.IsFailure)
             {
-                errors.AddRange(entResult.AsT1);
+                errors.Add(entResult.Error);
             }
             else
             {
-                dataTypeModel.ReturnValues = entResult.AsT0;
+                dataTypeModel.ReturnValues = entResult.Value;
             }
 
             dataTypeModels.Add(dataTypeModel);
@@ -71,13 +69,14 @@ public sealed class RightsCollector
 
         if (errors.Count > 0)
         {
-            return errors.ToArray();
+            return Result.Failure<List<DataTypeModel>>(
+                errors.Count == 1 ? errors[0] : new ValidationError([.. errors]));
         }
 
         return dataTypeModels;
     }
 
-    public async Task<OneOf<List<DataTypeModel>, ErrorOmd[]>> ChildrenTreeData(string userName, string dataTypeKey,
+    public async Task<Result<List<DataTypeModel>>> ChildrenTreeData(string userName, string dataTypeKey,
         ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
     {
         List<DataTypeModelForRvs> dataTypes =
@@ -151,7 +150,7 @@ public sealed class RightsCollector
             mmjDataId, cancellationToken);
     }
 
-    private async Task<OneOf<List<ReturnValueModel>, ErrorOmd[]>> GetRetValues(DataTypeModelForRvs dt, string userName,
+    private async Task<Result<List<ReturnValueModel>>> GetRetValues(DataTypeModelForRvs dt, string userName,
         CancellationToken cancellationToken = default)
     {
         if (dt.DtTable == _databaseAbstraction.GetTableName<User>())

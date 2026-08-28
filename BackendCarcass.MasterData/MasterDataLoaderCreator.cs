@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Linq;
 using BackendCarcass.LibCrud;
 using BackendCarcass.MasterData.Crud;
 using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using SystemTools.Domain.Abstractions;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.MasterData;
 
@@ -25,7 +23,7 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
         Services = services;
     }
 
-    public virtual OneOf<IMasterDataLoader, ErrorOmd[]> CreateMasterDataLoader(string queryName)
+    public virtual Result<IMasterDataLoader> CreateMasterDataLoader(string queryName)
     {
         // ReSharper disable once using
 #pragma warning disable CA2000
@@ -34,13 +32,15 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         var databaseAbstraction = scope.ServiceProvider.GetRequiredService<IDatabaseAbstraction>();
 
-        return MasterDataCrud
+        Result<MasterDataCrud> createResult = MasterDataCrud
             .Create(queryName, _logger, scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>(),
-                unitOfWork, databaseAbstraction)
-            .Match<OneOf<IMasterDataLoader, ErrorOmd[]>>(f0 => f0, f1 => f1.ToArray());
+                unitOfWork, databaseAbstraction);
+        return createResult.IsFailure
+            ? Result.Failure<IMasterDataLoader>(createResult.Error)
+            : createResult.Value;
     }
 
-    public virtual OneOf<CrudBase, ErrorOmd[]> CreateMasterDataCrud(string tableName)
+    public virtual Result<CrudBase> CreateMasterDataCrud(string tableName)
     {
         // ReSharper disable once using
 #pragma warning disable CA2000
@@ -50,14 +50,18 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         var databaseAbstraction = scope.ServiceProvider.GetRequiredService<IDatabaseAbstraction>();
 
-        return tableName switch
+        switch (tableName)
         {
-            "users" => new UsersCrud(_logger, scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>(),
-                unitOfWork, databaseAbstraction),
-            "roles" => new RolesCrud(_logger, scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>(),
-                unitOfWork, databaseAbstraction),
-            _ => MasterDataCrud.Create(tableName, _logger, carcassMasterDataRepository, unitOfWork, databaseAbstraction)
-                .Match<OneOf<CrudBase, ErrorOmd[]>>(f0 => f0, f1 => f1.ToArray())
-        };
+            case "users":
+                return new UsersCrud(_logger, scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>(),
+                    unitOfWork, databaseAbstraction);
+            case "roles":
+                return new RolesCrud(_logger, scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>(),
+                    unitOfWork, databaseAbstraction);
+            default:
+                Result<MasterDataCrud> createResult = MasterDataCrud.Create(tableName, _logger,
+                    carcassMasterDataRepository, unitOfWork, databaseAbstraction);
+                return createResult.IsFailure ? Result.Failure<CrudBase>(createResult.Error) : createResult.Value;
+        }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using BackendCarcass.Rights;
 using BackendCarcass.Rights.Models;
-using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.Rights.GetChildrenTree;
 
-public sealed class ChildrenTreeDataRequestCommand : ICommandOmd<List<DataTypeModel>>
+public sealed class ChildrenTreeDataRequestCommand : ICommand<List<DataTypeModel>>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public ChildrenTreeDataRequestCommand(string dataTypeKey, ERightsEditorViewStyle viewStyle)

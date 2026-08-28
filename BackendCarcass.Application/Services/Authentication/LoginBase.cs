@@ -8,8 +8,7 @@ using BackendCarcass.Repositories;
 using BackendCarcassShared.Contracts.Errors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using OneOf;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.Services.Authentication;
 
@@ -29,29 +28,29 @@ public class LoginBase
         _userClaimsRepository = userClaimsRepository;
     }
 
-    public async Task<OneOf<LoginResult, ErrorOmd[]>> LoginProcess(AppUser? user, string password,
+    public async Task<Result<LoginResult>> LoginProcess(AppUser? user, string password,
         CancellationToken cancellationToken = default)
     {
         if (user == null)
         {
-            return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
+            return Result.Failure<LoginResult>(AuthenticationApiErrors.UsernameOrPasswordIsIncorrect);
         }
 
         await _signinMgr.SignOutAsync();
         SignInResult result = await _signinMgr.PasswordSignInAsync(user, password, true, false);
         if (!result.Succeeded)
         {
-            return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
+            return Result.Failure<LoginResult>(AuthenticationApiErrors.UsernameOrPasswordIsIncorrect);
         }
 
         if (user.UserName == null)
         {
-            return new[] { AuthenticationApiErrors.InvalidUsername };
+            return Result.Failure<LoginResult>(AuthenticationApiErrors.InvalidUsername);
         }
 
         if (user.Email == null)
         {
-            return new[] { AuthenticationApiErrors.InvalidEmail };
+            return Result.Failure<LoginResult>(AuthenticationApiErrors.InvalidEmail);
         }
 
         IList<string> roles = await UserMgr.GetRolesAsync(user);
@@ -62,7 +61,7 @@ public class LoginBase
 
         if (_identitySettings.Value.JwtSecret is null)
         {
-            return new[] { CarcassApiErrors.ParametersAreInvalid };
+            return Result.Failure<LoginResult>(CarcassApiErrors.ParametersAreInvalid);
         }
 
         string? issuer = _identitySettings.Value.JwtIssuer;
@@ -70,7 +69,7 @@ public class LoginBase
         string? token = user.CreateJwToken(_identitySettings.Value.JwtSecret, 0, roles, issuer, audience);
         if (token is null)
         {
-            return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
+            return Result.Failure<LoginResult>(AuthenticationApiErrors.UsernameOrPasswordIsIncorrect);
         }
 
         List<string>? appClaims = _userClaimsRepository is null

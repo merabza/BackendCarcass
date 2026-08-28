@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using BackendCarcass.Rights;
 using BackendCarcass.Rights.Models;
-using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.Rights.GetParentsTree;
 
-public sealed class ParentsTreeDataRequestQuery : IQueryOmd<List<DataTypeModel>>
+public sealed class ParentsTreeDataRequestQuery : IQuery<List<DataTypeModel>>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public ParentsTreeDataRequestQuery(ERightsEditorViewStyle viewStyle)

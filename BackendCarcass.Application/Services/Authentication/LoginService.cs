@@ -6,8 +6,7 @@ using BackendCarcass.MasterData.Models;
 using BackendCarcass.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using OneOf;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.Services.Authentication;
 
@@ -21,7 +20,7 @@ public class LoginService : LoginBase, IScopeServiceCarcassApplication
     {
     }
 
-    public async Task<OneOf<LoginResult, ErrorOmd[]>> TryToLogin(string userName, string password,
+    public async Task<Result<LoginResult>> TryToLogin(string userName, string password,
         CancellationToken cancellationToken = default)
     {
         //მოწოდებული მომხმარებლის სახელით ხომ არ არსებობს უკვე რომელიმე მომხმარებელი

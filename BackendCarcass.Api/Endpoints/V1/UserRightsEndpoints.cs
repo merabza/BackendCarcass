@@ -10,15 +10,15 @@ using BackendCarcass.Repositories.Models;
 using BackendCarcassShared.Contracts.Errors;
 using BackendCarcassShared.Contracts.V1.Requests;
 using BackendCarcassShared.Contracts.V1.Routes;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using OneOf;
 using Serilog;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
+using WebSystemTools.WebApi.Abstractions.Infrastructure;
 
 namespace BackendCarcass.Api.Endpoints.V1;
 
@@ -61,19 +61,24 @@ public static class UserRightsEndpoints
     //უფლება -> მხოლოდ ავტორიზაცია
     //მოქმედება -> მოწმდება მიღებული ინფორმაციის ვალიდურობა და ხდება პროფაილში ცვლილებების დაფიქსირება
     // GET api/v1/userrights/changeprofile
-    private static async ValueTask<Results<Ok, BadRequest<ErrorOmd[]>>> ChangeProfile(
-        [FromBody] ChangeProfileRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
+    private static async ValueTask<Results<Ok, BadRequest<Error>, ProblemHttpResult>> ChangeProfile(
+        [FromBody] ChangeProfileRequest? request, ICommandHandler<ChangeProfileRequestCommand> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ChangeProfileCommandHandler)} from {nameof(ChangeProfile)}");
         if (request is null)
         {
-            return TypedResults.BadRequest(ErrorOmd.Create(CarcassApiErrors.RequestIsEmpty));
+            return TypedResults.BadRequest(CarcassApiErrors.RequestIsEmpty);
         }
 
         ChangeProfileRequestCommand command = request.AdaptTo();
-        OneOf<Unit, ErrorOmd[]> result = await mediator.Send(command, cancellationToken);
-        return result.Match<Results<Ok, BadRequest<ErrorOmd[]>>>(_ => TypedResults.Ok(),
-            errors => TypedResults.BadRequest(errors));
+        Result result = await handler.Handle(command, cancellationToken);
+
+        return result.Match<Results<Ok, BadRequest<Error>, ProblemHttpResult>>(() => TypedResults.Ok(),
+            errors => (ProblemHttpResult)CustomResults.Problem(errors));
+
+        //return result.Match<Results<Ok, BadRequest<ErrorOmd[]>>>(_ => TypedResults.Ok(),
+        //    errors => TypedResults.BadRequest(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -82,19 +87,20 @@ public static class UserRightsEndpoints
     //უფლება -> მხოლოდ ავტორიზაცია
     //მოქმედება -> მოწმდება მიღებული ინფორმაციის ვალიდურობა და ხდება პაროლის ცვლილებების დაფიქსირება
     // PUT api/v1/userrights/changepassword
-    private static async ValueTask<Results<Ok, BadRequest<ErrorOmd[]>>> ChangePassword(
-        [FromBody] ChangePasswordRequest? request, IMediator mediator, CancellationToken cancellationToken = default)
+    private static async ValueTask<Results<Ok, BadRequest<Error>, ProblemHttpResult>> ChangePassword(
+        [FromBody] ChangePasswordRequest? request, ICommandHandler<ChangePasswordRequestCommand> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ChangePasswordCommandHandler)} from {nameof(ChangePassword)}");
         if (request is null)
         {
-            return TypedResults.BadRequest(ErrorOmd.Create(CarcassApiErrors.RequestIsEmpty));
+            return TypedResults.BadRequest(CarcassApiErrors.RequestIsEmpty);
         }
 
         ChangePasswordRequestCommand command = request.AdaptTo();
-        OneOf<Unit, ErrorOmd[]> result = await mediator.Send(command, cancellationToken);
-        return result.Match<Results<Ok, BadRequest<ErrorOmd[]>>>(_ => TypedResults.Ok(),
-            errors => TypedResults.BadRequest(errors));
+        Result result = await handler.Handle(command, cancellationToken);
+        return result.Match<Results<Ok, BadRequest<Error>, ProblemHttpResult>>(() => TypedResults.Ok(),
+            errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -108,14 +114,14 @@ public static class UserRightsEndpoints
     //  თუ მაინც გახდა საჭირო მომავალში მომხმარებლის წაშლა, უნდა აეწყოს მომხმარებლის ჩანაწერების გადაბარების მექანიზმი
     //  რის მერეც შესაძლებელი გახდება მომხმარებლის იდენტიფიკატორის გათავისუფლება კავშირებისაგან და წაშლაც მოხერხდება
     // DELETE api/v1/userrights/deletecurrentuser/{userName}
-    private static async ValueTask<Results<Ok, BadRequest<ErrorOmd[]>>> DeleteCurrentUser(string userName,
-        IMediator mediator, CancellationToken cancellationToken = default)
+    private static async ValueTask<Results<Ok, ProblemHttpResult>> DeleteCurrentUser(string userName,
+        ICommandHandler<DeleteCurrentUserRequestCommand> handler, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(DeleteCurrentUserCommandHandler)} from {nameof(DeleteCurrentUser)}");
         var command = new DeleteCurrentUserRequestCommand { UserName = userName };
-        OneOf<Unit, ErrorOmd[]> result = await mediator.Send(command, cancellationToken);
-        return result.Match<Results<Ok, BadRequest<ErrorOmd[]>>>(_ => TypedResults.Ok(),
-            errors => TypedResults.BadRequest(errors));
+        Result result = await handler.Handle(command, cancellationToken);
+        return result.Match<Results<Ok, ProblemHttpResult>>(() => TypedResults.Ok(),
+            errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -125,13 +131,13 @@ public static class UserRightsEndpoints
     //მოქმედება -> რეპოზიტორიას გადაეწოდება მიმდინარე მომხმარებლის სახელი და
     //  მისი უფლებების მიხედვით ჩატვირთული მენიუს შესახებ ინფორმაციას უბრუნებს გამომძახებელს
     // GET api/v1/userrights/getmainmenu
-    private static async Task<Results<Ok<MainMenuModel>, BadRequest<ErrorOmd[]>>> MainMenu(IMediator mediator,
-        CancellationToken cancellationToken = default)
+    private static async Task<Results<Ok<MainMenuModel>, ProblemHttpResult>> MainMenu(
+        IQueryHandler<MainMenuRequestQuery, MainMenuModel> handler, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MainMenuQueryHandler)} from {nameof(MainMenu)}");
         var query = new MainMenuRequestQuery();
-        OneOf<MainMenuModel, ErrorOmd[]> result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<MainMenuModel>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        Result<MainMenuModel> result = await handler.Handle(query, cancellationToken);
+        return result.Match<MainMenuModel, Results<Ok<MainMenuModel>, ProblemHttpResult>>(res => TypedResults.Ok(res),
+            errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 }

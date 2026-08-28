@@ -1,4 +1,3 @@
-﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.FilterSort.Models;
@@ -6,24 +5,23 @@ using BackendCarcass.LibCrud;
 using BackendCarcass.LibCrud.Models;
 using BackendCarcass.MasterData;
 using BackendCarcassShared.Contracts.Errors;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.MasterData.GetTableRows;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class GetTableRowsDataQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    : IQueryHandlerOmd<GetTableRowsDataRequestQuery, TableRowsData>
+    : IQueryHandler<GetTableRowsDataRequestQuery, TableRowsData>
 {
-    public async Task<OneOf<TableRowsData, ErrorOmd[]>> Handle(GetTableRowsDataRequestQuery request,
+    public async Task<Result<TableRowsData>> Handle(GetTableRowsDataRequestQuery request,
         CancellationToken cancellationToken)
     {
         FilterSortRequest? filterSortRequestObject = FilterSortRequestFactory.Create(request.FilterSortRequest);
 
         if (filterSortRequestObject == null)
         {
-            return new[] { CommonErrors.IncorrectData };
+            return Result.Failure<TableRowsData>(CommonErrors.IncorrectData);
         }
 
         //var loader = _masterDataLoaderCrudCreator.CreateMasterDataLoader(request.tableName);
@@ -31,17 +29,15 @@ public sealed class GetTableRowsDataQueryHandler(IMasterDataLoaderCreator master
         //return result.Match<OneOf<TableRowsData, Err[]>>(
         //    r => r, e => e);
 
-        OneOf<CrudBase, ErrorOmd[]> createMasterDataCrudResult =
+        Result<CrudBase> createMasterDataCrudResult =
             masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
-        if (createMasterDataCrudResult.IsT1)
+        if (createMasterDataCrudResult.IsFailure)
         {
-            return createMasterDataCrudResult.AsT1;
+            return Result.Failure<TableRowsData>(createMasterDataCrudResult.Error);
         }
 
-        CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
+        CrudBase masterDataCruder = createMasterDataCrudResult.Value;
 
-        OneOf<TableRowsData, ErrorOmd[]> result =
-            await masterDataCruder.GetTableRowsData(filterSortRequestObject, cancellationToken);
-        return result.Match<OneOf<TableRowsData, ErrorOmd[]>>(r => r, e => e.ToArray());
+        return await masterDataCruder.GetTableRowsData(filterSortRequestObject, cancellationToken);
     }
 }

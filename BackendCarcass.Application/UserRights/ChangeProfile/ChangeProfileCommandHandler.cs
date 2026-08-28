@@ -3,21 +3,18 @@ using System.Threading.Tasks;
 using BackendCarcass.Identity;
 using BackendCarcass.MasterData.Models;
 using BackendCarcassShared.Contracts.Errors;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.UserRights.ChangeProfile;
 
 // ReSharper disable once UnusedType.Global
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class ChangeProfileCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
-    : ICommandHandlerOmd<ChangeProfileRequestCommand>
+    : ICommandHandler<ChangeProfileRequestCommand>
 {
-    public async Task<OneOf<Unit, ErrorOmd[]>> Handle(ChangeProfileRequestCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result> Handle(ChangeProfileRequestCommand request, CancellationToken cancellationToken)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით
         AppUser? user = await userMgr.FindByNameAsync(currentUser.Name);
@@ -25,18 +22,18 @@ public sealed class ChangeProfileCommandHandler(UserManager<AppUser> userMgr, IC
         //თუ არ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user == null)
         {
-            return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
+            return Result.Failure(AuthenticationApiErrors.UsernameOrPasswordIsIncorrect);
         }
 
         if (user.Id != request.Userid || user.UserName != request.UserName || user.Email != request.Email)
         {
-            return new[] { UserRightsErrors.UserNotIdentifierSaveFiled };
+            return Result.Failure(UserRightsErrors.UserNotIdentifierSaveFiled);
         }
 
         user.FirstName = request.FirstName!;
         user.LastName = request.LastName!;
         IdentityResult result = await userMgr.UpdateAsync(user);
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
-        return !result.Succeeded ? new[] { UserRightsErrors.FailedToSaveUserInformation } : new Unit();
+        return !result.Succeeded ? Result.Failure(UserRightsErrors.FailedToSaveUserInformation) : Result.Success();
     }
 }

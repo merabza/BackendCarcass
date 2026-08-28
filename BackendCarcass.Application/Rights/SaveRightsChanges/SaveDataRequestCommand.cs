@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using BackendCarcass.Rights.Models;
-using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.Rights.SaveRightsChanges;
 
-public sealed class SaveDataRequestCommand : ICommandOmd<bool>
+public sealed class SaveDataRequestCommand : ICommand<bool>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public SaveDataRequestCommand(List<RightsChangeModel> changesForSave)

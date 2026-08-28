@@ -5,8 +5,8 @@ using BackendCarcass.LibCrud.Models;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using SystemTools.Domain.Abstractions;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -32,7 +32,7 @@ public abstract class CrudBase
     protected virtual int JustCreatedId => 0;
 
     // ReSharper disable once BothContextCallDeclaration.Global
-    public Task<OneOf<ICrudData, ErrorOmd[]>> GetOne(int id, CancellationToken cancellationToken = default)
+    public Task<Result<ICrudData>> GetOne(int id, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -50,7 +50,7 @@ public abstract class CrudBase
         }
     }
 
-    public async Task<OneOf<ICrudData, ErrorOmd[]>> Create(ICrudData crudDataForCreate,
+    public async Task<Result<ICrudData>> Create(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default)
     {
         const string methodName = nameof(Create);
@@ -64,7 +64,7 @@ public abstract class CrudBase
                 Option<ErrorOmd[]> result = await CreateData(crudDataForCreate, cancellationToken);
                 if (result.IsSome)
                 {
-                    return (ErrorOmd[])result;
+                    return Result.Failure<ICrudData>(((ErrorOmd[])result).ToError());
                 }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -84,7 +84,7 @@ public abstract class CrudBase
                     if (e.InnerException.Message.StartsWith("Cannot insert duplicate key row in object",
                             StringComparison.Ordinal))
                     {
-                        return new[] { SystemToolsErrors.SuchARecordAlreadyExists };
+                        return Result.Failure<ICrudData>(SystemToolsErrors.SuchARecordAlreadyExists.ToError());
                     }
                 }
 
@@ -93,7 +93,7 @@ public abstract class CrudBase
                     _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
                 }
 
-                return new[] { SystemToolsErrors.UnexpectedApiException(e) };
+                return Result.Failure<ICrudData>(SystemToolsErrors.UnexpectedApiException(e));
             }
         }
         catch (Exception e)
@@ -103,7 +103,7 @@ public abstract class CrudBase
                 _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
             }
 
-            return new[] { SystemToolsErrors.UnexpectedApiException(e) };
+            return Result.Failure<ICrudData>(SystemToolsErrors.UnexpectedApiException(e));
         }
     }
 
@@ -137,12 +137,12 @@ public abstract class CrudBase
             catch (Exception e)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                return new[] { SystemToolsErrors.UnexpectedApiException(e) };
+                return SystemToolsErrors.UnexpectedApiException(e).ToErrorOmdArray();
             }
         }
         catch (Exception e)
         {
-            return new[] { SystemToolsErrors.UnexpectedApiException(e) };
+            return SystemToolsErrors.UnexpectedApiException(e).ToErrorOmdArray();
         }
     }
 
@@ -188,16 +188,16 @@ public abstract class CrudBase
                     _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
                 }
 
-                return new[] { SystemToolsErrors.UnexpectedApiException(e) };
+                return SystemToolsErrors.UnexpectedApiException(e).ToErrorOmdArray();
             }
         }
         catch (Exception e)
         {
-            return new[] { SystemToolsErrors.UnexpectedApiException(e) };
+            return SystemToolsErrors.UnexpectedApiException(e).ToErrorOmdArray();
         }
     }
 
-    protected abstract Task<OneOf<ICrudData, ErrorOmd[]>> GetOneData(int id,
+    protected abstract Task<Result<ICrudData>> GetOneData(int id,
         CancellationToken cancellationToken = default);
 
     protected abstract ValueTask<Option<ErrorOmd[]>> CreateData(ICrudData crudDataForCreate,
@@ -213,6 +213,6 @@ public abstract class CrudBase
 
     protected abstract Task<Option<ErrorOmd[]>> DeleteData(int id, CancellationToken cancellationToken = default);
 
-    public abstract ValueTask<OneOf<TableRowsData, ErrorOmd[]>> GetTableRowsData(FilterSortRequest filterSortRequest,
+    public abstract ValueTask<Result<TableRowsData>> GetTableRowsData(FilterSortRequest filterSortRequest,
         CancellationToken cancellationToken = default);
 }

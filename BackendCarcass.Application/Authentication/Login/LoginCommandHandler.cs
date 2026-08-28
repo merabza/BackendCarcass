@@ -5,31 +5,29 @@ using BackendCarcass.Application.Services.Authentication;
 using BackendCarcass.Application.Services.Authentication.Models;
 using BackendCarcass.MasterData.Models;
 using BackendCarcassShared.Contracts.V1.Responses;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.Authentication.Login;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class LoginCommandHandler(LoginService loginService)
-    : LoginCommandHandlerBase, ICommandHandlerOmd<LoginRequestCommand, LoginResponse>
+    : LoginCommandHandlerBase, ICommandHandler<LoginRequestCommand, LoginResponse>
 {
-    public async Task<OneOf<LoginResponse, ErrorOmd[]>> Handle(LoginRequestCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result<LoginResponse>> Handle(LoginRequestCommand request, CancellationToken cancellationToken)
     {
-        OneOf<LoginResult, ErrorOmd[]> tryLoginResult =
+        Result<LoginResult> tryLoginResult =
             await loginService.TryToLogin(request.UserName!, request.Password!, cancellationToken);
-        if (tryLoginResult.IsT1)
+        if (tryLoginResult.IsFailure)
         {
-            return tryLoginResult.AsT1;
+            return Result.Failure<LoginResponse>(tryLoginResult.Error);
         }
 
-        AppUser user = tryLoginResult.AsT0.User;
-        var appUserModel = new LoginResponse(user.Id, user.UserName!, user.Email!, tryLoginResult.AsT0.Token,
-            tryLoginResult.AsT0.Roles.Aggregate(string.Empty,
+        AppUser user = tryLoginResult.Value.User;
+        var appUserModel = new LoginResponse(user.Id, user.UserName!, user.Email!, tryLoginResult.Value.Token,
+            tryLoginResult.Value.Roles.Aggregate(string.Empty,
                 (cur, next) => cur + (string.IsNullOrEmpty(cur) ? string.Empty : ", ") + next), user.FirstName,
-            user.LastName, tryLoginResult.AsT0.AppClaims);
-        return appUserModel;
+            user.LastName, tryLoginResult.Value.AppClaims);
+        return Result.Success(appUserModel);
     }
 }

@@ -6,8 +6,7 @@ using BackendCarcass.Database;
 using BackendCarcass.Rights;
 using BackendCarcassDomain.Entities.ManyToManyJoins;
 using Microsoft.EntityFrameworkCore;
-using OneOf;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Repositories;
 
@@ -86,7 +85,7 @@ public sealed class UserRightsRepository : IUserRightsRepository
             .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<OneOf<bool, ErrorOmd[]>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
+    public async Task<Result<bool>> CheckTableCrudRight(int roleDtId, string roleName, int dataTypeDtId,
         string keyByTableName, int dataCrudRightDtId, ECrudOperationType crudType,
         CancellationToken cancellationToken = default)
     {

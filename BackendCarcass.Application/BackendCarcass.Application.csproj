@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
+        <ProjectReference Include="..\..\SystemTools\SystemTools.Application.Abstractions\SystemTools.Application.Abstractions.csproj" />
         <ProjectReference Include="..\BackendCarcass.FilterSort\BackendCarcass.FilterSort.csproj" />
         <ProjectReference Include="..\BackendCarcass.Identity\BackendCarcass.Identity.csproj" />
         <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />
         <ProjectReference Include="..\BackendCarcass.Repositories\BackendCarcass.Repositories.csproj" />
         <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
         <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassShared.Contracts\BackendCarcassShared.Contracts.csproj" />
-        <ProjectReference Include="..\..\SystemTools\SystemTools.MediatRMessagingAbstractions\SystemTools.MediatRMessagingAbstractions.csproj" />
     </ItemGroup>
 
 </Project>

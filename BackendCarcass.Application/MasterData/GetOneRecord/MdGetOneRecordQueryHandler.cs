@@ -1,31 +1,33 @@
-﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.LibCrud;
 using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.Models;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.MasterData.GetOneRecord;
 
 public sealed class MdGetOneRecordQueryHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    : IQueryHandlerOmd<MdGetOneRecordRequestQuery, MasterDataCrudLoadedData>
+    : IQueryHandler<MdGetOneRecordRequestQuery, MasterDataCrudLoadedData>
 {
-    public async Task<OneOf<MasterDataCrudLoadedData, ErrorOmd[]>> Handle(MdGetOneRecordRequestQuery request,
+    public async Task<Result<MasterDataCrudLoadedData>> Handle(MdGetOneRecordRequestQuery request,
         CancellationToken cancellationToken)
     {
-        OneOf<CrudBase, ErrorOmd[]> createMasterDataCrudResult =
+        Result<CrudBase> createMasterDataCrudResult =
             masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
-        if (createMasterDataCrudResult.IsT1)
+        if (createMasterDataCrudResult.IsFailure)
         {
-            return createMasterDataCrudResult.AsT1.ToArray();
+            return Result.Failure<MasterDataCrudLoadedData>(createMasterDataCrudResult.Error);
         }
 
-        CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
-        OneOf<ICrudData, ErrorOmd[]> result = await masterDataCruder.GetOne(request.Id, cancellationToken);
-        return result.Match<OneOf<MasterDataCrudLoadedData, ErrorOmd[]>>(r => (MasterDataCrudLoadedData)r,
-            e => e.ToArray());
+        CrudBase masterDataCruder = createMasterDataCrudResult.Value;
+        Result<ICrudData> result = await masterDataCruder.GetOne(request.Id, cancellationToken);
+        if (result.IsFailure)
+        {
+            return Result.Failure<MasterDataCrudLoadedData>(result.Error);
+        }
+
+        return (MasterDataCrudLoadedData)result.Value;
     }
 }

@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using SystemTools.MediatRMessagingAbstractions;
+using Microsoft.AspNetCore.Http;
+using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.MasterData.UpdateOneRecord;
 
-public sealed class MdUpdateOneRecordRequestCommand : ICommandOmd
+public sealed class MdUpdateOneRecordRequestCommand : ICommand
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public MdUpdateOneRecordRequestCommand(string tableName, HttpRequest httpRequest, int id)

@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.LibCrud;
 using BackendCarcass.MasterData;
 using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared.Errors;
-using Unit = MediatR.Unit;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -16,28 +14,21 @@ namespace BackendCarcass.Application.MasterData.DeleteOneRecord;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MdDeleteOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    : ICommandHandlerOmd<MdDeleteOneRecordRequestCommand>
+    : ICommandHandler<MdDeleteOneRecordRequestCommand>
 {
-    public async Task<OneOf<Unit, ErrorOmd[]>> Handle(MdDeleteOneRecordRequestCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result> Handle(MdDeleteOneRecordRequestCommand request, CancellationToken cancellationToken)
     {
-        OneOf<CrudBase, ErrorOmd[]> createMasterDataCrudResult =
+        Result<CrudBase> createMasterDataCrudResult =
             masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
-        if (createMasterDataCrudResult.IsT1)
+        if (createMasterDataCrudResult.IsFailure)
         {
-            return createMasterDataCrudResult.AsT1;
+            return Result.Failure(createMasterDataCrudResult.Error);
         }
 
-        CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
+        CrudBase masterDataCruder = createMasterDataCrudResult.Value;
         Option<ErrorOmd[]> result = await masterDataCruder.Delete(request.Id, cancellationToken);
-        return result.Match<OneOf<Unit, ErrorOmd[]>>(y =>
-        {
-            List<ErrorOmd> errors =
-            [
-                .. y,
-                MasterDataApiErrors.CannotDeleteNewRecord
-            ];
-            return errors.ToArray();
-        }, () => new Unit());
+        return result.Match<Result>(
+            y => Result.Failure(ErrorOmd.RecreateErrors(y, MasterDataApiErrors.CannotDeleteNewRecord).ToError()),
+            () => Result.Success());
     }
 }

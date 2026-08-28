@@ -1,12 +1,12 @@
-﻿using System.IO;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.LibCrud;
 using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.Models;
 using BackendCarcassShared.Contracts.Errors;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared.Errors;
 
 // ReSharper disable ConvertToPrimaryConstructor
@@ -15,9 +15,9 @@ namespace BackendCarcass.Application.MasterData.CreateOneRecord;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MdCreateOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    : ICommandHandlerOmd<MdCreateOneRecordRequestCommand, MasterDataCrudLoadedData>
+    : ICommandHandler<MdCreateOneRecordRequestCommand, MasterDataCrudLoadedData>
 {
-    public async Task<OneOf<MasterDataCrudLoadedData, ErrorOmd[]>> Handle(MdCreateOneRecordRequestCommand request,
+    public async Task<Result<MasterDataCrudLoadedData>> Handle(MdCreateOneRecordRequestCommand request,
         CancellationToken cancellationToken)
     {
         //ამოვიღოთ მოთხოვნის ტანი
@@ -27,16 +27,21 @@ public sealed class MdCreateOneRecordCommandHandler(IMasterDataLoaderCreator mas
         string body = await reader.ReadToEndAsync(cancellationToken);
 
         var crudData = new MasterDataCrudData(body);
-        OneOf<CrudBase, ErrorOmd[]> createMasterDataCrudResult =
+        Result<CrudBase> createMasterDataCrudResult =
             masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
-        if (createMasterDataCrudResult.IsT1)
+        if (createMasterDataCrudResult.IsFailure)
         {
-            return createMasterDataCrudResult.AsT1;
+            return Result.Failure<MasterDataCrudLoadedData>(createMasterDataCrudResult.Error);
         }
 
-        CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
-        OneOf<ICrudData, ErrorOmd[]> result = await masterDataCruder.Create(crudData, cancellationToken);
-        return result.Match<OneOf<MasterDataCrudLoadedData, ErrorOmd[]>>(rcd => (MasterDataCrudLoadedData)rcd,
-            y => ErrorOmd.RecreateErrors(y, MasterDataApiErrors.CannotCreateNewRecord));
+        CrudBase masterDataCruder = createMasterDataCrudResult.Value;
+        Result<ICrudData> result = await masterDataCruder.Create(crudData, cancellationToken);
+        if (result.IsFailure)
+        {
+            return Result.Failure<MasterDataCrudLoadedData>(ErrorOmd
+                .RecreateErrors(result.Error.ToErrorOmdArray(), MasterDataApiErrors.CannotCreateNewRecord).ToError());
+        }
+
+        return (MasterDataCrudLoadedData)result.Value;
     }
 }

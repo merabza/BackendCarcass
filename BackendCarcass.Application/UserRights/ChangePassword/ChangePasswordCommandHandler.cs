@@ -3,36 +3,33 @@ using System.Threading.Tasks;
 using BackendCarcass.Identity;
 using BackendCarcass.MasterData.Models;
 using BackendCarcassShared.Contracts.Errors;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.UserRights.ChangePassword;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class ChangePasswordCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
-    : ICommandHandlerOmd<ChangePasswordRequestCommand>
+    : ICommandHandler<ChangePasswordRequestCommand>
 {
-    public async Task<OneOf<Unit, ErrorOmd[]>> Handle(ChangePasswordRequestCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result> Handle(ChangePasswordRequestCommand request, CancellationToken cancellationToken)
     {
         //მოვძებნოთ მომხმარებელი მოწოდებული მომხმარებლის სახელით
         AppUser? user = await userMgr.FindByNameAsync(request.UserName!);
         //თუ არ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user == null)
         {
-            return new[] { AuthenticationApiErrors.UsernameOrPasswordIsIncorrect };
+            return Result.Failure(AuthenticationApiErrors.UsernameOrPasswordIsIncorrect);
         }
 
         if (user.Id != request.Userid || currentUser.Name != user.UserName)
         {
-            return new[] { UserRightsErrors.UserAuthenticationFailedThePasswordHasNotBeenChanged };
+            return Result.Failure(UserRightsErrors.UserAuthenticationFailedThePasswordHasNotBeenChanged);
         }
 
         IdentityResult result = await userMgr.ChangePasswordAsync(user, request.OldPassword!, request.NewPassword!);
         //თუ ახალი მომხმარებლის შექმნისას წარმოიშვა პრობლემა, ვჩერდებით
-        return !result.Succeeded ? new[] { UserRightsErrors.FailedToChangePassword } : new Unit();
+        return !result.Succeeded ? Result.Failure(UserRightsErrors.FailedToChangePassword) : Result.Success();
     }
 }

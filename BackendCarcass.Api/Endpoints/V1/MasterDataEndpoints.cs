@@ -12,16 +12,16 @@ using BackendCarcass.Application.MasterData.UpdateOneRecord;
 using BackendCarcass.LibCrud.Models;
 using BackendCarcass.MasterData.Models;
 using BackendCarcassShared.Contracts.V1.Routes;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
-using OneOf;
 using Serilog;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
+using WebSystemTools.WebApi.Abstractions.Infrastructure;
 
 namespace BackendCarcass.Api.Endpoints.V1;
 
@@ -79,16 +79,16 @@ public static class MasterDataEndpoints
     //  თუ ეს ყველა ცხრილზე ნახვის უფლება აქვს მიმდინარე მომხმარებელს, მოხდება ყველა ცხრილის ჩატვირთვა და გამომძახებლისთვის დაბრუნება
     //query like this: localhost:3000/api/masterdata/gettables?tables=tableName1&tables=tableName2&tables=tableName3
     //deprecated
-    public static async Task<Results<Ok<MdGetTablesQueryResponse>, BadRequest<ErrorOmd[]>>> GetTables(
-        StringValues tables, IMediator mediator, CancellationToken cancellationToken = default)
+    public static async Task<Results<Ok<MdGetTablesQueryResponse>, ProblemHttpResult>> GetTables(StringValues tables,
+        IQueryHandler<MdGetTablesRequestQuery, MdGetTablesQueryResponse> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GetTablesQueryHandler)} from {nameof(GetTables)}");
         var query = new MdGetTablesRequestQuery(tables);
-        OneOf<MdGetTablesQueryResponse, ErrorOmd[]> result = await mediator.Send(query, cancellationToken);
+        Result<MdGetTablesQueryResponse> result = await handler.Handle(query, cancellationToken);
 
-        // Explicitly specify the type arguments for the Match method to resolve CS0411
-        return result.Match<Results<Ok<MdGetTablesQueryResponse>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        return result.Match<MdGetTablesQueryResponse, Results<Ok<MdGetTablesQueryResponse>, ProblemHttpResult>>(
+            res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     // GET api/v1/masterdata/getlookuptables?tables=tableName1&tables=tableName2&tables=tableName3
@@ -102,26 +102,28 @@ public static class MasterDataEndpoints
     //        res => TypedResults.Ok(res), errors => TypedResults.BadRequest(errors));
     //}
 
-    public static async Task<Results<Ok<MdGetLookupTablesQueryResponse>, BadRequest<ErrorOmd[]>>> GetLookupTables(
-        StringValues tables, IMediator mediator, CancellationToken cancellationToken = default)
+    public static async Task<Results<Ok<MdGetLookupTablesQueryResponse>, ProblemHttpResult>> GetLookupTables(
+        StringValues tables, IQueryHandler<MdGetLookupTablesRequestQuery, MdGetLookupTablesQueryResponse> handler,
+        CancellationToken cancellationToken = default)
     {
-        Debug.WriteLine($"Call {nameof(GetLookupTablesQueryHandler)} from {nameof(GetTables)}");
+        Debug.WriteLine($"Call {nameof(GetLookupTablesQueryHandler)} from {nameof(GetLookupTables)}");
         var query = new MdGetLookupTablesRequestQuery(tables);
-        OneOf<MdGetLookupTablesQueryResponse, ErrorOmd[]> result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<MdGetLookupTablesQueryResponse>, BadRequest<ErrorOmd[]>>>(
-            res => TypedResults.Ok(res), errors => TypedResults.BadRequest(errors));
+        Result<MdGetLookupTablesQueryResponse> result = await handler.Handle(query, cancellationToken);
+        return result
+            .Match<MdGetLookupTablesQueryResponse, Results<Ok<MdGetLookupTablesQueryResponse>, ProblemHttpResult>>(
+                res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     // GET api/v1/masterdata/gettablerowsdata/{tableName}
-    public static async Task<Results<Ok<TableRowsData>, BadRequest<ErrorOmd[]>>> GetTableRowsData(IMediator mediator,
-        [FromRoute] string tableName, [FromQuery] string filterSortRequest,
-        CancellationToken cancellationToken = default)
+    public static async Task<Results<Ok<TableRowsData>, ProblemHttpResult>> GetTableRowsData(
+        IQueryHandler<GetTableRowsDataRequestQuery, TableRowsData> handler, [FromRoute] string tableName,
+        [FromQuery] string filterSortRequest, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GetTableRowsDataQueryHandler)} from {nameof(GetTableRowsData)}");
         var queryNotes = new GetTableRowsDataRequestQuery(tableName, filterSortRequest);
-        OneOf<TableRowsData, ErrorOmd[]> resultNotes = await mediator.Send(queryNotes, cancellationToken);
-        return resultNotes.Match<Results<Ok<TableRowsData>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        Result<TableRowsData> resultNotes = await handler.Handle(queryNotes, cancellationToken);
+        return resultNotes.Match<TableRowsData, Results<Ok<TableRowsData>, ProblemHttpResult>>(
+            res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
 //შესასვლელი წერტილი (endpoint)
@@ -134,14 +136,15 @@ public static class MasterDataEndpoints
     //  თუ tableName ცხრილის ნახვის უფლება აქვს მიმდინარე მომხმარებელს,
     //   მოხდება id იდენტიფიკატორით ჩანაწერის ამოღება ბაზიდან და გამომძახებლისთვის დაბრუნება
     // GET api/v1/masterdata/{tableName}/{id}
-    public static async Task<Results<Ok<MasterDataCrudLoadedData>, BadRequest<ErrorOmd[]>>> MdGetOneRecord(
-        string tableName, int id, IMediator mediator, CancellationToken cancellationToken = default)
+    public static async Task<Results<Ok<MasterDataCrudLoadedData>, ProblemHttpResult>> MdGetOneRecord(string tableName,
+        int id, IQueryHandler<MdGetOneRecordRequestQuery, MasterDataCrudLoadedData> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdGetOneRecordQueryHandler)} from {nameof(MdGetOneRecord)}");
         var query = new MdGetOneRecordRequestQuery(tableName, id);
-        OneOf<MasterDataCrudLoadedData, ErrorOmd[]> result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<MasterDataCrudLoadedData>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        Result<MasterDataCrudLoadedData> result = await handler.Handle(query, cancellationToken);
+        return result.Match<MasterDataCrudLoadedData, Results<Ok<MasterDataCrudLoadedData>, ProblemHttpResult>>(
+            res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -153,14 +156,16 @@ public static class MasterDataEndpoints
     //  თუ ეს არ აქვს მიმდინარე მომხმარებელს, ბრუნდება შეცდომა
     //  თუ აქვს, მოხდება მოთხოვნის ტანის გაანალიზება და მიღებული ახალი ჩანაწერის ბაზაში დამატება
     // POST api/v1/masterdata/{tableName}
-    public static async Task<Results<Ok<MasterDataCrudLoadedData>, BadRequest<ErrorOmd[]>>> MdCreateOneRecord(
-        string tableName, HttpRequest request, IMediator mediator, CancellationToken cancellationToken = default)
+    public static async Task<Results<Ok<MasterDataCrudLoadedData>, ProblemHttpResult>> MdCreateOneRecord(
+        string tableName, HttpRequest request,
+        ICommandHandler<MdCreateOneRecordRequestCommand, MasterDataCrudLoadedData> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdCreateOneRecordCommandHandler)} from {nameof(MdCreateOneRecord)}");
         var commandRequest = new MdCreateOneRecordRequestCommand(tableName, request);
-        OneOf<MasterDataCrudLoadedData, ErrorOmd[]> result = await mediator.Send(commandRequest, cancellationToken);
-        return result.Match<Results<Ok<MasterDataCrudLoadedData>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        Result<MasterDataCrudLoadedData> result = await handler.Handle(commandRequest, cancellationToken);
+        return result.Match<MasterDataCrudLoadedData, Results<Ok<MasterDataCrudLoadedData>, ProblemHttpResult>>(
+            res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -174,14 +179,15 @@ public static class MasterDataEndpoints
     //  თუ აქვს, მოხდება მოთხოვნის ტანის გაანალიზება და მიღებული შეცვლილი ჩანაწერის ბაზაში დაფიქსირება
     // PUT api/<controller>/<tableName>/5
     //[HttpPut("{tableName}/{id}")]
-    public static async Task<Results<NoContent, BadRequest<ErrorOmd[]>>> MdUpdateOneRecord(string tableName, int id,
-        HttpRequest request, IMediator mediator, CancellationToken cancellationToken = default)
+    public static async Task<Results<NoContent, ProblemHttpResult>> MdUpdateOneRecord(string tableName, int id,
+        HttpRequest request, ICommandHandler<MdUpdateOneRecordRequestCommand> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdUpdateOneRecordCommandHandler)} from {nameof(MdUpdateOneRecord)}");
         var commandRequest = new MdUpdateOneRecordRequestCommand(tableName, request, id);
-        OneOf<Unit, ErrorOmd[]> result = await mediator.Send(commandRequest, cancellationToken);
-        return result.Match<Results<NoContent, BadRequest<ErrorOmd[]>>>(_ => TypedResults.NoContent(),
-            errors => TypedResults.BadRequest(errors));
+        Result result = await handler.Handle(commandRequest, cancellationToken);
+        return result.Match<Results<NoContent, ProblemHttpResult>>(() => TypedResults.NoContent(),
+            errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -194,13 +200,13 @@ public static class MasterDataEndpoints
     //  თუ აქვს, მოხდება id იდენტიფიკატორის მიხედვით tableName ცხრილიდან ჩანაწერის წაშლა
     // DELETE api/<controller>/<tableName>/5
     //[HttpDelete("{tableName}/{id}")]
-    public static async Task<Results<NoContent, BadRequest<ErrorOmd[]>>> MdDeleteOneRecord(string tableName, int id,
-        IMediator mediator, CancellationToken cancellationToken = default)
+    public static async Task<Results<NoContent, ProblemHttpResult>> MdDeleteOneRecord(string tableName, int id,
+        ICommandHandler<MdDeleteOneRecordRequestCommand> handler, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MdDeleteOneRecordCommandHandler)} from {nameof(MdDeleteOneRecord)}");
         var commandRequest = new MdDeleteOneRecordRequestCommand(tableName, id);
-        OneOf<Unit, ErrorOmd[]> result = await mediator.Send(commandRequest, cancellationToken);
-        return result.Match<Results<NoContent, BadRequest<ErrorOmd[]>>>(_ => TypedResults.NoContent(),
-            errors => TypedResults.BadRequest(errors));
+        Result result = await handler.Handle(commandRequest, cancellationToken);
+        return result.Match<Results<NoContent, ProblemHttpResult>>(() => TypedResults.NoContent(),
+            errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 }

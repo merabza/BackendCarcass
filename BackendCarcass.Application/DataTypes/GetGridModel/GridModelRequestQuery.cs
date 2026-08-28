@@ -1,8 +1,8 @@
-﻿using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.DataTypes.GetGridModel;
 
-public sealed class GridModelRequestQuery : IQueryOmd<string>
+public sealed class GridModelRequestQuery : IQuery<string>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public GridModelRequestQuery(string gridName)

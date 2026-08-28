@@ -7,15 +7,15 @@ using BackendCarcass.Application.DataTypes.GetGridModel;
 using BackendCarcass.Application.DataTypes.GetMultipleGridModels;
 using BackendCarcassShared.Contracts.V1.Responses;
 using BackendCarcassShared.Contracts.V1.Routes;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
-using OneOf;
 using Serilog;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
+using WebSystemTools.WebApi.Abstractions.Infrastructure;
 
 namespace BackendCarcass.Api.Endpoints.V1;
 
@@ -51,14 +51,15 @@ public static class DataTypesEndpoints
     //მოქმედება -> ხდება DataType ცხრილის ყველა ჩანაწერის ჩატვირთვა, ოღონდ ველი სადაც ინახება ცხრილების მოდელები
     //   არ ჩაიტვირთება. ასე კეთდება სისწრაფისათვის. ცხრილების მოდელების ჩატვირთვა ხდება ცალკე
     //[HttpGet("getdatatypes")]
-    private static async Task<Results<Ok<DataTypesResponse[]>, BadRequest<ErrorOmd[]>>> DataTypesList(
-        IMediator mediator, CancellationToken cancellationToken = default)
+    private static async Task<Results<Ok<DataTypesResponse[]>, ProblemHttpResult>> DataTypesList(
+        IQueryHandler<DataTypesRequestQuery, DataTypesResponse[]> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(DataTypesListQueryHandler)} from {nameof(DataTypesList)}");
         var query = new DataTypesRequestQuery();
-        OneOf<DataTypesResponse[], ErrorOmd[]> result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<DataTypesResponse[]>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        Result<DataTypesResponse[]> result = await handler.Handle(query, cancellationToken);
+        return result.Match<DataTypesResponse[], Results<Ok<DataTypesResponse[]>, ProblemHttpResult>>(
+            res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -69,14 +70,14 @@ public static class DataTypesEndpoints
     //   თუ აქვს ხდება DataType ცხრილის შესაბამისი ჩანაწერის მოძებნა და იქიდან ჩაიტვირთება ცხრილის მოდელი
     //   ჩატვირთული ინფორმაცია უბრუნდება გამომძახებელს
     //[HttpGet("getgridmodel/{tableName}")]
-    private static async Task<Results<Ok<string>, BadRequest<ErrorOmd[]>>> GridModel(string gridName,
-        IMediator mediator, CancellationToken cancellationToken = default)
+    private static async Task<Results<Ok<string>, ProblemHttpResult>> GridModel(string gridName,
+        IQueryHandler<GridModelRequestQuery, string> handler, CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(GridModelQueryHandler)} from {nameof(GridModel)}");
         var query = new GridModelRequestQuery(gridName);
-        OneOf<string, ErrorOmd[]> result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<string>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        Result<string> result = await handler.Handle(query, cancellationToken);
+        return result.Match<string, Results<Ok<string>, ProblemHttpResult>>(res => TypedResults.Ok(res),
+            errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -95,13 +96,14 @@ public static class DataTypesEndpoints
     //შესაბამისად ეს ინფორმაცია კი ინახება ცხრილების მოდელებში, რისი ჩატვირთვაც აქ ხდება.
     //query like this: example.com/api/forms/getmultiplegridrules?grids=gridName1&grids=gridName2&grids=gridName3
     //[HttpGet("getmultiplegridrules")]
-    private static async Task<Results<Ok<Dictionary<string, string>>, BadRequest<ErrorOmd[]>>> MultipleGridModels(
-        StringValues grids, IMediator mediator, CancellationToken cancellationToken = default)
+    private static async Task<Results<Ok<Dictionary<string, string>>, ProblemHttpResult>> MultipleGridModels(
+        StringValues grids, IQueryHandler<MultipleGridModelsRequestQuery, Dictionary<string, string>> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(MultipleGridModelsQueryHandler)} from {nameof(MultipleGridModels)}");
         var query = new MultipleGridModelsRequestQuery(grids);
-        OneOf<Dictionary<string, string>, ErrorOmd[]> result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<Dictionary<string, string>>, BadRequest<ErrorOmd[]>>>(
-            res => TypedResults.Ok(res), errors => TypedResults.BadRequest(errors));
+        Result<Dictionary<string, string>> result = await handler.Handle(query, cancellationToken);
+        return result.Match<Dictionary<string, string>, Results<Ok<Dictionary<string, string>>, ProblemHttpResult>>(
+            res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 }

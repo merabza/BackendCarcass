@@ -1,8 +1,8 @@
-﻿using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.MasterData.DeleteOneRecord;
 
-public sealed class MdDeleteOneRecordRequestCommand : ICommandOmd
+public sealed class MdDeleteOneRecordRequestCommand : ICommand
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public MdDeleteOneRecordRequestCommand(string tableName, int id)

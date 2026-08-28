@@ -1,10 +1,10 @@
-﻿using BackendCarcass.MasterData.Models;
+using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Http;
-using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.MasterData.CreateOneRecord;
 
-public sealed class MdCreateOneRecordRequestCommand : ICommandOmd<MasterDataCrudLoadedData>
+public sealed class MdCreateOneRecordRequestCommand : ICommand<MasterDataCrudLoadedData>
 {
     // ReSharper disable once ConvertToPrimaryConstructor
     public MdCreateOneRecordRequestCommand(string tableName, HttpRequest httpRequest)

@@ -5,6 +5,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\WebSystemTools\WebSystemTools.WebApi.Abstractions\WebSystemTools.WebApi.Abstractions.csproj" />
         <ProjectReference Include="..\BackendCarcass.Application\BackendCarcass.Application.csproj" />
         <ProjectReference Include="..\BackendCarcass.LibCrud\BackendCarcass.LibCrud.csproj" />
         <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />

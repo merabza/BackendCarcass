@@ -1,8 +1,8 @@
-﻿using SystemTools.MediatRMessagingAbstractions;
+﻿using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.UserRights.ChangeProfile;
 
-public sealed class ChangeProfileRequestCommand : ICommandOmd
+public sealed class ChangeProfileRequestCommand : ICommand
 {
     public int Userid { get; set; }
     public string? UserName { get; set; }

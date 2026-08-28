@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using OneOf;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -247,7 +247,7 @@ public class UserClaimRightsFilterTests
     // Testable version of UserClaimRightsFilter to allow testing
     private sealed class TestableUserClaimRightsFilter : UserClaimRightsFilter
     {
-        private OneOf<bool, ErrorOmd[]>? _mockResult;
+        private Result<bool>? _mockResult;
 
         public TestableUserClaimRightsFilter(string claimName, IUserRightsRepository repo,
             IDatabaseAbstraction databaseAbstraction, ILogger<UserClaimRightsFilter> logger,
@@ -265,25 +265,25 @@ public class UserClaimRightsFilterTests
 
         public void SetupRightsDeterminerResult(ErrorOmd[] errors)
         {
-            _mockResult = errors;
+            _mockResult = Result.Failure<bool>(errors.ToError());
         }
 
         // Override to inject mock behavior
         public new async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context,
             EndpointFilterDelegate next)
         {
-            if (!_mockResult.HasValue)
+            if (_mockResult is null)
             {
                 return await base.InvokeAsync(context, next);
             }
 
-            OneOf<bool, ErrorOmd[]> result = _mockResult.Value;
-            if (result.IsT1)
+            Result<bool> result = _mockResult;
+            if (result.IsFailure)
             {
-                return Results.BadRequest(result.AsT1);
+                return Results.BadRequest(result.Error.ToErrorOmdArray());
             }
 
-            if (!result.AsT0)
+            if (!result.Value)
             {
                 return Results.BadRequest(new[] { RightsApiErrors.InsufficientRights });
             }

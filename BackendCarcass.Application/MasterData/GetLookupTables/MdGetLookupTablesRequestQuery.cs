@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Primitives;
-using SystemTools.MediatRMessagingAbstractions;
+using Microsoft.Extensions.Primitives;
+using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.MasterData.GetLookupTables;
 
-public sealed class MdGetLookupTablesRequestQuery : IQueryOmd<MdGetLookupTablesQueryResponse>
+public sealed class MdGetLookupTablesRequestQuery : IQuery<MdGetLookupTablesQueryResponse>
 {
     //StringValues tables
     //public MdGetLookupTablesQueryRequest(HttpRequest httpRequest)

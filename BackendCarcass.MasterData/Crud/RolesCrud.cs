@@ -12,8 +12,8 @@ using LanguageExt;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using OneOf;
 using SystemTools.Domain.Abstractions;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
@@ -33,15 +33,15 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async ValueTask<OneOf<IEnumerable<IDataType>, ErrorOmd[]>> GetAllRecords(
+    public async ValueTask<Result<IEnumerable<IDataType>>> GetAllRecords(
         CancellationToken cancellationToken = default)
     {
         List<AppRole> roles = await _roleManager.Roles.ToListAsync(cancellationToken);
-        return OneOf<IEnumerable<IDataType>, ErrorOmd[]>.FromT0(roles.Select(x =>
+        return Result.Success<IEnumerable<IDataType>>(roles.Select(x =>
             new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level)));
     }
 
-    public override async ValueTask<OneOf<TableRowsData, ErrorOmd[]>> GetTableRowsData(
+    public override async ValueTask<Result<TableRowsData>> GetTableRowsData(
         FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default)
     {
         IQueryable<AppRole> roles = _roleManager.Roles;
@@ -52,7 +52,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, [.. rows.Select(s => s.EditFields())]);
     }
 
-    protected override async Task<OneOf<ICrudData, ErrorOmd[]>> GetOneData(int id,
+    protected override async Task<Result<ICrudData>> GetOneData(int id,
         CancellationToken cancellationToken = default)
     {
         AppRole? appRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
@@ -61,7 +61,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
             return new RoleCrudData(appRole.Name, appRole.RoleName, appRole.Level);
         }
 
-        return new[] { MasterDataApiErrors.CannotFindRole };
+        return Result.Failure<ICrudData>(MasterDataApiErrors.CannotFindRole.ToError());
     }
 
     protected override async ValueTask<Option<ErrorOmd[]>> CreateData(ICrudData crudDataForCreate,

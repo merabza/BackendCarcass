@@ -1,6 +1,6 @@
-﻿using BackendCarcass.Repositories.Models;
-using SystemTools.MediatRMessagingAbstractions;
+using BackendCarcass.Repositories.Models;
+using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.UserRights.GetMainMenu;
 
-public sealed class MainMenuRequestQuery : IQueryOmd<MainMenuModel>;
+public sealed class MainMenuRequestQuery : IQuery<MainMenuModel>;

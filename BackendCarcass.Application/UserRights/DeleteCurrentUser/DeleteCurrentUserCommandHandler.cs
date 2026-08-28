@@ -1,28 +1,25 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Identity;
 using BackendCarcass.MasterData.Models;
 using BackendCarcass.Repositories;
 using BackendCarcassShared.Contracts.Errors;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.UserRights.DeleteCurrentUser;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class DeleteCurrentUserCommandHandler(UserManager<AppUser> userMgr, ICurrentUser currentUser)
-    : ICommandHandlerOmd<DeleteCurrentUserRequestCommand>
+    : ICommandHandler<DeleteCurrentUserRequestCommand>
 {
-    public async Task<OneOf<Unit, ErrorOmd[]>> Handle(DeleteCurrentUserRequestCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteCurrentUserRequestCommand request, CancellationToken cancellationToken)
     {
         //ეს ერთგვარი ტესტია. თუ კოდი აქამდე მოვიდა, მიმდინარე მომხმარებელი ვალიდურია
         if (currentUser.Name != request.UserName)
         {
-            return new[] { UserRightsErrors.BadRequestFailedToDeleteUser };
+            return Result.Failure(UserRightsErrors.BadRequestFailedToDeleteUser);
         }
 
         var usersMdRepo = new UsersMdRepo(userMgr);
@@ -30,14 +27,14 @@ public sealed class DeleteCurrentUserCommandHandler(UserManager<AppUser> userMgr
         //თუ არ მოიძებნა ასეთი, დავაბრუნოთ შეცდომა
         if (user == null)
         {
-            return new[] { UserRightsErrors.NoUserFound };
+            return Result.Failure(UserRightsErrors.NoUserFound);
         }
 
         if (await usersMdRepo.Delete(user.Id))
         {
-            return new Unit();
+            return Result.Success();
         }
 
-        return new[] { UserRightsErrors.DeletionErrorUserCouldNotBeDeleted };
+        return Result.Failure(UserRightsErrors.DeletionErrorUserCouldNotBeDeleted);
     }
 }

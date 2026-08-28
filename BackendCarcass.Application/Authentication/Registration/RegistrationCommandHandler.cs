@@ -4,15 +4,14 @@ using BackendCarcass.Application.Services.Authentication;
 using BackendCarcass.Application.Services.Authentication.Models;
 using BackendCarcass.MasterData.Models;
 using BackendCarcassShared.Contracts.V1.Responses;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.Authentication.Registration;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
-    ICommandHandlerOmd<RegistrationRequestCommand, LoginResponse>
+    ICommandHandler<RegistrationRequestCommand, LoginResponse>
 {
     private readonly RegistrationService _registrationService;
 
@@ -22,7 +21,7 @@ public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
         _registrationService = registrationService;
     }
 
-    public async Task<OneOf<LoginResponse, ErrorOmd[]>> Handle(RegistrationRequestCommand request,
+    public async Task<Result<LoginResponse>> Handle(RegistrationRequestCommand request,
         CancellationToken cancellationToken)
     {
         var registerParameters = new RegisterParameters
@@ -33,15 +32,15 @@ public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
             LastName = request.LastName!,
             Password = request.Password!
         };
-        OneOf<LoginResult, ErrorOmd[]> tryLoginResult =
+        Result<LoginResult> tryLoginResult =
             await _registrationService.TryToRegister(registerParameters, cancellationToken);
-        if (tryLoginResult.IsT1)
+        if (tryLoginResult.IsFailure)
         {
-            return tryLoginResult.AsT1;
+            return Result.Failure<LoginResponse>(tryLoginResult.Error);
         }
 
-        AppUser user = tryLoginResult.AsT0.User;
-        var appUserModel = new LoginResponse(user.Id, user.UserName!, user.Email!, tryLoginResult.AsT0.Token,
+        AppUser user = tryLoginResult.Value.User;
+        var appUserModel = new LoginResponse(user.Id, user.UserName!, user.Email!, tryLoginResult.Value.Token,
             user.FirstName, user.LastName, string.Empty);
         return appUserModel;
     }

@@ -8,31 +8,36 @@ using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using OneOf;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Repositories;
 
 public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string tableName) : IMdCrudRepo
 {
-    public OneOf<IQueryable<IDataType>, ErrorOmd[]> Load()
+    public Result<IQueryable<IDataType>> Load()
     {
         IEntityType? vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
         if (vvv == null)
         {
-            return new[] { MasterDataApiErrors.TableNotFound(tableName) }; //ვერ ვიპოვეთ შესაბამისი ცხრილი
+            //ვერ ვიპოვეთ შესაბამისი ცხრილი
+            return Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.TableNotFound(tableName).ToError());
         }
 
         MethodInfo? setMethod = carcassContext.GetType().GetMethod("Set", []);
         if (setMethod == null)
         {
-            return new[] { MasterDataApiErrors.SetMethodNotFoundForTable(tableName) }; //ცხრილს არ აქვს მეთოდი Set
+            //ცხრილს არ აქვს მეთოდი Set
+            return Result.Failure<IQueryable<IDataType>>(
+                MasterDataApiErrors.SetMethodNotFoundForTable(tableName).ToError());
         }
 
         object? result = setMethod.MakeGenericMethod(vvv.ClrType).Invoke(carcassContext, null);
         return result == null
-            ? new[] { MasterDataApiErrors.SetMethodReturnsNullForTable(tableName) } //ცხრილის Set მეთოდი აბრუნებს null-ს
-            : OneOf<IQueryable<IDataType>, ErrorOmd[]>.FromT0((IQueryable<IDataType>)result);
+            //ცხრილის Set მეთოდი აბრუნებს null-ს
+            ? Result.Failure<IQueryable<IDataType>>(
+                MasterDataApiErrors.SetMethodReturnsNullForTable(tableName).ToError())
+            : Result.Success((IQueryable<IDataType>)result);
     }
 
     public async Task<Option<ErrorOmd[]>> Create(IDataType newItem)
@@ -70,13 +75,13 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
 
     public async ValueTask<Option<ErrorOmd[]>> Delete(int id)
     {
-        OneOf<IQueryable<IDataType>, ErrorOmd[]> entResult = Load();
-        if (entResult.IsT1)
+        Result<IQueryable<IDataType>> entResult = Load();
+        if (entResult.IsFailure)
         {
-            return entResult.AsT1;
+            return entResult.Error.ToErrorOmdArray();
         }
 
-        List<IDataType> res = await entResult.AsT0.ToListAsync(); // S6966: Await ToListAsync instead.
+        List<IDataType> res = await entResult.Value.ToListAsync(); // S6966: Await ToListAsync instead.
         IDataType? idt = res.SingleOrDefault(w => w.Id == id);
         if (idt == null)
         {

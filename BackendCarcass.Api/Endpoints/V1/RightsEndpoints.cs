@@ -11,15 +11,15 @@ using BackendCarcass.Rights;
 using BackendCarcass.Rights.Models;
 using BackendCarcassShared.Contracts.Errors;
 using BackendCarcassShared.Contracts.V1.Routes;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using OneOf;
 using Serilog;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
+using WebSystemTools.WebApi.Abstractions.Infrastructure;
 
 namespace BackendCarcass.Api.Endpoints.V1;
 
@@ -56,14 +56,15 @@ public static class RightsEndpoints
     //   თუ აქვს ხდება მხოლოდ იმ ინფორმაციის ჩატვირთვა და დაბრუნება, რაზეც უფლება აქვს მიმდინარე მომხმარებელს
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("getparentstreedata/{viewStyle}")]
-    private static async Task<Results<Ok<List<DataTypeModel>>, BadRequest<ErrorOmd[]>>> ParentsTreeData(int viewStyle,
-        IMediator mediator, CancellationToken cancellationToken = default)
+    private static async Task<Results<Ok<List<DataTypeModel>>, ProblemHttpResult>> ParentsTreeData(int viewStyle,
+        IQueryHandler<ParentsTreeDataRequestQuery, List<DataTypeModel>> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ParentsTreeDataQueryHandler)} from {nameof(ParentsTreeData)}");
         var query = new ParentsTreeDataRequestQuery((ERightsEditorViewStyle)viewStyle);
-        OneOf<List<DataTypeModel>, ErrorOmd[]> result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<List<DataTypeModel>>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        Result<List<DataTypeModel>> result = await handler.Handle(query, cancellationToken);
+        return result.Match<List<DataTypeModel>, Results<Ok<List<DataTypeModel>>, ProblemHttpResult>>(
+            res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -73,14 +74,15 @@ public static class RightsEndpoints
     //   თუ აქვს ხდება მხოლოდ იმ ინფორმაციის ჩატვირთვა და დაბრუნება, რაზეც უფლება აქვს მიმდინარე მომხმარებელს
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("getchildrentreedata/{dataTypeKey}/{viewStyle}")]
-    private static async Task<Results<Ok<List<DataTypeModel>>, BadRequest<ErrorOmd[]>>> ChildrenTreeData(
-        string dataTypeKey, int viewStyle, IMediator mediator, CancellationToken cancellationToken = default)
+    private static async Task<Results<Ok<List<DataTypeModel>>, ProblemHttpResult>> ChildrenTreeData(string dataTypeKey,
+        int viewStyle, ICommandHandler<ChildrenTreeDataRequestCommand, List<DataTypeModel>> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ChildrenTreeDataCommandHandler)} from {nameof(ChildrenTreeData)}");
         var query = new ChildrenTreeDataRequestCommand(dataTypeKey, (ERightsEditorViewStyle)viewStyle);
-        OneOf<List<DataTypeModel>, ErrorOmd[]> result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<List<DataTypeModel>>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        Result<List<DataTypeModel>> result = await handler.Handle(query, cancellationToken);
+        return result.Match<List<DataTypeModel>, Results<Ok<List<DataTypeModel>>, ProblemHttpResult>>(
+            res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -92,14 +94,15 @@ public static class RightsEndpoints
     //   თუ აქვს ხდება მხოლოდ იმ ინფორმაციის ჩატვირთვა და დაბრუნება, რაზეც უფლება აქვს მიმდინარე მომხმარებელს
     //   თუ რა ინფორმაცია უნდა ჩაიტვირთოს ეს რეპოზიტორიის მხარეს განისაზღვრება მიწოდებული პარამეტრების საფუძველზე
     //[HttpGet("halfchecks/{dataTypeId}/{dataKey}/{viewStyle}")]
-    private static async Task<Results<Ok<List<TypeDataModel>>, BadRequest<ErrorOmd[]>>> HalfChecks(int dataTypeId,
-        string dataKey, int viewStyle, IMediator mediator, CancellationToken cancellationToken = default)
+    private static async Task<Results<Ok<List<TypeDataModel>>, ProblemHttpResult>> HalfChecks(int dataTypeId,
+        string dataKey, int viewStyle, ICommandHandler<HalfChecksRequestCommand, List<TypeDataModel>> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(HalfChecksCommandHandler)} from {nameof(HalfChecks)}");
         var query = new HalfChecksRequestCommand(dataTypeId, dataKey, (ERightsEditorViewStyle)viewStyle);
-        OneOf<List<TypeDataModel>, ErrorOmd[]> result = await mediator.Send(query, cancellationToken);
-        return result.Match<Results<Ok<List<TypeDataModel>>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        Result<List<TypeDataModel>> result = await handler.Handle(query, cancellationToken);
+        return result.Match<List<TypeDataModel>, Results<Ok<List<TypeDataModel>>, ProblemHttpResult>>(
+            res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)
@@ -111,20 +114,20 @@ public static class RightsEndpoints
     //   რაზეც უფლება აქვს ისინი ინახება.
     //   საბოლოოდ ამ უფლებების შემოწმება ხდება რეპოზიტორიის მხარეს.
     //[HttpPost("savedata")]
-    private static async ValueTask<Results<Ok<bool>, BadRequest<ErrorOmd[]>>> SaveData(
-        [FromBody] List<RightsChangeModel>? changesForSave, IMediator mediator,
+    private static async ValueTask<Results<Ok<bool>, BadRequest<Error>, ProblemHttpResult>> SaveData(
+        [FromBody] List<RightsChangeModel>? changesForSave, ICommandHandler<SaveDataRequestCommand, bool> handler,
         CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(SaveDataCommandHandler)} from {nameof(SaveData)}");
         if (changesForSave is null)
         {
-            return TypedResults.BadRequest(ErrorOmd.Create(CarcassApiErrors.RequestIsEmpty));
+            return TypedResults.BadRequest(CarcassApiErrors.RequestIsEmpty);
         }
 
         var commandRequest = new SaveDataRequestCommand(changesForSave);
-        OneOf<bool, ErrorOmd[]> result = await mediator.Send(commandRequest, cancellationToken);
-        return result.Match<Results<Ok<bool>, BadRequest<ErrorOmd[]>>>(res => TypedResults.Ok(res),
-            errors => TypedResults.BadRequest(errors));
+        Result<bool> result = await handler.Handle(commandRequest, cancellationToken);
+        return result.Match<bool, Results<Ok<bool>, BadRequest<Error>, ProblemHttpResult>>(res => TypedResults.Ok(res),
+            errors => (ProblemHttpResult)CustomResults.Problem(errors));
     }
 
     //შესასვლელი წერტილი (endpoint)

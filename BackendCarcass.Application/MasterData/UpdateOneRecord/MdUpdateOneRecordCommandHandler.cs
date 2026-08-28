@@ -1,4 +1,3 @@
-﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,10 +6,9 @@ using BackendCarcass.MasterData;
 using BackendCarcass.MasterData.Models;
 using BackendCarcassShared.Contracts.Errors;
 using LanguageExt;
-using OneOf;
-using SystemTools.MediatRMessagingAbstractions;
+using SystemTools.Application.Abstractions.Messaging;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared.Errors;
-using Unit = MediatR.Unit;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -18,10 +16,9 @@ namespace BackendCarcass.Application.MasterData.UpdateOneRecord;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class MdUpdateOneRecordCommandHandler(IMasterDataLoaderCreator masterDataLoaderCrudCreator)
-    : ICommandHandlerOmd<MdUpdateOneRecordRequestCommand>
+    : ICommandHandler<MdUpdateOneRecordRequestCommand>
 {
-    public async Task<OneOf<Unit, ErrorOmd[]>> Handle(MdUpdateOneRecordRequestCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result> Handle(MdUpdateOneRecordRequestCommand request, CancellationToken cancellationToken)
     {
         //ამოვიღოთ მოთხოვნის ტანი
         // ReSharper disable once using
@@ -30,23 +27,17 @@ public sealed class MdUpdateOneRecordCommandHandler(IMasterDataLoaderCreator mas
         string body = await reader.ReadToEndAsync(cancellationToken);
 
         var crudData = new MasterDataCrudData(body);
-        OneOf<CrudBase, ErrorOmd[]> createMasterDataCrudResult =
+        Result<CrudBase> createMasterDataCrudResult =
             masterDataLoaderCrudCreator.CreateMasterDataCrud(request.TableName);
-        if (createMasterDataCrudResult.IsT1)
+        if (createMasterDataCrudResult.IsFailure)
         {
-            return createMasterDataCrudResult.AsT1;
+            return Result.Failure(createMasterDataCrudResult.Error);
         }
 
-        CrudBase? masterDataCruder = createMasterDataCrudResult.AsT0;
+        CrudBase masterDataCruder = createMasterDataCrudResult.Value;
         Option<ErrorOmd[]> result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
-        return result.Match<OneOf<Unit, ErrorOmd[]>>(y =>
-        {
-            List<ErrorOmd> errors =
-            [
-                .. y,
-                MasterDataApiErrors.CannotUpdateNewRecord
-            ];
-            return errors.ToArray();
-        }, () => new Unit());
+        return result.Match<Result>(
+            y => Result.Failure(ErrorOmd.RecreateErrors(y, MasterDataApiErrors.CannotUpdateNewRecord).ToError()),
+            () => Result.Success());
     }
 }

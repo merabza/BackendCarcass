@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcassDomain.Entities;
-using OneOf;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.MasterData;
 
 public interface IMasterDataLoader
 {
-    ValueTask<OneOf<IEnumerable<IDataType>, ErrorOmd[]>> GetAllRecords(CancellationToken cancellationToken = default);
+    ValueTask<Result<IEnumerable<IDataType>>> GetAllRecords(CancellationToken cancellationToken = default);
 }
