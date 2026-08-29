@@ -3,10 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Application.Services.Authentication;
 using BackendCarcass.Application.Services.Authentication.Models;
-using BackendCarcass.MasterData.Models;
 using BackendCarcassShared.Contracts.V1.Responses;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
+using AppUser = BackendCarcass.Application.MasterData.Models.AppUser;
 
 namespace BackendCarcass.Application.Authentication.Login;
 

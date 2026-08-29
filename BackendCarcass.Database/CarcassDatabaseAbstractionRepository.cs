@@ -1,10 +1,10 @@
-﻿using SystemTools.RepositoriesShared;
+﻿using BackendCarcass.Application;
 
 namespace BackendCarcass.Database;
 
-public /*open*/ class CarcassDatabaseAbstractionRepository : DatabaseAbstractionRepository
+public /*open*/ class CarcassDatabaseAbstractionRepository
 {
-    protected CarcassDatabaseAbstractionRepository(CarcassDbContext dbContext) : base(dbContext)
+    protected CarcassDatabaseAbstractionRepository(ICarcassApplicationDbContext dbContext)
     {
     }
 }

@@ -1,4 +1,4 @@
-using BackendCarcass.MasterData.Models;
+using BackendCarcass.Application.MasterData.Models;
 using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.MasterData.GetOneRecord;

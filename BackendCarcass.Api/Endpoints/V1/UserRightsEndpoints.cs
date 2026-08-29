@@ -2,11 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Api.Mappers;
+using BackendCarcass.Application.Repositories.Models;
 using BackendCarcass.Application.UserRights.ChangePassword;
 using BackendCarcass.Application.UserRights.ChangeProfile;
 using BackendCarcass.Application.UserRights.DeleteCurrentUser;
 using BackendCarcass.Application.UserRights.GetMainMenu;
-using BackendCarcass.Repositories.Models;
 using BackendCarcassShared.Contracts.Errors;
 using BackendCarcassShared.Contracts.V1.Requests;
 using BackendCarcassShared.Contracts.V1.Routes;

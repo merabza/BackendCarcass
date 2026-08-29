@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.MasterData;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
 

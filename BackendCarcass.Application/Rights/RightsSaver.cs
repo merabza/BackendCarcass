@@ -1,0 +1,100 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using BackendCarcass.Application.Rights.Models;
+using BackendCarcass.Domain.DataTypes;
+using BackendCarcass.Domain.Roles;
+using BackendCarcass.Domain.Users;
+using Microsoft.Extensions.Logging;
+using SystemTools.Domain.Abstractions;
+using SystemTools.SystemToolsShared;
+
+// ReSharper disable ConvertToPrimaryConstructor
+
+namespace BackendCarcass.Application.Rights;
+
+public sealed class RightsSaver
+{
+    private readonly IDatabaseAbstraction _databaseAbstraction;
+    private readonly ILogger _logger;
+    private readonly IRightsRepository _repo;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public RightsSaver(ILogger logger, IRightsRepository repo, IUnitOfWork unitOfWork,
+        IDatabaseAbstraction databaseAbstraction)
+    {
+        _logger = logger;
+        _repo = repo;
+        _unitOfWork = unitOfWork;
+        _databaseAbstraction = databaseAbstraction;
+    }
+
+    public async Task<bool> SaveRightsChanges(string userName, List<RightsChangeModel> changedRights,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            string dataTypeTableName = _databaseAbstraction.GetTableName<DataType>();
+            int dtDataId = await _repo.DataTypeIdByTableName(dataTypeTableName, cancellationToken);
+            int mmjDataId =
+                await _repo.DataTypeIdByTableName($"{dataTypeTableName}{dataTypeTableName}", cancellationToken);
+            int roleDataId =
+                await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+            int userDataId =
+                await _repo.DataTypeIdByTableName(_databaseAbstraction.GetTableName<User>(), cancellationToken);
+            List<Tuple<string, string>> allowPairs = await _repo.ManyToManyJoinsPcc4(userDataId, userName, roleDataId,
+                mmjDataId, dtDataId, dtDataId, cancellationToken);
+
+            foreach (RightsChangeModel drr in changedRights)
+            {
+                if (drr.Parent is null || drr.Child is null)
+                {
+                    throw new Exception("SaveRightsChanges: parent or child keys are not valid");
+                }
+
+                string? parentKey = await _repo.DataTypeKeyById(drr.Parent.DtId, cancellationToken);
+                string? childKey = await _repo.DataTypeKeyById(drr.Child.DtId, cancellationToken);
+
+                if (parentKey is null || childKey is null)
+                {
+                    throw new Exception("SaveRightsChanges: parent or child keys are not valid");
+                }
+
+                if (!allowPairs.Contains(new Tuple<string, string>(parentKey, childKey)))
+                {
+                    continue;
+                }
+
+                ManyToManyJoinModel? mmj = await _repo.GetOneManyToManyJoin(drr.Parent.DtId, drr.Parent.DKey,
+                    drr.Child.DtId, drr.Child.DKey, cancellationToken);
+
+                if (mmj == null && drr.Checked)
+                {
+                    if (!await _repo.CreateAndSaveOneManyToManyJoin(drr.Parent.DtId, drr.Parent.DKey, drr.Child.DtId,
+                            drr.Child.DKey, cancellationToken))
+                    {
+                        return false;
+                    }
+                }
+                else if (mmj != null && !drr.Checked)
+                {
+                    if (await _repo.RemoveOneManyToManyJoin(mmj, cancellationToken))
+                    {
+                        continue;
+                    }
+
+                    return false;
+                }
+            }
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An error occurred in SaveRightsChanges.");
+            return false;
+        }
+    }
+}

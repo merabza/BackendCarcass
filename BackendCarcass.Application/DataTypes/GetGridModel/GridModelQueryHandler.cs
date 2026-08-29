@@ -1,9 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Repositories;
 using BackendCarcassShared.Contracts.Errors;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
+using IMenuRightsRepository = BackendCarcass.Application.Repositories.IMenuRightsRepository;
 
 namespace BackendCarcass.Application.DataTypes.GetGridModel;
 

@@ -2,10 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.MasterData;
-using BackendCarcass.MasterData.Models;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
+using SrvModel = BackendCarcass.Application.MasterData.Models.SrvModel;
 
 namespace BackendCarcass.Application.MasterData.GetLookupTables;
 

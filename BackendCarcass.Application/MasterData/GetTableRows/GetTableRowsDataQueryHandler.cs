@@ -1,12 +1,16 @@
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.FilterSort.Models;
-using BackendCarcass.LibCrud;
-using BackendCarcass.LibCrud.Models;
-using BackendCarcass.MasterData;
+using BackendCarcass.Application.Crud;
+using BackendCarcass.Application.Crud.Models;
+using BackendCarcass.Application.FilterSort.Models;
 using BackendCarcassShared.Contracts.Errors;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
+
+//using CrudBase = BackendCarcass.Application.Crud.CrudBase;
+//using FilterSortRequest = BackendCarcass.Application.Crud.Models.FilterSortRequest;
+//using FilterSortRequestFactory = BackendCarcass.Application.FilterSort.Models.FilterSortRequestFactory;
+//using TableRowsData = BackendCarcass.Application.Crud.Models.TableRowsData;
 
 namespace BackendCarcass.Application.MasterData.GetTableRows;
 

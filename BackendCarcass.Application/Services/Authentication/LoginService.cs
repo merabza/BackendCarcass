@@ -1,12 +1,16 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Application.Identity.Models;
+using BackendCarcass.Application.MasterData.Models;
+using BackendCarcass.Application.Repositories;
 using BackendCarcass.Application.Services.Authentication.Models;
-using BackendCarcass.Identity.Models;
-using BackendCarcass.MasterData.Models;
-using BackendCarcass.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using SystemTools.SharedKernel;
+
+//using AppUser = BackendCarcass.Application.MasterData.Models.AppUser;
+//using IdentitySettings = BackendCarcass.Application.Identity.Models.IdentitySettings;
+//using IUserClaimsRepository = BackendCarcass.Application.Repositories.IUserClaimsRepository;
 
 namespace BackendCarcass.Application.Services.Authentication;
 

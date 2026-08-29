@@ -1,5 +1,5 @@
-﻿using BackendCarcassDomain.Entities.DataTypes;
-using BackendCarcassDomain.Entities.ManyToManyJoins;
+﻿using BackendCarcass.Domain.DataTypes;
+using BackendCarcass.Domain.ManyToManyJoins;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SystemTools.DatabaseToolsShared;

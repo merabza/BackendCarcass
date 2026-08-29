@@ -1,4 +1,4 @@
-using BackendCarcass.LibCrud.Models;
+using BackendCarcass.Application.Crud.Models;
 using SystemTools.Application.Abstractions.Messaging;
 
 namespace BackendCarcass.Application.MasterData.GetTableRows;

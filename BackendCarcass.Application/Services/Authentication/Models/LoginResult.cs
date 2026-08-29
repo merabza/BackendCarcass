@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
-using BackendCarcass.MasterData.Models;
+using BackendCarcass.Application.MasterData.Models;
+
+//using AppUser = BackendCarcass.Application.MasterData.Models.AppUser;
 
 namespace BackendCarcass.Application.Services.Authentication.Models;
 

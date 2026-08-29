@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Identity;
-using BackendCarcass.Rights;
+using BackendCarcass.Application.Identity;
+using BackendCarcass.Application.Rights;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SystemTools.SharedKernel;

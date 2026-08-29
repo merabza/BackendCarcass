@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using BackendCarcass.Rights;
-using BackendCarcass.Rights.Models;
+using BackendCarcass.Application.Rights.Models;
 using SystemTools.Application.Abstractions.Messaging;
+
+//using TypeDataModel = BackendCarcass.Application.Rights.Models.TypeDataModel;
 
 namespace BackendCarcass.Application.Rights.GetHalfChecks;
 

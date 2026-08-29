@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
-using BackendCarcass.Rights.Models;
+using BackendCarcass.Application.Rights.Models;
 using SystemTools.Application.Abstractions.Messaging;
+
+//using RightsChangeModel = BackendCarcass.Application.Rights.Models.RightsChangeModel;
 
 namespace BackendCarcass.Application.Rights.SaveRightsChanges;
 

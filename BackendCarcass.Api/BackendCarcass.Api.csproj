@@ -7,10 +7,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\WebSystemTools\WebSystemTools.WebApi.Abstractions\WebSystemTools.WebApi.Abstractions.csproj" />
         <ProjectReference Include="..\BackendCarcass.Application\BackendCarcass.Application.csproj" />
-        <ProjectReference Include="..\BackendCarcass.LibCrud\BackendCarcass.LibCrud.csproj" />
-        <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />
-        <ProjectReference Include="..\BackendCarcass.Repositories\BackendCarcass.Repositories.csproj" />
-        <ProjectReference Include="..\BackendCarcass.Rights\BackendCarcass.Rights.csproj" />
         <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassShared.Contracts\BackendCarcassShared.Contracts.csproj" />
         <ProjectReference Include="..\..\WebSystemTools\WebSystemTools.CorsTools\WebSystemTools.CorsTools.csproj" />
     </ItemGroup>

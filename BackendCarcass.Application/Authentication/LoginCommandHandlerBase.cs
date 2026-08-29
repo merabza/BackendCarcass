@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using BackendCarcass.MasterData.Models;
 using Microsoft.AspNetCore.Identity;
+using AppUser = BackendCarcass.Application.MasterData.Models.AppUser;
 
 namespace BackendCarcass.Application.Authentication;
 

@@ -1,14 +1,12 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.LibCrud;
-using BackendCarcass.MasterData;
-using BackendCarcass.MasterData.Models;
 using BackendCarcassShared.Contracts.Errors;
-using LanguageExt;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared.Errors;
+using CrudBase = BackendCarcass.Application.Crud.CrudBase;
+using MasterDataCrudData = BackendCarcass.Application.MasterData.Models.MasterDataCrudData;
 
 // ReSharper disable ConvertToPrimaryConstructor
 
@@ -35,9 +33,10 @@ public sealed class MdUpdateOneRecordCommandHandler(IMasterDataLoaderCreator mas
         }
 
         CrudBase masterDataCruder = createMasterDataCrudResult.Value;
-        Option<ErrorOmd[]> result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
-        return result.Match<Result>(
-            y => Result.Failure(ErrorOmd.RecreateErrors(y, MasterDataApiErrors.CannotUpdateNewRecord).ToError()),
-            () => Result.Success());
+        Result result = await masterDataCruder.Update(request.Id, crudData, cancellationToken);
+        return result.IsFailure
+            ? Result.Failure(ErrorOmd
+                .RecreateErrors(result.Error.ToErrorOmdArray(), MasterDataApiErrors.CannotUpdateNewRecord).ToError())
+            : Result.Success();
     }
 }

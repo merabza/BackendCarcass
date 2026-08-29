@@ -1,5 +1,5 @@
-﻿using BackendCarcass.Identity;
-using BackendCarcass.Rights;
+﻿using BackendCarcass.Application.Identity;
+using BackendCarcass.Application.Rights;
 using Microsoft.Extensions.Logging;
 using SystemTools.SystemToolsShared;
 

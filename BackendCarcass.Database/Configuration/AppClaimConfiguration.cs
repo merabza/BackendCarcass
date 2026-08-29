@@ -1,4 +1,4 @@
-﻿using BackendCarcassDomain.Entities.AppClaims;
+﻿using BackendCarcass.Domain.AppClaims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

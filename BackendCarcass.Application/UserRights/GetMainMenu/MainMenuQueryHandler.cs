@@ -1,10 +1,14 @@
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Identity;
-using BackendCarcass.Repositories;
-using BackendCarcass.Repositories.Models;
+using BackendCarcass.Application.Identity;
+using BackendCarcass.Application.Repositories;
+using BackendCarcass.Application.Repositories.Models;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
+
+//using ICurrentUser = BackendCarcass.Application.Identity.ICurrentUser;
+//using IMenuRightsRepository = BackendCarcass.Application.Repositories.IMenuRightsRepository;
+//using MainMenuModel = BackendCarcass.Application.Repositories.Models.MainMenuModel;
 
 namespace BackendCarcass.Application.UserRights.GetMainMenu;
 

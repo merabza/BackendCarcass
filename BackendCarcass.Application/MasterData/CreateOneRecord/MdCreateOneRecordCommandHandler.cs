@@ -1,13 +1,17 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.LibCrud;
-using BackendCarcass.MasterData;
-using BackendCarcass.MasterData.Models;
+using BackendCarcass.Application.Crud;
+using BackendCarcass.Application.MasterData.Models;
 using BackendCarcassShared.Contracts.Errors;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared.Errors;
+
+//using CrudBase = BackendCarcass.Application.Crud.CrudBase;
+//using ICrudData = BackendCarcass.Application.Crud.ICrudData;
+//using MasterDataCrudData = BackendCarcass.Application.MasterData.Models.MasterDataCrudData;
+//using MasterDataCrudLoadedData = BackendCarcass.Application.MasterData.Models.MasterDataCrudLoadedData;
 
 // ReSharper disable ConvertToPrimaryConstructor
 

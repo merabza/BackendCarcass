@@ -1,4 +1,4 @@
-﻿using BackendCarcassDomain.Entities.DataTypes;
+﻿using BackendCarcass.Domain.DataTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SystemTools.DatabaseToolsShared;

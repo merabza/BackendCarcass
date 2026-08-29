@@ -1,4 +1,4 @@
-﻿using BackendCarcassDomain.Entities.MenuGroups;
+﻿using BackendCarcass.Domain.MenuGroups;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

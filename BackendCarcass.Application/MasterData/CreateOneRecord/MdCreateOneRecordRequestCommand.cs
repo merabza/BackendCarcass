@@ -1,4 +1,4 @@
-using BackendCarcass.MasterData.Models;
+using BackendCarcass.Application.MasterData.Models;
 using Microsoft.AspNetCore.Http;
 using SystemTools.Application.Abstractions.Messaging;
 

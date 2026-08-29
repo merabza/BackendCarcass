@@ -1,4 +1,4 @@
-﻿using BackendCarcassDomain.Entities.Roles;
+﻿using BackendCarcass.Domain.Roles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

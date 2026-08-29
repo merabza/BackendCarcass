@@ -1,12 +1,13 @@
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Identity;
-using BackendCarcass.Rights;
+using BackendCarcass.Application.Identity;
 using Microsoft.Extensions.Logging;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.Domain.Abstractions;
 using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
+
+//using ICurrentUser = BackendCarcass.Application.Identity.ICurrentUser;
 
 namespace BackendCarcass.Application.Rights.SaveRightsChanges;
 

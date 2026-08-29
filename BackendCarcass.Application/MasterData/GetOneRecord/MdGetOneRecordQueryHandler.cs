@@ -1,8 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.LibCrud;
-using BackendCarcass.MasterData;
-using BackendCarcass.MasterData.Models;
+using BackendCarcass.Application.Crud;
+using BackendCarcass.Application.MasterData.Models;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
 

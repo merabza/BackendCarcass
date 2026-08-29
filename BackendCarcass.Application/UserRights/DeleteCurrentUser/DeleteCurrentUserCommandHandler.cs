@@ -1,12 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Identity;
-using BackendCarcass.MasterData.Models;
-using BackendCarcass.Repositories;
 using BackendCarcassShared.Contracts.Errors;
 using Microsoft.AspNetCore.Identity;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
+using AppUser = BackendCarcass.Application.MasterData.Models.AppUser;
+using ICurrentUser = BackendCarcass.Application.Identity.ICurrentUser;
+using UsersMdRepo = BackendCarcass.Application.Repositories.UsersMdRepo;
 
 namespace BackendCarcass.Application.UserRights.DeleteCurrentUser;
 
@@ -30,7 +30,8 @@ public sealed class DeleteCurrentUserCommandHandler(UserManager<AppUser> userMgr
             return Result.Failure(UserRightsErrors.NoUserFound);
         }
 
-        if (await usersMdRepo.Delete(user.Id))
+        Result deleteResult = await usersMdRepo.Delete(user.Id);
+        if (deleteResult.IsSuccess)
         {
             return Result.Success();
         }

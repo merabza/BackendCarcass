@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using BackendCarcass.Rights;
-using BackendCarcass.Rights.Models;
+using BackendCarcass.Application.Rights.Models;
 using SystemTools.Application.Abstractions.Messaging;
+
+//using DataTypeModel = BackendCarcass.Application.Rights.Models.DataTypeModel;
 
 namespace BackendCarcass.Application.Rights.GetChildrenTree;
 

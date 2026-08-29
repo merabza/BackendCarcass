@@ -1,13 +1,16 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Identity;
-using BackendCarcass.MasterData;
-using BackendCarcass.Rights;
-using BackendCarcass.Rights.Models;
+using BackendCarcass.Application.Identity;
+using BackendCarcass.Application.MasterData;
+using BackendCarcass.Application.Rights.Models;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
+
+//using DataTypeModel = BackendCarcass.Application.Rights.Models.DataTypeModel;
+//using ICurrentUser = BackendCarcass.Application.Identity.ICurrentUser;
+//using IReturnValuesRepository = BackendCarcass.Application.MasterData.IReturnValuesRepository;
 
 namespace BackendCarcass.Application.Rights.GetParentsTree;
 

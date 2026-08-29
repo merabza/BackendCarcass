@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using BackendCarcass.MasterData.Models;
+using BackendCarcass.Application.MasterData.Models;
 
 namespace BackendCarcass.Application.MasterData.GetLookupTables;
 
