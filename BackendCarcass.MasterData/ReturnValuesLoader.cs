@@ -80,8 +80,9 @@ public sealed class ReturnValuesLoader
 
         if (errors.Count > 0)
         {
-            return Result.Failure<Dictionary<string, IEnumerable<SrvModel>>>(
-                errors.Count == 1 ? errors[0] : new ValidationError([.. errors]));
+            return Result.Failure<Dictionary<string, IEnumerable<SrvModel>>>(errors.Count == 1
+                ? errors[0]
+                : new ValidationError([.. errors]));
         }
 
         return resultList;

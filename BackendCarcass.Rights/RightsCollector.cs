@@ -32,8 +32,8 @@ public sealed class RightsCollector
         _databaseAbstraction = databaseAbstraction;
     }
 
-    public async Task<Result<List<DataTypeModel>>> ParentsTreeData(string userName,
-        ERightsEditorViewStyle viewStyle, CancellationToken cancellationToken = default)
+    public async Task<Result<List<DataTypeModel>>> ParentsTreeData(string userName, ERightsEditorViewStyle viewStyle,
+        CancellationToken cancellationToken = default)
     {
         IEnumerable<DataTypeModelForRvs> dataTypes =
             (viewStyle == ERightsEditorViewStyle.NormalView
@@ -69,8 +69,9 @@ public sealed class RightsCollector
 
         if (errors.Count > 0)
         {
-            return Result.Failure<List<DataTypeModel>>(
-                errors.Count == 1 ? errors[0] : new ValidationError([.. errors]));
+            return Result.Failure<List<DataTypeModel>>(errors.Count == 1
+                ? errors[0]
+                : new ValidationError([.. errors]));
         }
 
         return dataTypeModels;

@@ -55,8 +55,9 @@ public sealed class MasterDataLoader
 
         if (errors.Count > 0)
         {
-            return Result.Failure<Dictionary<string, IEnumerable<dynamic>>>(
-                errors.Count == 1 ? errors[0] : new ValidationError([.. errors]));
+            return Result.Failure<Dictionary<string, IEnumerable<dynamic>>>(errors.Count == 1
+                ? errors[0]
+                : new ValidationError([.. errors]));
         }
 
         return resultList;

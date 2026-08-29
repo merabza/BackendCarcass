@@ -33,17 +33,15 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async ValueTask<Result<IEnumerable<IDataType>>> GetAllRecords(
-        CancellationToken cancellationToken = default)
+    public async ValueTask<Result<IEnumerable<IDataType>>> GetAllRecords(CancellationToken cancellationToken = default)
     {
         List<AppUser> users = await _userManager.Users.ToListAsync(cancellationToken);
-        return Result.Success<IEnumerable<IDataType>>(users
-            .Where(x => x.UserName is not null && x.Email is not null)
+        return Result.Success<IEnumerable<IDataType>>(users.Where(x => x.UserName is not null && x.Email is not null)
             .Select(x => new UserCrudData(x.UserName!, x.FirstName, x.LastName, x.Email!)));
     }
 
-    public override async ValueTask<Result<TableRowsData>> GetTableRowsData(
-        FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default)
+    public override async ValueTask<Result<TableRowsData>> GetTableRowsData(FilterSortRequest filterSortRequest,
+        CancellationToken cancellationToken = default)
     {
         IQueryable<AppUser> users = _userManager.Users;
         (int realOffset, int count, List<UserCrudData> rows) = await users.UseCustomSortFilterPagination(
@@ -53,8 +51,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, [.. rows.Select(s => s.EditFields())]);
     }
 
-    protected override async Task<Result<ICrudData>> GetOneData(int id,
-        CancellationToken cancellationToken = default)
+    protected override async Task<Result<ICrudData>> GetOneData(int id, CancellationToken cancellationToken = default)
     {
         AppUser? appUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (appUser?.UserName is not null && appUser.Email is not null)

@@ -45,8 +45,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async ValueTask<Result<IEnumerable<IDataType>>> GetAllRecords(
-        CancellationToken cancellationToken = default)
+    public async ValueTask<Result<IEnumerable<IDataType>>> GetAllRecords(CancellationToken cancellationToken = default)
     {
         Result<IQueryable<IDataType>> queryResult = Query();
         if (queryResult.IsFailure)
@@ -73,22 +72,22 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         MethodInfo? generic = method?.MakeGenericMethod(_entityType.ClrType);
         if (generic is null)
         {
-            return Result.Failure<IEnumerable<IDataType>>(
-                MasterDataCrudErrors.GenericMethodWasNotCreated(nameof(OrderBySortId)).ToError());
+            return Result.Failure<IEnumerable<IDataType>>(MasterDataCrudErrors
+                .GenericMethodWasNotCreated(nameof(OrderBySortId)).ToError());
         }
 
         object? queryRunResult = generic.Invoke(this, [query]);
         if (queryRunResult is null)
         {
-            return Result.Failure<IEnumerable<IDataType>>(
-                MasterDataCrudErrors.MethodResultIsNull(nameof(OrderBySortId)).ToError());
+            return Result.Failure<IEnumerable<IDataType>>(MasterDataCrudErrors.MethodResultIsNull(nameof(OrderBySortId))
+                .ToError());
         }
 
         return (List<IDataType>)queryRunResult;
     }
 
-    public static Result<MasterDataCrud> Create(string tableName, ILogger logger,
-        ICarcassMasterDataRepository cmdRepo, IUnitOfWork unitOfWork, IDatabaseAbstraction databaseAbstraction)
+    public static Result<MasterDataCrud> Create(string tableName, ILogger logger, ICarcassMasterDataRepository cmdRepo,
+        IUnitOfWork unitOfWork, IDatabaseAbstraction databaseAbstraction)
     {
         IEntityType? entityType = cmdRepo.GetEntityTypeByTableName(tableName);
         if (entityType is null)
@@ -141,8 +140,8 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         ];
     }
 
-    public override async ValueTask<Result<TableRowsData>> GetTableRowsData(
-        FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default)
+    public override async ValueTask<Result<TableRowsData>> GetTableRowsData(FilterSortRequest filterSortRequest,
+        CancellationToken cancellationToken = default)
     {
         Result<object> queryResult = QueryObject();
         if (queryResult.IsFailure)
@@ -158,16 +157,16 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         MethodInfo? generic = method?.MakeGenericMethod(_entityType.ClrType);
         if (generic is null)
         {
-            return Result.Failure<TableRowsData>(
-                MasterDataCrudErrors.GenericMethodWasNotCreated(nameof(UseCustomSortFilterPagination)).ToError());
+            return Result.Failure<TableRowsData>(MasterDataCrudErrors
+                .GenericMethodWasNotCreated(nameof(UseCustomSortFilterPagination)).ToError());
         }
 
         // ReSharper disable once using
         using var result = (Task<TableRowsData>?)generic.Invoke(this, [query, filterSortRequest, cancellationToken]);
         if (result is null)
         {
-            return Result.Failure<TableRowsData>(
-                MasterDataCrudErrors.MethodResultTaskIsNull(nameof(UseCustomSortFilterPagination)).ToError());
+            return Result.Failure<TableRowsData>(MasterDataCrudErrors
+                .MethodResultTaskIsNull(nameof(UseCustomSortFilterPagination)).ToError());
         }
 
         return await result;
@@ -231,8 +230,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, rows);
     }
 
-    protected override async Task<Result<ICrudData>> GetOneData(int id,
-        CancellationToken cancellationToken = default)
+    protected override async Task<Result<ICrudData>> GetOneData(int id, CancellationToken cancellationToken = default)
     {
         Result<IDataType> getOneRecordResult = await GetOneRecord(id, cancellationToken);
         if (getOneRecordResult.IsFailure)
@@ -340,15 +338,15 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         if (setMethod is null)
         {
             //ცხრილს არ აქვს მეთოდი Set
-            return Result.Failure<IQueryable<IDataType>>(
-                MasterDataApiErrors.SetMethodNotFoundForTable(_tableName).ToError());
+            return Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.SetMethodNotFoundForTable(_tableName)
+                .ToError());
         }
 
         object? result = _cmdRepo.RunGenericMethodForLoadAllRecords(setMethod, _entityType);
         return result is null
             //ცხრილის Set მეთოდი აბრუნებს null-ს
-            ? Result.Failure<IQueryable<IDataType>>(
-                MasterDataApiErrors.SetMethodReturnsNullForTable(_tableName).ToError())
+            ? Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.SetMethodReturnsNullForTable(_tableName)
+                .ToError())
             : Result.Success((IQueryable<IDataType>)result);
     }
 
@@ -428,8 +426,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             newItemWsi.SortId--;
             if (await sortHelper.IsSortIdExists(queryResult.Value, newItemWsi.SortId, 0))
             {
-                await sortHelper.IncreaseSortIds(queryResult.Value, newItemWsi.SortId, sortIdMax, 0,
-                    cancellationToken);
+                await sortHelper.IncreaseSortIds(queryResult.Value, newItemWsi.SortId, sortIdMax, 0, cancellationToken);
             }
         }
         //3. დავადგინოთ არის თუ არა ისეთი ჩანაწერები, რომლებიც იწვევს SortId-ის ჩავარდნას და გამოვასწოროთ ჩავარდნები.

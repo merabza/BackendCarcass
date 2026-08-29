@@ -295,8 +295,8 @@ public sealed class RightsDeterminer
         return false;
     }
 
-    private async ValueTask<Result<bool>> CheckCrudRightByTableKey(string tableKey,
-        Option<ECrudOperationType> crudType, CancellationToken cancellationToken = default)
+    private async ValueTask<Result<bool>> CheckCrudRightByTableKey(string tableKey, Option<ECrudOperationType> crudType,
+        CancellationToken cancellationToken = default)
     {
         List<Error> errors = [];
         if (crudType.IsNone)

@@ -36,8 +36,7 @@ public sealed class UserTableRightsFilter : IEndpointFilter
 
         var rightsDeterminer = new RightsDeterminer(_repo, _logger, _currentUser, _databaseAbstraction);
         Result checkTableRightsResult = await rightsDeterminer.CheckTableRights(_currentUser.Name,
-            context.HttpContext.Request.Method, new TableKeyName { TableName = strTableName },
-            CancellationToken.None);
+            context.HttpContext.Request.Method, new TableKeyName { TableName = strTableName }, CancellationToken.None);
 
         if (checkTableRightsResult.IsFailure)
         {

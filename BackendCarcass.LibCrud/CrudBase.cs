@@ -197,8 +197,7 @@ public abstract class CrudBase
         }
     }
 
-    protected abstract Task<Result<ICrudData>> GetOneData(int id,
-        CancellationToken cancellationToken = default);
+    protected abstract Task<Result<ICrudData>> GetOneData(int id, CancellationToken cancellationToken = default);
 
     protected abstract ValueTask<Option<ErrorOmd[]>> CreateData(ICrudData crudDataForCreate,
         CancellationToken cancellationToken = default);

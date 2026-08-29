@@ -33,16 +33,15 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
 
     protected override int JustCreatedId => _justCreated?.Id ?? 0;
 
-    public async ValueTask<Result<IEnumerable<IDataType>>> GetAllRecords(
-        CancellationToken cancellationToken = default)
+    public async ValueTask<Result<IEnumerable<IDataType>>> GetAllRecords(CancellationToken cancellationToken = default)
     {
         List<AppRole> roles = await _roleManager.Roles.ToListAsync(cancellationToken);
         return Result.Success<IEnumerable<IDataType>>(roles.Select(x =>
             new RoleCrudData(x.Name ?? x.RoleName, x.RoleName, x.Level)));
     }
 
-    public override async ValueTask<Result<TableRowsData>> GetTableRowsData(
-        FilterSortRequest filterSortRequest, CancellationToken cancellationToken = default)
+    public override async ValueTask<Result<TableRowsData>> GetTableRowsData(FilterSortRequest filterSortRequest,
+        CancellationToken cancellationToken = default)
     {
         IQueryable<AppRole> roles = _roleManager.Roles;
 
@@ -52,8 +51,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         return new TableRowsData(count, realOffset, [.. rows.Select(s => s.EditFields())]);
     }
 
-    protected override async Task<Result<ICrudData>> GetOneData(int id,
-        CancellationToken cancellationToken = default)
+    protected override async Task<Result<ICrudData>> GetOneData(int id, CancellationToken cancellationToken = default)
     {
         AppRole? appRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (appRole?.Name is not null)

@@ -28,15 +28,15 @@ public sealed class MdCrudRepoBase(CarcassDbContext carcassContext, string table
         if (setMethod == null)
         {
             //ცხრილს არ აქვს მეთოდი Set
-            return Result.Failure<IQueryable<IDataType>>(
-                MasterDataApiErrors.SetMethodNotFoundForTable(tableName).ToError());
+            return Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.SetMethodNotFoundForTable(tableName)
+                .ToError());
         }
 
         object? result = setMethod.MakeGenericMethod(vvv.ClrType).Invoke(carcassContext, null);
         return result == null
             //ცხრილის Set მეთოდი აბრუნებს null-ს
-            ? Result.Failure<IQueryable<IDataType>>(
-                MasterDataApiErrors.SetMethodReturnsNullForTable(tableName).ToError())
+            ? Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.SetMethodReturnsNullForTable(tableName)
+                .ToError())
             : Result.Success((IQueryable<IDataType>)result);
     }
 

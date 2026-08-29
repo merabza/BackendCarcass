@@ -32,12 +32,9 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         var databaseAbstraction = scope.ServiceProvider.GetRequiredService<IDatabaseAbstraction>();
 
-        Result<MasterDataCrud> createResult = MasterDataCrud
-            .Create(queryName, _logger, scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>(),
-                unitOfWork, databaseAbstraction);
-        return createResult.IsFailure
-            ? Result.Failure<IMasterDataLoader>(createResult.Error)
-            : createResult.Value;
+        Result<MasterDataCrud> createResult = MasterDataCrud.Create(queryName, _logger,
+            scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>(), unitOfWork, databaseAbstraction);
+        return createResult.IsFailure ? Result.Failure<IMasterDataLoader>(createResult.Error) : createResult.Value;
     }
 
     public virtual Result<CrudBase> CreateMasterDataCrud(string tableName)
