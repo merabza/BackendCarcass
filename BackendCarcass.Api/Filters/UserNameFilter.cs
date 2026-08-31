@@ -9,7 +9,7 @@
 //{
 //    private readonly ICurrentUser _currentUser;
 
-//    // ReSharper disable once ConvertToPrimaryConstructor
+//    
 //    public UserNameFilter(ICurrentUser currentUser)
 //    {
 //        _currentUser = currentUser;

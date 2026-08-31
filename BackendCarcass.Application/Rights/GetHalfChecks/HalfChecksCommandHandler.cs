@@ -8,10 +8,6 @@ using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
 
-//using ICurrentUser = BackendCarcass.Application.Identity.ICurrentUser;
-//using IReturnValuesRepository = BackendCarcass.Application.MasterData.IReturnValuesRepository;
-//using TypeDataModel = BackendCarcass.Application.Rights.Models.TypeDataModel;
-
 namespace BackendCarcass.Application.Rights.GetHalfChecks;
 
 // ReSharper disable once ClassNeverInstantiated.Global

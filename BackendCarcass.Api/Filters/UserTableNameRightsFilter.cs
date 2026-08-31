@@ -17,7 +17,6 @@ public /*open*/ class UserTableNameRightsFilter : IEndpointFilter
     private readonly IUserRightsRepository _repo;
     private readonly string[] _tableKeys;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     protected UserTableNameRightsFilter(ILogger logger, string[] tableKeys, ICurrentUser currentUser,
         IUserRightsRepository repo, IDatabaseAbstraction databaseAbstraction)
     {

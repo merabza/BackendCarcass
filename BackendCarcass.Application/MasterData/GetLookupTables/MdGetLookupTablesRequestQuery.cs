@@ -13,7 +13,6 @@ public sealed class MdGetLookupTablesRequestQuery : IQuery<MdGetLookupTablesQuer
 
     //public HttpRequest HttpRequest { get; init; } //+
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public MdGetLookupTablesRequestQuery(StringValues tables)
     {
         Tables = tables;

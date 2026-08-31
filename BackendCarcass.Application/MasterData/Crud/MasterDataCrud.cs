@@ -31,7 +31,6 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     private IDataType? _justCreated;
     private ISortIdHelper? _sortHelper;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     private MasterDataCrud(string tableName, IEntityType entityType, ILogger logger,
         ICarcassMasterDataRepository cmdRepo, IUnitOfWork unitOfWork, IDatabaseAbstraction databaseAbstraction) : base(
         logger, unitOfWork, databaseAbstraction)

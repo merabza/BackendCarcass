@@ -22,7 +22,6 @@ public sealed class RightsRepository : IRightsRepository
     private readonly ICarcassApplicationDbContext _carcassContext;
     private readonly ILogger<RightsRepository> _logger;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public RightsRepository(ILogger<RightsRepository> logger, ICarcassApplicationDbContext context)
     {
         _carcassContext = context;

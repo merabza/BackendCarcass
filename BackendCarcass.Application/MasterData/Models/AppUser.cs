@@ -12,7 +12,6 @@ namespace BackendCarcass.Application.MasterData.Models;
 
 public sealed class AppUser : IdentityUser<int>
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public AppUser(string userName, string firstName, string lastName) : base(userName)
     {
         FirstName = firstName;

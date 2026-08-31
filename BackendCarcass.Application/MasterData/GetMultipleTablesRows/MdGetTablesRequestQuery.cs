@@ -12,7 +12,6 @@ public sealed class MdGetTablesRequestQuery : IQuery<MdGetTablesQueryResponse>
 
     //public HttpRequest HttpRequest { get; set; } //+
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public MdGetTablesRequestQuery(StringValues tables)
     {
         Tables = tables;

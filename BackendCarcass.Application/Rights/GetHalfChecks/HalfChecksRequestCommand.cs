@@ -8,7 +8,6 @@ namespace BackendCarcass.Application.Rights.GetHalfChecks;
 
 public sealed class HalfChecksRequestCommand : ICommand<List<TypeDataModel>>
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public HalfChecksRequestCommand(int dataTypeId, string dataKey, ERightsEditorViewStyle viewStyle)
     {
         ViewStyle = viewStyle;

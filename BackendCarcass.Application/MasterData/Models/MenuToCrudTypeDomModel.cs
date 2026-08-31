@@ -7,7 +7,6 @@ public sealed class MenuToCrudTypeDomModel : IDataType
 {
     //public static string DtKeyKey => nameof(MnctId).CountDtKey();
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public MenuToCrudTypeDomModel(int dtctId, string dtctKey, string dtctName)
     {
         MnctId = dtctId;

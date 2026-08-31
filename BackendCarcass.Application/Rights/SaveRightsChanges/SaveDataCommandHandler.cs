@@ -7,8 +7,6 @@ using SystemTools.Domain.Abstractions;
 using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
 
-//using ICurrentUser = BackendCarcass.Application.Identity.ICurrentUser;
-
 namespace BackendCarcass.Application.Rights.SaveRightsChanges;
 
 // ReSharper disable once ClassNeverInstantiated.Global

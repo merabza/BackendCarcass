@@ -8,7 +8,6 @@ namespace BackendCarcass.Application.Rights.GetChildrenTree;
 
 public sealed class ChildrenTreeDataRequestCommand : ICommand<List<DataTypeModel>>
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public ChildrenTreeDataRequestCommand(string dataTypeKey, ERightsEditorViewStyle viewStyle)
     {
         ViewStyle = viewStyle;

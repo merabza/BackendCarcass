@@ -5,7 +5,6 @@ namespace BackendCarcass.Application.MasterData.GetOneRecord;
 
 public sealed class MdGetOneRecordRequestQuery : IQuery<MasterDataCrudLoadedData>
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public MdGetOneRecordRequestQuery(string tableName, int id)
     {
         TableName = tableName;

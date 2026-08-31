@@ -21,7 +21,7 @@
 //    private readonly ILogger<UserMenuRightsFilter> _logger;
 //    private readonly IUserRightsRepository _repo;
 
-//    // ReSharper disable once ConvertToPrimaryConstructor
+//    
 //    public UserSomeTablesRightsFilter(IUserRightsRepository repo, ILogger<UserMenuRightsFilter> logger,
 //        ICurrentUser currentUser)
 //    {

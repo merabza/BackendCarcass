@@ -6,7 +6,6 @@ namespace BackendCarcass.Application.MasterData.CellModels;
 
 public sealed class BooleanCell : MixedCell
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public BooleanCell(string fieldName, string? caption, bool visible = true, string? typeName = null) : base(
         fieldName, caption, visible, typeName ?? CellTypeNameForSave(nameof(BooleanCell)))
     {

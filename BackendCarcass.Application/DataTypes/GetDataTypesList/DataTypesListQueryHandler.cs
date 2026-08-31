@@ -1,11 +1,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Application.Authentication;
+using BackendCarcass.Application.Identity;
+using BackendCarcass.Application.Repositories;
 using BackendCarcassShared.Contracts.V1.Responses;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
-using ICurrentUser = BackendCarcass.Application.Identity.ICurrentUser;
-using IMenuRightsRepository = BackendCarcass.Application.Repositories.IMenuRightsRepository;
 
 namespace BackendCarcass.Application.DataTypes.GetDataTypesList;
 

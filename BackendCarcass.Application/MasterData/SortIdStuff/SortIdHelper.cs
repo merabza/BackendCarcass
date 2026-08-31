@@ -10,7 +10,6 @@ public sealed class SortIdHelper<T> : ISortIdHelper where T : class, ISortedData
 {
     private readonly ICarcassMasterDataRepository _cmdRepo;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public SortIdHelper(ICarcassMasterDataRepository cmdRepo)
     {
         _cmdRepo = cmdRepo;

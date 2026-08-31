@@ -8,7 +8,6 @@ namespace BackendCarcass.Application.MasterData.CellModels;
 
 public sealed class DateCell : MixedCell
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public DateCell(string fieldName, string? caption, bool showDate = true, bool showTime = true, bool visible = true,
         string? typeName = null) : base(fieldName, caption, visible, typeName ?? CellTypeNameForSave(nameof(DateCell)))
     {

@@ -14,7 +14,6 @@ public sealed class UserRightsRepository : IUserRightsRepository
     private readonly ICarcassApplicationDbContext _context;
     //private readonly IDataTypeKeys _dataTypeKeys;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public UserRightsRepository(ICarcassApplicationDbContext context)
     {
         _context = context;

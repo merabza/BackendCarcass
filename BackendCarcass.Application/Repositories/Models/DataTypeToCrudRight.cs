@@ -2,7 +2,6 @@
 
 public sealed class DataTypeToCrudRight
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public DataTypeToCrudRight(int dtId, string dtTable, string crtKey)
     {
         DtId = dtId;

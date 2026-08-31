@@ -1,11 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Application.Identity;
+using BackendCarcass.Application.MasterData.Models;
 using BackendCarcassShared.Contracts.Errors;
 using Microsoft.AspNetCore.Identity;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
-using AppUser = BackendCarcass.Application.MasterData.Models.AppUser;
-using ICurrentUser = BackendCarcass.Application.Identity.ICurrentUser;
 
 namespace BackendCarcass.Application.UserRights.ChangeProfile;
 

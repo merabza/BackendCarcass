@@ -15,7 +15,6 @@ public class UserClaimsRepository : IUserClaimsRepository
     private readonly ICarcassApplicationDbContext _carcassContext;
     private readonly IDatabaseAbstraction _databaseAbstraction;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public UserClaimsRepository(ICarcassApplicationDbContext carcassContext, IDatabaseAbstraction databaseAbstraction)
     {
         _carcassContext = carcassContext;

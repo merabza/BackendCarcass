@@ -1,8 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Application.Crud;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
-using CrudBase = BackendCarcass.Application.Crud.CrudBase;
 
 // ReSharper disable ConvertToPrimaryConstructor
 

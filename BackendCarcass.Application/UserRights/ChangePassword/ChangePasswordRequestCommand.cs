@@ -4,7 +4,6 @@ namespace BackendCarcass.Application.UserRights.ChangePassword;
 
 public sealed class ChangePasswordRequestCommand : ICommand
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public ChangePasswordRequestCommand(int userid, string? userName, string? oldPassword, string? newPassword,
         string? newPasswordConfirm)
     {

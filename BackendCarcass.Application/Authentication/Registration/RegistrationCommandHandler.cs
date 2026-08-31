@@ -1,11 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Application.MasterData.Models;
 using BackendCarcass.Application.Services.Authentication;
 using BackendCarcass.Application.Services.Authentication.Models;
 using BackendCarcassShared.Contracts.V1.Responses;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
-using AppUser = BackendCarcass.Application.MasterData.Models.AppUser;
 
 namespace BackendCarcass.Application.Authentication.Registration;
 
@@ -15,7 +15,6 @@ public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
 {
     private readonly RegistrationService _registrationService;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public RegistrationCommandHandler(RegistrationService registrationService)
     {
         _registrationService = registrationService;

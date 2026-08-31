@@ -4,7 +4,6 @@ namespace BackendCarcass.Application.MasterData.CellModels;
 
 public sealed class MdLookupCell : IntegerCell
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public MdLookupCell(string fieldName, string? caption, string dtTable, string? intErrCode = null,
         string? intErrMessage = null, bool visible = true, string? typeName = null) : base(fieldName, caption,
         intErrCode, intErrMessage, visible, typeName ?? CellTypeNameForSave(nameof(MdLookupCell)))

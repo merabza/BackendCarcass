@@ -6,7 +6,6 @@ namespace BackendCarcass.Application.MasterData.Models;
 
 public sealed class UserCrudData : ICrudData, IDataType
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public UserCrudData(string userName, string firstName, string lastName, string email)
     {
         UserName = userName;

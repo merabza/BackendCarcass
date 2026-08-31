@@ -13,7 +13,6 @@ public sealed class MultipleGridModelsRequestQuery : IQuery<Dictionary<string, s
 
     //public HttpRequest HttpRequest { get; set; } //+
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public MultipleGridModelsRequestQuery(StringValues grids)
     {
         Grids = grids;

@@ -1,10 +1,10 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Application.Crud;
+using BackendCarcass.Application.MasterData.Models;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
-using CrudBase = BackendCarcass.Application.Crud.CrudBase;
-using MasterDataCrudData = BackendCarcass.Application.MasterData.Models.MasterDataCrudData;
 
 // ReSharper disable ConvertToPrimaryConstructor
 

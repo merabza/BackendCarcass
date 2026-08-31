@@ -6,7 +6,6 @@ namespace BackendCarcass.Application.MasterData.CellModels;
 
 public /*open*/ class NumberCell : MixedCell
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public NumberCell(string fieldName, string? caption, bool visible = true, string? typeName = null) : base(fieldName,
         caption, visible, typeName ?? CellTypeNameForSave(nameof(NumberCell)))
     {

@@ -4,7 +4,6 @@ namespace BackendCarcass.Application.MasterData.CellModels;
 
 public sealed class RsLookupCell : IntegerCell
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public RsLookupCell(string fieldName, string? caption, string rowSource, string? intErrCode = null,
         string? intErrMessage = null, bool visible = true, string? typeName = null) : base(fieldName, caption,
         intErrCode, intErrMessage, visible, typeName ?? CellTypeNameForSave(nameof(RsLookupCell)))

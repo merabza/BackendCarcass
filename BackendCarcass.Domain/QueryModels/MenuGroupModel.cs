@@ -5,7 +5,6 @@ namespace BackendCarcass.Domain.QueryModels;
 
 public sealed class MenuGroupModel
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public MenuGroupModel(int mengId, string mengKey, string mengName, short sortId, string? mengIconName, bool hidden)
     {
         MengId = mengId;

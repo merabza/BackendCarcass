@@ -5,7 +5,6 @@ namespace BackendCarcass.Application.Crud.Models;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class SortField
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public SortField(bool ascending, string fieldName)
     {
         Ascending = ascending;

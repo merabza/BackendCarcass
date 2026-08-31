@@ -12,7 +12,6 @@ public sealed class MasterDataLoader
     private readonly IMasterDataLoaderCreator _masterDataLoaderCreator;
     private readonly List<string?> _tableNames;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public MasterDataLoader(List<string?> tableNames, IMasterDataLoaderCreator masterDataLoaderCreator)
     {
         _masterDataLoaderCreator = masterDataLoaderCreator;

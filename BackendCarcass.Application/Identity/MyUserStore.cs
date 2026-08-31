@@ -21,7 +21,6 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     private readonly IIdentityRepository _repo;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public MyUserStore(IIdentityRepository repo, ILogger<MyUserStore> logger)
     {
         _repo = repo;

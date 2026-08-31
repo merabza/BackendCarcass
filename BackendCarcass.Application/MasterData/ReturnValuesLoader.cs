@@ -14,7 +14,6 @@ public sealed class ReturnValuesLoader
     private readonly IReturnValuesRepository _rvRepo;
     private readonly List<string?> _tableNames;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public ReturnValuesLoader(List<string?> tableNames, IReturnValuesRepository rvRepo,
         IReturnValuesLoaderCreator returnValuesLoaderCreator)
     {

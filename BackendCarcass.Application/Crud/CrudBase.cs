@@ -17,7 +17,6 @@ public abstract class CrudBase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     // ReSharper disable once BothContextCallDeclaration.Global
     protected CrudBase(ILogger logger, IUnitOfWork unitOfWork, IDatabaseAbstraction databaseAbstraction)
     {

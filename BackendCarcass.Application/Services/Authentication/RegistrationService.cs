@@ -8,15 +8,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using SystemTools.SharedKernel;
 
-//using AppUser = BackendCarcass.Application.MasterData.Models.AppUser;
-//using IdentitySettings = BackendCarcass.Application.Identity.Models.IdentitySettings;
-
 namespace BackendCarcass.Application.Services.Authentication;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public class RegistrationService : LoginBase, IScopeServiceCarcassApplication
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public RegistrationService(UserManager<AppUser> userMgr, SignInManager<AppUser> signinMgr,
         IOptions<IdentitySettings> identitySettings) : base(userMgr, signinMgr, identitySettings)
     {
@@ -51,7 +47,6 @@ public class RegistrationService : LoginBase, IScopeServiceCarcassApplication
         if (!result.Succeeded)
         {
             return Result.Failure<LoginResult>(AuthenticationApiErrors.MoreComplexPasswordIsRequired);
-            //return new[] { AuthenticationApiErrors.MoreComplexPasswordIsRequired };
         }
 
         return await LoginProcess(user, registerParameters.Password, cancellationToken);

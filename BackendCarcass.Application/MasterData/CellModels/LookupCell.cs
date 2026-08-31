@@ -5,7 +5,6 @@ namespace BackendCarcass.Application.MasterData.CellModels;
 //Deprecated
 public sealed class LookupCell : IntegerCell
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public LookupCell(string fieldName, string? caption, string dataMember, string valueMember, string displayMember,
         string? intErrCode = null, string? intErrMessage = null, bool visible = true, string? typeName = null) : base(
         fieldName, caption, intErrCode, intErrMessage, visible, typeName ?? CellTypeNameForSave(nameof(LookupCell)))

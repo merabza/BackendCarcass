@@ -23,7 +23,6 @@ public sealed class RightsCollector
     private readonly IRightsRepository _repo;
     private readonly IReturnValuesRepository _rvRepo;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public RightsCollector(IRightsRepository repo, IReturnValuesRepository rvRepo,
         IDatabaseAbstraction databaseAbstraction)
     {

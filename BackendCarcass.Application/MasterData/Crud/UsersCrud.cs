@@ -22,7 +22,6 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
     private readonly UserManager<AppUser> _userManager;
     private AppUser? _justCreated;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public UsersCrud(ILogger logger, UserManager<AppUser> userManager, IUnitOfWork unitOfWork,
         IDatabaseAbstraction databaseAbstraction) : base(logger, unitOfWork, databaseAbstraction)
     {

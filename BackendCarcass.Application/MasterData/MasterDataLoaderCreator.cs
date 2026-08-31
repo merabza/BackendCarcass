@@ -16,7 +16,6 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
     private readonly ILogger<MasterDataLoaderCreator> _logger;
     private readonly IServiceProvider _services;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public MasterDataLoaderCreator(ILogger<MasterDataLoaderCreator> logger, IServiceProvider services)
     {
         _logger = logger;

@@ -5,7 +5,6 @@ namespace BackendCarcass.Application.Rights.Models;
 
 public sealed class DataTypeModel
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public DataTypeModel(int dtId, string dtTable, string dtName, int? dtParentDataTypeId)
     {
         DtId = dtId;

@@ -14,7 +14,6 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
 {
     private readonly RoleManager<AppRole> _roleManager;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public RolesMdRepo(RoleManager<AppRole> roleManager)
     {
         _roleManager = roleManager;

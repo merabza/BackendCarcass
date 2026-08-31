@@ -6,7 +6,6 @@ namespace BackendCarcass.Application.MasterData.Models;
 
 public sealed class RoleCrudData : ICrudData, IDataType
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
     public RoleCrudData(string rolKey, string rolName, int rolLevel)
     {
         RolKey = rolKey;

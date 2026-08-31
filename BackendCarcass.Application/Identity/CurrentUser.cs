@@ -11,7 +11,6 @@ public sealed class CurrentUser : ICurrentUser
 {
     private readonly IHttpContextAccessor _httpContext;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public CurrentUser(IHttpContextAccessor httpContext)
     {
         _httpContext = httpContext;
