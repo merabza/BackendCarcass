@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Routing;
 using Serilog;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
-using WebSystemTools.CorsTools.DependencyInjection;
 using WebSystemTools.WebApi.Abstractions.Infrastructure;
 
 namespace BackendCarcass.Api.Endpoints.V1;
@@ -24,13 +23,14 @@ namespace BackendCarcass.Api.Endpoints.V1;
 // ReSharper disable once UnusedType.Global
 public static class AuthenticationEndpoints
 {
-    public static bool UseAuthenticationEndpoints(this IEndpointRouteBuilder endpoints, ILogger? debugLogger)
+    public static bool UseAuthenticationEndpoints(this IEndpointRouteBuilder endpoints, string myAllowSpecificOrigins,
+        ILogger? debugLogger)
     {
         debugLogger?.Information("{MethodName} Started", nameof(UseAuthenticationEndpoints));
 
         RouteGroupBuilder group = endpoints
             .MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.Authentication.AuthenticationBase)
-            .RequireCors(CorsDependencyInjection.MyAllowSpecificOrigins);
+            .RequireCors(myAllowSpecificOrigins);
 
         group.MapPost(CarcassApiRoutes.Authentication.Registration, Registration);
         group.MapPost(CarcassApiRoutes.Authentication.Login, Login);

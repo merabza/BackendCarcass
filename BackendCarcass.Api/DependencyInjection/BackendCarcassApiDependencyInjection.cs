@@ -7,11 +7,12 @@ namespace BackendCarcass.Api.DependencyInjection;
 // ReSharper disable once UnusedType.Global
 public static class BackendCarcassApiDependencyInjection
 {
-    public static bool UseBackendCarcassApiEndpoints(this IEndpointRouteBuilder endpoints, ILogger? debugLogger)
+    public static bool UseBackendCarcassApiEndpoints(this IEndpointRouteBuilder endpoints,
+        string myAllowSpecificOrigins, ILogger? debugLogger)
     {
         debugLogger?.Information("{MethodName} Started", nameof(UseBackendCarcassApiEndpoints));
 
-        endpoints.UseAuthenticationEndpoints(debugLogger);
+        endpoints.UseAuthenticationEndpoints(myAllowSpecificOrigins, debugLogger);
         endpoints.UseDataTypesEndpoints(debugLogger);
         endpoints.UseMasterDataEndpoints(debugLogger);
         endpoints.UseProcessesEndpoints(debugLogger);
