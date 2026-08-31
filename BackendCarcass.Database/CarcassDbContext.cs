@@ -14,6 +14,7 @@ using BackendCarcass.Domain.Roles;
 using BackendCarcass.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage;
 using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Database;
@@ -73,6 +74,16 @@ public /*open*/ class CarcassDbContext : DbContext, ICarcassApplicationDbContext
         await PublishDomainEventsAsync();
 
         return result;
+    }
+
+    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        return Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public void Detach(Entity entity)
+    {
+        Entry(entity).State = EntityState.Detached;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

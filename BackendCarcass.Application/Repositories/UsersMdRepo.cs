@@ -7,7 +7,6 @@ using BackendCarcass.Domain.Users;
 using BackendCarcassShared.Contracts.Errors;
 using Microsoft.AspNetCore.Identity;
 using SystemTools.SharedKernel;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.Repositories;
 

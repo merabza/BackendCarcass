@@ -1,7 +1,6 @@
 ﻿using BackendCarcassShared.Contracts.Errors;
 using Newtonsoft.Json;
 using SystemTools.SharedKernel;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.MasterData.CellModels;
 

@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 
 // ReSharper disable ConvertToPrimaryConstructor
 

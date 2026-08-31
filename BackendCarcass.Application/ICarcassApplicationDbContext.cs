@@ -11,6 +11,8 @@ using BackendCarcass.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application;
 
@@ -33,7 +35,9 @@ public interface ICarcassApplicationDbContext
     EntityEntry Update(object entity);
     EntityEntry Remove(object entity);
 
-    //Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
+    Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
+    void Detach(Entity entity);
+
     //Task<Option<ErrorOmd[]>> ExecuteSqlRawRetOptionAsync(string sql, CancellationToken cancellationToken = default);
     //void SetCommandTimeout(TimeSpan timeout);
 }
