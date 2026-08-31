@@ -2,6 +2,7 @@
 using BackendCarcass.Application.MasterData.Validation;
 using BackendCarcassShared.Contracts.Errors;
 using Newtonsoft.Json;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.MasterData.CellModels;
@@ -21,7 +22,7 @@ public /*open*/ class IntegerCell : NumberCell
     public int? Def { get; set; }
 
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public ErrorOmd? IsIntegerErr { get; set; }
+    public Error? IsIntegerErr { get; set; }
 
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
     public IntRule? MinValRule { get; set; }
@@ -70,9 +71,9 @@ public /*open*/ class IntegerCell : NumberCell
         return this;
     }
 
-    public override List<ErrorOmd> Validate(object? value)
+    public override List<Error> Validate(object? value)
     {
-        List<ErrorOmd> errors = base.Validate(value);
+        List<Error> errors = base.Validate(value);
 
         int testIntValue;
         if (IsShort)
@@ -100,7 +101,7 @@ public /*open*/ class IntegerCell : NumberCell
 
         if (MinValRule is not null && testIntValue < MinValRule.Val)
         {
-            errors.Add(MinValRule.ErrorOmd);
+            errors.Add(MinValRule.Error);
         }
 
         if (IsPositiveErr is not null && testIntValue <= 0)

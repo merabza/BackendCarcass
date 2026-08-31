@@ -2,6 +2,7 @@
 using BackendCarcass.Application.MasterData.Validation;
 using BackendCarcassShared.Contracts.Errors;
 using Newtonsoft.Json;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.MasterData.CellModels;
@@ -50,9 +51,9 @@ public sealed class StringCell : MixedCell
         return this;
     }
 
-    public override List<ErrorOmd> Validate(object? value)
+    public override List<Error> Validate(object? value)
     {
-        List<ErrorOmd> errMes = ValidateByType<string>(base.Validate(value), value, "სტრიქონის");
+        List<Error> errMes = ValidateByType<string>(base.Validate(value), value, "სტრიქონის");
 
         if (value is not string strValue)
         {

@@ -1,5 +1,6 @@
 ﻿using BackendCarcassShared.Contracts.Errors;
 using Newtonsoft.Json;
+using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.MasterData.CellModels;
@@ -13,7 +14,7 @@ public /*open*/ class NumberCell : MixedCell
     }
 
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public ErrorOmd? IsPositiveErr { get; set; }
+    public Error? IsPositiveErr { get; set; }
 
     public static new NumberCell Create(string fieldName, string? caption, bool visible = true, string? typeName = null)
     {

@@ -7,7 +7,6 @@ using BackendCarcassShared.Contracts.Errors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using SystemTools.SharedKernel;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.Repositories;
 
@@ -19,22 +18,20 @@ public sealed class MdCrudRepoBase(ICarcassApplicationDbContext carcassContext, 
         if (vvv == null)
         {
             //ვერ ვიპოვეთ შესაბამისი ცხრილი
-            return Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.TableNotFound(tableName).ToError());
+            return Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.TableNotFound(tableName));
         }
 
         MethodInfo? setMethod = carcassContext.GetType().GetMethod("Set", []);
         if (setMethod == null)
         {
             //ცხრილს არ აქვს მეთოდი Set
-            return Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.SetMethodNotFoundForTable(tableName)
-                .ToError());
+            return Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.SetMethodNotFoundForTable(tableName));
         }
 
         object? result = setMethod.MakeGenericMethod(vvv.ClrType).Invoke(carcassContext, null);
         return result == null
             //ცხრილის Set მეთოდი აბრუნებს null-ს
-            ? Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.SetMethodReturnsNullForTable(tableName)
-                .ToError())
+            ? Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.SetMethodReturnsNullForTable(tableName))
             : Result.Success((IQueryable<IDataType>)result);
     }
 
@@ -50,8 +47,7 @@ public sealed class MdCrudRepoBase(ICarcassApplicationDbContext carcassContext, 
         IEntityType? vvv = carcassContext.Model.GetEntityTypes().SingleOrDefault(w => w.GetTableName() == tableName);
         if (vvv == null)
         {
-            return Result.Failure(MasterDataApiErrors.TableNotFound(tableName)
-                .ToError()); //ვერ ვიპოვეთ შესაბამისი ცხრილი
+            return Result.Failure(MasterDataApiErrors.TableNotFound(tableName)); //ვერ ვიპოვეთ შესაბამისი ცხრილი
         }
 
         var q = (IQueryable<IDataType>?)carcassContext.GetType().GetMethod("Set")?.MakeGenericMethod(vvv.ClrType)
@@ -60,7 +56,7 @@ public sealed class MdCrudRepoBase(ICarcassApplicationDbContext carcassContext, 
         if (idt == null)
         {
             //ბაზაში ვერ ვიპოვეთ მოწოდებული იდენტიფიკატორის შესაბამისი ჩანაწერი. RecordNotFound
-            return Result.Failure(MasterDataApiErrors.RecordNotFound(tableName, id).ToError());
+            return Result.Failure(MasterDataApiErrors.RecordNotFound(tableName, id));
         }
 
         idt.UpdateTo(newItem);
@@ -83,7 +79,7 @@ public sealed class MdCrudRepoBase(ICarcassApplicationDbContext carcassContext, 
         if (idt == null)
         {
             //ბაზაში ვერ ვიპოვეთ მოწოდებული იდენტიფიკატორის შესაბამისი ჩანაწერი. RecordNotFound
-            return Result.Failure(MasterDataApiErrors.RecordNotFound(tableName, id).ToError());
+            return Result.Failure(MasterDataApiErrors.RecordNotFound(tableName, id));
         }
 
         carcassContext.Remove(id);

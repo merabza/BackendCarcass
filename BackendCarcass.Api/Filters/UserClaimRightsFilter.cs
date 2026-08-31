@@ -36,7 +36,7 @@ public /*open*/ class UserClaimRightsFilter : IEndpointFilter
         Result<bool> result = await rightsDeterminer.CheckUserRightToClaim(_claimName, CancellationToken.None);
         if (result.IsFailure)
         {
-            return Results.BadRequest(result.Error.ToErrorOmdArray());
+            return Results.BadRequest(result.Error);
         }
 
         if (!result.Value)

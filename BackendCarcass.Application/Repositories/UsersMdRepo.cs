@@ -41,7 +41,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         AppUser? oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldUser == null)
         {
-            return Result.Failure(MasterDataApiErrors.CannotFindUser.ToError());
+            return Result.Failure(MasterDataApiErrors.CannotFindUser);
         }
 
         var user = (User)newItem;
@@ -79,7 +79,7 @@ public sealed class UsersMdRepo : IdentityCrudBase, IMdCrudRepo
         AppUser? oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldUser == null)
         {
-            return Result.Failure(MasterDataApiErrors.CannotFindUser.ToError());
+            return Result.Failure(MasterDataApiErrors.CannotFindUser);
         }
 
         IdentityResult deleteResult = await _userManager.DeleteAsync(oldUser);

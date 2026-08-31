@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.MasterData.CellModels;
 
@@ -27,7 +27,7 @@ public sealed class BooleanCell : MixedCell
         return this;
     }
 
-    public override List<ErrorOmd> Validate(object? value)
+    public override List<Error> Validate(object? value)
     {
         return ValidateByType<bool>(base.Validate(value), value, "ლოგიკური");
     }

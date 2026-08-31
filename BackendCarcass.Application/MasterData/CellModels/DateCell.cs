@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BackendCarcass.Application.MasterData.Validation;
 using Newtonsoft.Json;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.MasterData.CellModels;
 
@@ -59,9 +59,9 @@ public sealed class DateCell : MixedCell
         return this;
     }
 
-    public override List<ErrorOmd> Validate(object? value)
+    public override List<Error> Validate(object? value)
     {
-        List<ErrorOmd> errors = ValidateByType<DateTime>(base.Validate(value), value, "თარიღის");
+        List<Error> errors = ValidateByType<DateTime>(base.Validate(value), value, "თარიღის");
 
         if (value is not DateTime dateTimeValue)
         {
@@ -70,7 +70,7 @@ public sealed class DateCell : MixedCell
 
         if (MinValRule is not null && dateTimeValue < MinValRule.Val)
         {
-            errors.Add(MinValRule.ErrorOmd);
+            errors.Add(MinValRule.Error);
         }
 
         return errors;

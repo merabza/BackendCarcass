@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using BackendCarcass.Application.MasterData.Models;
 using BackendCarcassShared.Contracts.Errors;
 using SystemTools.SharedKernel;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.MasterData;
 
@@ -61,8 +60,8 @@ public sealed class ReturnValuesLoader
             IReturnValuesLoader? loader = _returnValuesLoaderCreator.CreateReturnValuesLoaderLoader(tableName);
             if (loader is null)
             {
-                errors.Add(MasterDataApiErrors.LoaderForTableNotFound(tableName)
-                    .ToError()); //ჩამტვირთავი ცხრილისთვის სახელით {tableName} ვერ მოიძებნა
+                errors.Add(MasterDataApiErrors
+                    .LoaderForTableNotFound(tableName)); //ჩამტვირთავი ცხრილისთვის სახელით {tableName} ვერ მოიძებნა
                 continue;
             }
 

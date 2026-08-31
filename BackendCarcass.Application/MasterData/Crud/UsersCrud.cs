@@ -14,7 +14,6 @@ using Microsoft.Extensions.Logging;
 using SystemTools.Domain.Abstractions;
 using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.MasterData.Crud;
 
@@ -58,7 +57,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
             return new UserCrudData(appUser.UserName, appUser.FirstName, appUser.LastName, appUser.Email);
         }
 
-        return Result.Failure<ICrudData>(MasterDataApiErrors.CannotFindUser.ToError());
+        return Result.Failure<ICrudData>(MasterDataApiErrors.CannotFindUser);
     }
 
     protected override async ValueTask<Result> CreateData(ICrudData crudDataForCreate,
@@ -84,7 +83,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         AppUser? oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldUser is null)
         {
-            return Result.Failure(MasterDataApiErrors.CannotFindUser.ToError());
+            return Result.Failure(MasterDataApiErrors.CannotFindUser);
         }
 
         var user = (UserCrudData)crudDataNewVersion;
@@ -122,7 +121,7 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
         AppUser? oldUser = await _userManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldUser is null)
         {
-            return Result.Failure(MasterDataApiErrors.CannotFindUser.ToError());
+            return Result.Failure(MasterDataApiErrors.CannotFindUser);
         }
 
         IdentityResult deleteResult = await _userManager.DeleteAsync(oldUser);
@@ -133,7 +132,8 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
     {
         return result.Succeeded
             ? Result.Success()
-            : Result.Failure(result.Errors.Select(x => new ErrorOmd { Code = x.Code, Name = x.Description }).ToArray()
-                .ToError());
+            : Result.Failure(Result.CreateValidationError([
+                .. result.Errors.Select(s => Error.Problem(s.Code, s.Description))
+            ]));
     }
 }

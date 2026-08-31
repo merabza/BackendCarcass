@@ -83,7 +83,7 @@ public abstract class CrudBase
                     if (e.InnerException.Message.StartsWith("Cannot insert duplicate key row in object",
                             StringComparison.Ordinal))
                     {
-                        return Result.Failure<ICrudData>(SystemToolsErrors.SuchARecordAlreadyExists.ToError());
+                        return Result.Failure<ICrudData>(SystemToolsErrors.SuchARecordAlreadyExists);
                     }
                 }
 
@@ -178,7 +178,7 @@ public abstract class CrudBase
                     if (e.InnerException.Message.StartsWith(
                             "The DELETE statement conflicted with the REFERENCE constraint", StringComparison.Ordinal))
                     {
-                        return Result.Failure(SystemToolsErrors.TheEntryHasBeenUsedAndCannotBeDeleted.ToError());
+                        return Result.Failure(SystemToolsErrors.TheEntryHasBeenUsedAndCannotBeDeleted);
                     }
                 }
 

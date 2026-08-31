@@ -1,9 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcassShared.Contracts.Errors;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
-using SystemTools.SystemToolsShared.Errors;
 using CrudBase = BackendCarcass.Application.Crud.CrudBase;
 
 // ReSharper disable ConvertToPrimaryConstructor
@@ -25,9 +23,6 @@ public sealed class MdDeleteOneRecordCommandHandler(IMasterDataLoaderCreator mas
 
         CrudBase masterDataCruder = createMasterDataCrudResult.Value;
         Result result = await masterDataCruder.Delete(request.Id, cancellationToken);
-        return result.IsFailure
-            ? Result.Failure(ErrorOmd
-                .RecreateErrors(result.Error.ToErrorOmdArray(), MasterDataApiErrors.CannotDeleteNewRecord).ToError())
-            : Result.Success();
+        return result.IsFailure ? Result.Failure(result.Error) : Result.Success();
     }
 }

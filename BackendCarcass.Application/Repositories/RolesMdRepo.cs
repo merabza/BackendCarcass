@@ -7,7 +7,6 @@ using BackendCarcass.Domain.Roles;
 using BackendCarcassShared.Contracts.Errors;
 using Microsoft.AspNetCore.Identity;
 using SystemTools.SharedKernel;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.Repositories;
 
@@ -41,7 +40,7 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole == null)
         {
-            return Result.Failure(MasterDataApiErrors.CannotFindRole.ToError());
+            return Result.Failure(MasterDataApiErrors.CannotFindRole);
         }
 
         var role = (Role)newItem;
@@ -68,7 +67,7 @@ public sealed class RolesMdRepo : IdentityCrudBase, IMdCrudRepo
         AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole == null)
         {
-            return Result.Failure(MasterDataApiErrors.CannotFindRole.ToError());
+            return Result.Failure(MasterDataApiErrors.CannotFindRole);
         }
 
         IdentityResult deleteResult = await _roleManager.DeleteAsync(oldRole);

@@ -3,10 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Application.Crud;
 using BackendCarcass.Application.MasterData.Models;
-using BackendCarcassShared.Contracts.Errors;
 using SystemTools.Application.Abstractions.Messaging;
 using SystemTools.SharedKernel;
-using SystemTools.SystemToolsShared.Errors;
 
 //using CrudBase = BackendCarcass.Application.Crud.CrudBase;
 //using ICrudData = BackendCarcass.Application.Crud.ICrudData;
@@ -42,8 +40,7 @@ public sealed class MdCreateOneRecordCommandHandler(IMasterDataLoaderCreator mas
         Result<ICrudData> result = await masterDataCruder.Create(crudData, cancellationToken);
         if (result.IsFailure)
         {
-            return Result.Failure<MasterDataCrudLoadedData>(ErrorOmd
-                .RecreateErrors(result.Error.ToErrorOmdArray(), MasterDataApiErrors.CannotCreateNewRecord).ToError());
+            return Result.Failure<MasterDataCrudLoadedData>(result.Error);
         }
 
         return (MasterDataCrudLoadedData)result.Value;

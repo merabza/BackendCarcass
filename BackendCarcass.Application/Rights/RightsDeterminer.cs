@@ -43,13 +43,13 @@ public sealed class RightsDeterminer
         //var userName = _context.HttpContext.User.Identity?.Name;
         if (userName == null)
         {
-            return Result.Failure(RightsApiErrors.UserNotIdentified.ToError());
+            return Result.Failure(RightsApiErrors.UserNotIdentified);
         }
 
         string? tableKey = await tableKeyName.GetTableKey(_repo, cancellationToken);
         if (string.IsNullOrWhiteSpace(tableKey))
         {
-            return Result.Failure(RightsApiErrors.TableNameNotIdentified.ToError());
+            return Result.Failure(RightsApiErrors.TableNameNotIdentified);
         }
 
         //შემოწმდეს აქვს თუ არა მიმდინარე მომხმარებელს _claimName-ის შესაბამისი სპეციალური უფლება
@@ -62,7 +62,7 @@ public sealed class RightsDeterminer
         }
 
         //თუ არა დაბრუნდეს შეცდომა
-        return !result.Value ? Result.Failure(RightsApiErrors.InsufficientRights.ToError()) : Result.Success();
+        return !result.Value ? Result.Failure(RightsApiErrors.InsufficientRights) : Result.Success();
     }
 
     private static Option<ECrudOperationType> GetCrudType(string method)
@@ -119,7 +119,7 @@ public sealed class RightsDeterminer
 
         if (roleDtId is null || appClaimDataTypeId is null)
         {
-            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights.ToError());
+            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights);
         }
 
         return await _repo.CheckRight(roleDtId.Value, roleName, appClaimDataTypeId.Value, claimName, cancellationToken);
@@ -151,7 +151,7 @@ public sealed class RightsDeterminer
 
         if (menuGroupsDtId is null || menuDtId is null || roleDtId is null)
         {
-            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights.ToError());
+            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights);
         }
 
         return await _repo.CheckMenuRight(roleDtId.Value, roleName, menuGroupsDtId.Value, menuDtId.Value, menuItemName,
@@ -226,7 +226,7 @@ public sealed class RightsDeterminer
 
         if (keyByTableName is null)
         {
-            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights.ToError());
+            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights);
         }
 
         return await CheckViewRightByTableKey(roleName, keyByTableName, cancellationToken);
@@ -258,7 +258,7 @@ public sealed class RightsDeterminer
 
         if (roleDtId is null || dataTypeDtId is null || menuDtId is null)
         {
-            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights.ToError());
+            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights);
         }
 
         return await _repo.CheckTableViewRight(roleDtId.Value, roleName, dataTypeDtId.Value, tableKey, menuDtId.Value,
@@ -301,7 +301,7 @@ public sealed class RightsDeterminer
         List<Error> errors = [];
         if (crudType.IsNone)
         {
-            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingCrudType.ToError());
+            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingCrudType);
         }
 
         foreach (string roleName in _currentUser.Roles)
@@ -355,7 +355,7 @@ public sealed class RightsDeterminer
 
         if (roleDtId is null || dataTypeDtId is null || dataCrudRightDtId is null)
         {
-            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights.ToError());
+            return Result.Failure<bool>(RightsApiErrors.ErrorWhenDeterminingRights);
         }
 
         return await _repo.CheckTableCrudRight(roleDtId.Value, roleName, dataTypeDtId.Value, tableKey,

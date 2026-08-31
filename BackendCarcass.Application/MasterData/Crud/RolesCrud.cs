@@ -14,7 +14,6 @@ using Microsoft.Extensions.Logging;
 using SystemTools.Domain.Abstractions;
 using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.MasterData.Crud;
 
@@ -58,7 +57,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
             return new RoleCrudData(appRole.Name, appRole.RoleName, appRole.Level);
         }
 
-        return Result.Failure<ICrudData>(MasterDataApiErrors.CannotFindRole.ToError());
+        return Result.Failure<ICrudData>(MasterDataApiErrors.CannotFindRole);
     }
 
     protected override async ValueTask<Result> CreateData(ICrudData crudDataForCreate,
@@ -83,7 +82,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole is null)
         {
-            return Result.Failure(MasterDataApiErrors.CannotFindRole.ToError());
+            return Result.Failure(MasterDataApiErrors.CannotFindRole);
         }
 
         var role = (RoleCrudData)crudDataNewVersion;
@@ -110,7 +109,7 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
         AppRole? oldRole = await _roleManager.FindByIdAsync(id.ToString(CultureInfo.InvariantCulture));
         if (oldRole is null)
         {
-            return Result.Failure(MasterDataApiErrors.CannotFindRole.ToError());
+            return Result.Failure(MasterDataApiErrors.CannotFindRole);
         }
 
         IdentityResult deleteResult = await _roleManager.DeleteAsync(oldRole);
@@ -121,7 +120,8 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
     {
         return result.Succeeded
             ? Result.Success()
-            : Result.Failure(result.Errors.Select(x => new ErrorOmd { Code = x.Code, Name = x.Description }).ToArray()
-                .ToError());
+            : Result.Failure(Result.CreateValidationError([
+                .. result.Errors.Select(s => Error.Problem(s.Code, s.Description))
+            ]));
     }
 }

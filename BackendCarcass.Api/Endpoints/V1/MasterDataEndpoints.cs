@@ -111,7 +111,7 @@ public static class MasterDataEndpoints
         Result<MdGetLookupTablesQueryResponse> result = await handler.Handle(query, cancellationToken);
         return result
             .Match<MdGetLookupTablesQueryResponse, Results<Ok<MdGetLookupTablesQueryResponse>, ProblemHttpResult>>(
-                res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
+                res => TypedResults.Ok(res), res => (ProblemHttpResult)CustomResults.Problem(res));
     }
 
     // GET api/v1/masterdata/gettablerowsdata/{tableName}
@@ -123,7 +123,7 @@ public static class MasterDataEndpoints
         var queryNotes = new GetTableRowsDataRequestQuery(tableName, filterSortRequest);
         Result<TableRowsData> resultNotes = await handler.Handle(queryNotes, cancellationToken);
         return resultNotes.Match<TableRowsData, Results<Ok<TableRowsData>, ProblemHttpResult>>(
-            res => TypedResults.Ok(res), errors => (ProblemHttpResult)CustomResults.Problem(errors));
+            res => TypedResults.Ok(res), res => (ProblemHttpResult)CustomResults.Problem(res));
     }
 
 //შესასვლელი წერტილი (endpoint)

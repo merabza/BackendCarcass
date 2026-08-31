@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SystemTools.SystemToolsShared.Errors;
+using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.MasterData.CellModels;
 
@@ -76,7 +76,7 @@ public /*open*/ class Cell
         return StringCell.Create(fieldName, caption, visible);
     }
 
-    public virtual List<ErrorOmd> Validate(object? value)
+    public virtual List<Error> Validate(object? value)
     {
         return [];
     }

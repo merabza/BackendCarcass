@@ -19,7 +19,6 @@ using Newtonsoft.Json;
 using SystemTools.Domain.Abstractions;
 using SystemTools.SharedKernel;
 using SystemTools.SystemToolsShared;
-using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.MasterData.Crud;
 
@@ -71,15 +70,15 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         MethodInfo? generic = method?.MakeGenericMethod(_entityType.ClrType);
         if (generic is null)
         {
-            return Result.Failure<IEnumerable<IDataType>>(MasterDataCrudErrors
-                .GenericMethodWasNotCreated(nameof(OrderBySortId)).ToError());
+            return Result.Failure<IEnumerable<IDataType>>(
+                MasterDataCrudErrors.GenericMethodWasNotCreated(nameof(OrderBySortId)));
         }
 
         object? queryRunResult = generic.Invoke(this, [query]);
         if (queryRunResult is null)
         {
-            return Result.Failure<IEnumerable<IDataType>>(MasterDataCrudErrors.MethodResultIsNull(nameof(OrderBySortId))
-                .ToError());
+            return Result.Failure<IEnumerable<IDataType>>(
+                MasterDataCrudErrors.MethodResultIsNull(nameof(OrderBySortId)));
         }
 
         return (List<IDataType>)queryRunResult;
@@ -92,7 +91,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         if (entityType is null)
         {
             //ვერ ვიპოვეთ შესაბამისი ცხრილი
-            return Result.Failure<MasterDataCrud>(MasterDataApiErrors.TableNotFound(tableName).ToError());
+            return Result.Failure<MasterDataCrud>(MasterDataApiErrors.TableNotFound(tableName));
         }
 
         return new MasterDataCrud(tableName, entityType, logger, cmdRepo, unitOfWork, databaseAbstraction);
@@ -103,7 +102,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         GridModel? gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
         if (gridModel is null)
         {
-            return Result.Failure<bool>(MasterDataCrudErrors.GridModelIsNull(_tableName).ToError());
+            return Result.Failure<bool>(MasterDataCrudErrors.GridModelIsNull(_tableName));
         }
 
         IntegerCell? sortIdCell = null;
@@ -156,16 +155,16 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         MethodInfo? generic = method?.MakeGenericMethod(_entityType.ClrType);
         if (generic is null)
         {
-            return Result.Failure<TableRowsData>(MasterDataCrudErrors
-                .GenericMethodWasNotCreated(nameof(UseCustomSortFilterPagination)).ToError());
+            return Result.Failure<TableRowsData>(
+                MasterDataCrudErrors.GenericMethodWasNotCreated(nameof(UseCustomSortFilterPagination)));
         }
 
         // ReSharper disable once using
         using var result = (Task<TableRowsData>?)generic.Invoke(this, [query, filterSortRequest, cancellationToken]);
         if (result is null)
         {
-            return Result.Failure<TableRowsData>(MasterDataCrudErrors
-                .MethodResultTaskIsNull(nameof(UseCustomSortFilterPagination)).ToError());
+            return Result.Failure<TableRowsData>(
+                MasterDataCrudErrors.MethodResultTaskIsNull(nameof(UseCustomSortFilterPagination)));
         }
 
         return await result;
@@ -284,7 +283,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             return Result.Success(idt);
         }
 
-        return Result.Failure<IDataType>(MasterDataApiErrors.EntryNotFound().ToError());
+        return Result.Failure<IDataType>(MasterDataApiErrors.EntryNotFound());
     }
 
     private Result<string> GetSingleKeyPropertyName()
@@ -293,13 +292,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         if (singleKey is null)
         {
             //ვერ ვიპოვეთ ერთადერთი გასაღები
-            return Result.Failure<string>(MasterDataApiErrors.TableHaveNotSingleKey(_tableName).ToError());
+            return Result.Failure<string>(MasterDataApiErrors.TableHaveNotSingleKey(_tableName));
         }
 
         if (singleKey.Properties.Count != 1)
         {
             //ვერ ვიპოვეთ ერთადერთი გასაღები
-            return Result.Failure<string>(MasterDataApiErrors.TableSingleKeyMustHaveOneProperty(_tableName).ToError());
+            return Result.Failure<string>(MasterDataApiErrors.TableSingleKeyMustHaveOneProperty(_tableName));
         }
 
         return singleKey.Properties[0].Name;
@@ -316,13 +315,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         if (setMethod is null)
         {
             //ცხრილს არ აქვს მეთოდი Set
-            return Result.Failure<object>(MasterDataApiErrors.SetMethodNotFoundForTable(_tableName).ToError());
+            return Result.Failure<object>(MasterDataApiErrors.SetMethodNotFoundForTable(_tableName));
         }
 
         object? result = _cmdRepo.RunGenericMethodForLoadAllRecords(setMethod, _entityType);
         return result is null
             //ცხრილის Set მეთოდი აბრუნებს null-ს
-            ? Result.Failure<object>(MasterDataApiErrors.SetMethodReturnsNullForTable(_tableName).ToError())
+            ? Result.Failure<object>(MasterDataApiErrors.SetMethodReturnsNullForTable(_tableName))
             : Result.Success(result);
     }
 
@@ -337,15 +336,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         if (setMethod is null)
         {
             //ცხრილს არ აქვს მეთოდი Set
-            return Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.SetMethodNotFoundForTable(_tableName)
-                .ToError());
+            return Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.SetMethodNotFoundForTable(_tableName));
         }
 
         object? result = _cmdRepo.RunGenericMethodForLoadAllRecords(setMethod, _entityType);
         return result is null
             //ცხრილის Set მეთოდი აბრუნებს null-ს
-            ? Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.SetMethodReturnsNullForTable(_tableName)
-                .ToError())
+            ? Result.Failure<IQueryable<IDataType>>(MasterDataApiErrors.SetMethodReturnsNullForTable(_tableName))
             : Result.Success((IQueryable<IDataType>)result);
     }
 
@@ -358,7 +355,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         if (jObj is not IDataType newItem)
         {
             //დესერიალიზაციისას არ მივიღეთ იმ ტიპის ობიექტი, რაც საჭირო იყო
-            return Result.Failure(MasterDataApiErrors.RecordDoesNotDeserialized(_tableName).ToError());
+            return Result.Failure(MasterDataApiErrors.RecordDoesNotDeserialized(_tableName));
         }
 
         newItem.Id = 0;
@@ -394,7 +391,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         Type sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
         if (Activator.CreateInstance(sortIdHelperType, _cmdRepo) is not ISortIdHelper sortHelper)
         {
-            return Result.Failure(MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType).ToError());
+            return Result.Failure(MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType));
         }
 
         Result<IQueryable<IDataType>> queryResult = Query();
@@ -448,13 +445,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         if (jObj is not IDataType newItem)
         {
             //დესერიალიზაციისას არ მივიღეთ იმ ტიპის ობიექტი, რაც საჭირო იყო
-            return Result.Failure(MasterDataApiErrors.RecordDoesNotDeserialized(_tableName).ToError());
+            return Result.Failure(MasterDataApiErrors.RecordDoesNotDeserialized(_tableName));
         }
 
         if (newItem.Id != id)
         {
             //მოწოდებული ინფორმაცია არასწორია, რადგან იდენტიფიკატორი არ ემთხვევა მოწოდებული ობიექტის იდენტიფიკატორს
-            return Result.Failure(MasterDataApiErrors.WrongId(_tableName).ToError());
+            return Result.Failure(MasterDataApiErrors.WrongId(_tableName));
         }
 
         Result validateResult = await Validate(newItem, cancellationToken);
@@ -486,7 +483,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         Type sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
         if (Activator.CreateInstance(sortIdHelperType, _cmdRepo) is not ISortIdHelper sortHelper)
         {
-            return Result.Failure(MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType).ToError());
+            return Result.Failure(MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType));
         }
 
         _sortHelper = sortHelper;
@@ -536,7 +533,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     {
         if (_sortHelper is null)
         {
-            return Result.Failure(MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType).ToError());
+            return Result.Failure(MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType));
         }
 
         Result<IQueryable<IDataType>> queryResult = Query();
@@ -602,7 +599,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         Type sortIdHelperType = typeof(SortIdHelper<>).MakeGenericType(_entityType.ClrType);
         if (Activator.CreateInstance(sortIdHelperType, _cmdRepo) is not ISortIdHelper sortHelper)
         {
-            return Result.Failure(MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType).ToError());
+            return Result.Failure(MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType));
         }
 
         Result<IQueryable<IDataType>> queryResult = Query();
@@ -623,10 +620,10 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         if (gridModel is null)
         {
-            return Result.Failure(MasterDataApiErrors.MasterDataInvalidValidationRules(_tableName).ToError());
+            return Result.Failure(MasterDataApiErrors.MasterDataInvalidValidationRules(_tableName));
         }
 
-        List<ErrorOmd> errors = [];
+        List<Error> errors = [];
         PropertyInfo[] props = newItem.GetType().GetProperties();
 
         foreach (Cell cell in gridModel.Cells)
@@ -638,13 +635,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
                 continue;
             }
 
-            List<ErrorOmd> mes = cell.Validate(prop.GetValue(newItem));
+            List<Error> mes = cell.Validate(prop.GetValue(newItem));
             if (mes.Count > 0)
             {
                 errors.AddRange(mes);
             }
         }
 
-        return errors.Count == 0 ? Result.Success() : Result.Failure(errors.ToArray().ToError());
+        return errors.Count == 0 ? Result.Success() : Result.Failure(Result.CreateValidationError([.. errors]));
     }
 }

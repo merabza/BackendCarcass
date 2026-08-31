@@ -40,7 +40,7 @@ public sealed class UserTableRightsFilter : IEndpointFilter
 
         if (checkTableRightsResult.IsFailure)
         {
-            return Results.BadRequest(checkTableRightsResult.Error.ToErrorOmdArray());
+            return Results.BadRequest(checkTableRightsResult.Error);
         }
 
         return await next(context);
