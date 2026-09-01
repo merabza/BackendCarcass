@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BackendCarcass.DataSeeding.Models;
-using BackendCarcassDomain.Entities.AppClaims;
+using BackendCarcass.Domain.AppClaims;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;
 

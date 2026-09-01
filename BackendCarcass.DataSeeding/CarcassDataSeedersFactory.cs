@@ -1,5 +1,5 @@
-﻿using BackendCarcass.DataSeeding.Seeders;
-using BackendCarcass.MasterData.Models;
+﻿using BackendCarcass.Application.MasterData.Models;
+using BackendCarcass.DataSeeding.Seeders;
 using Microsoft.AspNetCore.Identity;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using BackendCarcass.Database;
-using BackendCarcassDomain.Entities.DataTypes;
-using BackendCarcassDomain.Entities.ManyToManyJoins;
+using BackendCarcass.Domain.DataTypes;
+using BackendCarcass.Domain.ManyToManyJoins;
 using Microsoft.Extensions.Logging;
 using SystemTools.SystemToolsShared;
 
@@ -19,11 +19,6 @@ public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
     {
         _context = ctx;
         _logger = logger;
-    }
-
-    public List<ManyToManyJoin> GetManyToManyJoins(int parentDataTypeId, int childDataTypeId)
-    {
-        return [.. _context.ManyToManyJoins.Where(w => w.PtId == parentDataTypeId && w.CtId == childDataTypeId)];
     }
 
     public bool SetDtParentDataTypes(Tuple<int, int>[] dtdt)
@@ -77,6 +72,11 @@ public /*open*/ class CarcassDataSeederRepository : ICarcassDataSeederRepository
             StShared.WriteException(e, "ErrorOmd when RemoveRedundantDataTypesByTableNames", true, _logger, false);
             return false;
         }
+    }
+
+    public List<ManyToManyJoin> GetManyToManyJoins(int parentDataTypeId, int childDataTypeId)
+    {
+        return [.. _context.ManyToManyJoins.Where(w => w.PtId == parentDataTypeId && w.CtId == childDataTypeId)];
     }
 
     private bool SaveChanges()

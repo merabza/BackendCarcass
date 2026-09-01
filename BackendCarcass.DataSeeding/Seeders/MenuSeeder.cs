@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BackendCarcass.DataSeeding.Models;
-using BackendCarcassDomain.Entities.CrudRightTypes;
-using BackendCarcassDomain.Entities.DataTypes;
-using BackendCarcassDomain.Entities.MenuGroups;
-using BackendCarcassDomain.Entities.MenuItems;
-using BackendCarcassDomain.Entities.Roles;
-using BackendCarcassDomain.Entities.Users;
+using BackendCarcass.Domain.CrudRightTypes;
+using BackendCarcass.Domain.DataTypes;
+using BackendCarcass.Domain.MenuGroups;
+using BackendCarcass.Domain.MenuItems;
+using BackendCarcass.Domain.Roles;
+using BackendCarcass.Domain.Users;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;
 

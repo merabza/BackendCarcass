@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BackendCarcass.Application.MasterData.Models;
 using BackendCarcass.DataSeeding.Models;
-using BackendCarcass.MasterData.Models;
-using BackendCarcassDomain.Entities.Users;
+using BackendCarcass.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;

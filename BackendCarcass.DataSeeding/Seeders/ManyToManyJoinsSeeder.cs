@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BackendCarcass.Application.MasterData;
+using BackendCarcass.Application.MasterData.CellModels;
 using BackendCarcass.DataSeeding.Comparers;
 using BackendCarcass.DataSeeding.Models;
-using BackendCarcass.MasterData;
-using BackendCarcass.MasterData.CellModels;
-using BackendCarcassDomain.Entities.CrudRightTypes;
-using BackendCarcassDomain.Entities.DataTypes;
-using BackendCarcassDomain.Entities.ManyToManyJoins;
-using BackendCarcassDomain.Entities.MenuGroups;
-using BackendCarcassDomain.Entities.MenuItems;
-using BackendCarcassDomain.Entities.Roles;
-using BackendCarcassDomain.Entities.Users;
+using BackendCarcass.Domain.CrudRightTypes;
+using BackendCarcass.Domain.DataTypes;
+using BackendCarcass.Domain.ManyToManyJoins;
+using BackendCarcass.Domain.MenuGroups;
+using BackendCarcass.Domain.MenuItems;
+using BackendCarcass.Domain.Roles;
+using BackendCarcass.Domain.Users;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;
 

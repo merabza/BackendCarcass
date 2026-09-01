@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BackendCarcass.Application.Rights;
 using BackendCarcass.DataSeeding.Models;
-using BackendCarcass.Rights;
-using BackendCarcassDomain.Entities.CrudRightTypes;
+using BackendCarcass.Domain.CrudRightTypes;
 using SystemTools.DatabaseToolsShared;
 using SystemTools.SystemToolsShared;
 

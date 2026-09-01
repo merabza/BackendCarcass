@@ -1,8 +1,1 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-    <ItemGroup>
-        <ProjectReference Include="..\BackendCarcass.Identity\BackendCarcass.Identity.csproj" />
-        <ProjectReference Include="..\BackendCarcass.MasterData\BackendCarcass.MasterData.csproj" />
-    </ItemGroup>
-
-</Project>
+<Project Sdk="Microsoft.NET.Sdk" />
