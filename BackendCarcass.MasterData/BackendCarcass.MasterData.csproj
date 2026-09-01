@@ -2,7 +2,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Identity.Stores" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     </ItemGroup>
 
     <ItemGroup>
