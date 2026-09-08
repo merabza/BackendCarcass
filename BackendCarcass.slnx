@@ -1,7 +1,4 @@
 <Solution>
-  <Folder Name="/BackendCarcassDomain/">
-    <Project Path="../BackendCarcassDomain/BackendCarcassDomain.Entities/BackendCarcassDomain.Entities.csproj" />
-  </Folder>
   <Folder Name="/BackendCarcassShared/">
     <Project Path="../BackendCarcassShared/BackendCarcassShared.Contracts/BackendCarcassShared.Contracts.csproj" />
   </Folder>
@@ -11,30 +8,22 @@
     <File Path="Directory.Packages.props" />
   </Folder>
   <Folder Name="/SystemTools/">
+    <Project Path="../SystemTools/SystemTools.Application.Abstractions/SystemTools.Application.Abstractions.csproj" />
     <Project Path="../SystemTools/SystemTools.DatabaseToolsShared/SystemTools.DatabaseToolsShared.csproj" />
     <Project Path="../SystemTools/SystemTools.ApiContracts/SystemTools.ApiContracts.csproj" />
     <Project Path="../SystemTools/SystemTools.Domain.Abstractions/SystemTools.Domain.Abstractions.csproj" />
-    <Project Path="../SystemTools/SystemTools.MediatRMessagingAbstractions/SystemTools.MediatRMessagingAbstractions.csproj" />
     <Project Path="../SystemTools/SystemTools.ReCounterContracts/SystemTools.ReCounterContracts.csproj" />
     <Project Path="../SystemTools/SystemTools.RepositoriesShared/SystemTools.RepositoriesShared.csproj" />
     <Project Path="../SystemTools/SystemTools.SystemToolsShared/SystemTools.SystemToolsShared.csproj" />
   </Folder>
-  <Folder Name="/Tests/">
-    <Project Path="BackendCarcass.Api.Tests/BackendCarcass.Api.Tests.csproj" Id="c8a6466c-df01-41bf-9ca5-c68b1a582be9" />
-  </Folder>
+  <Folder Name="/Tests/" />
   <Folder Name="/WebSystemTools/">
     <Project Path="../WebSystemTools/WebSystemTools.CorsTools/WebSystemTools.CorsTools.csproj" />
+    <Project Path="../WebSystemTools/WebSystemTools.WebApi.Abstractions/WebSystemTools.WebApi.Abstractions.csproj" />
   </Folder>
   <Project Path="BackendCarcass.DataSeeding/BackendCarcass.DataSeeding.csproj" />
   <Project Path="BackendCarcass.Api/BackendCarcass.Api.csproj" />
   <Project Path="BackendCarcass.Application/BackendCarcass.Application.csproj" />
   <Project Path="BackendCarcass.Database/BackendCarcass.Database.csproj" />
   <Project Path="BackendCarcass.Domain/BackendCarcass.Domain.csproj" />
-  <Project Path="BackendCarcass.FilterSort/BackendCarcass.FilterSort.csproj" />
-  <Project Path="BackendCarcass.Identity/BackendCarcass.Identity.csproj" />
-  <Project Path="BackendCarcass.Mappers/BackendCarcass.Mappers.csproj" />
-  <Project Path="BackendCarcass.MasterData/BackendCarcass.MasterData.csproj" />
-  <Project Path="BackendCarcass.Repositories/BackendCarcass.Repositories.csproj" />
-  <Project Path="BackendCarcass.Rights/BackendCarcass.Rights.csproj" />
-  <Project Path="BackendCarcass.LibCrud/BackendCarcass.LibCrud.csproj" />
 </Solution>
