@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\BackendCarcass\BackendCarcass\BackendCarcass.Domain\BackendCarcass.Domain.csproj" />
         <ProjectReference Include="..\..\SystemTools\SystemTools.Application.Abstractions\SystemTools.Application.Abstractions.csproj" />
         <ProjectReference Include="..\..\SystemTools\SystemTools.Domain.Abstractions\SystemTools.Domain.Abstractions.csproj" />
         <ProjectReference Include="..\BackendCarcass.Domain\BackendCarcass.Domain.csproj" />
