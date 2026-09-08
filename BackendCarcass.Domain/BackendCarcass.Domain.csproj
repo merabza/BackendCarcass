@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\AppCliTools\SystemTools\SystemTools.SharedKernel\SystemTools.SharedKernel.csproj" />
     <ProjectReference Include="..\..\SystemTools\SystemTools.SharedKernel\SystemTools.SharedKernel.csproj" />
   </ItemGroup>
 
