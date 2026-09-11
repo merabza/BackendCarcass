@@ -432,7 +432,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         _justCreated = newItem;
         return Result.Success();
 
-        //return createResult.Match(x => x, () => OneOf<IDataType, ErrorOmd[]>.FromT0(newItem));
+        //return createResult.Match(x => x, () => OneOf<IDataType, Error[]>.FromT0(newItem));
     }
 
     protected override async ValueTask<Result> UpdateData(int id, ICrudData crudDataNewVersion,

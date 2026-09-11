@@ -77,7 +77,7 @@ public static class UserRightsEndpoints
         return result.Match<Results<Ok, BadRequest<Error>, ProblemHttpResult>>(() => TypedResults.Ok(),
             errors => (ProblemHttpResult)CustomResults.Problem(errors));
 
-        //return result.Match<Results<Ok, BadRequest<ErrorOmd[]>>>(_ => TypedResults.Ok(),
+        //return result.Match<Results<Ok, BadRequest<Error[]>>>(_ => TypedResults.Ok(),
         //    errors => TypedResults.BadRequest(errors));
     }
 

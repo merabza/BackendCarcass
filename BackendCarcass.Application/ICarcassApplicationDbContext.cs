@@ -38,6 +38,6 @@ public interface ICarcassApplicationDbContext
     Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
     void Detach(Entity entity);
 
-    //Task<Option<ErrorOmd[]>> ExecuteSqlRawRetOptionAsync(string sql, CancellationToken cancellationToken = default);
+    //Task<Option<Error[]>> ExecuteSqlRawRetOptionAsync(string sql, CancellationToken cancellationToken = default);
     //void SetCommandTimeout(TimeSpan timeout);
 }
