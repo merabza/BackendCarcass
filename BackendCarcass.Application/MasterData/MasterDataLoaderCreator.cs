@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SystemTools.Domain.Abstractions;
 using SystemTools.SharedKernel;
-using SystemTools.SystemToolsShared;
 
 namespace BackendCarcass.Application.MasterData;
 
@@ -29,10 +28,9 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
         IServiceScope scope = _services.CreateScope();
 #pragma warning restore CA2000
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var databaseAbstraction = scope.ServiceProvider.GetRequiredService<IDatabaseAbstraction>();
 
         Result<MasterDataCrud> createResult = MasterDataCrud.Create(queryName, _logger,
-            scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>(), unitOfWork, databaseAbstraction);
+            scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>(), unitOfWork);
         return createResult.IsFailure ? Result.Failure<IMasterDataLoader>(createResult.Error) : createResult.Value;
     }
 
@@ -44,19 +42,18 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
 #pragma warning restore CA2000
         var carcassMasterDataRepository = scope.ServiceProvider.GetRequiredService<ICarcassMasterDataRepository>();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var databaseAbstraction = scope.ServiceProvider.GetRequiredService<IDatabaseAbstraction>();
 
         switch (tableName)
         {
             case "users":
                 return new UsersCrud(_logger, scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>(),
-                    unitOfWork, databaseAbstraction);
+                    unitOfWork);
             case "roles":
                 return new RolesCrud(_logger, scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>(),
-                    unitOfWork, databaseAbstraction);
+                    unitOfWork);
             default:
                 Result<MasterDataCrud> createResult = MasterDataCrud.Create(tableName, _logger,
-                    carcassMasterDataRepository, unitOfWork, databaseAbstraction);
+                    carcassMasterDataRepository, unitOfWork);
                 return createResult.IsFailure ? Result.Failure<CrudBase>(createResult.Error) : createResult.Value;
         }
     }

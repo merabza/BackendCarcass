@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SystemTools.Domain.Abstractions;
 using SystemTools.SharedKernel;
-using SystemTools.SystemToolsShared;
 
 namespace BackendCarcass.Application.MasterData.Crud;
 
@@ -22,8 +21,8 @@ public sealed class RolesCrud : CrudBase, IMasterDataLoader
     private readonly RoleManager<AppRole> _roleManager;
     private AppRole? _justCreated;
 
-    public RolesCrud(ILogger logger, RoleManager<AppRole> roleManager, IUnitOfWork unitOfWork,
-        IDatabaseAbstraction databaseAbstraction) : base(logger, unitOfWork, databaseAbstraction)
+    public RolesCrud(ILogger logger, RoleManager<AppRole> roleManager, IUnitOfWork unitOfWork) : base(logger,
+        unitOfWork)
     {
         _roleManager = roleManager;
     }

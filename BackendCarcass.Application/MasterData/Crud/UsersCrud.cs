@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SystemTools.Domain.Abstractions;
 using SystemTools.SharedKernel;
-using SystemTools.SystemToolsShared;
 
 namespace BackendCarcass.Application.MasterData.Crud;
 
@@ -22,8 +21,8 @@ public sealed class UsersCrud : CrudBase, IMasterDataLoader
     private readonly UserManager<AppUser> _userManager;
     private AppUser? _justCreated;
 
-    public UsersCrud(ILogger logger, UserManager<AppUser> userManager, IUnitOfWork unitOfWork,
-        IDatabaseAbstraction databaseAbstraction) : base(logger, unitOfWork, databaseAbstraction)
+    public UsersCrud(ILogger logger, UserManager<AppUser> userManager, IUnitOfWork unitOfWork) : base(logger,
+        unitOfWork)
     {
         _userManager = userManager;
     }

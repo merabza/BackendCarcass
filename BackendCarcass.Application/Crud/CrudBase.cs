@@ -2,27 +2,25 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Application.Crud.Models;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using SystemTools.Domain.Abstractions;
 using SystemTools.SharedKernel;
-using SystemTools.SystemToolsShared;
 using SystemTools.SystemToolsShared.Errors;
 
 namespace BackendCarcass.Application.Crud;
 
 public abstract class CrudBase
 {
-    private readonly IDatabaseAbstraction _databaseAbstraction;
+    //private readonly IDatabaseAbstraction _databaseAbstraction;
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
 
     // ReSharper disable once BothContextCallDeclaration.Global
-    protected CrudBase(ILogger logger, IUnitOfWork unitOfWork, IDatabaseAbstraction databaseAbstraction)
+    protected CrudBase(ILogger logger, IUnitOfWork unitOfWork)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
-        _databaseAbstraction = databaseAbstraction;
+        //_databaseAbstraction = databaseAbstraction;
     }
 
     //ასეთი მიდგომა სწორია და არ უნდა შეიცვალოს, რადგან ახალი ჩანაწერის შექმნისას იდენტიფიკატორი მანამ არის 0, სანამ არ მოხდება ბაზაში შენახვა.
@@ -54,9 +52,9 @@ public abstract class CrudBase
         const string methodName = nameof(Create);
         try
         {
-            // ReSharper disable once using
-            await using IDbContextTransaction transaction =
-                await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
+            //// ReSharper disable once using
+            //await using IDbContextTransaction transaction =
+            //    await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
             try
             {
                 Result result = await CreateData(crudDataForCreate, cancellationToken);
@@ -66,12 +64,12 @@ public abstract class CrudBase
                 }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                await transaction.CommitAsync(cancellationToken);
+                //await transaction.CommitAsync(cancellationToken);
                 return await GetOne(JustCreatedId, cancellationToken);
             }
             catch (Exception e)
             {
-                await transaction.RollbackAsync(cancellationToken);
+                //await transaction.RollbackAsync(cancellationToken);
                 if (e.InnerException is not null)
                 {
                     if (_logger.IsEnabled(LogLevel.Error))
@@ -111,8 +109,8 @@ public abstract class CrudBase
         try
         {
             // ReSharper disable once using
-            await using IDbContextTransaction transaction =
-                await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
+            //await using IDbContextTransaction transaction =
+            //    await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
             try
             {
                 Result updateDataResult = await UpdateData(id, crudDataNewVersion, cancellationToken);
@@ -129,12 +127,12 @@ public abstract class CrudBase
                 }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                await transaction.CommitAsync(cancellationToken);
+                //await transaction.CommitAsync(cancellationToken);
                 return Result.Success();
             }
             catch (Exception e)
             {
-                await transaction.RollbackAsync(cancellationToken);
+                //await transaction.RollbackAsync(cancellationToken);
                 return Result.Failure(SystemToolsErrors.UnexpectedApiException(e));
             }
         }
@@ -150,8 +148,8 @@ public abstract class CrudBase
         try
         {
             // ReSharper disable once using
-            await using IDbContextTransaction transaction =
-                await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
+            //await using IDbContextTransaction transaction =
+            //    await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
             try
             {
                 Result result = await DeleteData(id, cancellationToken);
@@ -161,12 +159,12 @@ public abstract class CrudBase
                 }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                await transaction.CommitAsync(cancellationToken);
+                //await transaction.CommitAsync(cancellationToken);
                 return Result.Success();
             }
             catch (Exception e)
             {
-                await transaction.RollbackAsync(cancellationToken);
+                //await transaction.RollbackAsync(cancellationToken);
                 if (e.InnerException is not null)
                 {
                     if (_logger.IsEnabled(LogLevel.Error))

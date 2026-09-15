@@ -18,7 +18,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SystemTools.Domain.Abstractions;
 using SystemTools.SharedKernel;
-using SystemTools.SystemToolsShared;
 
 namespace BackendCarcass.Application.MasterData.Crud;
 
@@ -32,8 +31,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     private ISortIdHelper? _sortHelper;
 
     private MasterDataCrud(string tableName, IEntityType entityType, ILogger logger,
-        ICarcassMasterDataRepository cmdRepo, IUnitOfWork unitOfWork, IDatabaseAbstraction databaseAbstraction) : base(
-        logger, unitOfWork, databaseAbstraction)
+        ICarcassMasterDataRepository cmdRepo, IUnitOfWork unitOfWork) : base(logger, unitOfWork)
     {
         _tableName = tableName;
         _entityType = entityType;
@@ -84,7 +82,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
     }
 
     public static Result<MasterDataCrud> Create(string tableName, ILogger logger, ICarcassMasterDataRepository cmdRepo,
-        IUnitOfWork unitOfWork, IDatabaseAbstraction databaseAbstraction)
+        IUnitOfWork unitOfWork)
     {
         IEntityType? entityType = cmdRepo.GetEntityTypeByTableName(tableName);
         if (entityType is null)
@@ -93,7 +91,7 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             return Result.Failure<MasterDataCrud>(MasterDataApiErrors.TableNotFound(tableName));
         }
 
-        return new MasterDataCrud(tableName, entityType, logger, cmdRepo, unitOfWork, databaseAbstraction);
+        return new MasterDataCrud(tableName, entityType, logger, cmdRepo, unitOfWork);
     }
 
     private async Task<Result<bool>> IsGridWithSortId(CancellationToken cancellationToken = default)
