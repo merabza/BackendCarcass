@@ -562,9 +562,10 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
     protected override async ValueTask<Result> AfterUpdateData(CancellationToken cancellationToken = default)
     {
+        //_sortHelper მხოლოდ SortId-იანი ცხრილებისთვის იქმნება (UpdateData); დანარჩენებისთვის გადალაგება საჭირო არ არის
         if (_sortHelper is null)
         {
-            return Result.Failure(MasterDataCrudErrors.SortIdHelperWasNotCreatedForType(_entityType.ClrType));
+            return Result.Success();
         }
 
         Result<IQueryable<IDataType>> queryResult = Query();
