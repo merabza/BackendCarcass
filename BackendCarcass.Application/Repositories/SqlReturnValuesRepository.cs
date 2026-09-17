@@ -49,12 +49,15 @@ public sealed class SqlReturnValuesRepository(ICarcassApplicationDbContext ctx) 
                 IsIdentifier(parentDataType.DtKeyFieldName) && IsIdentifier(childDataType.DtKeyFieldName) &&
                 IsIdentifier(parentDataType.DtTable, 32))
             {
+                //უფლებების ხეში წყვილის მწკრივი ("LinkTypes.Update") მშობელი ან შვილი ტიპის მწკრივის ("LinkTypes") ქვეშ
+                //ჯდება, თუ ფსევდო ტიპის DtParentDataTypeId სწორედ ეს ტიპია
+                string parentIdExpression = GetPairParentIdExpression(dt, parentDataType, childDataType);
                 strSql = $"""
                           SELECT
                           	mmjId AS Id,
                           	CONCAT_WS('.', MMJ.PKey, MMJ.CKey) AS [Key],
                           	CONCAT_WS('.', P.{parentDataType.DtNameFieldName}, C.{childDataType.DtNameFieldName}) AS [Name],
-                          	NULL AS ParentId
+                          	{parentIdExpression} AS ParentId
                           FROM ManyToManyJoins MMJ
                           	INNER JOIN {parentDataType.DtTable} P ON MMJ.pKey = P.{parentDataType.DtKeyFieldName}
                           	INNER JOIN {childDataType.DtTable} C ON MMJ.CKey = C.{childDataType.DtKeyFieldName}
@@ -79,6 +82,22 @@ public sealed class SqlReturnValuesRepository(ICarcassApplicationDbContext ctx) 
         }
 
         return [];
+    }
+
+    private static string GetPairParentIdExpression(DataTypeModelForRvs dt, DataTypeModelForRvs parentDataType,
+        DataTypeModelForRvs childDataType)
+    {
+        if (dt.DtParentDataTypeId == parentDataType.DtId && IsIdentifier(parentDataType.DtIdFieldName))
+        {
+            return $"P.{parentDataType.DtIdFieldName}";
+        }
+
+        if (dt.DtParentDataTypeId == childDataType.DtId && IsIdentifier(childDataType.DtIdFieldName))
+        {
+            return $"C.{childDataType.DtIdFieldName}";
+        }
+
+        return "NULL";
     }
 
     private static bool IsIdentifier(string? text, int len = 20)
