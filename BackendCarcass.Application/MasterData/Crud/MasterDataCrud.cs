@@ -96,6 +96,13 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
     private async Task<Result<bool>> IsGridWithSortId(CancellationToken cancellationToken = default)
     {
+        //SortId-ის დამუშავება (OrderBySortId, SortIdHelper, ISortedDataType-ზე cast) მხოლოდ იმ ენთითებისთვის შეიძლება,
+        //რომლებიც ISortedDataType-ს ახორციელებენ; დანარჩენებისთვის grid-ის sortId უჯრედი მხოლოდ UI-ს მინიშნებაა
+        if (!typeof(ISortedDataType).IsAssignableFrom(_entityType.ClrType))
+        {
+            return false;
+        }
+
         GridModel? gridModel = await GetDataTypeGridRulesByTableName(cancellationToken);
         if (gridModel is null)
         {
@@ -253,13 +260,11 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
     private async Task<Result<IDataType>> GetOneRecord(int id, CancellationToken cancellationToken = default)
     {
-        Result<IQueryable<IDataType>> entResult = Query();
-        if (entResult.IsFailure)
+        Result<object> queryResult = QueryObject();
+        if (queryResult.IsFailure)
         {
-            return Result.Failure<IDataType>(entResult.Error);
+            return Result.Failure<IDataType>(queryResult.Error);
         }
-
-        IQueryable<IDataType> res = entResult.Value;
 
         Result<string> keyResult = GetSingleKeyPropertyName();
         if (keyResult.IsFailure)
@@ -267,13 +272,26 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
             return Result.Failure<IDataType>(keyResult.Error);
         }
 
-        string keyPropertyName = keyResult.Value;
+        //IDataType.Id ბაზაში არ არის (NotMapped), ამიტომ ფილტრი გასაღების რეალურ თვისებაზე იგება და ენთითის ტიპით
+        //სრულდება: IQueryable<IDataType>-ზე EF-ის SingleOrDefaultAsync ვერ მუშაობს, რადგან Task<T> კოვარიანტული არ არის
+        MethodInfo? method = typeof(MasterDataCrud).GetMethod(nameof(SingleOrDefaultByKey), 1,
+            [typeof(object), typeof(string), typeof(int), typeof(CancellationToken)]);
+        MethodInfo? generic = method?.MakeGenericMethod(_entityType.ClrType);
+        if (generic is null)
+        {
+            return Result.Failure<IDataType>(
+                MasterDataCrudErrors.GenericMethodWasNotCreated(nameof(SingleOrDefaultByKey)));
+        }
 
-        ParameterExpression parameter = Expression.Parameter(_entityType.ClrType, keyPropertyName);
-        ConstantExpression constant = Expression.Constant(id);
-        BinaryExpression equal = Expression.Equal(parameter, constant);
-        Expression<Func<IDataType, bool>> lambda = Expression.Lambda<Func<IDataType, bool>>(equal, parameter);
-        IDataType? idt = await res.Where(lambda).SingleOrDefaultAsync(cancellationToken);
+        // ReSharper disable once using
+        using var task =
+            (Task<IDataType?>?)generic.Invoke(null, [queryResult.Value, keyResult.Value, id, cancellationToken]);
+        if (task is null)
+        {
+            return Result.Failure<IDataType>(MasterDataCrudErrors.MethodResultTaskIsNull(nameof(SingleOrDefaultByKey)));
+        }
+
+        IDataType? idt = await task;
 
         if (idt is not null)
         {
@@ -281,6 +299,22 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
         }
 
         return Result.Failure<IDataType>(MasterDataApiErrors.EntryNotFound());
+    }
+
+    public static async Task<IDataType?> SingleOrDefaultByKey<T>(object query, string keyPropertyName, int id,
+        CancellationToken cancellationToken = default) where T : class, IDataType
+    {
+        var tQuery = (IQueryable<T>)query;
+        return await tQuery.Where(CreateKeyPredicate<T>(keyPropertyName, id)).SingleOrDefaultAsync(cancellationToken);
+    }
+
+    //x => x.<keyPropertyName> == id
+    public static Expression<Func<T, bool>> CreateKeyPredicate<T>(string keyPropertyName, int id)
+    {
+        ParameterExpression parameter = Expression.Parameter(typeof(T), "x");
+        BinaryExpression equal = Expression.Equal(Expression.Property(parameter, keyPropertyName),
+            Expression.Constant(id));
+        return Expression.Lambda<Func<T, bool>>(equal, parameter);
     }
 
     private Result<string> GetSingleKeyPropertyName()
@@ -625,7 +659,9 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
 
         foreach (Cell cell in gridModel.Cells)
         {
-            PropertyInfo? prop = props.SingleOrDefault(w => w.Name == cell.FieldName);
+            //grid-ის წესებში ველების სახელები camelCase-ითაა (როგორც JSON-ში), ენთითის თვისებები კი PascalCase-ით
+            PropertyInfo? prop = props.SingleOrDefault(w =>
+                string.Equals(w.Name, cell.FieldName, StringComparison.OrdinalIgnoreCase));
             if (prop is null)
             {
                 errors.Add(MasterDataApiErrors.MasterDataFieldNotFound(_tableName, cell.FieldName));

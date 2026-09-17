@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using BackendCarcass.Application.MasterData.Validation;
 using BackendCarcassShared.Contracts.Errors;
 using Newtonsoft.Json;
@@ -74,29 +76,13 @@ public /*open*/ class IntegerCell : NumberCell
     {
         List<Error> errors = base.Validate(value);
 
-        int testIntValue;
-        if (IsShort)
+        //short ყოველთვის ეტევა int-ში, ამიტომ ორივე ტიპი მისაღებია: IsShort UI-ს მინიშნებაა და ენთითის ტიპს ვერ შეცვლის
+        if (value is not (int or short))
         {
-            errors = ValidateByType<short>(errors, value, "მოკლე მთელი");
-
-            if (value is not short shortValue)
-            {
-                return errors;
-            }
-
-            testIntValue = shortValue;
+            return ValidateByType<int>(errors, value, IsShort ? "მოკლე მთელი" : "მთელი");
         }
-        else
-        {
-            errors = ValidateByType<int>(errors, value, "მთელი");
 
-            if (value is not int intValue)
-            {
-                return errors;
-            }
-
-            testIntValue = intValue;
-        }
+        int testIntValue = Convert.ToInt32(value, CultureInfo.InvariantCulture);
 
         if (MinValRule is not null && testIntValue < MinValRule.Val)
         {

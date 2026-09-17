@@ -53,7 +53,8 @@ public /*open*/ class MixedCell : Cell
 
     protected List<Error> ValidateByType<T>(List<Error> errors, object? value, string typeName)
     {
-        if (value is T)
+        //nullable უჯრედისთვის null დასაშვები მნიშვნელობაა (სავალდებულოობას Validate ამოწმებს)
+        if (value is T || value is null && IsNullable)
         {
             return errors;
         }

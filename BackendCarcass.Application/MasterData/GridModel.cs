@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using BackendCarcass.Application.MasterData.CellModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,17 +29,17 @@ public sealed class GridModel
                 continue;
             }
 
+            //typeName-ს "Cell" სუფიქსი მოშორებული აქვს (Cell.CellTypeNameForSave); უჯრედების კლასები Cell-ის
+            //namespace-სა და assembly-შია, ამიტომ ტიპი იქ იძებნება და არა მოძველებული სახელით
             string cellTypeName = $"{strTypeName}{nameof(Cell)}";
-            MethodInfo? method =
-                typeof(JsonConvert).GetMethod(nameof(JsonConvert.DeserializeObject), 1, [typeof(string)]);
-            var genType = Type.GetType($"BackendCarcass.MasterData.{nameof(CellModels)}.{cellTypeName}");
+            Type? genType = typeof(Cell).Assembly.GetType($"{typeof(Cell).Namespace}.{cellTypeName}");
             if (genType is null)
             {
                 continue;
             }
 
-            MethodInfo? generic = method?.MakeGenericMethod(genType);
-            object cellObject = generic?.Invoke(null, [cJson]) ?? throw new Exception($"{cellTypeName} is null");
+            object cellObject = JsonConvert.DeserializeObject(cJson, genType) ??
+                                throw new Exception($"{cellTypeName} is null");
             gridModel.Cells.Add((Cell)cellObject);
 
             //if (!Enum.TryParse<ECellTypeName>(strTypeName, out var cellType))
