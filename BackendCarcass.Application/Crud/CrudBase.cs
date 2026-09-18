@@ -52,7 +52,6 @@ public abstract class CrudBase
         const string methodName = nameof(Create);
         try
         {
-            //// ReSharper disable once using
             //await using IDbContextTransaction transaction =
             //    await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
             try
@@ -108,7 +107,6 @@ public abstract class CrudBase
     {
         try
         {
-            // ReSharper disable once using
             //await using IDbContextTransaction transaction =
             //    await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
             try
@@ -147,7 +145,6 @@ public abstract class CrudBase
         const string methodName = nameof(Delete);
         try
         {
-            // ReSharper disable once using
             //await using IDbContextTransaction transaction =
             //    await _databaseAbstraction.BeginTransactionAsync(cancellationToken);
             try

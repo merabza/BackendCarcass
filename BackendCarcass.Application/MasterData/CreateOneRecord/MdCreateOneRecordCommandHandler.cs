@@ -23,8 +23,7 @@ public sealed class MdCreateOneRecordCommandHandler(IMasterDataLoaderCreator mas
         CancellationToken cancellationToken)
     {
         //ამოვიღოთ მოთხოვნის ტანი
-        // ReSharper disable once using
-        // ReSharper disable once DisposableConstructor
+
         using var reader = new StreamReader(request.HttpRequest.Body);
         string body = await reader.ReadToEndAsync(cancellationToken);
 

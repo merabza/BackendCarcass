@@ -163,7 +163,6 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
                 MasterDataCrudErrors.GenericMethodWasNotCreated(nameof(UseCustomSortFilterPagination)));
         }
 
-        // ReSharper disable once using
         using var result = (Task<TableRowsData>?)generic.Invoke(this, [query, filterSortRequest, cancellationToken]);
         if (result is null)
         {
@@ -283,7 +282,6 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
                 MasterDataCrudErrors.GenericMethodWasNotCreated(nameof(SingleOrDefaultByKey)));
         }
 
-        // ReSharper disable once using
         using var task =
             (Task<IDataType?>?)generic.Invoke(null, [queryResult.Value, keyResult.Value, id, cancellationToken]);
         if (task is null)

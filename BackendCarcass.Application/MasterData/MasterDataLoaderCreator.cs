@@ -23,7 +23,6 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
 
     public virtual Result<IMasterDataLoader> CreateMasterDataLoader(string queryName)
     {
-        // ReSharper disable once using
 #pragma warning disable CA2000
         IServiceScope scope = _services.CreateScope();
 #pragma warning restore CA2000
@@ -36,7 +35,6 @@ public /*open*/ class MasterDataLoaderCreator : IMasterDataLoaderCreator
 
     public virtual Result<CrudBase> CreateMasterDataCrud(string tableName)
     {
-        // ReSharper disable once using
 #pragma warning disable CA2000
         IServiceScope scope = _services.CreateScope();
 #pragma warning restore CA2000
