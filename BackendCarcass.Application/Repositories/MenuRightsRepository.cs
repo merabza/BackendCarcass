@@ -72,9 +72,9 @@ public sealed class MenuRightsRepository : IMenuRightsRepository
 
         IEnumerable<string> qPccDt = ManyToManyJoinsPcc(userDtId, userName, roleDtId, dataTypeDtId);
 
-        IEnumerable<int> dtIdsDist = (from dt in _carcassContext.DataTypes
+        List<int> dtIdsDist = await (from dt in _carcassContext.DataTypes
             join pccDt in qPccDt on dt.DtTable equals pccDt
-            select dt.DtId).Distinct().AsEnumerable();
+            select dt.DtId).Distinct().ToListAsync(cancellationToken);
 
         IOrderedEnumerable<DataTypesResponse> res = (from dtf in dtIdsDist
             join dt in _carcassContext.DataTypes on dtf equals dt.DtId
