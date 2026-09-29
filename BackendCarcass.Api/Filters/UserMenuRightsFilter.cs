@@ -42,7 +42,9 @@ public /*open*/ class UserMenuRightsFilter : IEndpointFilter
         if (!result.Value)
             //თუ არა დაბრუნდეს შეცდომა
         {
-            return Results.BadRequest(new[] { RightsApiErrors.InsufficientRights });
+            //უფლების უქონლობა 403-ია (და არა 400), რომ კლიენტმა ის არასწორი მონაცემებისგან გაარჩიოს
+            return Results.Json(new[] { RightsApiErrors.InsufficientRights },
+                statusCode: StatusCodes.Status403Forbidden);
         }
 
         return await next(context);
