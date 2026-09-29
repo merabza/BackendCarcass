@@ -14,23 +14,43 @@ using Xunit;
 namespace BackendCarcass.Application.Tests.Crud;
 
 // CrudBase wraps the data operations of the master-data pages: it saves the unit of work and turns the database
-// errors the users can cause (a duplicate unique key, a row still referenced by a foreign key) into controlled errors
+// errors the users can cause (a duplicate unique key, a row still referenced by a foreign key) into controlled errors.
+// SQL Server quotes record values in some error texts (the duplicate key, a truncated value), and those can be personal
+// data, so the log gets the exception type and its text without the values instead of the exception itself
 public sealed class CrudBaseTests
 {
     private const string UnexpectedApiExceptionCode = "UnexpectedApiException";
 
-    private const string DuplicateKeyMessage =
+    private const string DuplicateKeyValue = "01234567890";
+
+    private const string DuplicateKeyText =
         "Cannot insert duplicate key row in object 'dbo.Humans' with unique index 'IX_Humans_PersonalId'.";
+
+    private const string DuplicateKeyMessage =
+        DuplicateKeyText + " The duplicate key value is (" + DuplicateKeyValue + ").\r\nThe statement has been terminated.";
+
+    private const string TruncatedValue = "0123456789012";
+
+    private const string TruncationText =
+        "String or binary data would be truncated in table 'MimosiGeDevelopment.dbo.Humans', column 'PersonalId'.";
+
+    private const string TruncationMessage =
+        TruncationText + " Truncated value: '" + TruncatedValue + "'.\r\nThe statement has been terminated.";
 
     private const string ReferenceConflictMessage =
         "The DELETE statement conflicted with the REFERENCE constraint \"FK_Groups_Courses_CourseId\".";
 
+    private readonly List<string> _logged = [];
     private readonly Mock<ILogger> _logger = new();
     private readonly Mock<IUnitOfWork> _unitOfWork = new();
 
     public CrudBaseTests()
     {
         _logger.Setup(l => l.IsEnabled(LogLevel.Error)).Returns(true);
+        _logger.Setup(l => l.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception?>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()))
+            .Callback(new InvocationAction(invocation =>
+                _logged.Add($"{invocation.Arguments[2]} {invocation.Arguments[3]}")));
     }
 
     [Fact]
@@ -63,7 +83,9 @@ public sealed class CrudBaseTests
 
         // Assert
         Assert.Same(exception, thrown);
-        VerifyErrorLogged(exception, "GetOne", Times.Once());
+        _logger.Verify(l => l.Log(LogLevel.Error, It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((state, _) => state.ToString() == "Error occurred executing GetOne."), exception,
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
     }
 
     [Fact]
@@ -137,8 +159,7 @@ public sealed class CrudBaseTests
     public async Task Create_SaveThrowsDuplicateKey_LogsTheCauseAndReturnsSuchARecordAlreadyExists()
     {
         // Arrange
-        var cause = new InvalidOperationException(DuplicateKeyMessage);
-        SaveThrows(new InvalidOperationException("outer", cause));
+        SaveThrows(new InvalidOperationException("outer", new InvalidOperationException(DuplicateKeyMessage)));
 
         // Act
         Result<ICrudData> result = await CreateCrud().Create(new TestCrudData());
@@ -146,41 +167,68 @@ public sealed class CrudBaseTests
         // Assert
         Assert.True(result.IsFailure);
         Assert.Equal(SystemToolsErrors.SuchARecordAlreadyExists.Code, result.Error.Code);
-        VerifyErrorLogged(cause, "Create", Times.Once());
+        VerifyErrorLogged("Create", $"System.InvalidOperationException: {DuplicateKeyText}", Times.Once());
         VerifyErrorsLogged(Times.Once());
+    }
+
+    [Fact]
+    public async Task Create_SaveThrowsDuplicateKey_DoesNotLogTheKeyValue()
+    {
+        // Arrange
+        SaveThrows(new InvalidOperationException("outer", new InvalidOperationException(DuplicateKeyMessage)));
+
+        // Act
+        await CreateCrud().Create(new TestCrudData());
+
+        // Assert
+        Assert.NotEmpty(_logged);
+        Assert.DoesNotContain(_logged, text => text.Contains(DuplicateKeyValue, StringComparison.Ordinal));
     }
 
     [Fact]
     public async Task Create_SaveThrowsOtherInnerError_LogsBothAndReturnsUnexpectedApiException()
     {
         // Arrange
-        var cause = new InvalidOperationException("Some other database error");
-        var exception = new InvalidOperationException("outer", cause);
-        SaveThrows(exception);
+        SaveThrows(new InvalidOperationException("outer", new InvalidOperationException("Some other database error")));
 
         // Act
         Result<ICrudData> result = await CreateCrud().Create(new TestCrudData());
 
         // Assert
         Assert.Equal(UnexpectedApiExceptionCode, result.Error.Code);
-        VerifyErrorLogged(cause, "Create", Times.Once());
-        VerifyErrorLogged(exception, "Create", Times.Once());
+        VerifyErrorLogged("Create", "System.InvalidOperationException: Some other database error", Times.Once());
+        VerifyErrorLogged("Create", "System.InvalidOperationException: outer", Times.Once());
+    }
+
+    [Fact]
+    public async Task Create_SaveThrowsTruncation_DoesNotLogTheTruncatedValue()
+    {
+        // Arrange
+        SaveThrows(new InvalidOperationException("outer", new InvalidOperationException(TruncationMessage)));
+
+        // Act
+        Result<ICrudData> result = await CreateCrud().Create(new TestCrudData());
+
+        // Assert
+        Assert.Equal(UnexpectedApiExceptionCode, result.Error.Code);
+        VerifyErrorLogged("Create", $"System.InvalidOperationException: {TruncationText}", Times.Once());
+        Assert.DoesNotContain(_logged, text => text.Contains(TruncatedValue, StringComparison.Ordinal));
     }
 
     [Fact]
     public async Task Create_SaveThrowsDuplicateKeyWithoutInnerError_LogsItAndReturnsUnexpectedApiException()
     {
         // Arrange
-        var exception = new InvalidOperationException(DuplicateKeyMessage);
-        SaveThrows(exception);
+        SaveThrows(new InvalidOperationException(DuplicateKeyMessage));
 
         // Act
         Result<ICrudData> result = await CreateCrud().Create(new TestCrudData());
 
         // Assert
         Assert.Equal(UnexpectedApiExceptionCode, result.Error.Code);
-        VerifyErrorLogged(exception, "Create", Times.Once());
+        VerifyErrorLogged("Create", $"System.InvalidOperationException: {DuplicateKeyText}", Times.Once());
         VerifyErrorsLogged(Times.Once());
+        Assert.DoesNotContain(_logged, text => text.Contains(DuplicateKeyValue, StringComparison.Ordinal));
     }
 
     [Fact]
@@ -226,7 +274,9 @@ public sealed class CrudBaseTests
 
         // Assert
         Assert.Equal(UnexpectedApiExceptionCode, result.Error.Code);
-        VerifyErrorLogged(loggingFailure, "Create", Times.Once());
+        _logger.Verify(l => l.Log(LogLevel.Error, It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((state, _) => state.ToString() == "Error occurred executing Create."), loggingFailure,
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
     }
 
     [Fact]
@@ -306,7 +356,7 @@ public sealed class CrudBaseTests
     }
 
     [Fact]
-    public async Task Update_SaveThrowsDuplicateKey_ReturnsSuchARecordAlreadyExists()
+    public async Task Update_SaveThrowsDuplicateKey_ReturnsSuchARecordAlreadyExistsWithoutLogging()
     {
         // Arrange
         SaveThrows(new InvalidOperationException("outer", new InvalidOperationException(DuplicateKeyMessage)));
@@ -317,6 +367,7 @@ public sealed class CrudBaseTests
         // Assert
         Assert.True(result.IsFailure);
         Assert.Equal(SystemToolsErrors.SuchARecordAlreadyExists.Code, result.Error.Code);
+        VerifyNothingLogged();
     }
 
     [Fact]
@@ -397,8 +448,7 @@ public sealed class CrudBaseTests
     public async Task Delete_SaveThrowsReferenceConflict_LogsTheCauseAndReturnsTheEntryHasBeenUsed()
     {
         // Arrange
-        var cause = new InvalidOperationException(ReferenceConflictMessage);
-        SaveThrows(new InvalidOperationException("outer", cause));
+        SaveThrows(new InvalidOperationException("outer", new InvalidOperationException(ReferenceConflictMessage)));
 
         // Act
         Result result = await CreateCrud().Delete(3);
@@ -406,7 +456,7 @@ public sealed class CrudBaseTests
         // Assert
         Assert.True(result.IsFailure);
         Assert.Equal(SystemToolsErrors.TheEntryHasBeenUsedAndCannotBeDeleted.Code, result.Error.Code);
-        VerifyErrorLogged(cause, "Delete", Times.Once());
+        VerifyErrorLogged("Delete", $"System.InvalidOperationException: {ReferenceConflictMessage}", Times.Once());
         VerifyErrorsLogged(Times.Once());
     }
 
@@ -414,32 +464,44 @@ public sealed class CrudBaseTests
     public async Task Delete_SaveThrowsOtherInnerError_LogsBothAndReturnsUnexpectedApiException()
     {
         // Arrange
-        var cause = new InvalidOperationException("Some other database error");
-        var exception = new InvalidOperationException("outer", cause);
-        SaveThrows(exception);
+        SaveThrows(new InvalidOperationException("outer", new InvalidOperationException("Some other database error")));
 
         // Act
         Result result = await CreateCrud().Delete(3);
 
         // Assert
         Assert.Equal(UnexpectedApiExceptionCode, result.Error.Code);
-        VerifyErrorLogged(cause, "Delete", Times.Once());
-        VerifyErrorLogged(exception, "Delete", Times.Once());
+        VerifyErrorLogged("Delete", "System.InvalidOperationException: Some other database error", Times.Once());
+        VerifyErrorLogged("Delete", "System.InvalidOperationException: outer", Times.Once());
+    }
+
+    [Fact]
+    public async Task Delete_SaveThrowsTruncation_DoesNotLogTheTruncatedValue()
+    {
+        // Arrange
+        SaveThrows(new InvalidOperationException("outer", new InvalidOperationException(TruncationMessage)));
+
+        // Act
+        Result result = await CreateCrud().Delete(3);
+
+        // Assert
+        Assert.Equal(UnexpectedApiExceptionCode, result.Error.Code);
+        VerifyErrorLogged("Delete", $"System.InvalidOperationException: {TruncationText}", Times.Once());
+        Assert.DoesNotContain(_logged, text => text.Contains(TruncatedValue, StringComparison.Ordinal));
     }
 
     [Fact]
     public async Task Delete_SaveThrowsReferenceConflictWithoutInnerError_LogsItAndReturnsUnexpectedApiException()
     {
         // Arrange
-        var exception = new InvalidOperationException(ReferenceConflictMessage);
-        SaveThrows(exception);
+        SaveThrows(new InvalidOperationException(ReferenceConflictMessage));
 
         // Act
         Result result = await CreateCrud().Delete(3);
 
         // Assert
         Assert.Equal(UnexpectedApiExceptionCode, result.Error.Code);
-        VerifyErrorLogged(exception, "Delete", Times.Once());
+        VerifyErrorLogged("Delete", $"System.InvalidOperationException: {ReferenceConflictMessage}", Times.Once());
         VerifyErrorsLogged(Times.Once());
     }
 
@@ -517,11 +579,12 @@ public sealed class CrudBaseTests
             }));
     }
 
-    private void VerifyErrorLogged(Exception exception, string methodName, Times times)
+    // a failed save is logged by its text only, without the exception object (its text would carry the values again)
+    private void VerifyErrorLogged(string methodName, string exceptionText, Times times)
     {
-        string message = $"Error occurred executing {methodName}.";
+        string message = $"Error occurred executing {methodName}. {exceptionText}";
         _logger.Verify(l => l.Log(LogLevel.Error, It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((state, _) => state.ToString() == message), exception,
+            It.Is<It.IsAnyType>((state, _) => state.ToString() == message), null,
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()), times);
     }
 

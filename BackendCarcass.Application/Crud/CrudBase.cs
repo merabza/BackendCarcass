@@ -11,6 +11,10 @@ namespace BackendCarcass.Application.Crud;
 
 public abstract class CrudBase
 {
+    //SQL Server-ის შეცდომის ტექსტში ამ სიტყვების შემდეგ ჩანაწერის მნიშვნელობები იწერება (დუბლიკატი გასაღები, შეკვეცილი
+    //მნიშვნელობა), რომლებიც შეიძლება პერსონალური მონაცემები იყოს და ლოგში არ უნდა მოხვდეს
+    private static readonly string[] ValueMarkers = [" The duplicate key value is ", " Truncated value: "];
+
     //private readonly IDatabaseAbstraction _databaseAbstraction;
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
@@ -71,10 +75,7 @@ public abstract class CrudBase
                 //await transaction.RollbackAsync(cancellationToken);
                 if (e.InnerException is not null)
                 {
-                    if (_logger.IsEnabled(LogLevel.Error))
-                    {
-                        _logger.LogError(e.InnerException, "Error occurred executing {MethodName}.", methodName);
-                    }
+                    LogSaveError(e.InnerException, methodName);
 
                     if (e.InnerException.Message.StartsWith("Cannot insert duplicate key row in object",
                             StringComparison.Ordinal))
@@ -83,10 +84,7 @@ public abstract class CrudBase
                     }
                 }
 
-                if (_logger.IsEnabled(LogLevel.Error))
-                {
-                    _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
-                }
+                LogSaveError(e, methodName);
 
                 return Result.Failure<ICrudData>(SystemToolsErrors.UnexpectedApiException(e));
             }
@@ -171,10 +169,7 @@ public abstract class CrudBase
                 //await transaction.RollbackAsync(cancellationToken);
                 if (e.InnerException is not null)
                 {
-                    if (_logger.IsEnabled(LogLevel.Error))
-                    {
-                        _logger.LogError(e.InnerException, "Error occurred executing {MethodName}.", methodName);
-                    }
+                    LogSaveError(e.InnerException, methodName);
 
                     if (e.InnerException.Message.StartsWith(
                             "The DELETE statement conflicted with the REFERENCE constraint", StringComparison.Ordinal))
@@ -183,10 +178,7 @@ public abstract class CrudBase
                     }
                 }
 
-                if (_logger.IsEnabled(LogLevel.Error))
-                {
-                    _logger.LogError(e, "Error occurred executing {MethodName}.", methodName);
-                }
+                LogSaveError(e, methodName);
 
                 return Result.Failure(SystemToolsErrors.UnexpectedApiException(e));
             }
@@ -195,6 +187,31 @@ public abstract class CrudBase
         {
             return Result.Failure(SystemToolsErrors.UnexpectedApiException(e));
         }
+    }
+
+    //შენახვის შეცდომა ლოგში exception-ის გარეშე იწერება, რადგან მისი ტექსტი (და შიდა exception-ების ტექსტიც) ჩანაწერის
+    //მნიშვნელობებს შეიცავს: იწერება ტიპი და მნიშვნელობების გარეშე დარჩენილი ტექსტი
+    private void LogSaveError(Exception exception, string methodName)
+    {
+        if (_logger.IsEnabled(LogLevel.Error))
+        {
+            _logger.LogError("Error occurred executing {MethodName}. {ExceptionType}: {ExceptionMessage}", methodName,
+                exception.GetType().FullName, WithoutValues(exception.Message));
+        }
+    }
+
+    private static string WithoutValues(string message)
+    {
+        foreach (string marker in ValueMarkers)
+        {
+            int markerIndex = message.IndexOf(marker, StringComparison.Ordinal);
+            if (markerIndex >= 0)
+            {
+                message = message[..markerIndex];
+            }
+        }
+
+        return message;
     }
 
     protected abstract Task<Result<ICrudData>> GetOneData(int id, CancellationToken cancellationToken = default);
