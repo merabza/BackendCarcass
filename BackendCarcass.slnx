@@ -16,7 +16,9 @@
     <Project Path="../SystemTools/SystemTools.RepositoriesShared/SystemTools.RepositoriesShared.csproj" />
     <Project Path="../SystemTools/SystemTools.SystemToolsShared/SystemTools.SystemToolsShared.csproj" />
   </Folder>
-  <Folder Name="/Tests/" />
+  <Folder Name="/Tests/">
+    <Project Path="BackendCarcass.Application.Tests/BackendCarcass.Application.Tests.csproj" />
+  </Folder>
   <Folder Name="/WebSystemTools/">
     <Project Path="../WebSystemTools/WebSystemTools.CorsTools/WebSystemTools.CorsTools.csproj" />
     <Project Path="../WebSystemTools/WebSystemTools.WebApi.Abstractions/WebSystemTools.WebApi.Abstractions.csproj" />

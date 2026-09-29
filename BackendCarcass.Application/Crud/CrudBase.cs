@@ -131,6 +131,13 @@ public abstract class CrudBase
             catch (Exception e)
             {
                 //await transaction.RollbackAsync(cancellationToken);
+                //უნიკალური ინდექსის დარღვევა ცვლილებისასაც ისევე ბრუნდება, როგორც შექმნისას (Create)
+                if (e.InnerException is not null && e.InnerException.Message.StartsWith(
+                        "Cannot insert duplicate key row in object", StringComparison.Ordinal))
+                {
+                    return Result.Failure(SystemToolsErrors.SuchARecordAlreadyExists);
+                }
+
                 return Result.Failure(SystemToolsErrors.UnexpectedApiException(e));
             }
         }

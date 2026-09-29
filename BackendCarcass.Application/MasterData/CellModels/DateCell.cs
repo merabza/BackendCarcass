@@ -60,7 +60,10 @@ public sealed class DateCell : MixedCell
 
     public override List<Error> Validate(object? value)
     {
-        List<Error> errors = ValidateByType<DateTime>(base.Validate(value), value, "თარიღის");
+        //დროის უჯრედის (TimeOnly()) ენთითის თვისება შეიძლება TimeOnly ტიპისაც იყოს
+        List<Error> errors = value is TimeOnly
+            ? base.Validate(value)
+            : ValidateByType<DateTime>(base.Validate(value), value, "თარიღის");
 
         if (value is not DateTime dateTimeValue)
         {

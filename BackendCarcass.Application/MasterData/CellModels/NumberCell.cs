@@ -19,7 +19,7 @@ public /*open*/ class NumberCell : MixedCell
         return new NumberCell(fieldName, caption, visible, typeName);
     }
 
-    protected new NumberCell Required(string? errorCode = null, string? errorMessage = null)
+    public new NumberCell Required(string? errorCode = null, string? errorMessage = null)
     {
         base.Required(errorCode, errorMessage);
         return this;
