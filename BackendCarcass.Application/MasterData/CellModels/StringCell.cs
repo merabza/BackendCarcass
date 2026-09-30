@@ -102,8 +102,8 @@ public sealed class StringCell : MixedCell
             errMes.Add(MinLenRule.Error);
         }
 
-        if (PatternRule is not null &&
-            !Regex.IsMatch(strValue, PatternRule.Val, RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1)))
+        if (PatternRule is not null && !Regex.IsMatch(strValue, PatternRule.Val, RegexOptions.CultureInvariant,
+                TimeSpan.FromSeconds(1)))
         {
             errMes.Add(PatternRule.Error);
         }
