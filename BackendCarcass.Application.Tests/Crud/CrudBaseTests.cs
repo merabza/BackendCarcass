@@ -84,7 +84,7 @@ public sealed class CrudBaseTests
         // Assert
         Assert.Same(exception, thrown);
         _logger.Verify(l => l.Log(LogLevel.Error, It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((state, _) => state.ToString() == "Error occurred executing GetOne."), exception,
+            It.Is<It.IsAnyType>((state, _) => state!.ToString() == "Error occurred executing GetOne."), exception,
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
     }
 
@@ -275,7 +275,7 @@ public sealed class CrudBaseTests
         // Assert
         Assert.Equal(UnexpectedApiExceptionCode, result.Error.Code);
         _logger.Verify(l => l.Log(LogLevel.Error, It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((state, _) => state.ToString() == "Error occurred executing Create."), loggingFailure,
+            It.Is<It.IsAnyType>((state, _) => state!.ToString() == "Error occurred executing Create."), loggingFailure,
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
     }
 
@@ -584,7 +584,7 @@ public sealed class CrudBaseTests
     {
         string message = $"Error occurred executing {methodName}. {exceptionText}";
         _logger.Verify(l => l.Log(LogLevel.Error, It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((state, _) => state.ToString() == message), null,
+            It.Is<It.IsAnyType>((state, _) => state!.ToString() == message), null,
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()), times);
     }
 
