@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
+        <PackageReference Include="BackendCarcassShared.Contracts" />
         <PackageReference Include="FluentValidation" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\WebSystemTools\WebSystemTools.WebApi.Abstractions\WebSystemTools.WebApi.Abstractions.csproj" />
         <ProjectReference Include="..\BackendCarcass.Application\BackendCarcass.Application.csproj" />
-        <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassShared.Contracts\BackendCarcassShared.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

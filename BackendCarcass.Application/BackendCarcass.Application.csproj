@@ -1,11 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <ProjectReference Include="..\..\SystemTools\SystemTools.Application.Abstractions\SystemTools.Application.Abstractions.csproj" />
-        <ProjectReference Include="..\..\SystemTools\SystemTools.Domain.Abstractions\SystemTools.Domain.Abstractions.csproj" />
-        <ProjectReference Include="..\..\SystemTools\SystemTools.SharedKernel\SystemTools.SharedKernel.csproj" />
         <ProjectReference Include="..\BackendCarcass.Domain\BackendCarcass.Domain.csproj" />
-        <ProjectReference Include="..\..\BackendCarcassShared\BackendCarcassShared.Contracts\BackendCarcassShared.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -13,9 +9,13 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="BackendCarcassShared.Contracts" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+        <PackageReference Include="SystemTools.Application.Abstractions" />
+        <PackageReference Include="SystemTools.Domain.Abstractions" />
+        <PackageReference Include="SystemTools.SharedKernel" />
     </ItemGroup>
 
 </Project>
