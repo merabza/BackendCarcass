@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using BackendCarcass.Domain.AppClaims;
 using BackendCarcass.Domain.CrudRightTypes;
 using BackendCarcass.Domain.DataTypes;
+using BackendCarcass.Domain.EmailVerifications;
 using BackendCarcass.Domain.ManyToManyJoins;
 using BackendCarcass.Domain.MenuGroups;
 using BackendCarcass.Domain.MenuItems;
+using BackendCarcass.Domain.RefreshTokens;
 using BackendCarcass.Domain.Roles;
 using BackendCarcass.Domain.Users;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +28,8 @@ public interface ICarcassApplicationDbContext
     DbSet<MenuItem> Menu { get; }
     DbSet<Role> Roles { get; }
     DbSet<User> Users { get; }
+    DbSet<EmailVerification> EmailVerifications { get; }
+    DbSet<RefreshToken> RefreshTokens { get; }
     IModel Model { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     string GetTableName<T>() where T : class;

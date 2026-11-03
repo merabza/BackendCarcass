@@ -1,16 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Application.Identity.Models;
 using BackendCarcass.Application.MasterData.Models;
-using BackendCarcass.Application.Repositories;
 using BackendCarcass.Application.Services.Authentication.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using SystemTools.SharedKernel;
-
-//using AppUser = BackendCarcass.Application.MasterData.Models.AppUser;
-//using IdentitySettings = BackendCarcass.Application.Identity.Models.IdentitySettings;
-//using IUserClaimsRepository = BackendCarcass.Application.Repositories.IUserClaimsRepository;
 
 namespace BackendCarcass.Application.Services.Authentication;
 
@@ -18,8 +11,8 @@ namespace BackendCarcass.Application.Services.Authentication;
 public class LoginService : LoginBase, IScopeServiceCarcassApplication
 {
     public LoginService(UserManager<AppUser> userMgr, SignInManager<AppUser> signinMgr,
-        IOptions<IdentitySettings> identitySettings, IUserClaimsRepository userClaimsRepository) : base(userMgr,
-        signinMgr, identitySettings, userClaimsRepository)
+        LoginCompletionService loginCompletion, PasswordService passwordService) : base(userMgr, signinMgr,
+        loginCompletion, passwordService)
     {
     }
 

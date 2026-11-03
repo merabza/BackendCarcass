@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Domain.Users;
@@ -16,6 +17,15 @@ public sealed class User : Entity, IDataType
     public required string FullName { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
+
+    //ელფოსტის მისამართი დადასტურებულია თუ არა (კოდით ან ბმულით)
+    public bool EmailConfirmed { get; set; }
+
+    //ზედიზედ წარუმატებელი ავტორიზაციის ცდების რაოდენობა (lockout-ისთვის)
+    public int AccessFailedCount { get; set; }
+
+    //თუ შევსებულია, ამ მომენტამდე ანგარიში დაბლოკილია
+    public DateTimeOffset? LockoutEnd { get; set; }
 
     [NotMapped] public static string DtKeyKey => "user";
 

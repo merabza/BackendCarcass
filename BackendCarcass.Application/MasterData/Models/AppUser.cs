@@ -26,8 +26,8 @@ public sealed class AppUser : IdentityUser<int>
     public string FirstName { get; set; }
     public string LastName { get; set; }
 
-    public string? CreateJwToken(string secret, int serialNumber, IList<string>? roles = null, string? issuer = null,
-        string? audience = null)
+    public string? CreateJwToken(string secret, int serialNumber, DateTime expires, IList<string>? roles = null,
+        string? issuer = null, string? audience = null, IEnumerable<Claim>? additionalClaims = null)
     {
         // authentication successful so generate jwt token
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -50,10 +50,15 @@ public sealed class AppUser : IdentityUser<int>
 
         claims.Add(new Claim(ClaimTypes.SerialNumber, serialNumber.ToString(CultureInfo.InvariantCulture)));
 
+        if (additionalClaims is not null)
+        {
+            claims.AddRange(additionalClaims);
+        }
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity([.. claims]),
-            Expires = DateTime.UtcNow.AddDays(7),
+            Expires = expires,
             Issuer = issuer,
             Audience = audience,
             SigningCredentials =

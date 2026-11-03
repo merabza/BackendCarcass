@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Application.MasterData.Models;
 using BackendCarcass.Application.Services.Authentication;
 using BackendCarcass.Application.Services.Authentication.Models;
 using BackendCarcassShared.Contracts.V1.Responses;
@@ -33,14 +32,8 @@ public sealed class RegistrationCommandHandler : LoginCommandHandlerBase,
         };
         Result<LoginResult> tryLoginResult =
             await _registrationService.TryToRegister(registerParameters, cancellationToken);
-        if (tryLoginResult.IsFailure)
-        {
-            return Result.Failure<LoginResponse>(tryLoginResult.Error);
-        }
-
-        AppUser user = tryLoginResult.Value.User;
-        var appUserModel = new LoginResponse(user.Id, user.UserName!, user.Email!, tryLoginResult.Value.Token,
-            user.FirstName, user.LastName, string.Empty);
-        return appUserModel;
+        return tryLoginResult.IsFailure
+            ? Result.Failure<LoginResponse>(tryLoginResult.Error)
+            : tryLoginResult.Value.ToLoginResponse();
     }
 }

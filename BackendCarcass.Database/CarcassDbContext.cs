@@ -7,9 +7,11 @@ using BackendCarcass.Application;
 using BackendCarcass.Domain.AppClaims;
 using BackendCarcass.Domain.CrudRightTypes;
 using BackendCarcass.Domain.DataTypes;
+using BackendCarcass.Domain.EmailVerifications;
 using BackendCarcass.Domain.ManyToManyJoins;
 using BackendCarcass.Domain.MenuGroups;
 using BackendCarcass.Domain.MenuItems;
+using BackendCarcass.Domain.RefreshTokens;
 using BackendCarcass.Domain.Roles;
 using BackendCarcass.Domain.Users;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +47,8 @@ public /*open*/ class CarcassDbContext : DbContext, ICarcassApplicationDbContext
     public DbSet<MenuItem> Menu => Set<MenuItem>();
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<EmailVerification> EmailVerifications => Set<EmailVerification>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     public IEntityType? GetEntityTypeByTableName(string tableName)
     {

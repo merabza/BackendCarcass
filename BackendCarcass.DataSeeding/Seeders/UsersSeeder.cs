@@ -60,7 +60,9 @@ public /*open*/ class UsersSeeder : DataSeeder<User, UserSeederModel>
                 PasswordHash = s.PasswordHash,
                 FullName = s.FullName,
                 FirstName = s.FirstName,
-                LastName = s.LastName
+                LastName = s.LastName,
+                //საწყისი მონაცემებით შექმნილი მომხმარებლები სანდოა, მათ ელფოსტის დადასტურება არ სჭირდებათ
+                EmailConfirmed = true
             })
         ];
     }

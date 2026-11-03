@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace BackendCarcass.Application.Identity;
 
 public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<AppUser>, IUserRoleStore<AppUser>,
-    IQueryableUserStore<AppUser>, IQueryableRoleStore<AppRole>
+    IUserLockoutStore<AppUser>, IQueryableUserStore<AppUser>, IQueryableRoleStore<AppRole>
 {
     private readonly ILogger<MyUserStore> _logger;
 
@@ -77,9 +77,13 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     async Task<AppRole?> IRoleStore<AppRole>.FindByIdAsync(string roleId, CancellationToken cancellationToken)
     {
-        Role? role =
-            await _repo.Roles.FirstOrDefaultAsync(u => u.RolId.ToString(CultureInfo.InvariantCulture) == roleId,
-                cancellationToken);
+        //იდენტიფიკატორი ბაზაში რიცხვია: ToString-ი SQL-ში ვერ ითარგმნება, ამიტომ სტრიქონი ჯერ რიცხვად გადაიყვანება
+        if (!int.TryParse(roleId, NumberStyles.Integer, CultureInfo.InvariantCulture, out int id))
+        {
+            return null;
+        }
+
+        Role? role = await _repo.Roles.FirstOrDefaultAsync(u => u.RolId == id, cancellationToken);
         return role == null
             ? null // throw new Exception($"Role with by roleId={roleId} does not exists")
             : new AppRole(role.RolKey, role.RolName, role.RolLevel)
@@ -111,7 +115,10 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
                 PasswordHash = s.PasswordHash,
                 NormalizedUserName = s.NormalizedUserName,
                 Email = s.Email,
-                NormalizedEmail = s.NormalizedEmail
+                NormalizedEmail = s.NormalizedEmail,
+                EmailConfirmed = s.EmailConfirmed,
+                AccessFailedCount = s.AccessFailedCount,
+                LockoutEnd = s.LockoutEnd
             });
             if (_logger.IsEnabled(LogLevel.Information))
             {
@@ -135,28 +142,20 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     public Task<bool> GetEmailConfirmedAsync(AppUser user, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(user.EmailConfirmed);
     }
 
     public Task SetEmailConfirmedAsync(AppUser user, bool confirmed, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        user.EmailConfirmed = confirmed;
+        return Task.CompletedTask;
     }
 
     public async Task<AppUser?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
     {
         User? user =
             await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail, cancellationToken);
-        return user is null
-            ? null //throw new Exception($"FindByEmailAsync: AppUser with by normalizedEmail={normalizedEmail} does not exists")
-            : new AppUser(user.UserName, user.FirstName, user.LastName)
-            {
-                Id = user.UsrId,
-                PasswordHash = user.PasswordHash,
-                NormalizedUserName = user.NormalizedUserName,
-                Email = user.Email,
-                NormalizedEmail = user.NormalizedEmail
-            };
+        return user is null ? null : ToAppUser(user);
     }
 
     public Task<string?> GetNormalizedEmailAsync(AppUser user, CancellationToken cancellationToken)
@@ -182,19 +181,14 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     public async Task<AppUser?> FindByIdAsync(string userId, CancellationToken cancellationToken)
     {
-        User? user =
-            await _repo.Users.FirstOrDefaultAsync(u => u.UsrId.ToString(CultureInfo.InvariantCulture) == userId,
-                cancellationToken);
-        return user is null
-            ? null //throw new Exception($"AppUser with by userId={userId} does not exists")
-            : new AppUser(user.UserName, user.FirstName, user.LastName)
-            {
-                Id = user.UsrId,
-                PasswordHash = user.PasswordHash,
-                NormalizedUserName = user.NormalizedUserName,
-                Email = user.Email,
-                NormalizedEmail = user.NormalizedEmail
-            };
+        //იდენტიფიკატორი ბაზაში რიცხვია: ToString-ი SQL-ში ვერ ითარგმნება, ამიტომ სტრიქონი ჯერ რიცხვად გადაიყვანება
+        if (!int.TryParse(userId, NumberStyles.Integer, CultureInfo.InvariantCulture, out int id))
+        {
+            return null;
+        }
+
+        User? user = await _repo.Users.FirstOrDefaultAsync(u => u.UsrId == id, cancellationToken);
+        return user is null ? null : ToAppUser(user);
     }
 
     public async Task<AppUser?> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
@@ -206,16 +200,7 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
         User? user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName,
             cancellationToken);
-        return user == null
-            ? null // throw new Exception($"AppUser with by normalizedUserName={normalizedUserName} does not exists")
-            : new AppUser(user.UserName, user.FirstName, user.LastName)
-            {
-                Id = user.UsrId,
-                PasswordHash = user.PasswordHash,
-                NormalizedUserName = user.NormalizedUserName,
-                Email = user.Email,
-                NormalizedEmail = user.NormalizedEmail
-            };
+        return user == null ? null : ToAppUser(user);
     }
 
     public Task<string?> GetNormalizedUserNameAsync(AppUser user, CancellationToken cancellationToken)
@@ -262,6 +247,9 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
         user.Email = appUser.Email;
         user.NormalizedEmail = appUser.NormalizedEmail;
         user.PasswordHash = appUser.PasswordHash;
+        user.EmailConfirmed = appUser.EmailConfirmed;
+        user.AccessFailedCount = appUser.AccessFailedCount;
+        user.LockoutEnd = appUser.LockoutEnd;
         return await _repo.UpdateUserAsync(user.UsrId, user, cancellationToken);
     }
 
@@ -283,11 +271,65 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
     {
         User? user = await _repo.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == appUser.NormalizedUserName,
             cancellationToken);
-        return string.IsNullOrWhiteSpace(user?.PasswordHash);
+        return !string.IsNullOrWhiteSpace(user?.PasswordHash);
+    }
+
+    public Task<DateTimeOffset?> GetLockoutEndDateAsync(AppUser user, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(user.LockoutEnd);
+    }
+
+    public Task SetLockoutEndDateAsync(AppUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken)
+    {
+        user.LockoutEnd = lockoutEnd;
+        return Task.CompletedTask;
+    }
+
+    public Task<int> IncrementAccessFailedCountAsync(AppUser user, CancellationToken cancellationToken)
+    {
+        user.AccessFailedCount++;
+        return Task.FromResult(user.AccessFailedCount);
+    }
+
+    public Task ResetAccessFailedCountAsync(AppUser user, CancellationToken cancellationToken)
+    {
+        user.AccessFailedCount = 0;
+        return Task.CompletedTask;
+    }
+
+    public Task<int> GetAccessFailedCountAsync(AppUser user, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(user.AccessFailedCount);
+    }
+
+    //ბლოკირება ყველა მომხმარებლისთვის ჩართულია, ამიტომ ცალკე სვეტი არ გვჭირდება
+    public Task<bool> GetLockoutEnabledAsync(AppUser user, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(true);
+    }
+
+    public Task SetLockoutEnabledAsync(AppUser user, bool enabled, CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
     }
 
     public void Dispose()
     {
+    }
+
+    private static AppUser ToAppUser(User user)
+    {
+        return new AppUser(user.UserName, user.FirstName, user.LastName)
+        {
+            Id = user.UsrId,
+            PasswordHash = user.PasswordHash,
+            NormalizedUserName = user.NormalizedUserName,
+            Email = user.Email,
+            NormalizedEmail = user.NormalizedEmail,
+            EmailConfirmed = user.EmailConfirmed,
+            AccessFailedCount = user.AccessFailedCount,
+            LockoutEnd = user.LockoutEnd
+        };
     }
 
     public async Task AddToRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)

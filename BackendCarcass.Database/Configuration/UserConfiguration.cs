@@ -29,5 +29,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.FirstName).IsRequired().HasMaxLength(FirstNameMaxLength);
         builder.Property(e => e.LastName).IsRequired().HasMaxLength(LastNameMaxLength);
         builder.Property(e => e.FullName).IsRequired().HasMaxLength(FullNameMaxLength);
+        builder.Property(e => e.EmailConfirmed).IsRequired().HasDefaultValue(false);
+        builder.Property(e => e.AccessFailedCount).IsRequired().HasDefaultValue(0);
     }
 }

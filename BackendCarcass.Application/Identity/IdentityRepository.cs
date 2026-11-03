@@ -78,6 +78,9 @@ public sealed class IdentityRepository : IIdentityRepository
             oldUser.FirstName = user.FirstName;
             oldUser.LastName = user.LastName;
             oldUser.FullName = user.FullName;
+            oldUser.EmailConfirmed = user.EmailConfirmed;
+            oldUser.AccessFailedCount = user.AccessFailedCount;
+            oldUser.LockoutEnd = user.LockoutEnd;
             _carcassContext.Update(oldUser);
             await _carcassContext.SaveChangesAsync(cancellationToken);
             return IdentityResult.Success;
@@ -142,7 +145,10 @@ public sealed class IdentityRepository : IIdentityRepository
                 PasswordHash = appUser.PasswordHash,
                 FullName = appUser.FullName,
                 FirstName = appUser.FirstName,
-                LastName = appUser.LastName
+                LastName = appUser.LastName,
+                EmailConfirmed = appUser.EmailConfirmed,
+                AccessFailedCount = appUser.AccessFailedCount,
+                LockoutEnd = appUser.LockoutEnd
             };
             _carcassContext.Users.Add(user);
             await _carcassContext.SaveChangesAsync(cancellationToken);

@@ -1,35 +1,27 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using BackendCarcass.Application.Identity.Models;
 using BackendCarcass.Application.MasterData.Models;
-using BackendCarcass.Application.Repositories;
 using BackendCarcass.Application.Services.Authentication.Models;
 using BackendCarcassShared.Contracts.Errors;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using SystemTools.SharedKernel;
-
-//using AppUser = BackendCarcass.Application.MasterData.Models.AppUser;
-//using IdentitySettings = BackendCarcass.Application.Identity.Models.IdentitySettings;
-//using IUserClaimsRepository = BackendCarcass.Application.Repositories.IUserClaimsRepository;
 
 namespace BackendCarcass.Application.Services.Authentication;
 
 public class LoginBase
 {
     protected readonly UserManager<AppUser> UserMgr;
-    private readonly IOptions<IdentitySettings> _identitySettings;
+    private readonly LoginCompletionService _loginCompletion;
+    private readonly PasswordService _passwordService;
     private readonly SignInManager<AppUser> _signinMgr;
-    private readonly IUserClaimsRepository? _userClaimsRepository;
 
     public LoginBase(UserManager<AppUser> userMgr, SignInManager<AppUser> signinMgr,
-        IOptions<IdentitySettings> identitySettings, IUserClaimsRepository? userClaimsRepository = null)
+        LoginCompletionService loginCompletion, PasswordService passwordService)
     {
-        _signinMgr = signinMgr;
         UserMgr = userMgr;
-        _identitySettings = identitySettings;
-        _userClaimsRepository = userClaimsRepository;
+        _signinMgr = signinMgr;
+        _loginCompletion = loginCompletion;
+        _passwordService = passwordService;
     }
 
     public async Task<Result<LoginResult>> LoginProcess(AppUser? user, string password,
@@ -40,8 +32,13 @@ public class LoginBase
             return Result.Failure<LoginResult>(AuthenticationApiErrors.UsernameOrPasswordIsIncorrect);
         }
 
-        await _signinMgr.SignOutAsync();
-        SignInResult result = await _signinMgr.PasswordSignInAsync(user, password, true, false);
+        //lockoutOnFailure: true -> წარუმატებელი ცდები ითვლება და ზღვრის მიღწევისას ანგარიში დროებით იბლოკება
+        SignInResult result = await _signinMgr.CheckPasswordSignInAsync(user, password, true);
+        if (result.IsLockedOut)
+        {
+            return Result.Failure<LoginResult>(AuthenticationApiErrors.UserIsLockedOut);
+        }
+
         if (!result.Succeeded)
         {
             return Result.Failure<LoginResult>(AuthenticationApiErrors.UsernameOrPasswordIsIncorrect);
@@ -57,36 +54,8 @@ public class LoginBase
             return Result.Failure<LoginResult>(AuthenticationApiErrors.InvalidEmail);
         }
 
-        IList<string> roles = await UserMgr.GetRolesAsync(user);
-
-        //ახლადშექმნილ მომხმარებელს როლები არ აქვს, ამიტომ შემდეგი ბრძანება დაკომენტარებულია
-        //თუ მომავალში საჭირო გახდა, რომ ახლადშექმნილ მომხმარებელს ავტომატურად მიეცეს როლი, მაშინ შემდეგი ბრძანება უნდა აღსდგეს
-        //IList<string> roles = await _userMgr.GetRolesAsync(user);
-
-        if (_identitySettings.Value.JwtSecret is null)
-        {
-            return Result.Failure<LoginResult>(CarcassApiErrors.ParametersAreInvalid);
-        }
-
-        string? issuer = _identitySettings.Value.JwtIssuer;
-        string? audience = _identitySettings.Value.JwtAudience;
-        string? token = user.CreateJwToken(_identitySettings.Value.JwtSecret, 0, roles, issuer, audience);
-        if (token is null)
-        {
-            return Result.Failure<LoginResult>(AuthenticationApiErrors.UsernameOrPasswordIsIncorrect);
-        }
-
-        List<string>? appClaims = _userClaimsRepository is null
-            ? null
-            : await _userClaimsRepository.UserAppClaims(user.UserName, cancellationToken);
-
-        return new LoginResult
-        {
-            User = user,
-            LastSequentialNumber = 0,
-            Token = token,
-            AppClaims = appClaims ?? [],
-            Roles = roles
-        };
+        //პაროლი სწორია, მაგრამ შეიძლება მოქმედ წესებს ვეღარ აკმაყოფილებდეს (წესები მას შემდეგ გამკაცრდა)
+        bool passwordChangeRequired = !await _passwordService.MeetsPolicyAsync(user, password);
+        return await _loginCompletion.CompleteAsync(user, passwordChangeRequired, cancellationToken);
     }
 }
