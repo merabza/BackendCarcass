@@ -111,7 +111,8 @@ public static class CarcassIdentityDependencyInjection
             return string.IsNullOrWhiteSpace(emailSettings.Value.SmtpServer)
                 ? new LoggingEmailSender(serviceProvider
                     .GetRequiredService<Microsoft.Extensions.Logging.ILogger<LoggingEmailSender>>())
-                : new SmtpEmailSender(emailSettings);
+                : new SmtpEmailSender(emailSettings,
+                    serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<SmtpEmailSender>>());
         });
 
         //ავტორიზაციის endpoint-ების დაცვა: ერთი IP მისამართიდან წუთში შეზღუდული რაოდენობის მოთხოვნა

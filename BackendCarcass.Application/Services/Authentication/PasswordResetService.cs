@@ -38,6 +38,14 @@ public sealed class PasswordResetService : IScopeServiceCarcassApplication
         AppUser? user = await FindUserAsync(userNameOrEmail);
         if (user is null)
         {
+            //მომთხოვნი ყოველთვის წარმატებას ხედავს, ამიტომ ლოგიდან უნდა ჩანდეს, რომ წერილი არ გაგზავნილა
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Password reset code was not sent: no user with user name or e-mail {UserNameOrEmail}",
+                    userNameOrEmail);
+            }
+
             return Result.Success();
         }
 

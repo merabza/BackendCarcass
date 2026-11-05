@@ -104,6 +104,20 @@ public sealed class EmailVerificationServiceTests : IDisposable
         Assert.Equal(AuthenticationApiErrors.EmailSendingFailed, result.Error);
     }
 
+    [Fact]
+    public async Task A_code_that_could_not_be_mailed_does_not_start_the_cooldown()
+    {
+        var failing = new EmailVerificationService(_db.Context, new ThrowingEmailSender(),
+            Options.Create(new IdentitySettings()), Options.Create(new EmailSettings()),
+            NullLogger<EmailVerificationService>.Instance);
+        await failing.SendAsync(_user, EEmailVerificationPurpose.EmailConfirmation);
+
+        Result retry = await _service.SendAsync(_user, EEmailVerificationPurpose.EmailConfirmation);
+
+        Assert.True(retry.IsSuccess);
+        Assert.Single(_sender.Sent);
+    }
+
     private sealed class ThrowingEmailSender : IEmailSender
     {
         public Task SendAsync(string toEmail, string toName, string subject, string body,

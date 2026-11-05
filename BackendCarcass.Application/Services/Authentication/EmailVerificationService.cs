@@ -48,6 +48,9 @@ public sealed class EmailVerificationService : IScopeServiceCarcassApplication
     {
         if (user.Email is null)
         {
+            _logger.LogWarning(
+                "Verification e-mail ({Purpose}) was not sent to user {UserId}: the user has no e-mail address",
+                purpose, user.Id);
             return Result.Failure(AuthenticationApiErrors.InvalidEmail);
         }
 
@@ -55,6 +58,16 @@ public sealed class EmailVerificationService : IScopeServiceCarcassApplication
         EmailVerification? last = await LatestAsync(user.Id, purpose, cancellationToken);
         if (last is not null && last.UsedAt is null && last.CreatedAt > now.AddSeconds(-ResendCooldownSeconds))
         {
+            //ავტორიზაციისას ეს შეცდომა იგნორირდება და კოდის შესაყვანი ფანჯარა მაინც იხსნება,
+            //ამიტომ ლოგიდან უნდა ჩანდეს, რომ ახალი წერილი არ გაგზავნილა
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Verification e-mail ({Purpose}) was not sent to user {UserId} <{Email}>: " +
+                    "a code was already issued {SecondsAgo} seconds ago (resend cooldown {CooldownSeconds} seconds)",
+                    purpose, user.Id, user.Email, (int)(now - last.CreatedAt).TotalSeconds, ResendCooldownSeconds);
+            }
+
             return Result.Failure(AuthenticationApiErrors.CodeResendTooSoon);
         }
 
@@ -64,7 +77,7 @@ public sealed class EmailVerificationService : IScopeServiceCarcassApplication
 
         string code = TokenHashing.CreateNumericCode();
         string linkToken = TokenHashing.CreateRandomToken();
-        _ctx.EmailVerifications.Add(new EmailVerification
+        var verification = new EmailVerification
         {
             UserId = user.Id,
             Purpose = purpose,
@@ -73,7 +86,8 @@ public sealed class EmailVerificationService : IScopeServiceCarcassApplication
             CreatedAt = now,
             ExpiresAt = now.AddMinutes(CodeLifetimeMinutes),
             Attempts = 0
-        });
+        };
+        _ctx.EmailVerifications.Add(verification);
         await _ctx.SaveChangesAsync(cancellationToken);
 
         (string subject, string body) = ComposeEmail(user, purpose, code, linkToken);
@@ -84,7 +98,12 @@ public sealed class EmailVerificationService : IScopeServiceCarcassApplication
         catch (Exception e) when (e is not OperationCanceledException)
         {
             //SMTP სერვერის პრობლემა მომხმარებლის ბრალი არ არის: გასაგები შეცდომა ბრუნდება და არა 500
-            _logger.LogError(e, "Verification e-mail could not be sent to user {UserId}", user.Id);
+            _logger.LogError(e, "Verification e-mail ({Purpose}) could not be sent to user {UserId} <{Email}>",
+                purpose, user.Id, user.Email);
+            //გაუგზავნელი კოდის ჩანაწერი იშლება, თორემ ხელახლა ცდისას ახალი წერილი
+            //ResendCooldownSeconds წამის განმავლობაში აღარ გაიგზავნებოდა
+            _ctx.EmailVerifications.Remove(verification);
+            await _ctx.SaveChangesAsync(cancellationToken);
             return Result.Failure(AuthenticationApiErrors.EmailSendingFailed);
         }
 
