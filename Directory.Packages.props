@@ -4,7 +4,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="BackendCarcassShared.Contracts" Version="1.0.9808.33303" />
+    <PackageVersion Include="BackendCarcassShared.Contracts" Version="1.0.9808.42526" />
     <PackageVersion Include="FluentValidation" Version="12.2.0" />
     <PackageVersion Include="MailKit" Version="4.18.2" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.14" />
@@ -25,7 +25,7 @@
     <PackageVersion Include="SystemTools.Domain.Abstractions" Version="1.0.9808.33287" />
     <PackageVersion Include="SystemTools.RepositoriesShared" Version="1.0.9808.33287" />
     <PackageVersion Include="SystemTools.SharedKernel" Version="1.0.9808.33287" />
-    <PackageVersion Include="WebSystemTools.WebApi.Abstractions" Version="1.0.9808.33595" />
+    <PackageVersion Include="WebSystemTools.WebApi.Abstractions" Version="1.0.9808.42799" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />
   </ItemGroup>
