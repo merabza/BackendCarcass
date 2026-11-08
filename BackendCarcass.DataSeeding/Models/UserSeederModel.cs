@@ -10,4 +10,9 @@ public sealed class UserSeederModel
     public required string NormalizedUserName { get; set; }
     public required string Email { get; set; }
     public required string NormalizedEmail { get; set; }
+
+    //Users-ის NOT NULL სვეტები: SupportTools-ის Transfer წესებით შესავსებ ცხრილში ყველა სვეტს წერს და გამოტოვებულ
+    //მნიშვნელობას NULL-ად ჩაწერდა. EmailConfirmed = false-ის შემთხვევაში შესვლა ელფოსტის კოდს მოითხოვს
+    public required bool EmailConfirmed { get; set; }
+    public required int AccessFailedCount { get; set; }
 }
