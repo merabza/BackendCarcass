@@ -15,4 +15,13 @@ public sealed class IdentitySettings
     //ფრონტის მისამართი, რომლითაც ელფოსტაში გაგზავნილი ბმულები იწყება (მაგალითად https://app.grammar.ge).
     //თუ ცარიელია, წერილებში მხოლოდ კოდი იგზავნება
     public string? FrontendBaseUrl { get; set; }
+
+    //ელფოსტის დადასტურების გვერდის გზა FrontendBaseUrl-ის შემდეგ
+    public string ConfirmEmailPath { get; set; } = "/confirm-email";
+
+    //პაროლის აღდგენის გვერდის გზა FrontendBaseUrl-ის შემდეგ
+    public string ResetPasswordPath { get; set; } = "/reset-password";
+
+    //შესვლა მომხმარებლის სახელით ან ელფოსტით. ნაგულისხმევად გამორთულია: შესვლა მხოლოდ სახელით
+    public bool AllowEmailSignIn { get; set; }
 }

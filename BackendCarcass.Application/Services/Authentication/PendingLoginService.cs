@@ -20,14 +20,14 @@ public sealed class PendingLoginService : IScopeServiceCarcassApplication
     private readonly LoginCompletionService _completion;
     private readonly EmailVerificationService _emailVerification;
     private readonly PasswordService _passwords;
-    private readonly AuthTokenService _tokens;
+    private readonly IPendingLoginStore _pendingStore;
     private readonly UserManager<AppUser> _userMgr;
 
-    public PendingLoginService(UserManager<AppUser> userMgr, AuthTokenService tokens,
+    public PendingLoginService(UserManager<AppUser> userMgr, IPendingLoginStore pendingStore,
         EmailVerificationService emailVerification, LoginCompletionService completion, PasswordService passwords)
     {
         _userMgr = userMgr;
-        _tokens = tokens;
+        _pendingStore = pendingStore;
         _emailVerification = emailVerification;
         _completion = completion;
         _passwords = passwords;
@@ -108,7 +108,7 @@ public sealed class PendingLoginService : IScopeServiceCarcassApplication
 
     public async Task<Result> ResendCodeAsync(string? pendingToken, CancellationToken cancellationToken = default)
     {
-        Result<PendingTokenData> tokenData = _tokens.ValidatePendingToken(pendingToken);
+        Result<PendingTokenData> tokenData = _pendingStore.Read(pendingToken);
         if (tokenData.IsFailure)
         {
             return Result.Failure(tokenData.Error);
@@ -176,7 +176,7 @@ public sealed class PendingLoginService : IScopeServiceCarcassApplication
 
     private Result<PendingTokenData> ValidateToken(string? pendingToken, ELoginNextStep expectedStep)
     {
-        Result<PendingTokenData> tokenData = _tokens.ValidatePendingToken(pendingToken);
+        Result<PendingTokenData> tokenData = _pendingStore.Read(pendingToken);
         if (tokenData.IsFailure)
         {
             return tokenData;

@@ -2,53 +2,56 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Application.MasterData.Models;
-using BackendCarcass.Application.Repositories;
 using BackendCarcass.Application.Services.Authentication.Models;
 using BackendCarcass.Domain.EmailVerifications;
 using BackendCarcassShared.Contracts.Errors;
 using BackendCarcassShared.Contracts.V1.Responses;
-using Microsoft.AspNetCore.Identity;
 using SystemTools.SharedKernel;
 
 namespace BackendCarcass.Application.Services.Authentication;
 
 //პაროლის შემოწმების შემდეგ წყვეტს, რა მიიღოს მომხმარებელმა:
-//  - სრული წვდომა (წვდომის და განახლების ტოკენები), თუ ელფოსტა დადასტურებულია და პაროლი წესებს აკმაყოფილებს
-//  - დროებითი ტოკენი ელფოსტის დასადასტურებლად, თუ ელფოსტა ჯერ არ დადასტურებულა
-//  - დროებითი ტოკენი პაროლის შესაცვლელად, თუ პაროლი მოქმედ წესებს ვეღარ აკმაყოფილებს
+//  - სრული წვდომა (ILoginTokenIssuer), თუ ელფოსტა დადასტურებულია და პაროლი წესებს აკმაყოფილებს
+//  - დაუსრულებელი ნაბიჯი ელფოსტის დასადასტურებლად, თუ ელფოსტა ჯერ არ დადასტურებულა
+//  - დაუსრულებელი ნაბიჯი პაროლის შესაცვლელად, თუ პაროლი მოქმედ წესებს ვეღარ აკმაყოფილებს
+//დაუსრულებელი ნაბიჯის მდგომარეობას IPendingLoginStore ინახავს. სანამ რამე გაიცემა, ეშვება შესვლის
+//დამატებითი შემოწმებები (ILoginCheck)
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class LoginCompletionService : IScopeServiceCarcassApplication
 {
+    private readonly IEnumerable<ILoginCheck> _checks;
     private readonly EmailVerificationService _emailVerification;
-    private readonly RefreshTokenService _refreshTokens;
-    private readonly AuthTokenService _tokens;
-    private readonly IUserClaimsRepository _userClaimsRepository;
-    private readonly UserManager<AppUser> _userMgr;
+    private readonly IPendingLoginStore _pendingStore;
+    private readonly ILoginTokenIssuer _tokenIssuer;
 
-    public LoginCompletionService(UserManager<AppUser> userMgr, AuthTokenService tokens,
-        RefreshTokenService refreshTokens, EmailVerificationService emailVerification,
-        IUserClaimsRepository userClaimsRepository)
+    public LoginCompletionService(ILoginTokenIssuer tokenIssuer, IPendingLoginStore pendingStore,
+        EmailVerificationService emailVerification, IEnumerable<ILoginCheck> checks)
     {
-        _userMgr = userMgr;
-        _tokens = tokens;
-        _refreshTokens = refreshTokens;
+        _tokenIssuer = tokenIssuer;
+        _pendingStore = pendingStore;
         _emailVerification = emailVerification;
-        _userClaimsRepository = userClaimsRepository;
+        _checks = checks;
     }
 
-    public Task<Result<LoginResult>> CompleteAsync(AppUser user, bool passwordChangeRequired,
+    public async Task<Result<LoginResult>> CompleteAsync(AppUser user, bool passwordChangeRequired,
         CancellationToken cancellationToken = default)
     {
+        Result check = await RunChecksAsync(user, cancellationToken);
+        if (check.IsFailure)
+        {
+            return Result.Failure<LoginResult>(check.Error);
+        }
+
         if (!user.EmailConfirmed)
         {
-            return CreatePendingAsync(user, ELoginNextStep.ConfirmEmail, EEmailVerificationPurpose.EmailConfirmation,
-                true, passwordChangeRequired, cancellationToken);
+            return await CreatePendingAsync(user, ELoginNextStep.ConfirmEmail,
+                EEmailVerificationPurpose.EmailConfirmation, true, passwordChangeRequired, cancellationToken);
         }
 
         return passwordChangeRequired
-            ? CreatePendingAsync(user, ELoginNextStep.ChangePassword, EEmailVerificationPurpose.PasswordChange, true,
-                false, cancellationToken)
-            : IssueFullAsync(user, cancellationToken);
+            ? await CreatePendingAsync(user, ELoginNextStep.ChangePassword, EEmailVerificationPurpose.PasswordChange,
+                true, false, cancellationToken)
+            : await _tokenIssuer.IssueFullAsync(user, cancellationToken);
     }
 
     //ელფოსტა ახლახან დადასტურდა ამავე სესიაში. თუ პაროლის ცვლილებაც გვჭირდება, მეორე კოდი აღარ იგზავნება
@@ -62,31 +65,24 @@ public sealed class LoginCompletionService : IScopeServiceCarcassApplication
 
     public async Task<Result<LoginResult>> IssueFullAsync(AppUser user, CancellationToken cancellationToken = default)
     {
-        if (user.UserName is null)
+        Result check = await RunChecksAsync(user, cancellationToken);
+        return check.IsFailure
+            ? Result.Failure<LoginResult>(check.Error)
+            : await _tokenIssuer.IssueFullAsync(user, cancellationToken);
+    }
+
+    private async Task<Result> RunChecksAsync(AppUser user, CancellationToken cancellationToken)
+    {
+        foreach (ILoginCheck loginCheck in _checks)
         {
-            return Result.Failure<LoginResult>(AuthenticationApiErrors.InvalidUsername);
+            Result result = await loginCheck.CheckAsync(user, cancellationToken);
+            if (result.IsFailure)
+            {
+                return result;
+            }
         }
 
-        IList<string> roles = await _userMgr.GetRolesAsync(user);
-        Result<string> accessToken = _tokens.CreateAccessToken(user, roles);
-        if (accessToken.IsFailure)
-        {
-            return Result.Failure<LoginResult>(accessToken.Error);
-        }
-
-        string refreshToken = await _refreshTokens.IssueAsync(user.Id, cancellationToken);
-        List<string>? appClaims = await _userClaimsRepository.UserAppClaims(user.UserName, cancellationToken);
-
-        return new LoginResult
-        {
-            User = user,
-            LastSequentialNumber = 0,
-            Token = accessToken.Value,
-            RefreshToken = refreshToken,
-            NextStep = ELoginNextStep.None,
-            AppClaims = appClaims ?? [],
-            Roles = roles
-        };
+        return Result.Success();
     }
 
     private async Task<Result<LoginResult>> CreatePendingAsync(AppUser user, ELoginNextStep step,
@@ -103,7 +99,8 @@ public sealed class LoginCompletionService : IScopeServiceCarcassApplication
             }
         }
 
-        Result<string> token = _tokens.CreatePendingToken(user, step, codeRequired, passwordChangeRequired);
+        Result<string> token = _pendingStore.Save(user,
+            new PendingTokenData(user.Id, step, passwordChangeRequired, codeRequired));
         if (token.IsFailure)
         {
             return Result.Failure<LoginResult>(token.Error);

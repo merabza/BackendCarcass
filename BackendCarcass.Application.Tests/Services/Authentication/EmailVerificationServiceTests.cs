@@ -80,6 +80,37 @@ public sealed class EmailVerificationServiceTests : IDisposable
         Assert.Contains("https://app.test/reset-password?userId=", _sender.Last.Body, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData(EEmailVerificationPurpose.EmailConfirmation, "https://sso.test/account/confirm-email?userId=")]
+    [InlineData(EEmailVerificationPurpose.PasswordReset, "https://sso.test/account/reset-password?userId=")]
+    public async Task The_link_paths_come_from_the_settings(EEmailVerificationPurpose purpose, string expected)
+    {
+        var service = new EmailVerificationService(_db.Context, _sender,
+            Options.Create(new IdentitySettings
+            {
+                FrontendBaseUrl = "https://sso.test",
+                ConfirmEmailPath = "/account/confirm-email",
+                ResetPasswordPath = "/account/reset-password"
+            }), Options.Create(new EmailSettings()), NullLogger<EmailVerificationService>.Instance);
+
+        await service.SendAsync(_user, purpose);
+
+        Assert.Contains(expected, _sender.Last.Body, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task The_email_change_mail_has_its_own_subject_a_code_and_no_link()
+    {
+        Result result = await _service.SendAsync(_user, EEmailVerificationPurpose.EmailChange);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal("App: ელფოსტის მისამართის შეცვლა", _sender.Last.Subject);
+        Assert.Matches("^[0-9]{6}$", ExtractCode(_sender.Last.Body));
+        Assert.DoesNotContain("https://", _sender.Last.Body, StringComparison.Ordinal);
+        Assert.True((await _service.VerifyCodeAsync(_user.Id, EEmailVerificationPurpose.EmailChange,
+            ExtractCode(_sender.Last.Body))).IsSuccess);
+    }
+
     [Fact]
     public async Task Without_a_frontend_url_only_the_code_is_mailed()
     {

@@ -4,6 +4,7 @@ using System.Threading.RateLimiting;
 using BackendCarcass.Application.Email;
 using BackendCarcass.Application.Identity.Models;
 using BackendCarcass.Application.MasterData.Models;
+using BackendCarcass.Application.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -24,6 +26,8 @@ public static class CarcassIdentityDependencyInjection
     //ავტორიზაციის endpoint-ების მოთხოვნების სიხშირის შეზღუდვის პოლისის სახელი
     public const string AuthenticationRateLimitPolicy = "CarcassAuthentication";
 
+    private const string IdentitySettingsSectionName = "IdentitySettings";
+
     //პაროლის წესები. დანარჩენი წესები (ასო, მომხმარებლის სახელი, გავრცელებული პაროლები) CarcassPasswordValidator-შია
     private const int PasswordRequiredLength = 12;
     private const int PasswordRequiredUniqueChars = 5;
@@ -35,11 +39,32 @@ public static class CarcassIdentityDependencyInjection
     //ერთი IP მისამართიდან ავტორიზაციის მოთხოვნების მაქსიმალური რაოდენობა წუთში
     private const int AuthenticationRequestsPerMinutePerIp = 30;
 
+    //ავტორიზაციის სრული კონფიგურაცია: Identity, აპის JWT, ელფოსტა და მოთხოვნების სიხშირის შეზღუდვა.
+    //ჰოსტს, რომელსაც JWT არ სჭირდება (მაგალითად sso.ltg.ge), ცალკე ნაწილების გამოძახება შეუძლია
     public static IServiceCollection AddCarcassIdentity(this IServiceCollection services, ILogger? debugLogger,
         IConfiguration configuration)
     {
         debugLogger?.Information("{MethodName} Started", nameof(AddCarcassIdentity));
 
+        services.AddCarcassIdentityCore(configuration);
+        services.AddCarcassJwtAuthentication(configuration);
+
+        services.AddAuthorizationBuilder().SetInvokeHandlersAfterFailure(true);
+
+        services.AddCarcassEmailSending(configuration);
+        services.AddCarcassAuthenticationRateLimiter();
+
+        debugLogger?.Information("{MethodName} Finished", nameof(AddCarcassIdentity));
+
+        return services;
+    }
+
+    //Identity საკუთარი store-ით, პაროლის წესები, ანგარიშის ბლოკირება, IdentitySettings და შესვლის ნაგულისხმევი
+    //რეალიზაციები (ILoginTokenIssuer, IPendingLoginStore). ისინი TryAdd-ით რეგისტრირდება, ამიტომ ჰოსტის მიერ
+    //ადრე დარეგისტრირებული რეალიზაცია რჩება
+    public static IServiceCollection AddCarcassIdentityCore(this IServiceCollection services,
+        IConfiguration configuration)
+    {
         services.AddScoped<IUserStore<AppUser>, MyUserStore>();
         services.AddScoped<IUserPasswordStore<AppUser>, MyUserStore>();
         services.AddScoped<IUserEmailStore<AppUser>, MyUserStore>();
@@ -64,12 +89,22 @@ public static class CarcassIdentityDependencyInjection
             .AddPasswordValidator<CarcassPasswordValidator>();
 
         // configure strongly typed settings objects
-        IConfigurationSection appSettingsSection = configuration.GetSection("IdentitySettings");
-        services.Configure<IdentitySettings>(appSettingsSection);
+        services.Configure<IdentitySettings>(configuration.GetSection(IdentitySettingsSectionName));
 
+        services.TryAddScoped<ILoginTokenIssuer, JwtLoginTokenIssuer>();
+        services.TryAddScoped<IPendingLoginStore, JwtPendingLoginStore>();
+
+        return services;
+    }
+
+    //აპის JWT ავტორიზაცია IdentitySettings-ის JwtSecret, JwtIssuer და JwtAudience პარამეტრებით
+    public static IServiceCollection AddCarcassJwtAuthentication(this IServiceCollection services,
+        IConfiguration configuration)
+    {
         // configure jwt authentication
-        IdentitySettings identitySettings = appSettingsSection.Get<IdentitySettings>() ??
-                                            throw new Exception("IdentitySettings is null");
+        IdentitySettings identitySettings =
+            configuration.GetSection(IdentitySettingsSectionName).Get<IdentitySettings>() ??
+            throw new Exception("IdentitySettings is null");
         string jwtSecret = identitySettings.JwtSecret ?? throw new Exception("JwtSecret is null");
         string jwtIssuer = identitySettings.JwtIssuer ?? throw new Exception("JwtIssuer is null");
         string jwtAudience = identitySettings.JwtAudience ?? throw new Exception("JwtAudience is null");
@@ -95,10 +130,14 @@ public static class CarcassIdentityDependencyInjection
             };
         });
 
-        services.AddAuthorizationBuilder().SetInvokeHandlersAfterFailure(true);
+        return services;
+    }
 
-        //ელფოსტის გაგზავნა: Development გარემოში SMTP სერვერის გარეშე წერილები ლოგში იწერება,
-        //სხვა გარემოში SMTP სერვერის მითითება სავალდებულოა და აპლიკაცია გაშვებისთანავე შეჩერდება, თუ ის არ არის
+    //ელფოსტის გაგზავნა: Development გარემოში SMTP სერვერის გარეშე წერილები ლოგში იწერება,
+    //სხვა გარემოში SMTP სერვერის მითითება სავალდებულოა და აპლიკაცია გაშვებისთანავე შეჩერდება, თუ ის არ არის
+    public static IServiceCollection AddCarcassEmailSending(this IServiceCollection services,
+        IConfiguration configuration)
+    {
         services.AddOptions<EmailSettings>().Bind(configuration.GetSection("EmailSettings"))
             .Validate<IHostEnvironment>(
                 (settings, environment) =>
@@ -115,7 +154,12 @@ public static class CarcassIdentityDependencyInjection
                     serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<SmtpEmailSender>>());
         });
 
-        //ავტორიზაციის endpoint-ების დაცვა: ერთი IP მისამართიდან წუთში შეზღუდული რაოდენობის მოთხოვნა
+        return services;
+    }
+
+    //ავტორიზაციის endpoint-ების დაცვა: ერთი IP მისამართიდან წუთში შეზღუდული რაოდენობის მოთხოვნა
+    public static IServiceCollection AddCarcassAuthenticationRateLimiter(this IServiceCollection services)
+    {
         services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -129,8 +173,6 @@ public static class CarcassIdentityDependencyInjection
                         QueueLimit = 0
                     }));
         });
-
-        debugLogger?.Information("{MethodName} Finished", nameof(AddCarcassIdentity));
 
         return services;
     }

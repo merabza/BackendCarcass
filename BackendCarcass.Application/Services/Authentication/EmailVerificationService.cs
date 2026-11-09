@@ -184,6 +184,8 @@ public sealed class EmailVerificationService : IScopeServiceCarcassApplication
                 "პაროლის შესაცვლელად შეიყვანეთ ეს კოდი:"),
             EEmailVerificationPurpose.PasswordReset => ("პაროლის აღდგენა",
                 "პაროლის აღსადგენად შეიყვანეთ ეს კოდი:"),
+            EEmailVerificationPurpose.EmailChange => ("ელფოსტის მისამართის შეცვლა",
+                "ახალი ელფოსტის მისამართის დასადასტურებლად შეიყვანეთ ეს კოდი:"),
             _ => throw new ArgumentOutOfRangeException(nameof(purpose), purpose, null)
         };
 
@@ -216,8 +218,8 @@ public sealed class EmailVerificationService : IScopeServiceCarcassApplication
 
         string? path = purpose switch
         {
-            EEmailVerificationPurpose.EmailConfirmation => "/confirm-email",
-            EEmailVerificationPurpose.PasswordReset => "/reset-password",
+            EEmailVerificationPurpose.EmailConfirmation => _identitySettings.ConfirmEmailPath,
+            EEmailVerificationPurpose.PasswordReset => _identitySettings.ResetPasswordPath,
             _ => null
         };
 

@@ -10,5 +10,8 @@ public enum EEmailVerificationPurpose
     PasswordChange = 1,
 
     //დავიწყებული პაროლის აღდგენა
-    PasswordReset = 2
+    PasswordReset = 2,
+
+    //ელფოსტის მისამართის შეცვლა: კოდი ახალ მისამართზე იგზავნება
+    EmailChange = 3
 }
