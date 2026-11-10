@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.RateLimiting;
 using BackendCarcass.Application.Email;
 using BackendCarcass.Application.Identity.Models;
+using BackendCarcass.Application.Identity.Sso;
 using BackendCarcass.Application.MasterData.Models;
 using BackendCarcass.Application.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -47,7 +48,17 @@ public static class CarcassIdentityDependencyInjection
         debugLogger?.Information("{MethodName} Started", nameof(AddCarcassIdentity));
 
         services.AddCarcassIdentityCore(configuration);
-        services.AddCarcassJwtAuthentication(configuration);
+        services.Configure<CarcassAuthenticationSettings>(
+            configuration.GetSection(CarcassAuthenticationSettings.SectionName));
+        //Authentication:Mode = Sso — შესვლა sso.ltg.ge-ით (BFF), სხვა შემთხვევაში აპის JWT, როგორც აქამდე
+        if (IsSsoMode(configuration))
+        {
+            services.AddCarcassSsoAuthentication(configuration);
+        }
+        else
+        {
+            services.AddCarcassJwtAuthentication(configuration);
+        }
 
         services.AddAuthorizationBuilder().SetInvokeHandlersAfterFailure(true);
 
@@ -177,11 +188,23 @@ public static class CarcassIdentityDependencyInjection
         return services;
     }
 
+    public static bool IsSsoMode(IConfiguration configuration)
+    {
+        return configuration.GetSection(CarcassAuthenticationSettings.SectionName)
+            .Get<CarcassAuthenticationSettings>()?.Mode == EAuthenticationMode.Sso;
+    }
+
     public static bool UseAuthenticationAndAuthorization(this IApplicationBuilder app, ILogger? debugLogger)
     {
         debugLogger?.Information("{MethodName} Started", nameof(UseAuthenticationAndAuthorization));
 
         app.UseRateLimiter();
+        if (app.ApplicationServices.GetRequiredService<IOptions<CarcassAuthenticationSettings>>().Value.Mode ==
+            EAuthenticationMode.Sso)
+        {
+            app.UseMiddleware<CarcassCsrfMiddleware>();
+        }
+
         app.UseAuthentication();
         app.UseAuthorization();
 

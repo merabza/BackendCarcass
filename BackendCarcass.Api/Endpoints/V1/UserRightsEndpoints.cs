@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using BackendCarcass.Api.DependencyInjection;
 using BackendCarcass.Api.Mappers;
 using BackendCarcass.Application.Repositories.Models;
 using BackendCarcass.Application.UserRights.ChangePassword;
@@ -33,9 +34,14 @@ public static class UserRightsEndpoints
             .MapGroup(CarcassApiRoutes.ApiBase + CarcassApiRoutes.UserRights.UserRightsBase).RequireAuthorization();
 
         group.MapGet(CarcassApiRoutes.UserRights.IsCurrentUserValid, IsCurrentUserValid);
-        group.MapPut(CarcassApiRoutes.UserRights.ChangeProfile, ChangeProfile);
-        group.MapPut(CarcassApiRoutes.UserRights.ChangePassword, ChangePassword);
-        group.MapDelete(CarcassApiRoutes.UserRights.DeleteCurrentUser, DeleteCurrentUser);
+        //SSO რეჟიმში პროფილს, პაროლს და ანგარიშს მომხმარებელი sso.ltg.ge-ზე მართავს
+        if (!endpoints.IsCarcassSsoMode())
+        {
+            group.MapPut(CarcassApiRoutes.UserRights.ChangeProfile, ChangeProfile);
+            group.MapPut(CarcassApiRoutes.UserRights.ChangePassword, ChangePassword);
+            group.MapDelete(CarcassApiRoutes.UserRights.DeleteCurrentUser, DeleteCurrentUser);
+        }
+
         group.MapGet(CarcassApiRoutes.UserRights.MainMenu, MainMenu);
 
         debugLogger?.Information("{MethodName} Finished", nameof(UseUserRightsEndpoints));
