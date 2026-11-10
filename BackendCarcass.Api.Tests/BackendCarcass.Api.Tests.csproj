@@ -10,6 +10,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="Moq" />
         <PackageReference Include="xunit" />
@@ -18,6 +20,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\BackendCarcass.Api\BackendCarcass.Api.csproj" />
+        <ProjectReference Include="..\BackendCarcass.Database\BackendCarcass.Database.csproj" />
     </ItemGroup>
 
 </Project>

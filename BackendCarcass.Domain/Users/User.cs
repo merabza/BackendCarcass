@@ -27,6 +27,9 @@ public sealed class User : Entity, IDataType
     //თუ შევსებულია, ამ მომენტამდე ანგარიში დაბლოკილია
     public DateTimeOffset? LockoutEnd { get; set; }
 
+    //sso.ltg.ge-ის მომხმარებლის მუდმივი იდენტიფიკატორი (OpenID Connect-ის sub). Local რეჟიმში ცარიელია
+    public string? SsoSubject { get; set; }
+
     [NotMapped] public static string DtKeyKey => "user";
 
     [NotMapped]
