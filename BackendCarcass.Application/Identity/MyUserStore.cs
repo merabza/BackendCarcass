@@ -341,51 +341,58 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
 
     public async Task AddToRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
     {
-        Role? role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
-        if (role == null)
-        {
-            return;
-        }
-
-        await _repo.UserAddToRoleAsync(user.Id, role.RolId);
+        Role role = await FindRoleAsync(roleName, cancellationToken) ??
+                    throw new InvalidOperationException($"Role {roleName} does not exist.");
+        string userKey = user.NormalizedUserName ??
+                         throw new InvalidOperationException($"User {user.Id} has no normalized user name.");
+        await _repo.AddUserToRoleAsync(userKey, role.RolKey, cancellationToken);
     }
 
     public async Task RemoveFromRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
     {
-        Role? role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
+        Role? role = await FindRoleAsync(roleName, cancellationToken);
         if (role == null)
         {
             return;
         }
 
-        ManyToManyJoin? match = await _repo.RolesByUsers.FirstOrDefaultAsync(
-            ru => ru.PKey == user.UserName && ru.CKey == role.RolKey, cancellationToken);
-        if (match == null)
+        List<ManyToManyJoin> memberships = await MembershipsOf(user).Where(ru => ru.CKey == role.RolKey)
+            .ToListAsync(cancellationToken);
+        if (memberships.Count == 0)
         {
             return;
         }
 
-        _repo.RemoveUserFromRole(match);
+        await _repo.RemoveUserFromRoleAsync(memberships, cancellationToken);
     }
 
     public async Task<IList<string>> GetRolesAsync(AppUser user, CancellationToken cancellationToken)
     {
-        return await _repo.RolesByUsers.Where(ru => ru.PKey == user.UserName).Select(s => s.CKey)
-            .ToListAsync(cancellationToken);
+        return await MembershipsOf(user).Select(s => s.CKey).Distinct().ToListAsync(cancellationToken);
     }
 
     public async Task<bool> IsInRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
     {
-        Role? role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolKey == roleName, cancellationToken);
+        Role? role = await FindRoleAsync(roleName, cancellationToken);
         if (role == null)
         {
             return false;
         }
 
-        ManyToManyJoin? roleByUser =
-            await _repo.RolesByUsers.FirstOrDefaultAsync(ru => ru.PKey == user.UserName && ru.CKey == role.RolKey,
-                cancellationToken);
-        return roleByUser != null;
+        return await MembershipsOf(user).AnyAsync(ru => ru.CKey == role.RolKey, cancellationToken);
+    }
+
+    //UserManager store-ს როლის ნორმალიზებულ სახელს გადასცემს
+    private Task<Role?> FindRoleAsync(string normalizedRoleName, CancellationToken cancellationToken)
+    {
+        return _repo.Roles.FirstOrDefaultAsync(r => r.RolNormalizedKey == normalizedRoleName, cancellationToken);
+    }
+
+    //ManyToManyJoins-ში მომხმარებელი უფლებების რედაქტორს NormalizedUserName-ით უწერია, საწყის მონაცემებს
+    //(UsersByRoles.json) კი UserName-ით. ორივე გასაღები ცალ-ცალკე მოწმდება, რომ შედეგი collation-ზე არ იყოს დამოკიდებული
+    private IQueryable<ManyToManyJoin> MembershipsOf(AppUser user)
+    {
+        return _repo.RolesByUsers.Where(ru => ru.PKey == user.NormalizedUserName || ru.PKey == user.UserName);
     }
 
     async Task<IList<AppUser>> IUserRoleStore<AppUser>.GetUsersInRoleAsync(string roleName,

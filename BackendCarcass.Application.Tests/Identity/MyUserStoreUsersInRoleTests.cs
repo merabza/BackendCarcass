@@ -4,9 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using BackendCarcass.Application.MasterData.Models;
 using BackendCarcass.Application.Tests.TestInfrastructure;
-using BackendCarcass.Domain.DataTypes;
-using BackendCarcass.Domain.ManyToManyJoins;
-using BackendCarcass.Domain.Roles;
 using BackendCarcass.Domain.Users;
 using Xunit;
 
@@ -24,9 +21,9 @@ public sealed class MyUserStoreUsersInRoleTests
         User editor = AddUser(harness, "editor");
         User secondEditor = AddUser(harness, "second");
         AddUser(harness, "outsider");
-        AddRole(harness, "Editor");
-        AddMembership(harness, editor.NormalizedUserName, "Editor");
-        AddMembership(harness, secondEditor.NormalizedUserName, "Editor");
+        harness.AddRole("Editor");
+        harness.AddMembership(editor.NormalizedUserName, "Editor");
+        harness.AddMembership(secondEditor.NormalizedUserName, "Editor");
 
         IList<AppUser> users = await harness.UserManager.GetUsersInRoleAsync("Editor");
 
@@ -62,10 +59,10 @@ public sealed class MyUserStoreUsersInRoleTests
         using var harness = new IdentityManagersHarness();
         User editor = AddUser(harness, "editor");
         User admin = AddUser(harness, "admin");
-        AddRole(harness, "Editor");
-        AddRole(harness, "Admin");
-        AddMembership(harness, editor.NormalizedUserName, "Editor");
-        AddMembership(harness, admin.NormalizedUserName, "Admin");
+        harness.AddRole("Editor");
+        harness.AddRole("Admin");
+        harness.AddMembership(editor.NormalizedUserName, "Editor");
+        harness.AddMembership(admin.NormalizedUserName, "Admin");
 
         IList<AppUser> users = await harness.UserManager.GetUsersInRoleAsync("Editor");
 
@@ -78,7 +75,7 @@ public sealed class MyUserStoreUsersInRoleTests
         using var harness = new IdentityManagersHarness();
         AddUser(harness, "editor");
         AddUser(harness, "other");
-        AddRole(harness, "Editor");
+        harness.AddRole("Editor");
 
         IList<AppUser> users = await harness.UserManager.GetUsersInRoleAsync("Editor");
 
@@ -90,8 +87,8 @@ public sealed class MyUserStoreUsersInRoleTests
     {
         using var harness = new IdentityManagersHarness();
         User editor = AddUser(harness, "editor");
-        AddRole(harness, "Editor");
-        AddMembership(harness, editor.NormalizedUserName, "Editor");
+        harness.AddRole("Editor");
+        harness.AddMembership(editor.NormalizedUserName, "Editor");
 
         IList<AppUser> users = await harness.UserManager.GetUsersInRoleAsync("Missing");
 
@@ -101,42 +98,5 @@ public sealed class MyUserStoreUsersInRoleTests
     private static User AddUser(IdentityManagersHarness harness, string userName)
     {
         return harness.Db.AddUser(userName, userName + "@example.com");
-    }
-
-    private static void AddRole(IdentityManagersHarness harness, string key)
-    {
-        harness.Db.Context.Roles.Add(new Role
-        {
-            RolKey = key, RolName = key + " როლი", RolLevel = 50, RolNormalizedKey = key.ToUpperInvariant()
-        });
-        harness.Db.Context.SaveChanges();
-    }
-
-    private static void AddMembership(IdentityManagersHarness harness, string userKey, string roleKey)
-    {
-        harness.Db.Context.ManyToManyJoins.Add(new ManyToManyJoin
-        {
-            PtId = DataTypeId(harness, IdentityManagersHarness.UsersTable),
-            PKey = userKey,
-            CtId = DataTypeId(harness, IdentityManagersHarness.RolesTable),
-            CKey = roleKey
-        });
-        harness.Db.Context.SaveChanges();
-    }
-
-    private static int DataTypeId(IdentityManagersHarness harness, string table)
-    {
-        DataType? dataType = harness.Db.Context.DataTypes.SingleOrDefault(d => d.DtTable == table);
-        if (dataType is null)
-        {
-            dataType = new DataType
-            {
-                DtName = table, DtNameNominative = table, DtNameGenitive = table, DtTable = table
-            };
-            harness.Db.Context.DataTypes.Add(dataType);
-            harness.Db.Context.SaveChanges();
-        }
-
-        return dataType.DtId;
     }
 }

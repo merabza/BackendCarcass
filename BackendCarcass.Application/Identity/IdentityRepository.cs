@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -113,14 +114,30 @@ public sealed class IdentityRepository : IIdentityRepository
         }
     }
 
-    public Task UserAddToRoleAsync(int userId, int roleRId)
+    //User→Role წევრობა ManyToManyJoins-ში ისევე იწერება, როგორც უფლებების რედაქტორში: DataTypes-ის გასაღებებით
+    //(PKey = NormalizedUserName, CKey = RolKey)
+    public async Task AddUserToRoleAsync(string userKey, string roleKey, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        int userDataTypeId = await DataTypeIdAsync(_databaseAbstraction.GetTableName<User>(), cancellationToken);
+        int roleDataTypeId = await DataTypeIdAsync(_databaseAbstraction.GetTableName<Role>(), cancellationToken);
+        _carcassContext.ManyToManyJoins.Add(new ManyToManyJoin
+        {
+            PtId = userDataTypeId, PKey = userKey, CtId = roleDataTypeId, CKey = roleKey
+        });
+        await _carcassContext.SaveChangesAsync(cancellationToken);
     }
 
-    public void RemoveUserFromRole(ManyToManyJoin match)
+    public async Task RemoveUserFromRoleAsync(IReadOnlyCollection<ManyToManyJoin> memberships,
+        CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        _carcassContext.ManyToManyJoins.RemoveRange(memberships);
+        await _carcassContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private Task<int> DataTypeIdAsync(string tableName, CancellationToken cancellationToken)
+    {
+        return _carcassContext.DataTypes.Where(w => w.DtTable == tableName).Select(s => s.DtId)
+            .SingleAsync(cancellationToken);
     }
 
     public async ValueTask<IdentityResult> CreateUserAsync(AppUser appUser,

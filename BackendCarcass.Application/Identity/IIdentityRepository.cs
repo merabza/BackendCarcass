@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BackendCarcass.Application.MasterData.Models;
@@ -20,7 +21,10 @@ public interface IIdentityRepository
     ValueTask<IdentityResult> UpdateUserAsync(int userId, User user, CancellationToken cancellationToken = default);
     ValueTask<IdentityResult> CreateRoleAsync(AppRole appRole, CancellationToken cancellationToken = default);
     ValueTask<IdentityResult> RemoveRoleAsync(int roleId, CancellationToken cancellationToken = default);
-    Task UserAddToRoleAsync(int userId, int roleRId);
-    void RemoveUserFromRole(ManyToManyJoin match);
+    Task AddUserToRoleAsync(string userKey, string roleKey, CancellationToken cancellationToken = default);
+
+    Task RemoveUserFromRoleAsync(IReadOnlyCollection<ManyToManyJoin> memberships,
+        CancellationToken cancellationToken = default);
+
     ValueTask<IdentityResult> UpdateRoleAsync(int roleId, AppRole role, CancellationToken cancellationToken = default);
 }

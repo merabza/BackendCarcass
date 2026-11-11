@@ -670,26 +670,32 @@ public sealed class MyUserStoreTests : IDisposable
         Assert.True(await _sut.GetLockoutEnabledAsync(user, CancellationToken.None));
     }
 
+    // UserManager passes the normalized role name; the membership is keyed as the rights editor keys it
     [Fact]
-    public async Task AddToRoleAsync_ExistingRole_AddsTheUserToIt()
+    public async Task AddToRoleAsync_ExistingRole_AddsTheUserToItByNormalizedUserNameAndRoleKey()
     {
         AddRole("Author", 40);
-        Role editor = AddRole("Editor", 50);
+        AddRole("Editor", 50);
 
-        await _sut.AddToRoleAsync(NewAppUser(), "Editor", CancellationToken.None);
+        await _sut.AddToRoleAsync(NewAppUser(), "EDITOR", CancellationToken.None);
 
-        _repo.Verify(r => r.UserAddToRoleAsync(7, editor.RolId), Times.Once);
-        _repo.Verify(r => r.UserAddToRoleAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+        _repo.Verify(r => r.AddUserToRoleAsync("TESTER", "Editor", CancellationToken.None), Times.Once);
+        _repo.Verify(
+            r => r.AddUserToRoleAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 
     [Fact]
-    public async Task AddToRoleAsync_UnknownRole_AddsNothing()
+    public async Task AddToRoleAsync_UnknownRole_ThrowsAndAddsNothing()
     {
         AddRole("Editor", 50);
 
-        await _sut.AddToRoleAsync(NewAppUser(), "Author", CancellationToken.None);
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _sut.AddToRoleAsync(NewAppUser(), "AUTHOR", CancellationToken.None));
 
-        _repo.Verify(r => r.UserAddToRoleAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
+        _repo.Verify(
+            r => r.AddUserToRoleAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 
     [Fact]
@@ -700,15 +706,17 @@ public sealed class MyUserStoreTests : IDisposable
         AddUserToRole("other", "Editor");
         AddUserToRole("tester", "Author");
         AddUserToRole("tester", "Editor");
-        ManyToManyJoin? removed = null;
-        _repo.Setup(r => r.RemoveUserFromRole(It.IsAny<ManyToManyJoin>()))
-            .Callback((ManyToManyJoin membership) => removed = membership);
+        IReadOnlyCollection<ManyToManyJoin>? removed = null;
+        _repo.Setup(r => r.RemoveUserFromRoleAsync(It.IsAny<IReadOnlyCollection<ManyToManyJoin>>(),
+                CancellationToken.None))
+            .Callback((IReadOnlyCollection<ManyToManyJoin> memberships, CancellationToken _) => removed = memberships);
 
-        await _sut.RemoveFromRoleAsync(NewAppUser(), "Editor", CancellationToken.None);
+        await _sut.RemoveFromRoleAsync(NewAppUser(), "EDITOR", CancellationToken.None);
 
         Assert.NotNull(removed);
-        Assert.Equal("tester", removed.PKey);
-        Assert.Equal("Editor", removed.CKey);
+        ManyToManyJoin membership = Assert.Single(removed);
+        Assert.Equal("tester", membership.PKey);
+        Assert.Equal("Editor", membership.CKey);
     }
 
     [Fact]
@@ -716,7 +724,7 @@ public sealed class MyUserStoreTests : IDisposable
     {
         AddUserToRole("tester", "Editor");
 
-        await _sut.RemoveFromRoleAsync(NewAppUser(), "Editor", CancellationToken.None);
+        await _sut.RemoveFromRoleAsync(NewAppUser(), "EDITOR", CancellationToken.None);
 
         VerifyNoRoleRemoval();
     }
@@ -727,7 +735,7 @@ public sealed class MyUserStoreTests : IDisposable
         AddRole("Editor", 50);
         AddUserToRole("other", "Editor");
 
-        await _sut.RemoveFromRoleAsync(NewAppUser(), "Editor", CancellationToken.None);
+        await _sut.RemoveFromRoleAsync(NewAppUser(), "EDITOR", CancellationToken.None);
 
         VerifyNoRoleRemoval();
     }
@@ -753,7 +761,7 @@ public sealed class MyUserStoreTests : IDisposable
         AddRole("Author", 40);
         AddUserToRole("tester", "Editor");
 
-        bool isInRole = await _sut.IsInRoleAsync(NewAppUser(), "Editor", CancellationToken.None);
+        bool isInRole = await _sut.IsInRoleAsync(NewAppUser(), "EDITOR", CancellationToken.None);
 
         Assert.True(isInRole);
     }
@@ -766,7 +774,7 @@ public sealed class MyUserStoreTests : IDisposable
         AddUserToRole("tester", "Author");
         AddUserToRole("other", "Editor");
 
-        bool isInRole = await _sut.IsInRoleAsync(NewAppUser(), "Editor", CancellationToken.None);
+        bool isInRole = await _sut.IsInRoleAsync(NewAppUser(), "EDITOR", CancellationToken.None);
 
         Assert.False(isInRole);
     }
@@ -776,7 +784,7 @@ public sealed class MyUserStoreTests : IDisposable
     {
         AddUserToRole("tester", "Editor");
 
-        bool isInRole = await _sut.IsInRoleAsync(NewAppUser(), "Editor", CancellationToken.None);
+        bool isInRole = await _sut.IsInRoleAsync(NewAppUser(), "EDITOR", CancellationToken.None);
 
         Assert.False(isInRole);
     }
@@ -932,7 +940,9 @@ public sealed class MyUserStoreTests : IDisposable
 
     private void VerifyNoRoleRemoval()
     {
-        _repo.Verify(r => r.RemoveUserFromRole(It.IsAny<ManyToManyJoin>()), Times.Never);
+        _repo.Verify(
+            r => r.RemoveUserFromRoleAsync(It.IsAny<IReadOnlyCollection<ManyToManyJoin>>(),
+                It.IsAny<CancellationToken>()), Times.Never);
     }
 
     // Records what the store logs; logging is off unless a test turns it on
