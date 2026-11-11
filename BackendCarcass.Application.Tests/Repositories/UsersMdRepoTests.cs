@@ -71,6 +71,7 @@ public sealed class UsersMdRepoTests
         Assert.Equal("renamed@example.com", stored.Email);
         Assert.Equal("ახალი", stored.FirstName);
         Assert.Equal("გვარი", stored.LastName);
+        Assert.Equal("ახალი გვარი", stored.FullName);
     }
 
     [Fact]

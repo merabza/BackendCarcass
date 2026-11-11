@@ -240,6 +240,13 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
             return IdentityResult.Failed();
         }
 
+        //სახელის ან გვარის შეცვლისას სრული სახელიც იცვლება. სხვა ველების განახლება მას არ ეხება: ძველი ბაზებიდან
+        //გადმოტანილი სრული სახელი სახელსა და გვარს ყოველთვის არ ემთხვევა (ისინი შეიძლება ცარიელიც იყოს)
+        if (user.FirstName != appUser.FirstName || user.LastName != appUser.LastName)
+        {
+            user.FullName = appUser.FirstName + " " + appUser.LastName;
+        }
+
         user.FirstName = appUser.FirstName;
         user.LastName = appUser.LastName;
         user.UserName = appUser.UserName;
