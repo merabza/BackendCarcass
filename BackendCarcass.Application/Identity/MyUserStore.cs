@@ -391,11 +391,18 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
     async Task<IList<AppUser>> IUserRoleStore<AppUser>.GetUsersInRoleAsync(string roleName,
         CancellationToken cancellationToken)
     {
-        IList<AppUser> us = await _repo.Users.Select(s =>
-            new AppUser(s.UserName, s.FirstName, s.LastName)
-            {
-                Id = s.UsrId, NormalizedUserName = s.NormalizedUserName
-            }).ToListAsync(cancellationToken);
-        return us;
+        //UserManager როლის ნორმალიზებულ სახელს გადმოსცემს
+        Role? role = await _repo.Roles.FirstOrDefaultAsync(r => r.RolNormalizedKey == roleName, cancellationToken);
+        if (role == null)
+        {
+            return [];
+        }
+
+        //ManyToManyJoins-ში მომხმარებელი UserName-ით ან NormalizedUserName-ით არის მითითებული, როლი კი RolKey-ით
+        IQueryable<ManyToManyJoin> rolesByUsers = _repo.RolesByUsers;
+        List<User> users = await _repo.Users.Where(u => rolesByUsers.Any(ru =>
+                ru.CKey == role.RolKey && (ru.PKey == u.UserName || ru.PKey == u.NormalizedUserName)))
+            .ToListAsync(cancellationToken);
+        return [.. users.Select(ToAppUser)];
     }
 }

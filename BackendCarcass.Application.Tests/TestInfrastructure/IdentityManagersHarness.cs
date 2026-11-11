@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using BackendCarcass.Application.Identity;
 using BackendCarcass.Application.Identity.DependencyInjection;
 using BackendCarcass.Application.MasterData.Models;
+using BackendCarcass.Domain.Roles;
+using BackendCarcass.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +18,9 @@ namespace BackendCarcass.Application.Tests.TestInfrastructure;
 // (MyUserStore and IdentityRepository) and the carcass tables on in-memory SQLite
 public sealed class IdentityManagersHarness : IDisposable
 {
+    public const string UsersTable = "Users";
+    public const string RolesTable = "Roles";
+
     private readonly ServiceProvider _provider;
     private readonly IServiceScope _scope;
 
@@ -28,7 +33,9 @@ public sealed class IdentityManagersHarness : IDisposable
         services.AddCarcassIdentityCore(configuration);
         services.AddSingleton<ICarcassApplicationDbContext>(Db.Context);
         services.AddScoped<IIdentityRepository, IdentityRepository>();
-        services.AddSingleton(Mock.Of<IDatabaseAbstraction>());
+        //IdentityRepository.RolesByUsers User→Role წევრობას DataTypes-ის ცხრილების სახელებით არჩევს
+        services.AddSingleton(Mock.Of<IDatabaseAbstraction>(d =>
+            d.GetTableName<User>() == UsersTable && d.GetTableName<Role>() == RolesTable));
         _provider = services.BuildServiceProvider();
         _scope = _provider.CreateScope();
     }

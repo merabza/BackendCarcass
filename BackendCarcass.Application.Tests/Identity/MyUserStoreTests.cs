@@ -783,18 +783,30 @@ public sealed class MyUserStoreTests : IDisposable
 
     // Documents the current behavior: the store ignores the role name and returns every user
     [Fact]
-    public async Task GetUsersInRoleAsync_IgnoresTheRoleAndReturnsEveryUser()
+    public async Task GetUsersInRoleAsync_ReturnsOnlyTheMembersOfTheRoleFullyMapped()
     {
-        AddUser("tester");
-        User other = AddUser("other");
+        User tester = AddUser("tester");
+        AddUser("other");
         AddRole("Editor", 50);
         AddUserToRole("tester", "Editor");
 
         IList<AppUser> users =
             await ((IUserRoleStore<AppUser>)_sut).GetUsersInRoleAsync("EDITOR", CancellationToken.None);
 
-        Assert.Equal(2, users.Count);
-        Assert.Equal("OTHER", Assert.Single(users, u => u.Id == other.UsrId).NormalizedUserName);
+        AssertUser(tester, Assert.Single(users));
+    }
+
+    [Fact]
+    public async Task GetUsersInRoleAsync_UnknownRole_ReturnsAnEmptyList()
+    {
+        AddUser("tester");
+        AddRole("Editor", 50);
+        AddUserToRole("tester", "Editor");
+
+        IList<AppUser> users =
+            await ((IUserRoleStore<AppUser>)_sut).GetUsersInRoleAsync("MISSING", CancellationToken.None);
+
+        Assert.Empty(users);
     }
 
     private static IdentityResult Failure()
