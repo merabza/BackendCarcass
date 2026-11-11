@@ -12,7 +12,6 @@
         <PackageReference Include="BackendCarcassShared.Contracts" />
         <PackageReference Include="MailKit" />
         <!--MailKit-ის ტრანზიტული System.Security.Cryptography.Pkcs 10.0.0 ცნობილ სისუსტეს შეიცავს, ამიტომ პირდაპირ უფრო ახალი ვერსია-->
-        <PackageReference Include="System.Security.Cryptography.Pkcs" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
