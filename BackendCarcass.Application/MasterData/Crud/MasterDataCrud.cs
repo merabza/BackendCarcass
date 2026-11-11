@@ -78,7 +78,9 @@ public sealed class MasterDataCrud : CrudBase, IMasterDataLoader
                 MasterDataCrudErrors.MethodResultIsNull(nameof(OrderBySortId)));
         }
 
-        return (List<IDataType>)queryRunResult;
+        //OrderBySortId კოლექციის გამოსახულებით ([.. ]) აბრუნებს IEnumerable-ს, რომლის რეალური ტიპი List არ არის,
+        //ამიტომ List-ზე cast-ი InvalidCastException-ს იწვევდა
+        return Result.Success((IEnumerable<IDataType>)queryRunResult);
     }
 
     public static Result<MasterDataCrud> Create(string tableName, ILogger logger, ICarcassMasterDataRepository cmdRepo,
