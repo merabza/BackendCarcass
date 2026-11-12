@@ -160,10 +160,12 @@ public sealed class RightsCollector
 
             List<UserModel> users = await _repo.GetUsers(cancellationToken);
 
+            //როლის არმქონე მომხმარებელს დონე არ აქვს, ამიტომ ყოველთვის ჩანს, რომ ადმინისტრატორმა პირველი როლი მიანიჭოს;
+            //როლის მქონე მომხმარებლიდან ჩანს მხოლოდ ის, ვისი დონეც მიმდინარე მომხმარებლისაზე მაღალი არ არის
             return (from usr in users
                     join ml in uml on usr.UsrId equals ml.Item1 into gj
                     from s in gj.DefaultIfEmpty()
-                    where s != null && s.Item2 >= minOfLevel
+                    where s == null || s.Item2 >= minOfLevel
                     select new ReturnValueModel { Id = usr.UsrId, Key = usr.NormalizedUserName, Name = usr.FullName })
                 .ToList();
         }
