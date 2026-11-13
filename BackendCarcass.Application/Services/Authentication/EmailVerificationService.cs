@@ -63,9 +63,9 @@ public sealed class EmailVerificationService : IScopeServiceCarcassApplication
             if (_logger.IsEnabled(LogLevel.Information))
             {
                 _logger.LogInformation(
-                    "Verification e-mail ({Purpose}) was not sent to user {UserId} <{Email}>: " +
+                    "Verification e-mail ({Purpose}) was not sent to user {UserId}: " +
                     "a code was already issued {SecondsAgo} seconds ago (resend cooldown {CooldownSeconds} seconds)",
-                    purpose, user.Id, user.Email, (int)(now - last.CreatedAt).TotalSeconds, ResendCooldownSeconds);
+                    purpose, user.Id, (int)(now - last.CreatedAt).TotalSeconds, ResendCooldownSeconds);
             }
 
             return Result.Failure(AuthenticationApiErrors.CodeResendTooSoon);
@@ -98,8 +98,8 @@ public sealed class EmailVerificationService : IScopeServiceCarcassApplication
         catch (Exception e) when (e is not OperationCanceledException)
         {
             //SMTP სერვერის პრობლემა მომხმარებლის ბრალი არ არის: გასაგები შეცდომა ბრუნდება და არა 500
-            _logger.LogError(e, "Verification e-mail ({Purpose}) could not be sent to user {UserId} <{Email}>",
-                purpose, user.Id, user.Email);
+            _logger.LogError(e, "Verification e-mail ({Purpose}) could not be sent to user {UserId}",
+                purpose, user.Id);
             //გაუგზავნელი კოდის ჩანაწერი იშლება, თორემ ხელახლა ცდისას ახალი წერილი
             //ResendCooldownSeconds წამის განმავლობაში აღარ გაიგზავნებოდა
             _ctx.EmailVerifications.Remove(verification);

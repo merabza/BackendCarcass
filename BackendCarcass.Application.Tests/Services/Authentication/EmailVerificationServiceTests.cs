@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -11,6 +12,7 @@ using BackendCarcass.Application.Tests.TestInfrastructure;
 using BackendCarcass.Domain.EmailVerifications;
 using BackendCarcass.Domain.Users;
 using BackendCarcassShared.Contracts.Errors;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using SystemTools.SharedKernel;
@@ -147,6 +149,39 @@ public sealed class EmailVerificationServiceTests : IDisposable
 
         Assert.True(retry.IsSuccess);
         Assert.Single(_sender.Sent);
+    }
+
+    [Fact]
+    public async Task A_failed_send_is_logged_by_user_id_without_the_address()
+    {
+        var logger = new CapturingLogger<EmailVerificationService>();
+        var failing = new EmailVerificationService(_db.Context, new ThrowingEmailSender(),
+            Options.Create(new IdentitySettings()), Options.Create(new EmailSettings()), logger);
+
+        await failing.SendAsync(_user, EEmailVerificationPurpose.EmailConfirmation);
+
+        CapturedLogEntry entry = Assert.Single(logger.Entries);
+        Assert.Equal(LogLevel.Error, entry.Level);
+        Assert.Contains(string.Create(CultureInfo.InvariantCulture, $"user {_user.Id}"), entry.Message,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(_user.Email!, entry.FullText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task A_request_within_the_cooldown_is_logged_by_user_id_without_the_address()
+    {
+        var logger = new CapturingLogger<EmailVerificationService>();
+        var service = new EmailVerificationService(_db.Context, _sender, Options.Create(new IdentitySettings()),
+            Options.Create(new EmailSettings()), logger);
+        await service.SendAsync(_user, EEmailVerificationPurpose.EmailConfirmation);
+
+        await service.SendAsync(_user, EEmailVerificationPurpose.EmailConfirmation);
+
+        CapturedLogEntry entry = Assert.Single(logger.Entries);
+        Assert.Equal(LogLevel.Information, entry.Level);
+        Assert.Contains(string.Create(CultureInfo.InvariantCulture, $"user {_user.Id}"), entry.Message,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(_user.Email!, entry.FullText, StringComparison.OrdinalIgnoreCase);
     }
 
     private sealed class ThrowingEmailSender : IEmailSender

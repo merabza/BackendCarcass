@@ -36,11 +36,12 @@ public sealed class SmtpEmailSender : IEmailSender
         message.Subject = subject;
         message.Body = new TextPart(TextFormat.Plain) { Text = body };
 
-        //შეცდომას (გამონაკლისს) გამომძახებელი წერს ლოგში, აქ იწერება მცდელობა და SMTP სერვერის პასუხი
+        //შეცდომას (გამონაკლისს) გამომძახებელი წერს ლოგში, აქ იწერება მცდელობა და SMTP სერვერის პასუხი.
+        //მიმღების მისამართი (პერსონალური მონაცემი) და Message-Id ლოგში არ იწერება
         if (_logger.IsEnabled(LogLevel.Information))
         {
-            _logger.LogInformation("Sending e-mail \"{Subject}\" to {ToEmail} via SMTP server {SmtpServer}:{SmtpPort}",
-                subject, toEmail, smtpServer, _settings.SmtpPort);
+            _logger.LogInformation("Sending e-mail \"{Subject}\" via SMTP server {SmtpServer}:{SmtpPort}",
+                subject, smtpServer, _settings.SmtpPort);
         }
 
         //ყურადღება: SmtpClient აქ MailKit-ისაა და არა System.Net.Mail-ის
@@ -59,9 +60,8 @@ public sealed class SmtpEmailSender : IEmailSender
         if (_logger.IsEnabled(LogLevel.Information))
         {
             _logger.LogInformation(
-                "SMTP server {SmtpServer} accepted e-mail \"{Subject}\" to {ToEmail}. " +
-                "Message-Id: {MessageId}, server response: {ServerResponse}",
-                smtpServer, subject, toEmail, message.MessageId, serverResponse);
+                "SMTP server {SmtpServer} accepted e-mail \"{Subject}\". Server response: {ServerResponse}",
+                smtpServer, subject, serverResponse);
         }
 
         await client.DisconnectAsync(true, cancellationToken);
