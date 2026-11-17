@@ -134,12 +134,6 @@ public sealed class IdentityRepository : IIdentityRepository
         await _carcassContext.SaveChangesAsync(cancellationToken);
     }
 
-    private Task<int> DataTypeIdAsync(string tableName, CancellationToken cancellationToken)
-    {
-        return _carcassContext.DataTypes.Where(w => w.DtTable == tableName).Select(s => s.DtId)
-            .SingleAsync(cancellationToken);
-    }
-
     public async ValueTask<IdentityResult> CreateUserAsync(AppUser appUser,
         CancellationToken cancellationToken = default)
     {
@@ -239,5 +233,11 @@ public sealed class IdentityRepository : IIdentityRepository
             _logger.LogError(e, "An exception occurred while updating a role.");
             return IdentityResult.Failed();
         }
+    }
+
+    private Task<int> DataTypeIdAsync(string tableName, CancellationToken cancellationToken)
+    {
+        return _carcassContext.DataTypes.Where(w => w.DtTable == tableName).Select(s => s.DtId)
+            .SingleAsync(cancellationToken);
     }
 }

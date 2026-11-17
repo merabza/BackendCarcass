@@ -62,7 +62,7 @@ public sealed class SsoSessionRefresher
             return;
         }
 
-        SsoTokenClient tokenClient = context.HttpContext.RequestServices.GetRequiredService<SsoTokenClient>();
+        var tokenClient = context.HttpContext.RequestServices.GetRequiredService<SsoTokenClient>();
         SsoRefreshResult refreshed = await tokenClient.RefreshAsync(refreshToken, context.HttpContext.RequestAborted);
         switch (refreshed.Outcome)
         {
@@ -81,7 +81,7 @@ public sealed class SsoSessionRefresher
     private async Task ApplyAsync(CookieValidatePrincipalContext context, SsoRefreshResult refreshed,
         DateTimeOffset now)
     {
-        SsoUserService users = context.HttpContext.RequestServices.GetRequiredService<SsoUserService>();
+        var users = context.HttpContext.RequestServices.GetRequiredService<SsoUserService>();
         Result<ClaimsPrincipal> principal = await users.RefreshAsync(context.Principal!,
             CarcassSsoDefaults.CookieScheme, context.HttpContext.RequestAborted);
         if (principal.IsFailure)

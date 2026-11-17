@@ -15,8 +15,8 @@ public sealed class ConfirmEmailLinkCommandHandler(PendingLoginService pendingLo
     public async Task<Result<LoginResponse>> Handle(ConfirmEmailLinkRequestCommand request,
         CancellationToken cancellationToken)
     {
-        Result<LoginResult> result = await pendingLoginService.ConfirmEmailByLinkAsync(request.UserId,
-            request.Token, request.PendingToken, cancellationToken);
+        Result<LoginResult> result = await pendingLoginService.ConfirmEmailByLinkAsync(request.UserId, request.Token,
+            request.PendingToken, cancellationToken);
         return result.IsFailure ? Result.Failure<LoginResponse>(result.Error) : result.Value.ToLoginResponse();
     }
 }

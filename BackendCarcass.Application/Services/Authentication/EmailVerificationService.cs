@@ -98,8 +98,7 @@ public sealed class EmailVerificationService : IScopeServiceCarcassApplication
         catch (Exception e) when (e is not OperationCanceledException)
         {
             //SMTP სერვერის პრობლემა მომხმარებლის ბრალი არ არის: გასაგები შეცდომა ბრუნდება და არა 500
-            _logger.LogError(e, "Verification e-mail ({Purpose}) could not be sent to user {UserId}",
-                purpose, user.Id);
+            _logger.LogError(e, "Verification e-mail ({Purpose}) could not be sent to user {UserId}", purpose, user.Id);
             //გაუგზავნელი კოდის ჩანაწერი იშლება, თორემ ხელახლა ცდისას ახალი წერილი
             //ResendCooldownSeconds წამის განმავლობაში აღარ გაიგზავნებოდა
             _ctx.EmailVerifications.Remove(verification);
@@ -126,8 +125,7 @@ public sealed class EmailVerificationService : IScopeServiceCarcassApplication
         }
 
         verification.Attempts++;
-        bool matches = !string.IsNullOrWhiteSpace(code) &&
-                       TokenHashing.HashMatches(code.Trim(), verification.CodeHash);
+        bool matches = !string.IsNullOrWhiteSpace(code) && TokenHashing.HashMatches(code.Trim(), verification.CodeHash);
         if (matches)
         {
             verification.UsedAt = now;
@@ -180,10 +178,8 @@ public sealed class EmailVerificationService : IScopeServiceCarcassApplication
         {
             EEmailVerificationPurpose.EmailConfirmation => ("ელფოსტის დადასტურება",
                 "თქვენი ელფოსტის მისამართის დასადასტურებლად შეიყვანეთ ეს კოდი:"),
-            EEmailVerificationPurpose.PasswordChange => ("პაროლის შეცვლა",
-                "პაროლის შესაცვლელად შეიყვანეთ ეს კოდი:"),
-            EEmailVerificationPurpose.PasswordReset => ("პაროლის აღდგენა",
-                "პაროლის აღსადგენად შეიყვანეთ ეს კოდი:"),
+            EEmailVerificationPurpose.PasswordChange => ("პაროლის შეცვლა", "პაროლის შესაცვლელად შეიყვანეთ ეს კოდი:"),
+            EEmailVerificationPurpose.PasswordReset => ("პაროლის აღდგენა", "პაროლის აღსადგენად შეიყვანეთ ეს კოდი:"),
             EEmailVerificationPurpose.EmailChange => ("ელფოსტის მისამართის შეცვლა",
                 "ახალი ელფოსტის მისამართის დასადასტურებლად შეიყვანეთ ეს კოდი:"),
             _ => throw new ArgumentOutOfRangeException(nameof(purpose), purpose, null)

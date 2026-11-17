@@ -130,10 +130,10 @@ public static class AuthenticationEndpoints
     //მოქმედება -> ელფოსტა დადასტურებულად ინიშნება. თუ დროებითი ტოკენიც მოვიდა (ბმული იმავე ბრაუზერში გაიხსნა),
     //   ავტორიზაცია მაშინვე სრულდება, სხვა შემთხვევაში NextStep = EmailConfirmedLoginRequired
     // POST api/v1/authentication/confirmemaillink
-    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<Error>, ProblemHttpResult>>
-        ConfirmEmailLink([FromBody] ConfirmEmailLinkRequest? request,
-            ICommandHandler<ConfirmEmailLinkRequestCommand, LoginResponse> handler,
-            CancellationToken cancellationToken = default)
+    private static async ValueTask<Results<Ok<LoginResponse>, BadRequest<Error>, ProblemHttpResult>> ConfirmEmailLink(
+        [FromBody] ConfirmEmailLinkRequest? request,
+        ICommandHandler<ConfirmEmailLinkRequestCommand, LoginResponse> handler,
+        CancellationToken cancellationToken = default)
     {
         Debug.WriteLine($"Call {nameof(ConfirmEmailLinkCommandHandler)} from {nameof(ConfirmEmailLink)}");
         if (request is null)
@@ -174,8 +174,7 @@ public static class AuthenticationEndpoints
             ICommandHandler<ChangeRequiredPasswordRequestCommand, LoginResponse> handler,
             CancellationToken cancellationToken = default)
     {
-        Debug.WriteLine(
-            $"Call {nameof(ChangeRequiredPasswordCommandHandler)} from {nameof(ChangeRequiredPassword)}");
+        Debug.WriteLine($"Call {nameof(ChangeRequiredPasswordCommandHandler)} from {nameof(ChangeRequiredPassword)}");
         if (request is null)
         {
             return TypedResults.BadRequest(CarcassApiErrors.RequestIsEmpty);

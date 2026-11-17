@@ -18,10 +18,14 @@ public sealed class InMemoryTicketStore : ITicketStore, IDisposable
 {
     private const string KeyPrefix = "carcass-sso-ticket:";
 
+    private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> _bySid =
+        new(StringComparer.Ordinal);
+
+    private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> _bySub =
+        new(StringComparer.Ordinal);
+
     private readonly MemoryCache _cache = new(new MemoryCacheOptions());
     private readonly TimeSpan _idleTimeout;
-    private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> _bySid = new(StringComparer.Ordinal);
-    private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> _bySub = new(StringComparer.Ordinal);
 
     public InMemoryTicketStore(IOptions<CarcassAuthenticationSettings> settings)
     {
