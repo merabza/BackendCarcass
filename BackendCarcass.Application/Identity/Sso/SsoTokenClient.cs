@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -58,7 +58,7 @@ public sealed class SsoTokenClient
                 return SsoRefreshResult.Rejected;
             }
 
-            TokenResponse? tokens = await JsonSerializer.DeserializeAsync<TokenResponse>(
+            var tokens = await JsonSerializer.DeserializeAsync<TokenResponse>(
                 await response.Content.ReadAsStreamAsync(cancellationToken), cancellationToken: cancellationToken);
             return string.IsNullOrEmpty(tokens?.AccessToken)
                 ? SsoRefreshResult.Rejected
@@ -115,22 +115,4 @@ public sealed class SsoTokenClient
         [JsonPropertyName("id_token")] public string? IdToken { get; init; }
         [JsonPropertyName("expires_in")] public int ExpiresIn { get; init; }
     }
-}
-
-public enum ESsoRefreshOutcome
-{
-    Refreshed,
-    Rejected,
-    Unavailable
-}
-
-public sealed record SsoRefreshResult(
-    ESsoRefreshOutcome Outcome,
-    string? AccessToken = null,
-    string? RefreshToken = null,
-    string? IdToken = null,
-    int ExpiresIn = 0)
-{
-    public static SsoRefreshResult Rejected { get; } = new(ESsoRefreshOutcome.Rejected);
-    public static SsoRefreshResult Unavailable { get; } = new(ESsoRefreshOutcome.Unavailable);
 }

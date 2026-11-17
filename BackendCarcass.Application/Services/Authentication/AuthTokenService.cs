@@ -107,9 +107,8 @@ public sealed class AuthTokenService : IScopeServiceCarcassApplication
             return Result.Failure<PendingTokenData>(AuthenticationApiErrors.InvalidPendingToken);
         }
 
-        if (!int.TryParse(principal.FindFirstValue(ClaimTypes.Sid), NumberStyles.Integer,
-                CultureInfo.InvariantCulture, out int userId) ||
-            !Enum.TryParse(principal.FindFirstValue(StepClaim), out ELoginNextStep step))
+        if (!int.TryParse(principal.FindFirstValue(ClaimTypes.Sid), NumberStyles.Integer, CultureInfo.InvariantCulture,
+                out int userId) || !Enum.TryParse(principal.FindFirstValue(StepClaim), out ELoginNextStep step))
         {
             return Result.Failure<PendingTokenData>(AuthenticationApiErrors.InvalidPendingToken);
         }

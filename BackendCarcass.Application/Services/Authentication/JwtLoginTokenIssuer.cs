@@ -20,8 +20,8 @@ public sealed class JwtLoginTokenIssuer : ILoginTokenIssuer
     private readonly IUserClaimsRepository _userClaimsRepository;
     private readonly UserManager<AppUser> _userMgr;
 
-    public JwtLoginTokenIssuer(UserManager<AppUser> userMgr, AuthTokenService tokens,
-        RefreshTokenService refreshTokens, IUserClaimsRepository userClaimsRepository)
+    public JwtLoginTokenIssuer(UserManager<AppUser> userMgr, AuthTokenService tokens, RefreshTokenService refreshTokens,
+        IUserClaimsRepository userClaimsRepository)
     {
         _userMgr = userMgr;
         _tokens = tokens;

@@ -40,8 +40,8 @@ public sealed class SmtpEmailSender : IEmailSender
         //მიმღების მისამართი (პერსონალური მონაცემი) და Message-Id ლოგში არ იწერება
         if (_logger.IsEnabled(LogLevel.Information))
         {
-            _logger.LogInformation("Sending e-mail \"{Subject}\" via SMTP server {SmtpServer}:{SmtpPort}",
-                subject, smtpServer, _settings.SmtpPort);
+            _logger.LogInformation("Sending e-mail \"{Subject}\" via SMTP server {SmtpServer}:{SmtpPort}", subject,
+                smtpServer, _settings.SmtpPort);
         }
 
         //ყურადღება: SmtpClient აქ MailKit-ისაა და არა System.Net.Mail-ის
@@ -60,8 +60,8 @@ public sealed class SmtpEmailSender : IEmailSender
         if (_logger.IsEnabled(LogLevel.Information))
         {
             _logger.LogInformation(
-                "SMTP server {SmtpServer} accepted e-mail \"{Subject}\". Server response: {ServerResponse}",
-                smtpServer, subject, serverResponse);
+                "SMTP server {SmtpServer} accepted e-mail \"{Subject}\". Server response: {ServerResponse}", smtpServer,
+                subject, serverResponse);
         }
 
         await client.DisconnectAsync(true, cancellationToken);

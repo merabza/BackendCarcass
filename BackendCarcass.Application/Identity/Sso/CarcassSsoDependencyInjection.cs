@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using SystemTools.SharedKernel;
 using JwtTokenValidatedContext = Microsoft.AspNetCore.Authentication.JwtBearer.TokenValidatedContext;
 using OidcTokenValidatedContext = Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext;
@@ -29,7 +28,8 @@ public static class CarcassSsoDependencyInjection
         IConfiguration configuration)
     {
         IConfigurationSection section = configuration.GetSection(CarcassAuthenticationSettings.SectionName);
-        CarcassAuthenticationSettings settings = section.Get<CarcassAuthenticationSettings>() ?? new();
+        CarcassAuthenticationSettings settings =
+            section.Get<CarcassAuthenticationSettings>() ?? new CarcassAuthenticationSettings();
         SsoClientSettings sso = settings.Sso;
         string authority = Required(sso.Authority, "Sso:Authority");
         string clientId = Required(sso.ClientId, "Sso:ClientId");
@@ -62,85 +62,83 @@ public static class CarcassSsoDependencyInjection
 
         //AddIdentity თავის ნაგულისხმევ სქემებს აყენებს (Identity.Application), ამიტომ ყველა აქ ცალ-ცალკე იწერება
         services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = CarcassSsoDefaults.PolicyScheme;
+            options.DefaultAuthenticateScheme = CarcassSsoDefaults.PolicyScheme;
+            options.DefaultChallengeScheme = CarcassSsoDefaults.PolicyScheme;
+            options.DefaultForbidScheme = CarcassSsoDefaults.PolicyScheme;
+            options.DefaultSignInScheme = CarcassSsoDefaults.CookieScheme;
+            options.DefaultSignOutScheme = CarcassSsoDefaults.CookieScheme;
+        }).AddPolicyScheme(CarcassSsoDefaults.PolicyScheme, CarcassSsoDefaults.PolicyScheme, options =>
+        {
+            options.ForwardDefaultSelector = context =>
+                context.Request.Headers.Authorization.ToString()
+                    .StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
+                    ? JwtBearerDefaults.AuthenticationScheme
+                    : CarcassSsoDefaults.CookieScheme;
+        }).AddCookie(CarcassSsoDefaults.CookieScheme, options =>
+        {
+            options.Cookie.Name = cookieName;
+            options.Cookie.Path = "/";
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.Cookie.SecurePolicy = securePolicy;
+            options.ExpireTimeSpan = sso.SessionIdleTimeout;
+            options.SlidingExpiration = true;
+            //API-ს და /bff/user-ს გადამისამართება არ სჭირდება: SPA 401-ზე თვითონ გადადის /bff/login-ზე
+            options.Events.OnRedirectToLogin =
+                context => SetStatus(context.Response, StatusCodes.Status401Unauthorized);
+            options.Events.OnRedirectToAccessDenied =
+                context => SetStatus(context.Response, StatusCodes.Status403Forbidden);
+            options.Events.OnValidatePrincipal = context =>
+                context.HttpContext.RequestServices.GetRequiredService<SsoSessionRefresher>()
+                    .ValidatePrincipalAsync(context);
+        }).AddOpenIdConnect(CarcassSsoDefaults.OpenIdConnectScheme, options =>
+        {
+            options.Authority = authority;
+            options.ClientId = clientId;
+            options.ClientSecret = clientSecret;
+            options.RequireHttpsMetadata = requireHttps;
+            options.ResponseType = OpenIdConnectResponseType.Code;
+            options.ResponseMode = OpenIdConnectResponseMode.Query;
+            options.UsePkce = true;
+            options.SaveTokens = true;
+            options.GetClaimsFromUserInfoEndpoint = false;
+            options.MapInboundClaims = false;
+            options.SignInScheme = CarcassSsoDefaults.CookieScheme;
+            options.SignOutScheme = CarcassSsoDefaults.CookieScheme;
+            options.CallbackPath = CarcassSsoDefaults.CallbackPath;
+            options.SignedOutCallbackPath = CarcassSsoDefaults.SignedOutCallbackPath;
+            options.SignedOutRedirectUri = "/";
+            options.Scope.Clear();
+            foreach (string scope in new[] { "openid", "profile", "email", "offline_access", apiScope }
+                         .Concat(sso.Scopes).Distinct(StringComparer.Ordinal))
             {
-                options.DefaultScheme = CarcassSsoDefaults.PolicyScheme;
-                options.DefaultAuthenticateScheme = CarcassSsoDefaults.PolicyScheme;
-                options.DefaultChallengeScheme = CarcassSsoDefaults.PolicyScheme;
-                options.DefaultForbidScheme = CarcassSsoDefaults.PolicyScheme;
-                options.DefaultSignInScheme = CarcassSsoDefaults.CookieScheme;
-                options.DefaultSignOutScheme = CarcassSsoDefaults.CookieScheme;
-            })
-            .AddPolicyScheme(CarcassSsoDefaults.PolicyScheme, CarcassSsoDefaults.PolicyScheme, options =>
-            {
-                options.ForwardDefaultSelector = context =>
-                    context.Request.Headers.Authorization.ToString()
-                        .StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
-                        ? JwtBearerDefaults.AuthenticationScheme
-                        : CarcassSsoDefaults.CookieScheme;
-            })
-            .AddCookie(CarcassSsoDefaults.CookieScheme, options =>
-            {
-                options.Cookie.Name = cookieName;
-                options.Cookie.Path = "/";
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SameSite = SameSiteMode.Lax;
-                options.Cookie.SecurePolicy = securePolicy;
-                options.ExpireTimeSpan = sso.SessionIdleTimeout;
-                options.SlidingExpiration = true;
-                //API-ს და /bff/user-ს გადამისამართება არ სჭირდება: SPA 401-ზე თვითონ გადადის /bff/login-ზე
-                options.Events.OnRedirectToLogin = context => SetStatus(context.Response, StatusCodes.Status401Unauthorized);
-                options.Events.OnRedirectToAccessDenied = context => SetStatus(context.Response, StatusCodes.Status403Forbidden);
-                options.Events.OnValidatePrincipal = context =>
-                    context.HttpContext.RequestServices.GetRequiredService<SsoSessionRefresher>()
-                        .ValidatePrincipalAsync(context);
-            })
-            .AddOpenIdConnect(CarcassSsoDefaults.OpenIdConnectScheme, options =>
-            {
-                options.Authority = authority;
-                options.ClientId = clientId;
-                options.ClientSecret = clientSecret;
-                options.RequireHttpsMetadata = requireHttps;
-                options.ResponseType = OpenIdConnectResponseType.Code;
-                options.ResponseMode = OpenIdConnectResponseMode.Query;
-                options.UsePkce = true;
-                options.SaveTokens = true;
-                options.GetClaimsFromUserInfoEndpoint = false;
-                options.MapInboundClaims = false;
-                options.SignInScheme = CarcassSsoDefaults.CookieScheme;
-                options.SignOutScheme = CarcassSsoDefaults.CookieScheme;
-                options.CallbackPath = CarcassSsoDefaults.CallbackPath;
-                options.SignedOutCallbackPath = CarcassSsoDefaults.SignedOutCallbackPath;
-                options.SignedOutRedirectUri = "/";
-                options.Scope.Clear();
-                foreach (string scope in new[] { "openid", "profile", "email", "offline_access", apiScope }
-                             .Concat(sso.Scopes).Distinct(StringComparer.Ordinal))
-                {
-                    options.Scope.Add(scope);
-                }
+                options.Scope.Add(scope);
+            }
 
-                options.TokenValidationParameters.NameClaimType = SsoClaimTypes.PreferredUserName;
-                //correlation და nonce cookie-ებსაც აპის პრეფიქსი აქვს (G13); __Host- სახელს Path=/ სჭირდება
-                options.CorrelationCookie.Name = cookieName + ".corr.";
-                options.NonceCookie.Name = cookieName + ".nonce.";
-                foreach (CookieBuilder cookie in new[] { options.CorrelationCookie, options.NonceCookie })
-                {
-                    cookie.Path = "/";
-                    cookie.SameSite = SameSiteMode.Lax;
-                    cookie.SecurePolicy = securePolicy;
-                    cookie.HttpOnly = true;
-                }
-
-                options.Events.OnTokenValidated = OnTokenValidated;
-                options.Events.OnRemoteFailure = OnRemoteFailure;
-            })
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            options.TokenValidationParameters.NameClaimType = SsoClaimTypes.PreferredUserName;
+            //correlation და nonce cookie-ებსაც აპის პრეფიქსი აქვს (G13); __Host- სახელს Path=/ სჭირდება
+            options.CorrelationCookie.Name = cookieName + ".corr.";
+            options.NonceCookie.Name = cookieName + ".nonce.";
+            foreach (CookieBuilder cookie in new[] { options.CorrelationCookie, options.NonceCookie })
             {
-                options.Authority = authority;
-                options.Audience = apiScope;
-                options.RequireHttpsMetadata = requireHttps;
-                options.MapInboundClaims = false;
-                options.Events = new JwtBearerEvents { OnTokenValidated = OnMachineTokenValidated };
-            });
+                cookie.Path = "/";
+                cookie.SameSite = SameSiteMode.Lax;
+                cookie.SecurePolicy = securePolicy;
+                cookie.HttpOnly = true;
+            }
+
+            options.Events.OnTokenValidated = OnTokenValidated;
+            options.Events.OnRemoteFailure = OnRemoteFailure;
+        }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+        {
+            options.Authority = authority;
+            options.Audience = apiScope;
+            options.RequireHttpsMetadata = requireHttps;
+            options.MapInboundClaims = false;
+            options.Events = new JwtBearerEvents { OnTokenValidated = OnMachineTokenValidated };
+        });
 
         services.AddOptions<CookieAuthenticationOptions>(CarcassSsoDefaults.CookieScheme)
             .Configure<InMemoryTicketStore>((options, store) => options.SessionStore = store);
@@ -151,9 +149,9 @@ public static class CarcassSsoDependencyInjection
     //sso-დან დაბრუნებისას: id_token-ის მომხმარებელი → ლოკალური მომხმარებელი და მისი როლები (D12, D13)
     private static async Task OnTokenValidated(OidcTokenValidatedContext context)
     {
-        SsoUserService users = context.HttpContext.RequestServices.GetRequiredService<SsoUserService>();
-        Result<ClaimsPrincipal> principal = await users.SignInAsync(context.Principal!,
-            CarcassSsoDefaults.CookieScheme, context.HttpContext.RequestAborted);
+        var users = context.HttpContext.RequestServices.GetRequiredService<SsoUserService>();
+        Result<ClaimsPrincipal> principal = await users.SignInAsync(context.Principal!, CarcassSsoDefaults.CookieScheme,
+            context.HttpContext.RequestAborted);
         if (principal.IsFailure)
         {
             context.Fail(principal.Error.Description);
@@ -174,8 +172,8 @@ public static class CarcassSsoDependencyInjection
         await context.Response.WriteAsync(
             "<!doctype html><html lang=\"ka\"><head><meta charset=\"utf-8\"><title>შესვლა ვერ მოხერხდა</title></head>" +
             "<body><h1>შესვლა ვერ მოხერხდა</h1><p>შესვლის სერვისთან კავშირი ვერ დამყარდა, ან შესვლა უარყოფილია. " +
-            "სცადეთ მოგვიანებით.</p><p><a href=\"/\">მთავარ გვერდზე დაბრუნება</a></p></body></html>",
-            Encoding.UTF8, context.HttpContext.RequestAborted);
+            "სცადეთ მოგვიანებით.</p><p><a href=\"/\">მთავარ გვერდზე დაბრუნება</a></p></body></html>", Encoding.UTF8,
+            context.HttpContext.RequestAborted);
     }
 
     //Bearer მხოლოდ client_credentials-ის ტოკენს იღებს: sub = client_id და client_id კონფიგურაციაშია (D9, D17)
@@ -192,7 +190,7 @@ public static class CarcassSsoDependencyInjection
             return;
         }
 
-        SsoUserService users = context.HttpContext.RequestServices.GetRequiredService<SsoUserService>();
+        var users = context.HttpContext.RequestServices.GetRequiredService<SsoUserService>();
         Result<ClaimsPrincipal> principal = await users.MachineSignInAsync(clientId, localUserName,
             JwtBearerDefaults.AuthenticationScheme, context.HttpContext.RequestAborted);
         if (principal.IsFailure)

@@ -101,8 +101,8 @@ public sealed class RefreshTokenService : IScopeServiceCarcassApplication
     //მომხმარებლის ყველა მოქმედი სესიის გაუქმება (პაროლის ცვლილებისას, ტოკენის მოპარვის ეჭვისას)
     public async Task RevokeAllAsync(int userId, CancellationToken cancellationToken = default)
     {
-        List<RefreshToken> activeTokens = await _ctx.RefreshTokens
-            .Where(t => t.UserId == userId && t.RevokedAt == null).ToListAsync(cancellationToken);
+        List<RefreshToken> activeTokens = await _ctx.RefreshTokens.Where(t => t.UserId == userId && t.RevokedAt == null)
+            .ToListAsync(cancellationToken);
         if (activeTokens.Count == 0)
         {
             return;

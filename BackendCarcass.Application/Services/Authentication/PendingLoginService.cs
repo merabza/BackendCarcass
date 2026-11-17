@@ -67,8 +67,8 @@ public sealed class PendingLoginService : IScopeServiceCarcassApplication
 
     //ბმულით დადასტურება. თუ ბმული იმავე ბრაუზერში გაიხსნა და დროებითი ტოკენიც მოვიდა, ავტორიზაცია მაშინვე სრულდება,
     //სხვა შემთხვევაში მხოლოდ ელფოსტა დასტურდება და მომხმარებელმა ავტორიზაცია თავიდან უნდა გაიაროს
-    public async Task<Result<LoginResult>> ConfirmEmailByLinkAsync(int userId, string? linkToken,
-        string? pendingToken, CancellationToken cancellationToken = default)
+    public async Task<Result<LoginResult>> ConfirmEmailByLinkAsync(int userId, string? linkToken, string? pendingToken,
+        CancellationToken cancellationToken = default)
     {
         AppUser? user = await FindUserAsync(userId);
         if (user is null)

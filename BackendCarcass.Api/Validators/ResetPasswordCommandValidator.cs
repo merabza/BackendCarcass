@@ -13,8 +13,7 @@ public sealed class ResetPasswordCommandValidator : AbstractValidator<ResetPassw
         RuleFor(x => x).Must(HasLinkData).When(x => !HasCodeData(x))
             .WithErrorCode(AuthenticationApiErrors.ResetPasswordIdentificationErrCode)
             .WithMessage(AuthenticationApiErrors.ResetPasswordIdentificationErrMessage);
-        RuleFor(x => x.Code).Matches(ConfirmEmailCommandValidator.CodePattern)
-            .When(x => !string.IsNullOrEmpty(x.Code))
+        RuleFor(x => x.Code).Matches(ConfirmEmailCommandValidator.CodePattern).When(x => !string.IsNullOrEmpty(x.Code))
             .WithErrorCode(AuthenticationApiErrors.InvalidCodeFormatErrCode)
             .WithMessage(AuthenticationApiErrors.InvalidCodeFormatErrMessage);
         RuleFor(x => x.NewPassword).NotEmpty().WithErrorCode(CarcassApiErrors.IsEmptyErrCode)

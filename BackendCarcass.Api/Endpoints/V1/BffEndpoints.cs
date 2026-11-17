@@ -57,9 +57,8 @@ public static class BffEndpoints
     //მოქმედება -> განახლების ტოკენი უქმდება, აპის სესია იხურება და ბრაუზერი sso-ს end-session-ზე გადადის,
     //   საიდანაც sso დანარჩენ აპებს back-channel logout-ით ატყობინებს
     // POST /bff/logout
-    private static async Task<Results<SignOutHttpResult, RedirectHttpResult, BadRequest>> Logout(
-        HttpContext context, IAntiforgery antiforgery, SsoTokenClient tokenClient,
-        CancellationToken cancellationToken = default)
+    private static async Task<Results<SignOutHttpResult, RedirectHttpResult, BadRequest>> Logout(HttpContext context,
+        IAntiforgery antiforgery, SsoTokenClient tokenClient, CancellationToken cancellationToken = default)
     {
         if (!await antiforgery.IsRequestValidAsync(context))
         {
@@ -118,8 +117,8 @@ public static class BffEndpoints
     //   მაშინვე უქმდება. არავალიდური ტოკენი — 400
     // POST /bff/backchannel
     private static async Task<Results<Ok, BadRequest>> Backchannel(HttpContext context,
-        BackchannelLogoutValidator validator, InMemoryTicketStore ticketStore, ILogger<BackchannelLogoutValidator> logger,
-        CancellationToken cancellationToken = default)
+        BackchannelLogoutValidator validator, InMemoryTicketStore ticketStore,
+        ILogger<BackchannelLogoutValidator> logger, CancellationToken cancellationToken = default)
     {
         context.Response.Headers.CacheControl = "no-store";
         if (!context.Request.HasFormContentType)

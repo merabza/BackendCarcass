@@ -28,11 +28,11 @@ public sealed class BackchannelLogoutValidator : IDisposable
     private const string NonceClaim = "nonce";
 
     private static readonly TimeSpan ClockSkew = TimeSpan.FromMinutes(1);
-
-    private readonly MemoryCache _seenTokenIds = new(new MemoryCacheOptions());
     private readonly JsonWebTokenHandler _handler = new() { MapInboundClaims = false };
     private readonly ILogger<BackchannelLogoutValidator> _logger;
     private readonly IOptionsMonitor<OpenIdConnectOptions> _oidcOptions;
+
+    private readonly MemoryCache _seenTokenIds = new(new MemoryCacheOptions());
 
     public BackchannelLogoutValidator(IOptionsMonitor<OpenIdConnectOptions> oidcOptions,
         ILogger<BackchannelLogoutValidator> logger)
@@ -120,5 +120,3 @@ public sealed class BackchannelLogoutValidator : IDisposable
         }
     }
 }
-
-public sealed record BackchannelLogoutSubject(string? SessionId, string? Subject);

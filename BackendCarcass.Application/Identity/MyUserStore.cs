@@ -169,6 +169,45 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
         return Task.FromResult(true);
     }
 
+    public Task<DateTimeOffset?> GetLockoutEndDateAsync(AppUser user, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(user.LockoutEnd);
+    }
+
+    public Task SetLockoutEndDateAsync(AppUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken)
+    {
+        user.LockoutEnd = lockoutEnd;
+        return Task.CompletedTask;
+    }
+
+    public Task<int> IncrementAccessFailedCountAsync(AppUser user, CancellationToken cancellationToken)
+    {
+        user.AccessFailedCount++;
+        return Task.FromResult(user.AccessFailedCount);
+    }
+
+    public Task ResetAccessFailedCountAsync(AppUser user, CancellationToken cancellationToken)
+    {
+        user.AccessFailedCount = 0;
+        return Task.CompletedTask;
+    }
+
+    public Task<int> GetAccessFailedCountAsync(AppUser user, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(user.AccessFailedCount);
+    }
+
+    //ბლოკირება ყველა მომხმარებლისთვის ჩართულია, ამიტომ ცალკე სვეტი არ გვჭირდება
+    public Task<bool> GetLockoutEnabledAsync(AppUser user, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(true);
+    }
+
+    public Task SetLockoutEnabledAsync(AppUser user, bool enabled, CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
+
     public async Task<IdentityResult> CreateAsync(AppUser user, CancellationToken cancellationToken)
     {
         return await _repo.CreateUserAsync(user, cancellationToken);
@@ -281,62 +320,8 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
         return !string.IsNullOrWhiteSpace(user?.PasswordHash);
     }
 
-    public Task<DateTimeOffset?> GetLockoutEndDateAsync(AppUser user, CancellationToken cancellationToken)
-    {
-        return Task.FromResult(user.LockoutEnd);
-    }
-
-    public Task SetLockoutEndDateAsync(AppUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken)
-    {
-        user.LockoutEnd = lockoutEnd;
-        return Task.CompletedTask;
-    }
-
-    public Task<int> IncrementAccessFailedCountAsync(AppUser user, CancellationToken cancellationToken)
-    {
-        user.AccessFailedCount++;
-        return Task.FromResult(user.AccessFailedCount);
-    }
-
-    public Task ResetAccessFailedCountAsync(AppUser user, CancellationToken cancellationToken)
-    {
-        user.AccessFailedCount = 0;
-        return Task.CompletedTask;
-    }
-
-    public Task<int> GetAccessFailedCountAsync(AppUser user, CancellationToken cancellationToken)
-    {
-        return Task.FromResult(user.AccessFailedCount);
-    }
-
-    //ბლოკირება ყველა მომხმარებლისთვის ჩართულია, ამიტომ ცალკე სვეტი არ გვჭირდება
-    public Task<bool> GetLockoutEnabledAsync(AppUser user, CancellationToken cancellationToken)
-    {
-        return Task.FromResult(true);
-    }
-
-    public Task SetLockoutEnabledAsync(AppUser user, bool enabled, CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
-
     public void Dispose()
     {
-    }
-
-    private static AppUser ToAppUser(User user)
-    {
-        return new AppUser(user.UserName, user.FirstName, user.LastName)
-        {
-            Id = user.UsrId,
-            PasswordHash = user.PasswordHash,
-            NormalizedUserName = user.NormalizedUserName,
-            Email = user.Email,
-            NormalizedEmail = user.NormalizedEmail,
-            EmailConfirmed = user.EmailConfirmed,
-            AccessFailedCount = user.AccessFailedCount,
-            LockoutEnd = user.LockoutEnd
-        };
     }
 
     public async Task AddToRoleAsync(AppUser user, string roleName, CancellationToken cancellationToken)
@@ -382,19 +367,6 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
         return await MembershipsOf(user).AnyAsync(ru => ru.CKey == role.RolKey, cancellationToken);
     }
 
-    //UserManager store-ს როლის ნორმალიზებულ სახელს გადასცემს
-    private Task<Role?> FindRoleAsync(string normalizedRoleName, CancellationToken cancellationToken)
-    {
-        return _repo.Roles.FirstOrDefaultAsync(r => r.RolNormalizedKey == normalizedRoleName, cancellationToken);
-    }
-
-    //ManyToManyJoins-ში მომხმარებელი უფლებების რედაქტორს NormalizedUserName-ით უწერია, საწყის მონაცემებს
-    //(UsersByRoles.json) კი UserName-ით. ორივე გასაღები ცალ-ცალკე მოწმდება, რომ შედეგი collation-ზე არ იყოს დამოკიდებული
-    private IQueryable<ManyToManyJoin> MembershipsOf(AppUser user)
-    {
-        return _repo.RolesByUsers.Where(ru => ru.PKey == user.NormalizedUserName || ru.PKey == user.UserName);
-    }
-
     async Task<IList<AppUser>> IUserRoleStore<AppUser>.GetUsersInRoleAsync(string roleName,
         CancellationToken cancellationToken)
     {
@@ -411,5 +383,33 @@ public sealed class MyUserStore : IUserPasswordStore<AppUser>, IUserEmailStore<A
                 ru.CKey == role.RolKey && (ru.PKey == u.UserName || ru.PKey == u.NormalizedUserName)))
             .ToListAsync(cancellationToken);
         return [.. users.Select(ToAppUser)];
+    }
+
+    private static AppUser ToAppUser(User user)
+    {
+        return new AppUser(user.UserName, user.FirstName, user.LastName)
+        {
+            Id = user.UsrId,
+            PasswordHash = user.PasswordHash,
+            NormalizedUserName = user.NormalizedUserName,
+            Email = user.Email,
+            NormalizedEmail = user.NormalizedEmail,
+            EmailConfirmed = user.EmailConfirmed,
+            AccessFailedCount = user.AccessFailedCount,
+            LockoutEnd = user.LockoutEnd
+        };
+    }
+
+    //UserManager store-ს როლის ნორმალიზებულ სახელს გადასცემს
+    private Task<Role?> FindRoleAsync(string normalizedRoleName, CancellationToken cancellationToken)
+    {
+        return _repo.Roles.FirstOrDefaultAsync(r => r.RolNormalizedKey == normalizedRoleName, cancellationToken);
+    }
+
+    //ManyToManyJoins-ში მომხმარებელი უფლებების რედაქტორს NormalizedUserName-ით უწერია, საწყის მონაცემებს
+    //(UsersByRoles.json) კი UserName-ით. ორივე გასაღები ცალ-ცალკე მოწმდება, რომ შედეგი collation-ზე არ იყოს დამოკიდებული
+    private IQueryable<ManyToManyJoin> MembershipsOf(AppUser user)
+    {
+        return _repo.RolesByUsers.Where(ru => ru.PKey == user.NormalizedUserName || ru.PKey == user.UserName);
     }
 }

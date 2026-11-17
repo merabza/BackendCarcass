@@ -108,7 +108,11 @@ public sealed class LoginCompletionService : IScopeServiceCarcassApplication
 
         return new LoginResult
         {
-            User = user, Token = token.Value, NextStep = step, AppClaims = [], Roles = []
+            User = user,
+            Token = token.Value,
+            NextStep = step,
+            AppClaims = [],
+            Roles = []
         };
     }
 }

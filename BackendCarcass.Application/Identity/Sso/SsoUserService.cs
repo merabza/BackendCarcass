@@ -36,9 +36,10 @@ public sealed class SsoUserService
         SsoProfile? profile = SsoProfile.From(external);
         if (profile is null)
         {
-            return Result.Failure<ClaimsPrincipal>(string.IsNullOrWhiteSpace(external.FindFirstValue(SsoClaimTypes.Subject))
-                ? SsoErrors.SubjectIsMissing
-                : SsoErrors.UserNameIsMissing);
+            return Result.Failure<ClaimsPrincipal>(
+                string.IsNullOrWhiteSpace(external.FindFirstValue(SsoClaimTypes.Subject))
+                    ? SsoErrors.SubjectIsMissing
+                    : SsoErrors.UserNameIsMissing);
         }
 
         await using IDbContextTransaction transaction = await _db.BeginTransactionAsync(cancellationToken);
@@ -270,8 +271,8 @@ public sealed class SsoUserService
         string rolesTable = _db.GetTableName<Role>();
         return _db.ManyToManyJoins
             .Where(m => m.ParentDataTypeNavigation.DtTable == usersTable &&
-                        m.ChildDataTypeNavigation.DtTable == rolesTable && m.PKey == userName)
-            .Select(m => m.CKey).ToListAsync(cancellationToken);
+                        m.ChildDataTypeNavigation.DtTable == rolesTable && m.PKey == userName).Select(m => m.CKey)
+            .ToListAsync(cancellationToken);
     }
 
     private static string Normalize(string value)
@@ -280,8 +281,15 @@ public sealed class SsoUserService
     }
 
     //id_token-ის claim-ები (D9)
-    private sealed record SsoProfile(string Subject, string? SessionId, string UserName, string Email,
-        bool EmailVerified, string FirstName, string LastName, string FullName)
+    private sealed record SsoProfile(
+        string Subject,
+        string? SessionId,
+        string UserName,
+        string Email,
+        bool EmailVerified,
+        string FirstName,
+        string LastName,
+        string FullName)
     {
         public static SsoProfile? From(ClaimsPrincipal principal)
         {

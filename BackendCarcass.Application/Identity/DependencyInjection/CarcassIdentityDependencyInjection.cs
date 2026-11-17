@@ -10,14 +10,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Serilog;
+using ILogger = Serilog.ILogger;
 
 namespace BackendCarcass.Application.Identity.DependencyInjection;
 
@@ -149,20 +149,15 @@ public static class CarcassIdentityDependencyInjection
     public static IServiceCollection AddCarcassEmailSending(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddOptions<EmailSettings>().Bind(configuration.GetSection("EmailSettings"))
-            .Validate<IHostEnvironment>(
-                (settings, environment) =>
-                    environment.IsDevelopment() || !string.IsNullOrWhiteSpace(settings.SmtpServer),
-                "EmailSettings:SmtpServer must be configured outside the Development environment")
-            .ValidateOnStart();
+        services.AddOptions<EmailSettings>().Bind(configuration.GetSection("EmailSettings")).Validate<IHostEnvironment>(
+            (settings, environment) => environment.IsDevelopment() || !string.IsNullOrWhiteSpace(settings.SmtpServer),
+            "EmailSettings:SmtpServer must be configured outside the Development environment").ValidateOnStart();
         services.AddScoped<IEmailSender>(serviceProvider =>
         {
-            IOptions<EmailSettings> emailSettings = serviceProvider.GetRequiredService<IOptions<EmailSettings>>();
+            var emailSettings = serviceProvider.GetRequiredService<IOptions<EmailSettings>>();
             return string.IsNullOrWhiteSpace(emailSettings.Value.SmtpServer)
-                ? new LoggingEmailSender(serviceProvider
-                    .GetRequiredService<Microsoft.Extensions.Logging.ILogger<LoggingEmailSender>>())
-                : new SmtpEmailSender(emailSettings,
-                    serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<SmtpEmailSender>>());
+                ? new LoggingEmailSender(serviceProvider.GetRequiredService<ILogger<LoggingEmailSender>>())
+                : new SmtpEmailSender(emailSettings, serviceProvider.GetRequiredService<ILogger<SmtpEmailSender>>());
         });
 
         return services;
@@ -174,8 +169,8 @@ public static class CarcassIdentityDependencyInjection
         services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-            options.AddPolicy(AuthenticationRateLimitPolicy, httpContext =>
-                RateLimitPartition.GetFixedWindowLimiter(
+            options.AddPolicy(AuthenticationRateLimitPolicy,
+                httpContext => RateLimitPartition.GetFixedWindowLimiter(
                     httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
                     _ => new FixedWindowRateLimiterOptions
                     {
@@ -190,8 +185,8 @@ public static class CarcassIdentityDependencyInjection
 
     public static bool IsSsoMode(IConfiguration configuration)
     {
-        return configuration.GetSection(CarcassAuthenticationSettings.SectionName)
-            .Get<CarcassAuthenticationSettings>()?.Mode == EAuthenticationMode.Sso;
+        return configuration.GetSection(CarcassAuthenticationSettings.SectionName).Get<CarcassAuthenticationSettings>()
+            ?.Mode == EAuthenticationMode.Sso;
     }
 
     public static bool UseAuthenticationAndAuthorization(this IApplicationBuilder app, ILogger? debugLogger)
